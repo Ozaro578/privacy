@@ -1,0 +1,21 @@
+{
+  "name": "fahrpilot",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "db:reset": "bash supabase/test/reset-local.sh",
+    "db:test": "bash supabase/test/reset-local.sh && psql -h ${PGHOST:-127.0.0.1} -p ${PGPORT:-54329} -U ${PGUSER:-postgres} -d ${PGDATABASE:-fahrpilot_test} -q -f supabase/test/01_rls_and_rpc_test.sql"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "turbo": "^2.10.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}
