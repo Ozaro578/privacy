@@ -43,6 +43,54 @@ export const Deadline = z.object({
 });
 export type Deadline = z.infer<typeof Deadline>;
 
+export const Appointment = z.object({
+  /** ISO-Datum (YYYY-MM-DD) */
+  date: z.string(),
+  /** Uhrzeit HH:MM (24h) falls angegeben, sonst null */
+  time: z.string().nullable(),
+  /** Dauer in Minuten falls erkennbar, sonst null */
+  duration_minutes: z.number().int().positive().nullable(),
+  /** Kurzer Titel für den Kalender – in Zielsprache, z.B. "Termin Jobcenter" */
+  title: z.string(),
+  /** Ort/Adresse/Raum wie im Brief, null wenn nicht angegeben */
+  location: z.string().nullable(),
+  /** Was mitbringen / worauf achten – in Zielsprache, null wenn nichts */
+  notes: z.string().nullable(),
+  /** Ist der Termin Pflicht (z.B. Meldetermin mit Sanktionsandrohung)? */
+  mandatory: z.boolean(),
+});
+export type Appointment = z.infer<typeof Appointment>;
+
+export const SenderContact = z.object({
+  /** Telefonnummer wie im Brief (mit Vorwahl), null wenn keine */
+  phone: z.string().nullable(),
+  /** E-Mail-Adresse des Absenders/Sachbearbeitung, null wenn keine */
+  email: z.string().nullable(),
+  /** Webseite / Online-Portal (vollständige URL wenn erkennbar), null wenn keine */
+  website: z.string().nullable(),
+  /** Postanschrift des Absenders (eine Zeile), null wenn keine */
+  address: z.string().nullable(),
+  /** Sprechzeiten / Erreichbarkeit wie im Brief, null wenn keine */
+  office_hours: z.string().nullable(),
+});
+export type SenderContact = z.infer<typeof SenderContact>;
+
+export const PaymentInfo = z.object({
+  /** Empfängername für die Überweisung, null wenn keiner */
+  recipient: z.string().nullable(),
+  /** IBAN ohne Leerzeichen, null wenn keine */
+  iban: z.string().nullable(),
+  /** BIC, null wenn keine */
+  bic: z.string().nullable(),
+  /** Verwendungszweck exakt wie im Brief, null wenn keiner */
+  reference: z.string().nullable(),
+  /** Betrag als Dezimalzahl in Euro (z.B. 245.60), null wenn unklar */
+  amount_eur: z.number().nullable(),
+  /** Zahlungsfrist ISO-Datum, null wenn keine */
+  due_date: z.string().nullable(),
+});
+export type PaymentInfo = z.infer<typeof PaymentInfo>;
+
 export const ActionStep = z.object({
   step: z.number().int().min(1),
   /** Ein konkreter, kurzer Handlungsschritt in Zielsprache */
@@ -93,6 +141,8 @@ export const ExplainResult = z.object({
     /** Name des Absenders wie im Brief, null wenn nicht erkennbar */
     name: z.string().nullable(),
     type: SenderType,
+    /** Kontaktdaten aus dem Brief – für Buttons "Anrufen", "E-Mail", "Route" */
+    contact: SenderContact,
   }),
   /** Aktenzeichen / Kundennummer / Referenz falls sichtbar (hilft beim Antworten) */
   reference_number: z.string().nullable(),
@@ -105,9 +155,14 @@ export const ExplainResult = z.object({
   what_it_means: z.string(),
 
   urgency: Urgency,
+  /** Feste Termine (Vorsprache, Untersuchung, Gerichtstermin, Anhörung) – für "In Kalender speichern" */
+  appointments: z.array(Appointment),
+  /** Fristen (bis wann etwas erledigt sein muss) – für "Erinnerung setzen" */
   deadlines: z.array(Deadline),
   actions: z.array(ActionStep),
   money: MoneyInfo,
+  /** Überweisungsdaten, wenn der Brief eine Zahlung verlangt – für "Überweisung kopieren" (nur wenn scam_risk nicht hoch) */
+  payment: PaymentInfo.nullable(),
 
   /** Kann ich mich wehren (Widerspruch/Einspruch)? Kurz erklärt, null wenn nicht relevant */
   can_object: z.string().nullable(),
