@@ -40,9 +40,14 @@ insert into public.student_licenses (id, tenant_id, student_id, license_code, tr
 insert into public.cancellation_policies (tenant_id, name, free_cancellation_hours, late_fee_percent, contract_clause_reference) values
   ('10000000-0000-0000-0000-000000000001', 'Standard', 24, 50, 'Ausbildungsvertrag § 6');
 insert into public.lessons (id, tenant_id, instructor_id, vehicle_id, kind, status, period, transmission, license_codes, price_cents) values
-  ('60000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', 'practice', 'open', tstzrange(now() + interval '2 days', now() + interval '2 days 45 minutes'), 'manual', '{B}', 6000),
+  ('60000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', 'practice', 'open', tstzrange(date_trunc('day', now()) + interval '2 days 9 hours', date_trunc('day', now()) + interval '2 days 9 hours 45 minutes'), 'manual', '{B}', 6000),
   ('60000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', null, 'practice', 'open', tstzrange(now() + interval '3 hours', now() + interval '3 hours 45 minutes'), 'manual', '{B}', 6000),
-  ('60000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', null, 'practice', 'open', tstzrange(now() + interval '4 days', now() + interval '4 days 45 minutes'), 'manual', '{A}', 6000);
+  ('60000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', null, 'practice', 'open', tstzrange(date_trunc('day', now()) + interval '4 days 9 hours', date_trunc('day', now()) + interval '4 days 9 hours 45 minutes'), 'manual', '{A}', 6000);
+
+-- Testfrage (global)
+insert into public.theory_questions (id, topic_id, material_kind, points, status) values ('b0000000-0000-0000-0000-000000000001', (select id from public.topics where code = 'vorfahrt'), 'basic', 5, 'published');
+insert into public.question_versions (id, question_id, version, text, explanation, review_status) values ('b0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 1, 'Testfrage', 'Erklärung', 'published');
+update public.theory_questions set current_version_id = 'b0000000-0000-0000-0000-000000000002' where id = 'b0000000-0000-0000-0000-000000000001';
 
 -- Helfer zum Einnehmen einer Identität
 create or replace function pg_temp.login(p_user uuid, p_tenant uuid, p_role text, p_platform boolean default false) returns void language plpgsql as $$
@@ -113,16 +118,16 @@ select pg_temp.logout();
 select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'office');
 do $$ begin
   begin
-    insert into public.lessons (tenant_id, instructor_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', tstzrange(now() + interval '2 days 20 minutes', now() + interval '2 days 60 minutes'), 'open');
+    insert into public.lessons (tenant_id, instructor_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', tstzrange(date_trunc('day', now()) + interval '2 days 9 hours 20 minutes', date_trunc('day', now()) + interval '2 days 10 hours'), 'open');
     raise exception 'Überschneidung beim Fahrlehrer wurde nicht verhindert';
   exception when exclusion_violation then null; end;
   begin
-    insert into public.lessons (tenant_id, instructor_id, vehicle_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001', tstzrange(now() + interval '2 days 20 minutes', now() + interval '2 days 60 minutes'), 'open');
+    insert into public.lessons (tenant_id, instructor_id, vehicle_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000001', tstzrange(date_trunc('day', now()) + interval '2 days 9 hours 20 minutes', date_trunc('day', now()) + interval '2 days 10 hours'), 'open');
     raise exception 'Überschneidung beim Fahrzeug wurde nicht verhindert';
   exception when exclusion_violation then null; end;
   -- Stornierte Stunde blockiert nicht
   update public.lessons set status = 'cancelled' where id = '60000000-0000-0000-0000-000000000003';
-  insert into public.lessons (tenant_id, instructor_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', tstzrange(now() + interval '4 days', now() + interval '4 days 45 minutes'), 'open');
+  insert into public.lessons (tenant_id, instructor_id, period, status) values ('10000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', tstzrange(date_trunc('day', now()) + interval '4 days 9 hours', date_trunc('day', now()) + interval '4 days 9 hours 45 minutes'), 'open');
 end $$;
 
 -- 6) Rechnung: lückenlose Nummer, ausgestellte Rechnung unveränderlich, Zahlung aktualisiert Status ----------
@@ -186,6 +191,43 @@ end $$;
 do $$ begin
   if (select count(*) from public.audit_logs where entity_table = 'lessons') = 0 then raise exception 'Audit-Log leer'; end if;
 end $$;
+
+
+-- 10) Härtung: Schüler kann Simulationen/XP/Abzeichen nicht direkt schreiben, Merken geht per Funktion, fremde Chats sind tabu
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ declare ok boolean; begin
+  begin
+    insert into public.exam_simulations (tenant_id, student_id, license_code, rule_version_id, rule_snapshot, client_session_id, question_ids, status, passed)
+      values ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'B', (select id from rule_versions where rule_type='exam_theory' and license_code='B' and review_status='published' limit 1), '{}', gen_random_uuid(), '{}', 'submitted', true);
+    raise exception 'Schüler konnte Simulation direkt schreiben';
+  exception when insufficient_privilege then null; end;
+  begin
+    insert into public.xp_events (tenant_id, student_id, kind, xp, client_event_id) values ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'question_correct', 9999, gen_random_uuid());
+    raise exception 'Schüler konnte XP direkt schreiben';
+  exception when insufficient_privilege then null; end;
+  begin
+    insert into public.student_badges (tenant_id, student_id, badge_code) values ('10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'streak_30');
+    raise exception 'Schüler konnte Abzeichen direkt schreiben';
+  exception when insufficient_privilege then null; end;
+  ok = public.set_question_bookmark('b0000000-0000-0000-0000-000000000001', true);
+  if not exists (select 1 from public.student_question_state where question_id = 'b0000000-0000-0000-0000-000000000001' and bookmarked) then raise exception 'Merken fehlgeschlagen'; end if;
+end $$;
+select pg_temp.logout();
+-- Fremder Schüler (Tenant 1, zweiter Schüler) darf sich nicht in Lisas Unterhaltung eintragen
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000006', 's3@test.de');
+insert into public.tenant_memberships (tenant_id, user_id, role) values ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000006', 'student');
+insert into public.students (id, tenant_id, user_id, first_name, last_name, status) values ('20000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000006', 'Tom', 'Dritter', 'active');
+insert into public.conversations (id, tenant_id, kind, student_id) values ('a0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student_office', '20000000-0000-0000-0000-000000000001');
+insert into public.conversation_participants (conversation_id, user_id) values ('a0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001');
+select pg_temp.login('00000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  begin
+    insert into public.conversation_participants (conversation_id, user_id) values ('a0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000006');
+    raise exception 'Fremder Schüler konnte Unterhaltung beitreten';
+  exception when insufficient_privilege then null; end;
+  if (select count(*) from public.conversations) <> 0 then raise exception 'Fremde Unterhaltung sichtbar'; end if;
+end $$;
+select pg_temp.logout();
 
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

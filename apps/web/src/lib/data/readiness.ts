@@ -4,7 +4,7 @@ import type { Db } from "./student";
 import type { LearningOverview } from "./learning";
 
 /** Berechnet die Prüfungsreife aus Simulationen, Mastery, Aktivität und speichert einen Snapshot (max. einer pro Stunde). */
-export async function computeAndStoreReadiness(db: Db, tenantId: string, studentId: string, studentLicenseId: string, overview: LearningOverview, maxErrorPoints: number, practicalPercent: number | null): Promise<ReadinessResult> {
+export async function computeAndStoreReadiness(db: Db, writer: Db, tenantId: string, studentId: string, studentLicenseId: string, overview: LearningOverview, maxErrorPoints: number, practicalPercent: number | null): Promise<ReadinessResult> {
   const since14 = new Date(Date.now() - 14 * 86_400_000).toISOString();
   const since7 = new Date(Date.now() - 7 * 86_400_000).toISOString();
   const [{ data: sims }, { data: sessions }, { data: prevSnapshot }] = await Promise.all([
@@ -26,7 +26,7 @@ export async function computeAndStoreReadiness(db: Db, tenantId: string, student
   const overall = practicalPercent === null ? result.score : Math.round(result.score * 0.6 + practicalPercent * 0.4);
   const { data: last } = await db.from("readiness_snapshots").select("computed_at").eq("student_license_id", studentLicenseId).order("computed_at", { ascending: false }).limit(1).maybeSingle();
   if (!last || Date.now() - new Date(last.computed_at).getTime() > 3_600_000) {
-    await db.from("readiness_snapshots").insert({
+    await writer.from("readiness_snapshots").insert({
       tenant_id: tenantId, student_license_id: studentLicenseId, theory_score: result.score, practical_score: practicalPercent, overall_score: overall,
       factors: { ...Object.fromEntries(result.factors.map((f) => [f.key, { score: f.score, detail: f.detail }])), mastery_value: overview.overallMastery, band: result.band }, engine_version: result.engine_version,
     });

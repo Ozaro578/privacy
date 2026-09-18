@@ -4,6 +4,7 @@ import { parseRange } from "@/components/ui";
 import type { StudentContext } from "./student";
 import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, type LearningOverview } from "./learning";
 import { computeAndStoreReadiness } from "./readiness";
+import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { loadTrainingStatus } from "./training";
 
 export interface DashboardData {
@@ -49,7 +50,7 @@ export async function loadDashboard(ctx: StudentContext): Promise<DashboardData>
   ]);
   const overview = buildLearningOverview(pool, states, topics);
   const maxErr = ctx.rules.examTheory?.rules.max_error_points ?? 10;
-  const readiness = await computeAndStoreReadiness(db, ctx.tenantId, student.id, license.id, overview, maxErr, training.practicalPercent);
+  const readiness = await computeAndStoreReadiness(db, createSupabaseAdminClient(), ctx.tenantId, student.id, license.id, overview, maxErr, training.practicalPercent);
   const nl = nextLessonRows?.[0];
   const nextLesson = nl ? { id: nl.id, ...parseRange(nl.period as unknown as string), instructor: (nl.instructors as unknown as { display_name: string } | null)?.display_name ?? "", kind: nl.kind } : null;
   const nc = nextClassRows?.[0];

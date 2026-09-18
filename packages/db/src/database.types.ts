@@ -1864,6 +1864,38 @@ export type Database = {
           { foreignKeyName: "payment_mandates_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "driving_schools"; referencedColumns: ["id"] }
         ];
       };
+      payment_webhook_events: {
+        Row: {
+          provider: string;
+          event_id: string;
+          event_type: string;
+          status: string;
+          received_at: string;
+          processed_at: string | null;
+          error: string | null;
+        };
+        Insert: {
+          provider: string;
+          event_id: string;
+          event_type: string;
+          status?: string;
+          received_at?: string;
+          processed_at?: string | null;
+          error?: string | null;
+        };
+        Update: {
+          provider?: string;
+          event_id?: string;
+          event_type?: string;
+          status?: string;
+          received_at?: string;
+          processed_at?: string | null;
+          error?: string | null;
+        };
+        Relationships: [
+
+        ];
+      };
       payments: {
         Row: {
           id: string;
@@ -3071,6 +3103,7 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          tags: string[];
         };
         Insert: {
           id?: string;
@@ -3089,6 +3122,7 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          tags?: string[];
         };
         Update: {
           id?: string;
@@ -3107,6 +3141,7 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          tags?: string[];
         };
         Relationships: [
           { foreignKeyName: "theory_questions_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
@@ -3458,19 +3493,24 @@ export type Database = {
       bump_learning_session: { Args: { p_session_id: string; p_correct: boolean }; Returns: unknown };
       cancel_lesson: { Args: { p_lesson_id: string; p_reason?: string | null; p_client_request_id?: string | null }; Returns: Database["public"]["Tables"]["lesson_bookings"]["Row"] };
       checkin_theory_class: { Args: { p_token: string; p_device_fingerprint?: string | null; p_geo_distance_m?: number | null }; Returns: Database["public"]["Tables"]["attendance"]["Row"] };
+      confirm_lesson_booking: { Args: { p_lesson_id: string }; Returns: Database["public"]["Tables"]["lessons"]["Row"] };
       create_checkin_token: { Args: { p_theory_class_id: string; p_ttl_seconds?: number | null; p_max_uses?: number | null }; Returns: string };
       current_instructor_id: { Args: {  }; Returns: string };
       current_student_id: { Args: {  }; Returns: string };
       custom_access_token_hook: { Args: { event: Json }; Returns: unknown };
+      handle_auth_user_signed_in: { Args: {  }; Returns: unknown };
       handle_new_auth_user: { Args: {  }; Returns: unknown };
       issue_invoice: { Args: { p_invoice_id: string; p_due_days?: number | null }; Returns: Database["public"]["Tables"]["invoices"]["Row"] };
+      notify_conversation: { Args: { p_conversation_id: string; p_preview: string }; Returns: number };
       offer_lesson_to_waitlist: { Args: { p_lesson_id: string }; Returns: number };
       register_student: { Args: { p_tenant_slug: string; p_payload: Json }; Returns: string };
       release_exam: { Args: { p_student_license_id: string; p_kind: string }; Returns: unknown };
       rule_version_for: { Args: { p_rule_type: string; p_license_code: string; p_acquisition: string; p_on?: string | null }; Returns: Database["public"]["Tables"]["rule_versions"]["Row"][] };
       rule_version_for_any: { Args: { p_rule_type: string; p_license_code: string; p_acquisition: string; p_on?: string | null }; Returns: Database["public"]["Tables"]["rule_versions"]["Row"][] };
+      set_question_bookmark: { Args: { p_question_id: string; p_bookmarked: boolean }; Returns: unknown };
       special_drive_progress: { Args: { p_student_license_id: string }; Returns: Record<string, unknown>[] };
       switch_active_tenant: { Args: { p_tenant_id: string }; Returns: unknown };
+      update_student_notes: { Args: { p_student_id: string; p_notes: string }; Returns: unknown };
     };
     Enums: {
     };

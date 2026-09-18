@@ -6,6 +6,7 @@ import type { Json } from "@fahrpilot/db";
 import { composeExam, scoreExam, type AnsweredQuestion } from "@fahrpilot/rules-engine";
 import { analyzeErrors, XP_TABLE } from "@fahrpilot/learning-engine";
 import { getStudentContext } from "@/lib/data/student";
+import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, toMeta } from "@/lib/data/learning";
 import { computeAndStoreReadiness } from "@/lib/data/readiness";
 import { loadTrainingStatus } from "@/lib/data/training";
@@ -20,13 +21,14 @@ export async function startExamSimulation(): Promise<never> {
   const recentlyUsed = new Set((recent ?? []).flatMap((r) => r.question_ids));
   const questions = composeExam(rule.rules, pool.map((q) => ({ id: q.id, material_kind: q.material_kind, points: q.points, topic_id: q.topic_id })), { recentlyUsed });
   const clientSessionId = crypto.randomUUID();
-  const { data: sim, error } = await ctx.db.from("exam_simulations").insert({
+  const admin = createSupabaseAdminClient();
+  const { data: sim, error } = await admin.from("exam_simulations").insert({
     tenant_id: ctx.tenantId, student_id: ctx.student.id, student_license_id: ctx.license.id, license_code: ctx.license.license_code, rule_version_id: rule.version.id,
     rule_snapshot: rule.rules as unknown as Json, client_session_id: clientSessionId, time_limit_seconds: rule.rules.time_limit_seconds, question_ids: questions.map((q) => q.id),
   }).select("id").single();
   if (error || !sim) throw new Error("Simulation konnte nicht gestartet werden");
   const byId = new Map(pool.map((q) => [q.id, q]));
-  await ctx.db.from("exam_results").insert(questions.map((q, i) => ({ exam_simulation_id: sim.id, question_id: q.id, question_version_id: byId.get(q.id)!.version.id, position: i + 1, points: q.points })));
+  await admin.from("exam_results").insert(questions.map((q, i) => ({ exam_simulation_id: sim.id, question_id: q.id, question_version_id: byId.get(q.id)!.version.id, position: i + 1, points: q.points })));
   redirect(`/lernen/pruefung/${sim.id}`);
 }
 
@@ -40,6 +42,7 @@ export async function submitExamSimulation(raw: z.input<typeof SubmitSchema>): P
   const input = SubmitSchema.parse(raw);
   const ctx = await getStudentContext();
   const { db } = ctx;
+  const admin = createSupabaseAdminClient();
   const { data: sim } = await db.from("exam_simulations").select("*").eq("id", input.simulationId).eq("student_id", ctx.student.id).single();
   if (!sim) throw new Error("Simulation nicht gefunden");
   if (sim.status !== "in_progress") return { id: sim.id };
@@ -58,7 +61,7 @@ export async function submitExamSimulation(raw: z.input<typeof SubmitSchema>): P
     answered.push(aq);
     const score = scoreExam({ ...rules, questions_total: 1, basic_questions: 1, class_specific_questions: 0 }, [aq]);
     const isCorrect = score.correct_count === 1;
-    updates.push(db.from("exam_results").update({ selected_positions: aq.selected_positions, is_correct: isCorrect, marked_unsure: aq.marked_unsure ?? false, response_ms: a?.responseMs ?? null }).eq("id", r.id));
+    updates.push(admin.from("exam_results").update({ selected_positions: aq.selected_positions, is_correct: isCorrect, marked_unsure: aq.marked_unsure ?? false, response_ms: a?.responseMs ?? null }).eq("id", r.id));
     attemptRows.push({ tenant_id: ctx.tenantId, student_id: ctx.student.id, question_id: r.question_id, question_version_id: r.question_version_id, exam_simulation_id: sim.id, client_attempt_id: crypto.randomUUID(), selected_positions: aq.selected_positions, numeric_answer: a?.numericAnswer ?? null, is_correct: isCorrect, points: r.points, confidence: aq.marked_unsure ? 1 : null, response_ms: a?.responseMs ?? null });
   }
   const started = new Date(sim.started_at).getTime();
@@ -66,21 +69,21 @@ export async function submitExamSimulation(raw: z.input<typeof SubmitSchema>): P
   const timeLimitExceeded = sim.time_limit_seconds !== null && durationSeconds > sim.time_limit_seconds + 30;
   const score = scoreExam(rules, answered, { timeLimitExceeded });
   await Promise.all(updates);
-  await db.from("student_question_attempts").insert(attemptRows);
+  await admin.from("student_question_attempts").insert(attemptRows);
   // Analyse: Fehlercluster aus den letzten Versuchen inkl. dieser Prüfung
   const locale = ctx.student.preferred_locale;
   const [pool, topics] = await Promise.all([loadQuestionPool(db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadTopics(db, locale)]);
   const { data: recentAttempts } = await db.from("student_question_attempts").select("question_id, is_correct, answered_at, confidence, response_ms").eq("student_id", ctx.student.id).order("answered_at", { ascending: false }).limit(300);
   const analysis = analyzeErrors((recentAttempts ?? []).map((a) => ({ question_id: a.question_id, is_correct: a.is_correct, answered_at: a.answered_at, confidence: a.confidence, response_ms: a.response_ms })), new Map(pool.map((q) => [q.id, toMeta(q)])), topics.map((t) => ({ id: t.id, name: t.name })));
-  await db.from("exam_simulations").update({
+  await admin.from("exam_simulations").update({
     status: "submitted", submitted_at: new Date().toISOString(), passed: score.passed, error_points: score.error_points, correct_count: score.correct_count, wrong_count: score.wrong_count,
     unsure_count: score.unsure_count, duration_seconds: durationSeconds, fail_reasons: score.fail_reasons, analysis: analysis as unknown as Json,
   }).eq("id", sim.id);
-  await db.from("xp_events").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, kind: score.passed ? "exam_simulation_passed" : "exam_simulation_completed", xp: score.passed ? XP_TABLE.exam_simulation_passed : XP_TABLE.exam_simulation_completed, ref_id: sim.id, client_event_id: crypto.randomUUID() });
+  await admin.from("xp_events").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, kind: score.passed ? "exam_simulation_passed" : "exam_simulation_completed", xp: score.passed ? XP_TABLE.exam_simulation_passed : XP_TABLE.exam_simulation_completed, ref_id: sim.id, client_event_id: crypto.randomUUID() });
   const states = await loadStates(db, ctx.student.id);
   const overview = buildLearningOverview(pool, states, topics);
   const trainingStatus = await loadTrainingStatus(ctx);
-  await computeAndStoreReadiness(db, ctx.tenantId, ctx.student.id, ctx.license.id, overview, rules.max_error_points, trainingStatus.practicalPercent);
+  await computeAndStoreReadiness(db, admin, ctx.tenantId, ctx.student.id, ctx.license.id, overview, rules.max_error_points, trainingStatus.practicalPercent);
   revalidatePath("/heute");
   revalidatePath("/lernen");
   return { id: sim.id };

@@ -13,11 +13,7 @@ export async function sendMessageAction(conversationId: string, body: string): P
   if (!conv) throw new Error("Unterhaltung nicht gefunden");
   const { error } = await db.from("messages").insert({ tenant_id: conv.tenant_id, conversation_id: conversationId, sender_id: session.userId, body: text, client_message_id: crypto.randomUUID() });
   if (error) throw new Error(error.message);
-  await db.from("conversations").update({ last_message_at: new Date().toISOString() }).eq("id", conversationId);
-  await db.from("conversation_participants").update({ last_read_at: new Date().toISOString() }).eq("conversation_id", conversationId).eq("user_id", session.userId);
-  // Benachrichtigung für die anderen Teilnehmer
-  const { data: others } = await db.from("conversation_participants").select("user_id").eq("conversation_id", conversationId).neq("user_id", session.userId);
-  if (others?.length) await db.from("notifications").insert(others.map((o) => ({ tenant_id: conv.tenant_id, user_id: o.user_id, notification_type: "message_received", title: "Neue Nachricht", body: text.slice(0, 120), data: { conversation_id: conversationId }, channels: ["push", "in_app"], dedupe_key: `msg:${conversationId}:${Date.now()}` })));
+  await db.rpc("notify_conversation", { p_conversation_id: conversationId, p_preview: text });
 }
 
 /** Schüler startet eine Unterhaltung mit dem Büro oder dem zuständigen Fahrlehrer (bestehende wird wiederverwendet). */
