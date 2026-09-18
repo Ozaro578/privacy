@@ -15,7 +15,8 @@ insert into public.users (id, email, first_name, last_name) values
   ('00000000-0000-0000-0000-000000000002', 'i1@test.de', 'Max', 'Lehrer'),
   ('00000000-0000-0000-0000-000000000003', 'o1@test.de', 'Olga', 'Büro'),
   ('00000000-0000-0000-0000-000000000004', 's2@test.de', 'Sam', 'Fremd'),
-  ('00000000-0000-0000-0000-000000000005', 'i2@test.de', 'Ina', 'Lehrerin');
+  ('00000000-0000-0000-0000-000000000005', 'i2@test.de', 'Ina', 'Lehrerin')
+  on conflict (id) do update set first_name = excluded.first_name, last_name = excluded.last_name;
 insert into public.driving_schools (id, name, slug) values
   ('10000000-0000-0000-0000-000000000001', 'Fahrschule Nord', 'nord'),
   ('10000000-0000-0000-0000-000000000002', 'Fahrschule Süd', 'sued');

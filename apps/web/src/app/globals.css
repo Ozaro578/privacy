@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@import "@fahrpilot/ui/theme.css";
+
+@theme {
+  --color-brand-50: #eef4fb;
+  --color-brand-100: #d6e4f5;
+  --color-brand-200: #a9c6ea;
+  --color-brand-300: #6f9fd9;
+  --color-brand-500: #1d4ed8;
+  --color-brand-600: #1a43b8;
+  --color-brand-700: #163890;
+  --color-brand-900: #0f2452;
+  --color-accent-400: #f6c700;
+  --color-accent-500: #e0b400;
+  --color-success-500: #1f9d55;
+  --color-success-100: #dcf5e6;
+  --color-warn-500: #e8850c;
+  --color-warn-100: #fdebd3;
+  --color-danger-500: #c1121f;
+  --color-danger-100: #fbe0e3;
+  --color-ink-900: #1c1917;
+  --color-ink-700: #44403c;
+  --color-ink-500: #78716c;
+  --color-ink-300: #d6d3d1;
+  --color-ink-100: #f5f5f4;
+  --color-paper: #fbfaf8;
+  --color-band-red: #c1121f;
+  --color-band-orange: #e8850c;
+  --color-band-yellowgreen: #8bb821;
+  --color-band-green: #1f9d55;
+  --radius-card: 16px;
+  --shadow-card: 0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 24px rgba(28, 25, 23, 0.06);
+}
+
+:root { color-scheme: light; }
+html { background: var(--color-paper); color: var(--color-ink-900); }
+body { min-height: 100dvh; font-feature-settings: "tnum"; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+:focus-visible { outline: 3px solid var(--color-accent-400); outline-offset: 2px; }
+[dir="rtl"] .rtl-flip { transform: scaleX(-1); }

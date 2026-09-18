@@ -1,0 +1,41 @@
+{
+  "name": "@fahrpilot/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "@supabase/supabase-js": "^2.60.0",
+    "@supabase/ssr": "^0.12.0",
+    "zod": "^3.25.0",
+    "@fahrpilot/rules-engine": "workspace:*",
+    "@fahrpilot/learning-engine": "workspace:*",
+    "@fahrpilot/db": "workspace:*",
+    "@fahrpilot/ai": "workspace:*",
+    "@fahrpilot/ui": "workspace:*",
+    "@fahrpilot/i18n": "workspace:*",
+    "@fahrpilot/payments": "workspace:*",
+    "@fahrpilot/notifications": "workspace:*"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^3.2.0"
+  }
+}

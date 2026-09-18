@@ -1,0 +1,394 @@
+/* Automatisch erzeugt aus src/tokens.ts durch scripts/build-theme-css.ts. Nicht von Hand bearbeiten. */
+
+@source "./components";
+
+:root {
+  --klar-space-0: 0px;
+  --klar-space-1: 4px;
+  --klar-space-2: 8px;
+  --klar-space-3: 12px;
+  --klar-space-4: 16px;
+  --klar-space-5: 20px;
+  --klar-space-6: 24px;
+  --klar-space-7: 28px;
+  --klar-space-8: 32px;
+  --klar-space-10: 40px;
+  --klar-space-12: 48px;
+  --klar-space-14: 56px;
+  --klar-space-16: 64px;
+  --klar-space-20: 80px;
+  --klar-space-24: 96px;
+  --klar-radius-none: 0px;
+  --klar-radius-sm: 4px;
+  --klar-radius-md: 8px;
+  --klar-radius-lg: 12px;
+  --klar-radius-xl: 16px;
+  --klar-radius-2xl: 24px;
+  --klar-radius-full: 9999px;
+  --klar-shadow-none: none;
+  --klar-shadow-sm: 0 1px 2px rgba(26, 24, 21, 0.06);
+  --klar-shadow-md: 0 2px 6px rgba(26, 24, 21, 0.08), 0 1px 2px rgba(26, 24, 21, 0.06);
+  --klar-shadow-lg: 0 8px 24px rgba(26, 24, 21, 0.12), 0 2px 6px rgba(26, 24, 21, 0.06);
+  --klar-shadow-focus: 0 0 0 3px rgba(43, 102, 176, 0.35);
+  --klar-font-sans: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --klar-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --klar-font-arabic: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+  --klar-text-xs: 0.75rem;
+  --klar-text-sm: 0.875rem;
+  --klar-text-base: 1rem;
+  --klar-text-lg: 1.125rem;
+  --klar-text-xl: 1.25rem;
+  --klar-text-2xl: 1.5rem;
+  --klar-text-3xl: 1.875rem;
+  --klar-text-4xl: 2.25rem;
+  --klar-text-5xl: 3rem;
+  --klar-leading-tight: 1.2;
+  --klar-leading-snug: 1.35;
+  --klar-leading-normal: 1.5;
+  --klar-leading-relaxed: 1.65;
+  --klar-weight-regular: 400;
+  --klar-weight-medium: 500;
+  --klar-weight-semibold: 600;
+  --klar-weight-bold: 700;
+  --klar-tracking-tight: -0.01em;
+  --klar-tracking-normal: 0;
+  --klar-tracking-wide: 0.02em;
+  --klar-duration-instant: 0ms;
+  --klar-duration-fast: 120ms;
+  --klar-duration-base: 200ms;
+  --klar-duration-slow: 320ms;
+  --klar-duration-deliberate: 480ms;
+  --klar-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --klar-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --klar-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --klar-z-base: 0;
+  --klar-z-raised: 10;
+  --klar-z-sticky: 100;
+  --klar-z-overlay: 1000;
+  --klar-z-dialog: 1100;
+  --klar-z-toast: 1200;
+  --klar-breakpoint-sm: 640px;
+  --klar-breakpoint-md: 768px;
+  --klar-breakpoint-lg: 1024px;
+  --klar-breakpoint-xl: 1280px;
+  --klar-touch-target: 44px;
+  --klar-color-bg-canvas: #FAF8F5;
+  --klar-color-bg-surface: #FFFFFF;
+  --klar-color-bg-raised: #FFFFFF;
+  --klar-color-bg-muted: #F3F0EB;
+  --klar-color-bg-inverse: #1A1815;
+  --klar-color-bg-overlay: rgba(26, 24, 21, 0.55);
+  --klar-color-text-primary: #1A1815;
+  --klar-color-text-secondary: #5C564E;
+  --klar-color-text-muted: #6E6861;
+  --klar-color-text-inverse: #FAF8F5;
+  --klar-color-text-link: #173D70;
+  --klar-color-text-on-primary: #FFFFFF;
+  --klar-color-text-on-accent: #1A1815;
+  --klar-color-border-subtle: #F3F0EB;
+  --klar-color-border-default: #E6E1D9;
+  --klar-color-border-strong: #8E877D;
+  --klar-color-border-focus: #2B66B0;
+  --klar-color-action-primary: #1F4F8F;
+  --klar-color-action-primary-hover: #173D70;
+  --klar-color-action-primary-active: #112C52;
+  --klar-color-action-secondary: #EEF4FB;
+  --klar-color-action-secondary-hover: #D6E4F5;
+  --klar-color-action-danger: #C0342B;
+  --klar-color-action-danger-hover: #9A2922;
+  --klar-color-action-disabled: #E6E1D9;
+  --klar-color-action-on-disabled: #5C564E;
+  --klar-color-accent-base: #F5C400;
+  --klar-color-accent-strong: #7A6000;
+  --klar-color-accent-surface: #FFF9E0;
+  --klar-color-status-success-text: #176132;
+  --klar-color-status-success-fill: #1E7B3E;
+  --klar-color-status-success-surface: #E9F6EE;
+  --klar-color-status-warning-text: #8E4700;
+  --klar-color-status-warning-fill: #B85C00;
+  --klar-color-status-warning-surface: #FDF1E6;
+  --klar-color-status-danger-text: #9A2922;
+  --klar-color-status-danger-fill: #C0342B;
+  --klar-color-status-danger-surface: #FCEDEC;
+  --klar-color-status-info-text: #173D70;
+  --klar-color-status-info-fill: #1F4F8F;
+  --klar-color-status-info-surface: #EEF4FB;
+  --klar-color-readiness-red-text: #9A2922;
+  --klar-color-readiness-red-fill: #C0342B;
+  --klar-color-readiness-red-surface: #FCEDEC;
+  --klar-color-readiness-orange-text: #8E4700;
+  --klar-color-readiness-orange-fill: #B85C00;
+  --klar-color-readiness-orange-surface: #FDF1E6;
+  --klar-color-readiness-yellow-green-text: #4F5D08;
+  --klar-color-readiness-yellow-green-fill: #66780A;
+  --klar-color-readiness-yellow-green-surface: #F3F6E3;
+  --klar-color-readiness-green-text: #176132;
+  --klar-color-readiness-green-fill: #1E7B3E;
+  --klar-color-readiness-green-surface: #E9F6EE;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --klar-color-bg-canvas: #12100E;
+    --klar-color-bg-surface: #1A1815;
+    --klar-color-bg-raised: #2B2824;
+    --klar-color-bg-muted: #2B2824;
+    --klar-color-bg-inverse: #FAF8F5;
+    --klar-color-bg-overlay: rgba(0, 0, 0, 0.65);
+    --klar-color-text-primary: #F3F0EB;
+    --klar-color-text-secondary: #E6E1D9;
+    --klar-color-text-muted: #D2CCC2;
+    --klar-color-text-inverse: #1A1815;
+    --klar-color-text-link: #7FA8DC;
+    --klar-color-text-on-primary: #12100E;
+    --klar-color-text-on-accent: #12100E;
+    --klar-color-border-subtle: #2B2824;
+    --klar-color-border-default: #433E38;
+    --klar-color-border-strong: #6E6861;
+    --klar-color-border-focus: #7FA8DC;
+    --klar-color-action-primary: #7FA8DC;
+    --klar-color-action-primary-hover: #ADC8EA;
+    --klar-color-action-primary-active: #D6E4F5;
+    --klar-color-action-secondary: #0B1D37;
+    --klar-color-action-secondary-hover: #112C52;
+    --klar-color-action-danger: #E67C74;
+    --klar-color-action-danger-hover: #F0A9A3;
+    --klar-color-action-disabled: #2B2824;
+    --klar-color-action-on-disabled: #D2CCC2;
+    --klar-color-accent-base: #FCD53F;
+    --klar-color-accent-strong: #FFE47A;
+    --klar-color-accent-surface: #2E2400;
+    --klar-color-status-success-text: #9FD8B4;
+    --klar-color-status-success-fill: #6EC28F;
+    --klar-color-status-success-surface: #0B2F19;
+    --klar-color-status-warning-text: #F5BF8B;
+    --klar-color-status-warning-fill: #EE9C4E;
+    --klar-color-status-warning-surface: #3F2000;
+    --klar-color-status-danger-text: #F0A9A3;
+    --klar-color-status-danger-fill: #E67C74;
+    --klar-color-status-danger-surface: #48120F;
+    --klar-color-status-info-text: #ADC8EA;
+    --klar-color-status-info-fill: #7FA8DC;
+    --klar-color-status-info-surface: #0B1D37;
+    --klar-color-readiness-red-text: #F0A9A3;
+    --klar-color-readiness-red-fill: #E67C74;
+    --klar-color-readiness-red-surface: #48120F;
+    --klar-color-readiness-orange-text: #F5BF8B;
+    --klar-color-readiness-orange-fill: #EE9C4E;
+    --klar-color-readiness-orange-surface: #3F2000;
+    --klar-color-readiness-yellow-green-text: #CAD786;
+    --klar-color-readiness-yellow-green-fill: #ADC04F;
+    --klar-color-readiness-yellow-green-surface: #232A03;
+    --klar-color-readiness-green-text: #9FD8B4;
+    --klar-color-readiness-green-fill: #6EC28F;
+    --klar-color-readiness-green-surface: #0B2F19;
+  }
+}
+
+[data-theme="dark"] {
+  --klar-color-bg-canvas: #12100E;
+  --klar-color-bg-surface: #1A1815;
+  --klar-color-bg-raised: #2B2824;
+  --klar-color-bg-muted: #2B2824;
+  --klar-color-bg-inverse: #FAF8F5;
+  --klar-color-bg-overlay: rgba(0, 0, 0, 0.65);
+  --klar-color-text-primary: #F3F0EB;
+  --klar-color-text-secondary: #E6E1D9;
+  --klar-color-text-muted: #D2CCC2;
+  --klar-color-text-inverse: #1A1815;
+  --klar-color-text-link: #7FA8DC;
+  --klar-color-text-on-primary: #12100E;
+  --klar-color-text-on-accent: #12100E;
+  --klar-color-border-subtle: #2B2824;
+  --klar-color-border-default: #433E38;
+  --klar-color-border-strong: #6E6861;
+  --klar-color-border-focus: #7FA8DC;
+  --klar-color-action-primary: #7FA8DC;
+  --klar-color-action-primary-hover: #ADC8EA;
+  --klar-color-action-primary-active: #D6E4F5;
+  --klar-color-action-secondary: #0B1D37;
+  --klar-color-action-secondary-hover: #112C52;
+  --klar-color-action-danger: #E67C74;
+  --klar-color-action-danger-hover: #F0A9A3;
+  --klar-color-action-disabled: #2B2824;
+  --klar-color-action-on-disabled: #D2CCC2;
+  --klar-color-accent-base: #FCD53F;
+  --klar-color-accent-strong: #FFE47A;
+  --klar-color-accent-surface: #2E2400;
+  --klar-color-status-success-text: #9FD8B4;
+  --klar-color-status-success-fill: #6EC28F;
+  --klar-color-status-success-surface: #0B2F19;
+  --klar-color-status-warning-text: #F5BF8B;
+  --klar-color-status-warning-fill: #EE9C4E;
+  --klar-color-status-warning-surface: #3F2000;
+  --klar-color-status-danger-text: #F0A9A3;
+  --klar-color-status-danger-fill: #E67C74;
+  --klar-color-status-danger-surface: #48120F;
+  --klar-color-status-info-text: #ADC8EA;
+  --klar-color-status-info-fill: #7FA8DC;
+  --klar-color-status-info-surface: #0B1D37;
+  --klar-color-readiness-red-text: #F0A9A3;
+  --klar-color-readiness-red-fill: #E67C74;
+  --klar-color-readiness-red-surface: #48120F;
+  --klar-color-readiness-orange-text: #F5BF8B;
+  --klar-color-readiness-orange-fill: #EE9C4E;
+  --klar-color-readiness-orange-surface: #3F2000;
+  --klar-color-readiness-yellow-green-text: #CAD786;
+  --klar-color-readiness-yellow-green-fill: #ADC04F;
+  --klar-color-readiness-yellow-green-surface: #232A03;
+  --klar-color-readiness-green-text: #9FD8B4;
+  --klar-color-readiness-green-fill: #6EC28F;
+  --klar-color-readiness-green-surface: #0B2F19;
+}
+
+@theme inline {
+  --color-canvas: var(--klar-color-bg-canvas);
+  --color-surface: var(--klar-color-bg-surface);
+  --color-raised: var(--klar-color-bg-raised);
+  --color-muted: var(--klar-color-bg-muted);
+  --color-inverse: var(--klar-color-bg-inverse);
+  --color-overlay: var(--klar-color-bg-overlay);
+  --color-fg: var(--klar-color-text-primary);
+  --color-fg-secondary: var(--klar-color-text-secondary);
+  --color-fg-muted: var(--klar-color-text-muted);
+  --color-fg-inverse: var(--klar-color-text-inverse);
+  --color-link: var(--klar-color-text-link);
+  --color-on-primary: var(--klar-color-text-on-primary);
+  --color-on-accent: var(--klar-color-text-on-accent);
+  --color-line-subtle: var(--klar-color-border-subtle);
+  --color-line: var(--klar-color-border-default);
+  --color-line-strong: var(--klar-color-border-strong);
+  --color-focus: var(--klar-color-border-focus);
+  --color-primary: var(--klar-color-action-primary);
+  --color-primary-hover: var(--klar-color-action-primary-hover);
+  --color-primary-active: var(--klar-color-action-primary-active);
+  --color-secondary: var(--klar-color-action-secondary);
+  --color-secondary-hover: var(--klar-color-action-secondary-hover);
+  --color-danger: var(--klar-color-action-danger);
+  --color-danger-hover: var(--klar-color-action-danger-hover);
+  --color-disabled: var(--klar-color-action-disabled);
+  --color-on-disabled: var(--klar-color-action-on-disabled);
+  --color-accent: var(--klar-color-accent-base);
+  --color-accent-strong: var(--klar-color-accent-strong);
+  --color-accent-surface: var(--klar-color-accent-surface);
+  --color-success-text: var(--klar-color-status-success-text);
+  --color-success-fill: var(--klar-color-status-success-fill);
+  --color-success-surface: var(--klar-color-status-success-surface);
+  --color-warning-text: var(--klar-color-status-warning-text);
+  --color-warning-fill: var(--klar-color-status-warning-fill);
+  --color-warning-surface: var(--klar-color-status-warning-surface);
+  --color-danger-text: var(--klar-color-status-danger-text);
+  --color-danger-fill: var(--klar-color-status-danger-fill);
+  --color-danger-surface: var(--klar-color-status-danger-surface);
+  --color-info-text: var(--klar-color-status-info-text);
+  --color-info-fill: var(--klar-color-status-info-fill);
+  --color-info-surface: var(--klar-color-status-info-surface);
+  --color-readiness-red-text: var(--klar-color-readiness-red-text);
+  --color-readiness-red-fill: var(--klar-color-readiness-red-fill);
+  --color-readiness-red-surface: var(--klar-color-readiness-red-surface);
+  --color-readiness-orange-text: var(--klar-color-readiness-orange-text);
+  --color-readiness-orange-fill: var(--klar-color-readiness-orange-fill);
+  --color-readiness-orange-surface: var(--klar-color-readiness-orange-surface);
+  --color-readiness-yellow-green-text: var(--klar-color-readiness-yellow-green-text);
+  --color-readiness-yellow-green-fill: var(--klar-color-readiness-yellow-green-fill);
+  --color-readiness-yellow-green-surface: var(--klar-color-readiness-yellow-green-surface);
+  --color-readiness-green-text: var(--klar-color-readiness-green-text);
+  --color-readiness-green-fill: var(--klar-color-readiness-green-fill);
+  --color-readiness-green-surface: var(--klar-color-readiness-green-surface);
+  --font-sans: var(--klar-font-sans);
+  --font-mono: var(--klar-font-mono);
+  --font-arabic: var(--klar-font-arabic);
+  --text-xs: var(--klar-text-xs);
+  --text-sm: var(--klar-text-sm);
+  --text-base: var(--klar-text-base);
+  --text-lg: var(--klar-text-lg);
+  --text-xl: var(--klar-text-xl);
+  --text-2xl: var(--klar-text-2xl);
+  --text-3xl: var(--klar-text-3xl);
+  --text-4xl: var(--klar-text-4xl);
+  --text-5xl: var(--klar-text-5xl);
+  --text-xs--line-height: var(--klar-leading-normal);
+  --text-sm--line-height: var(--klar-leading-normal);
+  --text-base--line-height: var(--klar-leading-normal);
+  --text-lg--line-height: var(--klar-leading-snug);
+  --text-xl--line-height: var(--klar-leading-snug);
+  --text-2xl--line-height: var(--klar-leading-tight);
+  --text-3xl--line-height: var(--klar-leading-tight);
+  --text-4xl--line-height: var(--klar-leading-tight);
+  --text-5xl--line-height: var(--klar-leading-tight);
+  --font-weight-regular: var(--klar-weight-regular);
+  --font-weight-medium: var(--klar-weight-medium);
+  --font-weight-semibold: var(--klar-weight-semibold);
+  --font-weight-bold: var(--klar-weight-bold);
+  --tracking-tight: var(--klar-tracking-tight);
+  --tracking-normal: var(--klar-tracking-normal);
+  --tracking-wide: var(--klar-tracking-wide);
+  --spacing: 0.25rem;
+  --spacing-touch: var(--klar-touch-target);
+  --radius-none: var(--klar-radius-none);
+  --radius-sm: var(--klar-radius-sm);
+  --radius-md: var(--klar-radius-md);
+  --radius-lg: var(--klar-radius-lg);
+  --radius-xl: var(--klar-radius-xl);
+  --radius-2xl: var(--klar-radius-2xl);
+  --radius-full: var(--klar-radius-full);
+  --shadow-none: var(--klar-shadow-none);
+  --shadow-sm: var(--klar-shadow-sm);
+  --shadow-md: var(--klar-shadow-md);
+  --shadow-lg: var(--klar-shadow-lg);
+  --shadow-focus: var(--klar-shadow-focus);
+  --ease-standard: var(--klar-ease-standard);
+  --ease-enter: var(--klar-ease-enter);
+  --ease-exit: var(--klar-ease-exit);
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+    }
+  }
+  html {
+    font-family: var(--klar-font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--klar-color-bg-canvas);
+    color: var(--klar-color-text-primary);
+    line-height: var(--klar-leading-normal);
+  }
+  :lang(ar) {
+    font-family: var(--klar-font-arabic);
+  }
+  :focus-visible {
+    outline: 2px solid var(--klar-color-border-focus);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --klar-duration-fast: 0ms;
+      --klar-duration-base: 0ms;
+      --klar-duration-slow: 0ms;
+      --klar-duration-deliberate: 0ms;
+    }
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
