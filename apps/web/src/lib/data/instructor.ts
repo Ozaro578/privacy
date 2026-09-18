@@ -3,7 +3,9 @@ import { cache } from "react";
 import type { Tables } from "@fahrpilot/db";
 import { trainingProgress, type SpecialDriveKind, type TrainingProgress } from "@fahrpilot/rules-engine";
 import { competencyProfile, type CompetencyProfile } from "@fahrpilot/learning-engine";
+import type { InstructorStructuredQuery } from "@fahrpilot/ai";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/session";
 import { parseRange } from "@/components/ui";
 import { resolveRulesFor, type Db, type ResolvedRules } from "./student";
@@ -31,7 +33,7 @@ export const getInstructorContext = cache(async (): Promise<InstructorContext> =
     db.from("driving_schools").select("id, name, timezone").eq("id", session.tenantId).single(),
   ]);
   const isOffice = session.role !== "instructor";
-  if (!instructor && !isOffice) throw new Error("Für dieses Konto ist kein Fahrlehrerdatensatz angelegt. Bitte an das Büro wenden.");
+  if (!instructor && !isOffice) redirect("/zugang-verweigert?grund=kein-fahrlehrerprofil");
   if (!school) throw new Error("Fahrschule nicht gefunden");
   return { db, userId: session.userId, tenantId: session.tenantId, role: session.role, instructor: instructor ?? null, isOffice, school };
 });
@@ -366,9 +368,19 @@ export async function loadTheoryClasses(ctx: InstructorContext) {
   ]);
   const basicTitles = rulesB.theoryLessons?.rules.basic_unit_titles ?? [];
   const basicUnits = rulesB.theoryLessons?.rules.basic_units ?? 12;
+  // Zusatzstoff je Klasse: Einheiten und Titel aus der Regel theory_lessons der jeweiligen Klasse
+  const teachable = (licenses ?? []).filter((l) => ctx.isOffice || !ctx.instructor || ctx.instructor.license_classes.length === 0 || ctx.instructor.license_classes.includes(l.code) || (!!l.base_class && ctx.instructor.license_classes.includes(l.base_class)));
+  const classUnits: Record<string, Array<{ code: string; title: string }>> = {};
+  await Promise.all(teachable.map(async (l) => {
+    const r = await rulesFor(db, l.code, "first");
+    const n = r.theoryLessons?.rules.class_specific_units ?? 0;
+    const titles = r.theoryLessons?.rules.class_specific_unit_titles ?? [];
+    const prefix = l.base_class ?? l.code;
+    classUnits[l.code] = Array.from({ length: n }, (_, i) => ({ code: `${prefix}${i + 1}`, title: titles[i] ?? `Zusatzstoff ${l.code} Einheit ${i + 1}` }));
+  }));
   return {
     classes: (classes ?? []).map((c) => { const { start, end } = parseRange(c.period as unknown as string); const att = (c.attendance ?? []) as Array<{ status: string }>; return { id: c.id, start, end, code: c.lesson_unit_code, materialKind: c.material_kind, title: c.title, status: c.status, capacity: c.capacity, licenseCodes: c.license_codes, isOnline: c.is_online, location: (c.locations as unknown as { name: string } | null)?.name ?? null, present: att.filter((a) => a.status === "present").length, registered: att.length, instructor: (c.instructors as unknown as { display_name: string } | null)?.display_name ?? null }; }),
-    locations: locations ?? [], basicUnits: Array.from({ length: basicUnits }, (_, i) => ({ code: `G${i + 1}`, title: basicTitles[i] ?? `Grundstoff Einheit ${i + 1}` })), licenses: licenses ?? [],
+    locations: locations ?? [], basicUnits: Array.from({ length: basicUnits }, (_, i) => ({ code: `G${i + 1}`, title: basicTitles[i] ?? `Grundstoff Einheit ${i + 1}` })), licenses: teachable, classUnits,
   };
 }
 
@@ -420,4 +432,68 @@ export async function loadInstructorConversations(ctx: InstructorContext) {
     const others = parts.filter((p) => p.user_id !== ctx.userId).map((p) => `${p.users?.first_name ?? ""} ${p.users?.last_name ?? ""}`.trim()).filter(Boolean);
     return { id: c.id, kind: c.kind, subject: c.subject, title: st ? `${st.first_name} ${st.last_name}` : others.join(", ") || (c.subject ?? "Unterhaltung"), lastMessageAt: c.last_message_at, unread: !!c.last_message_at && (!me?.last_read_at || c.last_message_at > me.last_read_at) };
   });
+}
+
+// ------------------------------------------------------------------------------------------------
+// Fahrlehrer-KI: whitelisted Abfragen (kein freies SQL)
+// ------------------------------------------------------------------------------------------------
+
+export interface QueryResultRow { licenseId: string; name: string; licenseCode: string; detail: string }
+
+export async function loadQueryTopics(db: Db): Promise<Array<{ code: string; name: string }>> {
+  const { data } = await db.from("topics").select("code, name_i18n").eq("active", true).order("sort_order");
+  return (data ?? []).map((t) => ({ code: t.code, name: i18n(t.name_i18n) }));
+}
+
+/** Führt eine strukturierte Abfrage der Fahrlehrer-KI typisiert auf den eigenen Schülern aus. */
+export async function runInstructorQuery(ctx: InstructorContext, query: InstructorStructuredQuery): Promise<{ title: string; rows: QueryResultRow[] }> {
+  const { db } = ctx;
+  const licenses = (await loadMyLicenses(ctx)).filter((l) => l.status === "active");
+  const byId = new Map(licenses.map((l) => [l.id, l]));
+  const ids = [...byId.keys()];
+  const nameOf = (l: LicenseRow) => (l.students ? `${l.students.first_name} ${l.students.last_name}` : "");
+  if (ids.length === 0) return { title: "Keine Schüler zugeordnet", rows: [] };
+  switch (query.type) {
+    case "students_ready_soon": {
+      const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+      const { data } = await db.from("readiness_snapshots").select("student_license_id, overall_score, computed_at").in("student_license_id", ids).gte("computed_at", since).order("computed_at", { ascending: false }).limit(2000);
+      const seen = new Map<string, number>();
+      for (const s of data ?? []) if (!seen.has(s.student_license_id)) seen.set(s.student_license_id, s.overall_score);
+      const rows = [...seen.entries()].filter(([, score]) => score >= 70).map(([id, score]) => { const l = byId.get(id)!; return { licenseId: id, name: nameOf(l), licenseCode: l.license_code, detail: `Prüfungsreife ${score} %` }; }).sort((a, b) => a.name.localeCompare(b.name, "de"));
+      return { title: `Schüler mit Prüfungsreife ab 70 % (Berechnung der letzten 7 Tage, Horizont ${query.days} Tage)`, rows };
+    }
+    case "students_open_special_drives": {
+      const trainings = await Promise.all(licenses.map((l) => trainingFor(db, l.id, l.license_code, l.acquisition_kind)));
+      const rows: QueryResultRow[] = [];
+      licenses.forEach((l, i) => { const t = trainings[i]?.training; if (!t || t.all_special_drives_done) return; const open = t.special_drives.filter((d) => d.remaining_units > 0).map((d) => `${{ overland: "Überland", motorway: "Autobahn", night: "Nacht" }[d.kind]} ${d.remaining_units}`); rows.push({ licenseId: l.id, name: nameOf(l), licenseCode: l.license_code, detail: `Offen: ${open.join(", ")} Einheiten` }); });
+      return { title: "Schüler mit offenen Sonderfahrten", rows: rows.sort((a, b) => a.name.localeCompare(b.name, "de")) };
+    }
+    case "students_without_lesson_this_week": {
+      const tz = ctx.school.timezone;
+      const monday = mondayOf(todayKey(tz));
+      const start = dayBounds(monday, tz).start;
+      const end = dayBounds(addDaysKey(monday, 7), tz).start;
+      const { data } = await db.from("lessons").select("student_license_id").in("student_license_id", ids).gte("period", `[${start},)`).lt("period", `[${end},)`).neq("status", "cancelled");
+      const withLesson = new Set((data ?? []).map((l) => l.student_license_id));
+      const rows = licenses.filter((l) => !withLesson.has(l.id)).map((l) => ({ licenseId: l.id, name: nameOf(l), licenseCode: l.license_code, detail: "Keine Fahrstunde in dieser Woche" })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+      return { title: "Schüler ohne Fahrstunde in dieser Woche", rows };
+    }
+    case "students_weak_topic": {
+      const { data: topic } = await db.from("topics").select("id, name_i18n").eq("code", query.topic_code).eq("active", true).limit(1).maybeSingle();
+      if (!topic) return { title: `Thema „${query.topic_code}“ nicht gefunden`, rows: [] };
+      const studentIds = [...new Set(licenses.map((l) => l.student_id))];
+      const { data } = await db.from("student_topic_mastery").select("student_id, mastery, attempts").in("student_id", studentIds).eq("topic_id", topic.id).lt("mastery", 0.5).order("mastery");
+      const rows: QueryResultRow[] = [];
+      for (const m of data ?? []) { const l = licenses.find((x) => x.student_id === m.student_id); if (!l) continue; rows.push({ licenseId: l.id, name: nameOf(l), licenseCode: l.license_code, detail: `Beherrschung ${Math.round(Number(m.mastery) * 100)} % bei ${m.attempts} Versuchen` }); }
+      return { title: `Schüler mit Schwächen im Thema „${i18n(topic.name_i18n)}“`, rows };
+    }
+  }
+}
+
+/** Schüler (mit Nutzerkonto) für neue Unterhaltungen des Fahrlehrers. */
+export async function loadStudentsForConversation(ctx: InstructorContext): Promise<Array<{ studentId: string; name: string }>> {
+  const licenses = await loadMyLicenses(ctx);
+  const seen = new Map<string, string>();
+  for (const l of licenses) if (l.students?.user_id && !seen.has(l.student_id)) seen.set(l.student_id, `${l.students.last_name}, ${l.students.first_name}`);
+  return [...seen.entries()].map(([studentId, name]) => ({ studentId, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
 }
