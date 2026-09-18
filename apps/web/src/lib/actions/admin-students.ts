@@ -1,6 +1,8 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
+import type { TablesUpdate } from "@fahrpilot/db";
 import { getOfficeContext, type Db } from "@/lib/data/admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import type { ActionResult } from "./lessons";
@@ -116,7 +118,7 @@ export async function createStudent(_prev: ActionResult | null, fd: FormData): P
     }
   }
   revalidatePath("/verwaltung/schueler");
-  return { ok: true, message: `Schüler angelegt.${inviteMsg}`, redirectTo: `/verwaltung/schueler/${student.id}` } as ActionResult;
+  redirect(`/verwaltung/schueler/${student.id}?hinweis=${encodeURIComponent(`Schüler angelegt.${inviteMsg}`)}`);
 }
 
 export async function inviteStudentAction(studentId: string): Promise<ActionResult> {
@@ -246,8 +248,8 @@ export async function createContract(_prev: ActionResult | null, fd: FormData): 
 export async function updateContractStatus(contractId: string, studentId: string, status: string): Promise<ActionResult> {
   const ctx = await getOfficeContext();
   const st = z.enum(["draft", "sent", "signed", "active", "terminated", "completed"]).parse(status);
-  const patch: Record<string, unknown> = { status: st };
-  if (st === "signed" || st === "active") patch["signed_at"] = new Date().toISOString();
+  const patch: TablesUpdate<"contracts"> = { status: st };
+  if (st === "signed" || st === "active") patch.signed_at = new Date().toISOString();
   const { error } = await ctx.db.from("contracts").update(patch).eq("id", contractId);
   if (error) return { ok: false, message: error.message };
   revalidatePath(`/verwaltung/schueler/${studentId}`);
@@ -261,10 +263,10 @@ export async function updateDataRequest(_prev: ActionResult | null, fd: FormData
   if (!p.success) return { ok: false, message: issues(p.error) };
   const { data: req } = await ctx.db.from("data_requests").select("id, kind, user_id").eq("id", p.data.id).single();
   if (!req) return { ok: false, message: "Anfrage nicht gefunden." };
-  const patch: Record<string, unknown> = { status: p.data.status, handled_by: ctx.userId, legal_hold_until: p.data.legal_hold_until };
-  if (p.data.reason) patch["reason"] = p.data.reason;
-  if (p.data.status === "completed" || p.data.status === "rejected") patch["completed_at"] = new Date().toISOString();
-  if (p.data.status === "completed" && req.kind === "export" && p.data.student_id) patch["export_path"] = `/verwaltung/schueler/${p.data.student_id}/export`;
+  const patch: TablesUpdate<"data_requests"> = { status: p.data.status, handled_by: ctx.userId, legal_hold_until: p.data.legal_hold_until };
+  if (p.data.reason) patch.reason = p.data.reason;
+  if (p.data.status === "completed" || p.data.status === "rejected") patch.completed_at = new Date().toISOString();
+  if (p.data.status === "completed" && req.kind === "export" && p.data.student_id) patch.export_path = `/verwaltung/schueler/${p.data.student_id}/export`;
   const { error } = await ctx.db.from("data_requests").update(patch).eq("id", p.data.id);
   if (error) return { ok: false, message: error.message };
   if (p.data.status === "completed" || p.data.status === "rejected") {

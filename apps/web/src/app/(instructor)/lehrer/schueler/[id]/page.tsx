@@ -9,11 +9,10 @@ export const metadata = { title: "Schülerprofil" };
 const SPECIAL_LABEL: Record<string, string> = { overland: "Überlandfahrten", motorway: "Autobahnfahrten", night: "Nachtfahrten" };
 const Stars = ({ n }: { n: number }) => <span aria-label={`${n} von 5 Sternen`} className="text-accent-400">{"★".repeat(n)}<span className="text-ink-300">{"★".repeat(5 - n)}</span></span>;
 
-function releaseBlock(status: string, kind: "theory" | "practical", canRelease: boolean, readiness: number | null, theoryPassed: boolean): string | null {
+function releaseBlock(status: string, kind: "theory" | "practical", canRelease: boolean, theoryPassed: boolean): string | null {
   if (!canRelease) return "Nur der zuständige Fahrlehrer oder das Büro darf freigeben.";
   if (["ready", "requested", "scheduled", "passed"].includes(status)) return `Bereits ${EXAM_STATUS_LABEL[status]?.toLowerCase() ?? status}.`;
   if (kind === "practical" && !theoryPassed) return "Die Theorieprüfung ist noch nicht bestanden.";
-  if (kind === "theory" && readiness !== null && readiness < 40) return null;
   return null;
 }
 
@@ -70,8 +69,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             {d.practicalExam?.scheduled_at && <p className="text-xs text-ink-500">Termin: {fmt.date(d.practicalExam.scheduled_at)} {fmt.time(d.practicalExam.scheduled_at)}{d.practicalExam.result ? ` · ${d.practicalExam.result === "passed" ? "bestanden" : "nicht bestanden"}` : ""} (Versuch {d.practicalExam.attempt_no})</p>}
           </dl>
           <div className="mt-4 space-y-3">
-            <ReleaseButton licenseId={d.license.id} kind="theory" disabledReason={releaseBlock(d.license.theory_exam_status, "theory", d.canRelease, d.readiness?.overall ?? null, theoryPassed)} />
-            <ReleaseButton licenseId={d.license.id} kind="practical" disabledReason={releaseBlock(d.license.practical_exam_status, "practical", d.canRelease, d.readiness?.overall ?? null, theoryPassed)} />
+            <ReleaseButton licenseId={d.license.id} kind="theory" disabledReason={releaseBlock(d.license.theory_exam_status, "theory", d.canRelease, theoryPassed)} />
+            <ReleaseButton licenseId={d.license.id} kind="practical" disabledReason={releaseBlock(d.license.practical_exam_status, "practical", d.canRelease, theoryPassed)} />
             <p className="text-xs text-ink-500">Die Freigabe ist eine fachliche Entscheidung des Fahrlehrers. Die Prüfungsreife ist eine Orientierung, keine Voraussetzung.</p>
           </div>
         </Card>

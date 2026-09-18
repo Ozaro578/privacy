@@ -1,0 +1,1 @@
+{ "extends": "./tsconfig.json", "exclude": ["node_modules", "src/app/(instructor)/**", "src/lib/actions/instructor.ts", "src/lib/data/instructor*.ts", "src/components/instructor/**"] }
