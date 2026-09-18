@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_USER: postgres, POSTGRES_HOST_AUTH_METHOD: trust }
+        ports: ["54329:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -r typecheck
+      - name: Unit tests
+        run: pnpm -r test
+      - name: Datenbank-Migrationen und SQL-Tests
+        env: { PGHOST: 127.0.0.1, PGPORT: "54329", PGUSER: postgres }
+        run: |
+          sudo apt-get install -y -q postgresql-client
+          bash supabase/test/reset-local.sh
+          psql -d fahrpilot_test -v ON_ERROR_STOP=1 -q -f supabase/test/01_rls_and_rpc_test.sql | grep BESTANDEN
+      - name: Web-Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci
+          SUPABASE_SERVICE_ROLE_KEY: ci
+        run: pnpm --filter @fahrpilot/web build
