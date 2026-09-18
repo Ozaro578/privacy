@@ -3466,6 +3466,7 @@ export type Database = {
       issue_invoice: { Args: { p_invoice_id: string; p_due_days?: number | null }; Returns: Database["public"]["Tables"]["invoices"]["Row"] };
       offer_lesson_to_waitlist: { Args: { p_lesson_id: string }; Returns: number };
       register_student: { Args: { p_tenant_slug: string; p_payload: Json }; Returns: string };
+      release_exam: { Args: { p_student_license_id: string; p_kind: string }; Returns: unknown };
       rule_version_for: { Args: { p_rule_type: string; p_license_code: string; p_acquisition: string; p_on?: string | null }; Returns: Database["public"]["Tables"]["rule_versions"]["Row"][] };
       rule_version_for_any: { Args: { p_rule_type: string; p_license_code: string; p_acquisition: string; p_on?: string | null }; Returns: Database["public"]["Tables"]["rule_versions"]["Row"][] };
       special_drive_progress: { Args: { p_student_license_id: string }; Returns: Record<string, unknown>[] };
