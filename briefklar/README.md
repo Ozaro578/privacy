@@ -6,6 +6,14 @@ Briefklar ist eine mobile Web-App (PWA, später Android-App) für Menschen, die 
 
 Die App ist **keine Rechtsberatung** (siehe [Disclaimer](#disclaimer)).
 
+## Screenshots
+
+| Start | Sprachen | Ergebnis | Dunkel |
+|---|---|---|---|
+| ![Start](docs/screenshots/start.png) | ![Sprachen](docs/screenshots/sprachen.png) | ![Ergebnis](docs/screenshots/ergebnis.png) | ![Dunkel](docs/screenshots/ergebnis-dunkel.png) |
+
+Beispiel-Ergebnis ohne API: `http://localhost:5173/?demo=1` (auch `&lang=ar` für RTL).
+
 ## Architektur
 
 ```
