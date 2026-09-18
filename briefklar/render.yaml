@@ -1,0 +1,30 @@
+# Render.com Blueprint – Deploy per "New → Blueprint" mit diesem Repo.
+# Danach nur ANTHROPIC_API_KEY im Dashboard eintragen (wird nicht im Repo gespeichert).
+services:
+  - type: web
+    name: briefklar
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter # "free" geht auch, schläft aber nach Inaktivität ein
+    region: frankfurt # EU-Region (Datenschutz)
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false # im Dashboard eintragen
+      - key: ANTHROPIC_MODEL
+        value: claude-opus-5
+      - key: ANTHROPIC_EFFORT
+        value: medium
+      - key: RATE_LIMIT_PER_15MIN
+        value: "20"
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: STATIC_DIR
+        value: /app/apps/web/dist
+      - key: NODE_ENV
+        value: production
+      # PORT setzt Render automatisch; die API liest ihn aus.
