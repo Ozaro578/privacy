@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "FahrPilot",
+    "slug": "fahrpilot",
+    "version": "0.1.0",
+    "scheme": "fahrpilot",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "platforms": ["ios", "android"],
+    "ios": {
+      "bundleIdentifier": "de.fahrpilot.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Die Kamera wird für den QR-Check-in im Theorieunterricht und für Dokumentfotos verwendet.",
+        "NSPhotoLibraryUsageDescription": "Die Fotobibliothek wird verwendet, um Dokumente wie den Sehtest hochzuladen."
+      },
+      "associatedDomains": []
+    },
+    "android": {
+      "package": "de.fahrpilot.app",
+      "permissions": ["CAMERA", "POST_NOTIFICATIONS"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [{ "scheme": "fahrpilot" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-sqlite",
+      ["expo-notifications", { "color": "#2B66B0" }],
+      ["expo-camera", { "cameraPermission": "FahrPilot nutzt die Kamera für den QR-Check-in im Theorieunterricht." }],
+      ["expo-image-picker", { "photosPermission": "FahrPilot greift auf Fotos zu, um Dokumente hochzuladen." }]
+    ],
+    "experiments": { "typedRoutes": false },
+    "extra": {
+      "eas": { "projectId": "" },
+      "router": {}
+    }
+  }
+}

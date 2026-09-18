@@ -11,8 +11,27 @@ import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, toMeta
 import { computeAndStoreReadiness } from "@/lib/data/readiness";
 import { loadTrainingStatus } from "@/lib/data/training";
 
-/** Startet eine Prüfungssimulation nach der gültigen Regelversion und friert Regeln und Fragen ein. */
-export async function startExamSimulation(): Promise<never> {
+export interface ExamQuestionView {
+  id: string;
+  position: number;
+  points: number;
+  text: string;
+  mediaPath: string | null;
+  answers: Array<{ position: number; text: string }>;
+  numeric: boolean;
+}
+
+export interface CreatedExamSimulation {
+  id: string;
+  clientSessionId: string;
+  timeLimitSeconds: number | null;
+  maxErrorPoints: number;
+  questionsTotal: number;
+  questions: ExamQuestionView[];
+}
+
+/** Legt eine Prüfungssimulation nach der gültigen Regelversion an und friert Regeln und Fragen ein (ohne Weiterleitung, für Web und Mobile). */
+export async function createExamSimulation(): Promise<CreatedExamSimulation> {
   const ctx = await getStudentContext();
   const rule = ctx.rules.examTheory;
   if (!rule) throw new Error("Für diese Klasse ist noch keine Prüfungsregel hinterlegt.");
@@ -29,6 +48,18 @@ export async function startExamSimulation(): Promise<never> {
   if (error || !sim) throw new Error("Simulation konnte nicht gestartet werden");
   const byId = new Map(pool.map((q) => [q.id, q]));
   await admin.from("exam_results").insert(questions.map((q, i) => ({ exam_simulation_id: sim.id, question_id: q.id, question_version_id: byId.get(q.id)!.version.id, position: i + 1, points: q.points })));
+  return {
+    id: sim.id, clientSessionId, timeLimitSeconds: rule.rules.time_limit_seconds, maxErrorPoints: rule.rules.max_error_points, questionsTotal: rule.rules.questions_total,
+    questions: questions.map((q, i) => {
+      const full = byId.get(q.id)!;
+      return { id: q.id, position: i + 1, points: q.points, text: full.version.text, mediaPath: full.version.media_path, answers: full.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: full.version.numeric_answer !== null };
+    }),
+  };
+}
+
+/** Startet eine Prüfungssimulation und leitet in die Prüfungsansicht weiter. */
+export async function startExamSimulation(): Promise<never> {
+  const sim = await createExamSimulation();
   redirect(`/lernen/pruefung/${sim.id}`);
 }
 

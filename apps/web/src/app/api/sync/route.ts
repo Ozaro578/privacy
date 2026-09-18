@@ -2,12 +2,14 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { recordAttempt, startLearningSession, finishLearningSession } from "@/lib/actions/learning";
 import { getSession } from "@/lib/auth/session";
+import { getBearerAuthFromRequest } from "@/lib/auth/bearer";
 import { getStudentContext } from "@/lib/data/student";
 import { loadStates } from "@/lib/data/learning";
 
 /**
  * Offline-Sync der Mobile-App. Der Client sendet seine Warteschlange; der Server bewertet jeden Versuch selbst
  * (Spaced Repetition, XP, Serie, Abzeichen) und antwortet mit dem verbindlichen Zustand. Idempotent über client_*-Schlüssel.
+ * Auth: Supabase-Session-Cookie (Schüler-Web) oder Authorization: Bearer <access_token> (Mobile-App).
  */
 const Body = z.object({
   sessions: z.array(z.object({ client_session_id: z.string().uuid(), mode: z.string(), topic_id: z.string().uuid().nullable().default(null), ended: z.boolean().default(false) })).default([]),
@@ -17,7 +19,9 @@ const Body = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const session = await getSession();
+  // Mobile-App: Authorization: Bearer <access_token>; Schüler-Web: Session-Cookie
+  const bearer = await getBearerAuthFromRequest();
+  const session = bearer ? bearer.session : await getSession();
   if (!session || session.role !== "student") return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 });
   const parsed = Body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Ungültige Daten", issues: parsed.error.issues }, { status: 400 });
