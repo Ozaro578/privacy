@@ -1,0 +1,22 @@
+{
+  "name": "briefklar",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Briefklar – Behördenbriefe fotografieren und in einfacher Sprache verstehen",
+  "workspaces": [
+    "packages/shared",
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @briefklar/shared && npm run build -w @briefklar/api && npm run build -w @briefklar/web",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:api": "npm run dev -w @briefklar/api",
+    "dev:web": "npm run dev -w @briefklar/web",
+    "start": "npm run start -w @briefklar/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
