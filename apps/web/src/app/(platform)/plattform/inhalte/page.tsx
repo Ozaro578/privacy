@@ -10,27 +10,29 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
   const tab = p.tab ?? "fragen";
   const status = p.status ?? "offen";
   const db = await createSupabaseServerClient();
-  const open = ["draft", "in_review", "needs_verification", "approved"];
+  type RS = "draft" | "in_review" | "approved" | "published" | "retired" | "needs_verification";
+  const open: RS[] = ["draft", "in_review", "needs_verification", "approved"];
+  const one = (["draft", "in_review", "approved", "published", "retired", "needs_verification"].includes(status) ? status : "published") as RS;
   const tabs = [["fragen", "Übungsfragen"], ["wissen", "Wissensbasis"], ["kapitel", "Lernkapitel"], ["pruefer", "Prüfer-Fragen"]];
   let items: Array<{ id: string; title: string; meta: string; status: string; table: "theory_questions" | "knowledge_entries" | "chapters" | "practical_check_questions" }> = [];
   if (tab === "fragen") {
     let q = db.from("theory_questions").select("id, status, points, source, external_ref, topics(code), question_versions!theory_questions_current_version_fk(text, legal_reference)").order("updated_at", { ascending: false }).limit(200);
-    q = status === "offen" ? q.in("status", open) : q.eq("status", status);
+    q = status === "offen" ? q.in("status", open) : q.eq("status", one);
     const { data } = await q;
     items = (data ?? []).map((d) => { const v = d.question_versions as unknown as { text: string; legal_reference: string | null } | null; return { id: d.id, title: v?.text ?? "(ohne Version)", meta: `${(d.topics as unknown as { code: string } | null)?.code ?? ""} · ${d.points} Punkte · ${d.source}${d.external_ref ? ` · ${d.external_ref}` : ""}${v?.legal_reference ? ` · ${v.legal_reference}` : ""}`, status: d.status, table: "theory_questions" }; });
   } else if (tab === "wissen") {
     let q = db.from("knowledge_entries").select("id, review_status, title, slug, legal_reference, legal_basis_date, version").order("updated_at", { ascending: false }).limit(200);
-    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", status);
+    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", one);
     const { data } = await q;
     items = (data ?? []).map((d) => ({ id: d.id, title: d.title, meta: `${d.slug} v${d.version}${d.legal_reference ? ` · ${d.legal_reference}` : ""} · Rechtsstand ${d.legal_basis_date}`, status: d.review_status, table: "knowledge_entries" }));
   } else if (tab === "kapitel") {
     let q = db.from("chapters").select("id, review_status, title, version, source, topics(code)").order("updated_at", { ascending: false }).limit(200);
-    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", status);
+    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", one);
     const { data } = await q;
     items = (data ?? []).map((d) => ({ id: d.id, title: d.title, meta: `${(d.topics as unknown as { code: string } | null)?.code ?? ""} · v${d.version}${d.source ? ` · ${d.source}` : ""}`, status: d.review_status, table: "chapters" }));
   } else {
     let q = db.from("practical_check_questions").select("id, review_status, question, category, source").order("updated_at", { ascending: false }).limit(200);
-    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", status);
+    q = status === "offen" ? q.in("review_status", open) : q.eq("review_status", one);
     const { data } = await q;
     items = (data ?? []).map((d) => ({ id: d.id, title: d.question, meta: `${d.category}${d.source ? ` · ${d.source}` : ""}`, status: d.review_status, table: "practical_check_questions" }));
   }
