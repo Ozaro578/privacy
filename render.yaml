@@ -1,9 +1,10 @@
-# Render.com Blueprint – Deploy per "New → Blueprint" mit diesem Repo.
+# Render.com Blueprint (liegt im Repo-Root, damit Render sie findet) – Deploy per "New → Blueprint" oder Deploy-Button im README.
 # Danach nur ANTHROPIC_API_KEY im Dashboard eintragen (wird nicht im Repo gespeichert).
 services:
   - type: web
     name: briefklar
     runtime: docker
+    rootDir: briefklar
     dockerfilePath: ./Dockerfile
     dockerContext: .
     plan: starter # "free" geht auch, schläft aber nach Inaktivität ein

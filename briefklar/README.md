@@ -61,6 +61,23 @@ Umgebungsvariablen der API:
 | `STATIC_DIR` | nein | – | Wenn gesetzt: gebaute Web-App wird von der API ausgeliefert (Produktion) |
 | `PORT` | nein | `8787` | Port der API |
 
+## Echter Test mit einem Brief
+
+`docs/musterbrief.jpg` ist ein erfundener Jobcenter-Bescheid (Termin, Frist, Erstattung, Widerspruch). Mit laufender API und gesetztem `ANTHROPIC_API_KEY`:
+
+```bash
+npm run test:letter                       # Musterbrief, Deutsch
+npm run test:letter -- mein-brief.jpg tr  # eigene Datei, Türkisch
+```
+
+Erwartung: Termin 24.09.2026 09:30, Frist 31.10.2026, Widerspruchsfrist als Regel (date null), 178,40 € zahlen, scam_risk niedrig.
+
+## Deploy auf Render.com (ein Klick)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ozaro578/privacy)
+
+Render liest die `render.yaml` im Repo-Root (Quellcode liegt in `briefklar/`); danach nur `ANTHROPIC_API_KEY` im Dashboard eintragen. Details in `docs/betrieb.md`.
+
 ## Tests und Checks
 
 ```bash
