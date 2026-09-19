@@ -33,7 +33,7 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 
 - Lasttests für Kalender und Simulation, E2E-Suiten über alle 21 Flows (aktuell Unit, SQL und einzelne E2E).
 - Regelwerte für die Klassen außer B verifizieren und veröffentlichen.
-- Automatischer Löschlauf nach `retention_policies` (heute manuell über Datenschutzanfragen).
+- Löschlauf: Dokumente mit abgelaufener Frist werden täglich entfernt; Fristen je Kategorie aus `retention_policies` müssen fachlich bestätigt werden (review_status).
 - Audit-Log-Ansicht für Admins, Support-Zugriff mit Freigabe.
 - Externer Penetrationstest, Datenschutz-Folgenabschätzung, AVV-Dokumente.
 - Observability (Sentry, Alarme), Backup- und Wiederherstellungstest, Runbooks.

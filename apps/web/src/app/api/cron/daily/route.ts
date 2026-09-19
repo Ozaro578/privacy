@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Tägliche Jobs: Lern-Erinnerung für Schüler ohne Aktivität, Mahnstufen für überfällige Rechnungen,
- * Ablauf von Wartelisten-Angeboten und abgelaufene Prüfungssimulationen.
+ * Ablauf von Wartelisten-Angeboten, abgelaufene Prüfungssimulationen und Löschlauf nach Aufbewahrungsfristen.
  */
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);
@@ -52,5 +52,17 @@ export async function GET(request: NextRequest) {
   if (reactivate.length) await admin.from("waitlist_entries").update({ status: "active" }).in("id", reactivate);
   const { count: abandoned } = await admin.from("exam_simulations").update({ status: "abandoned" }, { count: "exact" }).eq("status", "in_progress").lt("started_at", new Date(now.getTime() - 6 * 3_600_000).toISOString());
   await admin.from("waitlist_entries").update({ status: "expired" }).eq("status", "active").lt("latest", now.toISOString());
-  return NextResponse.json({ learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0 });
+  // 4) Löschlauf nach Aufbewahrung: Dokumente mit abgelaufener Frist (retention_until) samt Datei entfernen.
+  //    Die Frist setzt das Büro je Dokument bzw. sie folgt aus der Aufbewahrungsregel (retention_policies) beim Anlegen.
+  const { data: expiredDocs } = await admin.from("documents").select("id, storage_path").lt("retention_until", today).limit(500);
+  let purgedDocuments = 0;
+  if (expiredDocs && expiredDocs.length > 0) {
+    const paths = expiredDocs.map((d) => d.storage_path).filter((p): p is string => !!p);
+    if (paths.length) await admin.storage.from("documents").remove(paths);
+    const { count } = await admin.from("documents").delete({ count: "exact" }).in("id", expiredDocs.map((d) => d.id));
+    purgedDocuments = count ?? 0;
+  }
+  // Pseudonymisierte Datenschutzanfragen nach Ablauf der Aufbewahrungsfrist endgültig entfernen (Betroffener ist bereits gelöscht).
+  const { count: purgedRequests } = await admin.from("data_requests").delete({ count: "exact" }).eq("kind", "deletion").eq("status", "completed").lt("legal_hold_until", today);
+  return NextResponse.json({ learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0, purgedDocuments, purgedRequests: purgedRequests ?? 0 });
 }
