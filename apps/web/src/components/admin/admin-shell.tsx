@@ -14,6 +14,7 @@ const NAV: Array<{ href: string; label: string; adminOnly?: boolean }> = [
   { href: "/verwaltung/dokumente", label: "Dokumente" },
   { href: "/verwaltung/einstellungen", label: "Einstellungen", adminOnly: true },
   { href: "/verwaltung/analytics", label: "Analytics", adminOnly: true },
+  { href: "/verwaltung/audit", label: "Protokoll", adminOnly: true },
 ];
 
 function isCurrent(current: string, href: string): boolean {

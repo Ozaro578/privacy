@@ -12,7 +12,7 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 | Inhalte Klasse B | 202 eigene Übungsfragen, 19 Kapitel, 83 Wissenseinträge, 45 Prüferfragen, 106 Bildmedien (65 Verkehrszeichen, 41 Situationsgrafiken), 90 Fragen mit Bild. Kennzeichnung "Übungsfrage (kein amtlicher Prüfungsinhalt)". Fachprüfung siehe `08-fachpruefung-inhalte.md`. |
 | Schüler-Web | Heute-Modus, Lernbereich mit allen Modi, Prüfungssimulation mit eingefrorener Regelversion, Warum-Knopf, KI-Lerncoach mit Quellen, Fahrstunden und Buchung, Warteliste, Kompetenzprofil, Kostenprognose mit Hinweis, Dokumente, Finanzen, Profil, Datenschutzanfragen, Theorie-Check-in per QR. |
 | Fahrlehrer-Web | Tagesansicht, Schnelldokumentation, Sprachnotiz mit KI-Entwurf (Bestätigung durch Fahrlehrer), Schülerübersicht, Prüfungsfreigabe, Verfügbarkeiten. |
-| Verwaltung | Schüler und Anmeldung, Team, Kalender, Theorieunterricht, Fahrzeuge, Finanzen (Preislisten, Rechnungen, Zahlungen, Mahnlauf, SEPA-Mandate, Stripe-Webhook), Dokumente (Prüfqueue, Vorlagen, Aufbewahrung), Einstellungen (Stammdaten, Standorte, Stornoregeln, Anmeldelink mit QR, Rollen), Analytics, Datenschutzanfragen mit Export und Löschung (Pseudonymisierung). |
+| Verwaltung | Schüler und Anmeldung, Team, Kalender, Theorieunterricht, Fahrzeuge, Finanzen (Preislisten, Rechnungen, Zahlungen, Mahnlauf, SEPA-Mandate, Stripe-Webhook), Dokumente (Prüfqueue, Vorlagen, Aufbewahrung), Einstellungen (Stammdaten, Standorte, Stornoregeln, Anmeldelink mit QR, Rollen), Analytics, Änderungsprotokoll (Audit-Log), Datenschutzanfragen mit Export und Löschung (Pseudonymisierung). |
 | Plattform | Mandantenverwaltung, Inhalte-CMS mit Versionierung und Rechtsstand, Regelverwaltung. |
 | Mobile-App | Expo, Offline-Spiegel in SQLite, Sync-Warteschlange, Lernen offline, Prüfung serverseitig, Fahren, Finanzen, Profil, Check-in, Bilder zu Fragen. 24 Tests. |
 | Querschnitt | Benachrichtigungen (Push, E-Mail, In-App, vier Sprachen), Cron-Jobs, i18n (de, en, tr, ar), Design System, Barrierefreiheit in den Kernflüssen, CI (Typecheck, Tests, Lint, Migrationen, Build). |
@@ -34,7 +34,7 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 - Lasttests für Kalender und Simulation, E2E-Suiten über alle 21 Flows (aktuell Unit, SQL und einzelne E2E).
 - Regelwerte für die Klassen außer B verifizieren und veröffentlichen.
 - Löschlauf: Dokumente mit abgelaufener Frist werden täglich entfernt; Fristen je Kategorie aus `retention_policies` müssen fachlich bestätigt werden (review_status).
-- Audit-Log-Ansicht für Admins, Support-Zugriff mit Freigabe.
+- Support-Zugriff mit Freigabe (support_access_grants) in der Oberfläche.
 - Externer Penetrationstest, Datenschutz-Folgenabschätzung, AVV-Dokumente.
 - Observability (Sentry, Alarme), Backup- und Wiederherstellungstest, Runbooks.
 - Pilotbetrieb mit einer Fahrschule inklusive Hypercare.
