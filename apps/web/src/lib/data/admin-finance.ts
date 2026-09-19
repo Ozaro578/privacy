@@ -75,12 +75,14 @@ export async function getInvoice(id: string) {
   const { data: invoice } = await ctx.db.from("invoices").select("*, students(id, first_name, last_name, email, address_line1, postal_code, city, user_id)").eq("id", id).maybeSingle();
   if (!invoice) return null;
   const inv = invoice as unknown as Tables<"invoices"> & { students: { id: string; first_name: string; last_name: string; email: string | null; address_line1: string | null; postal_code: string | null; city: string | null; user_id: string | null } | null };
-  const [{ data: items }, { data: payments }, { data: mandates }] = await Promise.all([
+  const [{ data: items }, { data: payments }, { data: mandates }, { data: original }, { data: creditNotes }] = await Promise.all([
     ctx.db.from("invoice_items").select("*, lessons(period, kind)").eq("invoice_id", id).order("position"),
     ctx.db.from("payments").select("*").eq("invoice_id", id).order("created_at", { ascending: false }),
-    ctx.db.from("payment_mandates").select("id, status, method, provider, mandate_reference, masked_iban").eq("student_id", inv.student_id).eq("status", "active"),
+    ctx.db.from("payment_mandates").select("id, status, method, provider, mandate_reference, masked_iban, signed_at, created_at").eq("student_id", inv.student_id).order("created_at", { ascending: false }),
+    inv.credit_note_for ? ctx.db.from("invoices").select("id, invoice_number").eq("id", inv.credit_note_for).maybeSingle() : Promise.resolve({ data: null as { id: string; invoice_number: string | null } | null }),
+    ctx.db.from("invoices").select("id, invoice_number, status, gross_cents, issued_at").eq("credit_note_for", id).order("created_at", { ascending: false }),
   ]);
   const settings = schoolSettings(ctx.school.settings);
   const plan = dunningPlan({ status: inv.status, due_at: inv.due_at, dunning_level: inv.dunning_level, dunning_last_at: inv.dunning_last_at, gross_cents: inv.gross_cents, paid_cents: inv.paid_cents }, berlinDate(), { reminder_days: settings.dunning_reminder_days, fees_cents: settings.dunning_fees_cents });
-  return { ctx, invoice: inv, items: (items ?? []) as unknown as Array<Tables<"invoice_items"> & { lessons: { period: string; kind: string } | null }>, payments: payments ?? [], mandates: mandates ?? [], settings, plan, stripeConfigured: Boolean(process.env["STRIPE_SECRET_KEY"]) };
+  return { ctx, invoice: inv, items: (items ?? []) as unknown as Array<Tables<"invoice_items"> & { lessons: { period: string; kind: string } | null }>, payments: payments ?? [], mandates: mandates ?? [], original, creditNotes: creditNotes ?? [], settings, plan, stripeConfigured: Boolean(process.env["STRIPE_SECRET_KEY"]) };
 }
