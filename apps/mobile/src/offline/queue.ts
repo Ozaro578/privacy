@@ -82,9 +82,8 @@ export function buildSyncBatch(items: QueueItem[], statesSince: string | null, m
     return pa.answered_at.localeCompare(pb.answered_at) || a.id - b.id;
   });
   const limitedAttempts = attempts.slice(0, max);
-  // Nur Sessions mitsenden, die noch nicht abgeschlossen synchronisiert wurden oder zu den Versuchen gehören
-  const neededSessionIds = new Set(limitedAttempts.map((a) => (a.payload as QueuedAttempt).client_session_id));
-  const sentSessions = sessions.filter((s) => neededSessionIds.has((s.payload as QueuedSession).client_session_id) || true);
+  // Alle offenen Sessions mitsenden (Upsert ist idempotent und klein); Versuche finden so immer ihre Session
+  const sentSessions = sessions;
   return {
     items: [...sentSessions, ...limitedAttempts],
     body: {
