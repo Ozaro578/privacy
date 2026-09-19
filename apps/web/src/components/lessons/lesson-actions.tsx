@@ -14,12 +14,12 @@ export function BookButton({ lessonId, label = "Buchen" }: { lessonId: string; l
   );
 }
 
-export function CancelButton({ lessonId, freeUntilHours, startIso }: { lessonId: string; freeUntilHours: number | null; startIso: string }) {
+export function CancelButton({ lessonId, freeUntilHours, startIso, nowIso }: { lessonId: string; freeUntilHours: number | null; startIso: string; nowIso: string }) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
-  const hoursLeft = (new Date(startIso).getTime() - Date.now()) / 3_600_000;
+  const hoursLeft = (new Date(startIso).getTime() - new Date(nowIso).getTime()) / 3_600_000;
   const late = freeUntilHours !== null && hoursLeft < freeUntilHours;
   if (msg) return <p className="text-sm" role="status">{msg}</p>;
   return (

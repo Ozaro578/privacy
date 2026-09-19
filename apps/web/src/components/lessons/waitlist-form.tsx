@@ -5,11 +5,9 @@ import { btn } from "@/components/ui";
 
 const DAYS = [["1", "Mo"], ["2", "Di"], ["3", "Mi"], ["4", "Do"], ["5", "Fr"], ["6", "Sa"], ["7", "So"]] as const;
 
-export function WaitlistForm({ instructors }: { instructors: Array<{ id: string; name: string }> }) {
+export function WaitlistForm({ instructors, today, inTwoWeeks }: { instructors: Array<{ id: string; name: string }>; today: string; inTwoWeeks: string }) {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
-  const today = new Date().toISOString().slice(0, 10);
-  const inTwoWeeks = new Date(Date.now() + 14 * 86_400_000).toISOString().slice(0, 10);
   return (
     <form className="space-y-3 text-sm" onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); start(async () => { const r = await joinWaitlistAction({ earliest: `${f.get("from")}T00:00:00+02:00`, latest: `${f.get("to")}T23:59:59+02:00`, instructorId: (f.get("instructor") as string) || null, weekdays: f.getAll("day").map(Number), timeFrom: (f.get("time_from") as string) || null, timeTo: (f.get("time_to") as string) || null }); setMsg(r.message); }); }}>
       <div className="grid grid-cols-2 gap-2">

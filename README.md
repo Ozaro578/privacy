@@ -51,6 +51,10 @@ pnpm --filter @fahrpilot/web dev
 5. Erste Fahrschule unter `/plattform/fahrschulen` anlegen; Schüler registrieren sich über `/anmeldung/<slug>`.
 6. Cron (Vercel `apps/web/vercel.json` oder externer Scheduler) mit `CRON_SECRET`: `/api/cron/reminders`, `/api/cron/dispatch`, `/api/cron/daily`.
 
+## Fragemedien (Bilder)
+
+Verkehrszeichen und Situationsgrafiken liegen als SVG in `packages/content/media` und werden von `packages/content/scripts/gen-media.mjs` erzeugt (Verkehrszeichen nach StVO-Anlagen sind amtliche Werke nach § 5 UrhG; die Situationsgrafiken sind eigene Darstellungen). Die Zuordnung Frage zu Bild steht in `packages/content/src/media.ts`. Die Web-App kopiert die Dateien vor `dev` und `build` nach `public/media/questions`; der Seed schreibt Pfad, Alt-Text und Quelle in `question_versions`.
+
 ## Rechtsstand und Freigaben
 
 Prüfungs- und Ausbildungsregeln liegen versioniert in `rule_versions`. Nur veröffentlichte Versionen gelten; Werte mit Status `needs_verification` werden Schülern gekennzeichnet angezeigt und müssen unter `/plattform/regeln` fachlich freigegeben werden (Vier-Augen-Prinzip). Eigene Übungsfragen sind kein amtlicher Prüfungsinhalt; ein lizenzierter amtlicher Katalog kann mit `source = 'official_licensed'` integriert werden.

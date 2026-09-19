@@ -1,3 +1,4 @@
+import { nowIso } from "@/lib/time";
 import Link from "next/link";
 import { getStudentContext } from "@/lib/data/student";
 import { loadStudentLessons, LESSON_KIND_LABEL } from "@/lib/data/lessons";
@@ -39,7 +40,7 @@ export default async function DrivingPage() {
                 <div><p className="font-semibold">{fmt.weekday(l.start)}, {fmt.date(l.start)} · {fmt.time(l.start)} bis {fmt.time(l.end)}</p><p className="text-sm text-ink-700">{LESSON_KIND_LABEL[l.kind] ?? l.kind} · {l.instructor}{l.vehicle ? ` · ${l.vehicle}` : ""}{l.meetingPoint ? ` · Treffpunkt: ${l.meetingPoint}` : ""}</p></div>
                 <Pill tone={l.status === "confirmed" ? "success" : "warn"}>{l.status === "confirmed" ? "bestätigt" : "angefragt"}</Pill>
               </div>
-              <div className="mt-2"><CancelButton lessonId={l.id} freeUntilHours={policy?.free_cancellation_hours ?? null} startIso={l.start} /></div>
+              <div className="mt-2"><CancelButton lessonId={l.id} freeUntilHours={policy?.free_cancellation_hours ?? null} startIso={l.start} nowIso={nowIso()} /></div>
             </li>
           ))}</ul>
         )}

@@ -1,3 +1,4 @@
+import { nowMs } from "@/lib/time";
 import { getStudentContext } from "@/lib/data/student";
 import { loadDashboard } from "@/lib/data/dashboard";
 import { Card, ProgressBar, ReadinessGauge } from "@/components/ui";
@@ -7,7 +8,7 @@ export const metadata = { title: "Lernstatistik" };
 export default async function StatsPage() {
   const ctx = await getStudentContext();
   const d = await loadDashboard(ctx);
-  const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const since = new Date(nowMs() - 7 * 86_400_000).toISOString();
   const [{ data: attempts }, { data: sessions }, { data: snapshots }, { data: badges }] = await Promise.all([
     ctx.db.from("student_question_attempts").select("is_correct, answered_at, response_ms").eq("student_id", ctx.student.id).gte("answered_at", since),
     ctx.db.from("learning_sessions").select("started_at, ended_at").eq("student_id", ctx.student.id).gte("started_at", since),

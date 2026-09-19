@@ -1,3 +1,4 @@
+import { nowIso, nowMs } from "@/lib/time";
 import Link from "next/link";
 import { getStudentContext } from "@/lib/data/student";
 import { loadOpenSlots, LESSON_KIND_LABEL } from "@/lib/data/lessons";
@@ -40,7 +41,7 @@ export default async function BookingPage({ searchParams }: { searchParams: Prom
           ))}</ul>
         </Card>
       ))}
-      <Card title="Warteliste"><WaitlistForm instructors={(instructors ?? []).map((i) => ({ id: i.id, name: i.display_name }))} /></Card>
+      <Card title="Warteliste"><WaitlistForm instructors={(instructors ?? []).map((i) => ({ id: i.id, name: i.display_name }))} today={nowIso().slice(0, 10)} inTwoWeeks={new Date(nowMs() + 14 * 86_400_000).toISOString().slice(0, 10)} /></Card>
     </div>
   );
 }

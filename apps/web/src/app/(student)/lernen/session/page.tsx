@@ -10,15 +10,14 @@ export default async function SessionPage({ searchParams }: { searchParams: Prom
   const p = await searchParams;
   const mode = (p.mode ?? "review") as LearningMode;
   const limit = Math.min(50, Math.max(5, Number(p.limit ?? 10) || 10));
-  try {
-    const session = await startLearningSession({ mode, limit, ...(p.topic ? { topicId: p.topic } : {}) });
-    return <SessionRunner key={session.sessionId} session={session} />;
-  } catch (e) {
+  const started = await startLearningSession({ mode, limit, ...(p.topic ? { topicId: p.topic } : {}) }).then((session) => ({ session, message: null as string | null })).catch((e: unknown) => ({ session: null, message: e instanceof Error ? e.message : "Session konnte nicht gestartet werden." }));
+  if (!started.session) {
     return (
       <div className="space-y-4">
-        <Alert tone="info">{e instanceof Error ? e.message : "Session konnte nicht gestartet werden."}</Alert>
+        <Alert tone="info">{started.message}</Alert>
         <Link href="/lernen" className={btn.secondary}>Zurück</Link>
       </div>
     );
   }
+  return <SessionRunner key={started.session.sessionId} session={started.session} />;
 }

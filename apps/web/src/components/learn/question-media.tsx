@@ -9,6 +9,7 @@ export function QuestionMedia({ path, alt, credit, className = "" }: { path: str
   return (
     <figure className={`my-3 ${className}`}>
       <div className="flex justify-center rounded-xl bg-ink-50 p-3">
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG-Vektorgrafiken und signierte URLs; next/image würde hier nichts optimieren */}
         <img src={questionMediaUrl(path)} alt={alt ?? "Abbildung zur Frage"} className="max-h-72 w-auto max-w-full rounded-lg object-contain" loading="eager" decoding="async" />
       </div>
       {credit && <figcaption className="mt-1 text-right text-[11px] text-ink-500">{credit}</figcaption>}

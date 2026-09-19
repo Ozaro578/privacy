@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { nowMs } from "@/lib/time";
 import type { CalendarClass, CalendarLesson } from "@/lib/data/admin-calendar";
 import { cancelLessonForm, confirmBooking, deleteOpenSlot, setLessonOutcome } from "@/lib/actions/admin-calendar";
 import { LESSON_KIND_LABEL, LESSON_STATUS_LABEL } from "@/lib/data/admin";
@@ -17,7 +18,7 @@ export function CalendarItem({ item, compact = false, backHref }: { item: Calend
       </Link>
     );
   }
-  const past = new Date(item.end).getTime() < Date.now();
+  const past = new Date(item.end).getTime() < nowMs();
   return (
     <div className="rounded-lg border-l-4 bg-white px-2 py-1 text-xs shadow-sm" style={{ borderLeftColor: item.color ?? "#94a3b8" }}>
       <div className="flex flex-wrap items-center gap-1">

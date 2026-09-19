@@ -1,3 +1,4 @@
+import { nowMs } from "@/lib/time";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { DashboardData } from "@/lib/data/dashboard";
@@ -14,11 +15,11 @@ export const metadata = { title: "Vorschau" };
  */
 export default function PreviewPage() {
   if (process.env.NODE_ENV === "production" && process.env.PREVIEW_MODE !== "1") notFound();
-  const in2d = new Date(Date.now() + 2 * 86_400_000 + 3 * 3_600_000).toISOString();
+  const in2d = new Date(nowMs() + 2 * 86_400_000 + 3 * 3_600_000).toISOString();
   const d: DashboardData = {
     overview: { topics: [], totalQuestions: 202, answeredQuestions: 131, dueCount: 14, wrongCount: 9, bookmarkedCount: 6, unseenCount: 71, hardCount: 22, overallMastery: 0.71 },
     readinessScore: 71, readinessBand: "yellow_green", readinessFactors: [], theoryPercent: 78, practicalPercent: 62,
-    nextLesson: { id: "1", start: in2d, end: in2d, instructor: "Max Mustermann", kind: "overland" }, nextTheoryClass: { id: "2", start: new Date(Date.now() + 4 * 86_400_000).toISOString(), title: "Vorfahrt" },
+    nextLesson: { id: "1", start: in2d, end: in2d, instructor: "Max Mustermann", kind: "overland" }, nextTheoryClass: { id: "2", start: new Date(nowMs() + 4 * 86_400_000).toISOString(), title: "Vorfahrt" },
     missingDocuments: [{ id: "d", title: "Biometrisches Passfoto" }], openInvoiceCents: 61000, unreadMessages: 1, unreadNotifications: [{ id: "n", title: "Freigabe für die Theorieprüfung", body: "Dein Fahrlehrer hat dich für die Theorieprüfung freigegeben.", created_at: new Date().toISOString() }],
     streak: { current_days: 7, longest_days: 12, total_xp: 1240, level: 4 }, todayGoal: { answered: 12, target: 20, achieved: false }, learnedToday: true,
     today: [
@@ -29,7 +30,7 @@ export default function PreviewPage() {
       { kind: "invoice", priority: 50, title: "Offener Betrag: 610,00 €", action: { type: "open", route: "/finanzen" } },
     ],
     training: { training: null, theory: null, profile: { skills: [], overall_percent: 74, biggest_needs: [], statement: "Aktuell größter Trainingsbedarf: Fahrstreifenwechsel und Abbiegen." }, forecast: null, practicalPercent: 62, completedPracticeUnits: 18, attendedCodes: ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"] },
-    exams: { theoryAt: new Date(Date.now() + 5 * 86_400_000).toISOString(), practicalAt: null, theoryStatus: "scheduled", practicalStatus: "not_ready" },
+    exams: { theoryAt: new Date(nowMs() + 5 * 86_400_000).toISOString(), practicalAt: null, theoryStatus: "scheduled", practicalStatus: "not_ready" },
     weaknessStatement: "Persönliche Schwachstelle: Vorfahrt (48 % Mastery)",
   };
   const session = {

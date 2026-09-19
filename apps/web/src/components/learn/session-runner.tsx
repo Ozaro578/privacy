@@ -18,8 +18,8 @@ export function SessionRunner({ session }: { session: StartedSession }) {
   const [stats, setStats] = useState({ correct: 0, wrong: 0, xp: 0, badges: [] as string[] });
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
-  const startedAt = useRef(Date.now());
-  const attemptId = useRef(crypto.randomUUID());
+  const startedAt = useRef(0);
+  const attemptId = useRef("");
   const q = session.questions[index]!;
   const total = session.questions.length;
 
@@ -31,7 +31,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
     if (!canSubmit || pending) return;
     start(async () => {
       try {
-        const r = await recordAttempt({ sessionId: session.sessionId, questionId: q.id, clientAttemptId: attemptId.current, selected, numericAnswer: q.numeric ? Number(numeric.replace(",", ".")) : null, confidence, responseMs: Date.now() - startedAt.current });
+        const r = await recordAttempt({ sessionId: session.sessionId, questionId: q.id, clientAttemptId: attemptId.current || crypto.randomUUID(), selected, numericAnswer: q.numeric ? Number(numeric.replace(",", ".")) : null, confidence, responseMs: Date.now() - startedAt.current });
         setResult(r);
         setStats((s) => ({ correct: s.correct + (r.correct ? 1 : 0), wrong: s.wrong + (r.correct ? 0 : 1), xp: s.xp + r.xpGained, badges: [...s.badges, ...r.newBadges] }));
         setPhase("feedback");
