@@ -3,8 +3,9 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitExamSimulation } from "@/lib/actions/exam";
 import { btn, Alert } from "@/components/ui";
+import { QuestionMedia } from "./question-media";
 
-export interface ExamQuestionView { id: string; position: number; text: string; points: number; mediaPath: string | null; numeric: boolean; answers: Array<{ position: number; text: string }>; }
+export interface ExamQuestionView { id: string; position: number; text: string; points: number; mediaPath: string | null; mediaAlt: string | null; mediaCredit: string | null; numeric: boolean; answers: Array<{ position: number; text: string }>; }
 interface Answer { selected: number[]; numeric: string; unsure: boolean; ms: number }
 
 export function ExamRunner({ simulationId, questions, timeLimitSeconds, startedAt }: { simulationId: string; questions: ExamQuestionView[]; timeLimitSeconds: number | null; startedAt: string }) {
@@ -53,7 +54,7 @@ export function ExamRunner({ simulationId, questions, timeLimitSeconds, startedA
       </div>
       <div className="rounded-card bg-white p-5 shadow-card">
         <p className="text-xs text-ink-500">{q.points} Punkte</p>
-        {q.mediaPath && <img src={`/api/media?path=${encodeURIComponent(q.mediaPath)}`} alt="Verkehrssituation zur Frage" className="my-3 w-full rounded-xl" />}
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <p className="text-lg font-medium">{q.text}</p>
         {q.numeric ? (
           <div className="mt-4"><label htmlFor="num" className="mb-1 block text-sm">Antwort (Zahl)</label><input id="num" inputMode="decimal" value={a.numeric} onChange={(e) => update({ numeric: e.target.value })} className="w-40 rounded-xl border border-ink-300 px-3 py-3 text-lg" /></div>

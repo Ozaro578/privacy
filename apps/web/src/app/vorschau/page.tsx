@@ -34,7 +34,7 @@ export default function PreviewPage() {
   };
   const session = {
     sessionId: "00000000-0000-0000-0000-000000000000", clientSessionId: "00000000-0000-0000-0000-000000000000", mode: "review" as const,
-    questions: [{ id: "00000000-0000-0000-0000-000000000001", topicName: "Vorfahrt", points: 5, kind: "multiple_choice", source: "own", text: "Sie nähern sich einer Kreuzung ohne Verkehrszeichen und ohne Lichtzeichen. Was gilt?", mediaPath: null, numeric: false, answers: [{ position: 1, text: "Rechts vor links" }, { position: 2, text: "Wer zuerst kommt, fährt zuerst" }, { position: 3, text: "Die breitere Straße hat Vorfahrt" }] }],
+    questions: [{ id: "00000000-0000-0000-0000-000000000001", topicName: "Vorfahrt", points: 5, kind: "multiple_choice", source: "own", text: "Sie nähern sich einer Kreuzung ohne Verkehrszeichen und ohne Lichtzeichen. Was gilt?", mediaPath: "/media/questions/scenes/vorfahrt-rechts-vor-links.svg", mediaAlt: "Kreuzung ohne Verkehrszeichen: Ihr blaues Auto kommt von unten, ein rotes Auto von rechts. Beide wollen geradeaus.", mediaCredit: "Grafik FahrPilot (eigene Darstellung, schematisch)", numeric: false, answers: [{ position: 1, text: "Rechts vor links" }, { position: 2, text: "Wer zuerst kommt, fährt zuerst" }, { position: 3, text: "Die breitere Straße hat Vorfahrt" }] }],
   };
   return (
     <StudentShell schoolName="Fahrschule Muster (Vorschau)" legalBasisDate="2026-09-01" current="/heute">

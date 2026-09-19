@@ -15,6 +15,8 @@ export interface LocalQuestion {
   locale: string;
   text: string;
   media_path: string | null;
+  media_alt: string | null;
+  media_credit: string | null;
   explanation: string | null;
   mnemonic: string | null;
   legal_reference: string | null;

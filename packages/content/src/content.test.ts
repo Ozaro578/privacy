@@ -161,3 +161,27 @@ describe("validateContent", () => {
     expect(validateContent()).toEqual([]);
   });
 });
+
+describe("Bildmedien", () => {
+  it("jede zugeordnete Datei existiert und ist ein SVG mit Titel", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const { MEDIA, QUESTION_MEDIA } = await import("./media.js");
+    for (const m of MEDIA) {
+      const file = path.resolve(import.meta.dirname, "..", "media", m.file);
+      expect(fs.existsSync(file), m.file).toBe(true);
+      const svg = fs.readFileSync(file, "utf8");
+      expect(svg.startsWith("<svg"), m.file).toBe(true);
+      expect(svg.includes("<title>"), m.file).toBe(true);
+      expect(svg.includes("<script"), m.file).toBe(false);
+    }
+    expect(Object.keys(QUESTION_MEDIA).length).toBeGreaterThanOrEqual(80);
+  });
+
+  it("Vorfahrt- und Verkehrszeichen-Fragen haben durchgehend Bilder", async () => {
+    const { mediaForQuestion } = await import("./media.js");
+    for (const q of questions) {
+      if (q.topic === "verkehrszeichen" || (q.topic === "vorfahrt" && q.code !== "own-vorfahrt-009")) expect(mediaForQuestion(q.code), q.code).toBeDefined();
+    }
+  });
+});

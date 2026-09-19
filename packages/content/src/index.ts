@@ -5,11 +5,13 @@ export { questions } from "./questions.de.js";
 export { chapters } from "./chapters.de.js";
 export { knowledgeEntries } from "./knowledge.de.js";
 export { practicalQuestions } from "./practical-questions.de.js";
+export { MEDIA, QUESTION_MEDIA, mediaById, mediaForQuestion, mediaPublicPath, PUBLIC_MEDIA_PREFIX, type MediaItem, type MediaKind } from "./media.js";
 
 import { chapters } from "./chapters.de.js";
 import { knowledgeEntries } from "./knowledge.de.js";
 import { practicalQuestions } from "./practical-questions.de.js";
 import { questions } from "./questions.de.js";
+import { MEDIA, QUESTION_MEDIA } from "./media.js";
 import { TOPICS, TOPIC_BY_CODE } from "./topics.js";
 import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES, type Question, type TopicCode } from "./types.js";
 
@@ -103,6 +105,16 @@ export function validateContent(): string[] {
     practicalKeys.add(p.question);
     if (p.legalBasisDate !== LEGAL_BASIS_DATE) problems.push(`${w}: legalBasisDate abweichend`);
     checkDash(problems, w, p.question, p.explanation, ...p.expectedPoints);
+  }
+
+  const mediaIds = new Set(MEDIA.map((m) => m.id));
+  for (const m of MEDIA) {
+    if (!/^(signs|scenes)\/[A-Za-z0-9_.-]+\.svg$/.test(m.file)) problems.push(`Medium ${m.id}: ungültiger Dateipfad ${m.file}`);
+    if (m.alt.trim().length < 10) problems.push(`Medium ${m.id}: Alternativtext fehlt oder zu kurz`);
+  }
+  for (const [code, id] of Object.entries(QUESTION_MEDIA)) {
+    if (!codes.has(code)) problems.push(`Medienzuordnung ${code}: unbekannter Fragecode`);
+    if (!mediaIds.has(id)) problems.push(`Medienzuordnung ${code}: unbekanntes Medium ${id}`);
   }
 
   return problems;

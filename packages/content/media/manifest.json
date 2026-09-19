@@ -1,0 +1,744 @@
+[
+  {
+    "id": "101",
+    "file": "signs/101.svg",
+    "kind": "sign",
+    "alt": "Zeichen 101 Gefahrstelle: rotes Dreieck mit Ausrufezeichen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "102",
+    "file": "signs/102.svg",
+    "kind": "sign",
+    "alt": "Zeichen 102 Kreuzung oder Einmündung mit Vorfahrt von rechts: Dreieck mit schwarzem Kreuz",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "114",
+    "file": "signs/114.svg",
+    "kind": "sign",
+    "alt": "Zeichen 114 Schleudergefahr bei Nässe oder Schmutz: Dreieck mit schleuderndem Auto",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "123",
+    "file": "signs/123.svg",
+    "kind": "sign",
+    "alt": "Zeichen 123 Arbeitsstelle: Dreieck mit arbeitender Person",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "131",
+    "file": "signs/131.svg",
+    "kind": "sign",
+    "alt": "Zeichen 131 Lichtzeichenanlage: Dreieck mit Ampel",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "151",
+    "file": "signs/151.svg",
+    "kind": "sign",
+    "alt": "Zeichen 151 Bahnübergang: Dreieck mit Zug",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "205",
+    "file": "signs/205.svg",
+    "kind": "sign",
+    "alt": "Zeichen 205 Vorfahrt gewähren: auf der Spitze stehendes Dreieck mit rotem Rand",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "206",
+    "file": "signs/206.svg",
+    "kind": "sign",
+    "alt": "Zeichen 206 Halt. Vorfahrt gewähren: rotes Achteck mit weißer Aufschrift STOP",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "208",
+    "file": "signs/208.svg",
+    "kind": "sign",
+    "alt": "Zeichen 208 Vorrang des Gegenverkehrs: roter Kreis mit rotem Pfeil nach oben und schwarzem Pfeil nach unten",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "215",
+    "file": "signs/215.svg",
+    "kind": "sign",
+    "alt": "Zeichen 215 Kreisverkehr: blauer Kreis mit drei weißen Pfeilen gegen den Uhrzeigersinn",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "224",
+    "file": "signs/224.svg",
+    "kind": "sign",
+    "alt": "Zeichen 224 Haltestelle: grünes H auf gelbem Kreis mit grünem Rand",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "237",
+    "file": "signs/237.svg",
+    "kind": "sign",
+    "alt": "Zeichen 237 Radweg: blauer Kreis mit weißem Fahrrad",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "239",
+    "file": "signs/239.svg",
+    "kind": "sign",
+    "alt": "Zeichen 239 Gehweg: blauer Kreis mit weißer gehender Person und Kind",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "250",
+    "file": "signs/250.svg",
+    "kind": "sign",
+    "alt": "Zeichen 250 Verbot für Fahrzeuge aller Art: roter Ring auf weißem Grund",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "251",
+    "file": "signs/251.svg",
+    "kind": "sign",
+    "alt": "Zeichen 251 Verbot für Kraftwagen: roter Ring mit schwarzem Auto",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "254",
+    "file": "signs/254.svg",
+    "kind": "sign",
+    "alt": "Zeichen 254 Verbot für Radverkehr: roter Ring mit Fahrrad",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "259",
+    "file": "signs/259.svg",
+    "kind": "sign",
+    "alt": "Zeichen 259 Verbot für Fußgänger: roter Ring mit gehender Person",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "260",
+    "file": "signs/260.svg",
+    "kind": "sign",
+    "alt": "Zeichen 260 Verbot für Krafträder und Kraftwagen: roter Ring mit Motorrad und Auto",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "267",
+    "file": "signs/267.svg",
+    "kind": "sign",
+    "alt": "Zeichen 267 Verbot der Einfahrt: roter Kreis mit weißem Querbalken",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "272",
+    "file": "signs/272.svg",
+    "kind": "sign",
+    "alt": "Zeichen 272 Verbot des Wendens: roter Ring mit schwarzem U-förmigem Pfeil und rotem Schrägstrich",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "276",
+    "file": "signs/276.svg",
+    "kind": "sign",
+    "alt": "Zeichen 276 Überholverbot für Kraftfahrzeuge aller Art: roter Ring mit rotem und schwarzem Auto",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "277",
+    "file": "signs/277.svg",
+    "kind": "sign",
+    "alt": "Zeichen 277 Überholverbot für Kraftfahrzeuge über 3,5 t: roter Ring mit rotem Lkw und schwarzem Auto",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "282",
+    "file": "signs/282.svg",
+    "kind": "sign",
+    "alt": "Zeichen 282 Ende aller Streckenverbote: weißer Kreis mit schrägen grauen Strichen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "283",
+    "file": "signs/283.svg",
+    "kind": "sign",
+    "alt": "Zeichen 283 Absolutes Halteverbot: blauer Kreis mit rotem Rand und zwei roten Diagonalbalken",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "286",
+    "file": "signs/286.svg",
+    "kind": "sign",
+    "alt": "Zeichen 286 Eingeschränktes Halteverbot: blauer Kreis mit rotem Rand und einem roten Diagonalbalken",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "301",
+    "file": "signs/301.svg",
+    "kind": "sign",
+    "alt": "Zeichen 301 Vorfahrt: Dreieck mit rotem Rand und breitem schwarzem Pfeil, den ein dünner Querstrich kreuzt",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "306",
+    "file": "signs/306.svg",
+    "kind": "sign",
+    "alt": "Zeichen 306 Vorfahrtstraße: gelbes Quadrat auf der Spitze mit weißem Rand",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "307",
+    "file": "signs/307.svg",
+    "kind": "sign",
+    "alt": "Zeichen 307 Ende der Vorfahrtstraße: gelbes Quadrat auf der Spitze mit schwarzem Querbalken",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "308",
+    "file": "signs/308.svg",
+    "kind": "sign",
+    "alt": "Zeichen 308 Vorrang vor dem Gegenverkehr: blaues Quadrat mit rotem Pfeil nach unten und weißem Pfeil nach oben",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "310",
+    "file": "signs/310.svg",
+    "kind": "sign",
+    "alt": "Zeichen 310 Ortstafel Vorderseite: gelbes Schild mit Ortsnamen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "311",
+    "file": "signs/311.svg",
+    "kind": "sign",
+    "alt": "Zeichen 311 Ortstafel Rückseite: gelbes Schild mit durchgestrichenem Ortsnamen und Hinweis auf nächsten Ort",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "314",
+    "file": "signs/314.svg",
+    "kind": "sign",
+    "alt": "Zeichen 314 Parken: blaues Quadrat mit weißem P",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "720",
+    "file": "signs/720.svg",
+    "kind": "sign",
+    "alt": "Zeichen 720 Grünpfeilschild: schwarzes Quadrat mit grünem Pfeil nach rechts",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "103-10",
+    "file": "signs/103-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 103 Kurve (links): Dreieck mit abknickendem Pfeil",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "117-10",
+    "file": "signs/117-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 117 Seitenwind von rechts: Dreieck mit Windsack",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "133-10",
+    "file": "signs/133-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 133 Fußgänger: Dreieck mit gehender Person",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "136-10",
+    "file": "signs/136-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 136 Kinder: Dreieck mit zwei laufenden Kindern",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "138-10",
+    "file": "signs/138-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 138 Radverkehr: Dreieck mit Fahrrad",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "142-10",
+    "file": "signs/142-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 142 Wildwechsel: Dreieck mit springendem Reh",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "201-50",
+    "file": "signs/201-50.svg",
+    "kind": "sign",
+    "alt": "Zeichen 201 Andreaskreuz: liegendes X mit roten Spitzen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "209-10",
+    "file": "signs/209-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 209 Vorgeschriebene Fahrtrichtung rechts: blauer Kreis mit weißem Pfeil nach rechts",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "220-20",
+    "file": "signs/220-20.svg",
+    "kind": "sign",
+    "alt": "Zeichen 220 Einbahnstraße: blaues Rechteck mit weißem Pfeil und Aufschrift Einbahnstraße",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "222-10",
+    "file": "signs/222-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 222 Vorgeschriebene Vorbeifahrt rechts vorbei: blauer Kreis mit schrägem weißen Pfeil nach rechts unten",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "244-1",
+    "file": "signs/244-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 244.1 Beginn einer Fahrradstraße: weißes Rechteck mit blauem Fahrrad-Kreis und Aufschrift Fahrradstraße",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "270-1",
+    "file": "signs/270-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 270.1 Umweltzone: weißes Schild mit Aufschrift Umwelt, rotem Ring mit Auto und Aufschrift ZONE",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "274-30",
+    "file": "signs/274-30.svg",
+    "kind": "sign",
+    "alt": "Zeichen 274 Zulässige Höchstgeschwindigkeit 30 km/h: roter Ring mit schwarzer 30",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "274-50",
+    "file": "signs/274-50.svg",
+    "kind": "sign",
+    "alt": "Zeichen 274 Zulässige Höchstgeschwindigkeit 50 km/h: roter Ring mit schwarzer 50",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "274-100",
+    "file": "signs/274-100.svg",
+    "kind": "sign",
+    "alt": "Zeichen 274 Zulässige Höchstgeschwindigkeit 100 km/h: roter Ring mit schwarzer 100",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "274-1",
+    "file": "signs/274-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 274.1 Beginn einer Tempo-30-Zone: weißes Schild mit rotem Ring 30 und Aufschrift ZONE",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "315-55",
+    "file": "signs/315-55.svg",
+    "kind": "sign",
+    "alt": "Zeichen 315 Parken auf Gehwegen: blaues Schild mit P und Auto, das halb auf dem Gehweg steht",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "325-1",
+    "file": "signs/325-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 325.1 Beginn eines verkehrsberuhigten Bereichs: blaues Schild mit Haus, Auto, Erwachsenem, Kind und Ball",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "330-1",
+    "file": "signs/330-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 330.1 Autobahn: blaues Schild mit weißer Brücke über zwei Fahrbahnen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "331-1",
+    "file": "signs/331-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 331.1 Kraftfahrstraße: blaues Schild mit weißem Auto von vorn",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "350-10",
+    "file": "signs/350-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 350 Fußgängerüberweg: blaues Quadrat mit weißem Dreieck, darin Person auf Zebrastreifen",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "1002-10",
+    "file": "signs/1002-10.svg",
+    "kind": "sign",
+    "alt": "Zusatzzeichen 1002-10 Verlauf der abknickenden Vorfahrtstraße nach links",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "1044-10",
+    "file": "signs/1044-10.svg",
+    "kind": "sign",
+    "alt": "Zusatzzeichen 1044-10 Rollstuhlsymbol (nur Schwerbehinderte mit Parkausweis)",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "156-10",
+    "file": "signs/156-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 156 Bake dreistreifig (240 m vor dem Bahnübergang) mit Zeichen 151",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "alpine",
+    "file": "signs/alpine.svg",
+    "kind": "sign",
+    "alt": "Alpine-Symbol: dreigipfliger Berg mit Schneeflocke (Winterreifenkennzeichnung)",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "oeldruck",
+    "file": "signs/oeldruck.svg",
+    "kind": "sign",
+    "alt": "Kontrollleuchte Öldruck: rote Ölkanne",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "330-1_331-1",
+    "file": "signs/330-1_331-1.svg",
+    "kind": "sign",
+    "alt": "Zeichen 330.1 Autobahn und Zeichen 331.1 Kraftfahrstraße nebeneinander",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "215_205",
+    "file": "signs/215_205.svg",
+    "kind": "sign",
+    "alt": "Zeichen 215 Kreisverkehr über Zeichen 205 Vorfahrt gewähren",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "306_1002-10",
+    "file": "signs/306_1002-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 306 Vorfahrtstraße mit Zusatzzeichen: Vorfahrtstraße knickt nach links ab",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "314_1044-10",
+    "file": "signs/314_1044-10.svg",
+    "kind": "sign",
+    "alt": "Zeichen 314 Parken mit Zusatzzeichen Rollstuhlsymbol",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "283_286",
+    "file": "signs/283_286.svg",
+    "kind": "sign",
+    "alt": "Zeichen 283 absolutes Halteverbot (links) und Zeichen 286 eingeschränktes Halteverbot (rechts)",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "310_311",
+    "file": "signs/310_311.svg",
+    "kind": "sign",
+    "alt": "Zeichen 310 Ortstafel (Ortseingang) und Zeichen 311 (Ortsausgang)",
+    "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
+  },
+  {
+    "id": "vorfahrt-rechts-vor-links",
+    "file": "scenes/vorfahrt-rechts-vor-links.svg",
+    "kind": "scene",
+    "alt": "Kreuzung ohne Verkehrszeichen: Ihr blaues Auto kommt von unten, ein rotes Auto von rechts. Beide wollen geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-t-einmuendung",
+    "file": "scenes/vorfahrt-t-einmuendung.svg",
+    "kind": "scene",
+    "alt": "T-Einmündung ohne Verkehrszeichen: Ihr blaues Auto fährt auf der durchgehenden Straße nach rechts, ein rotes Auto kommt von unten aus der einmündenden Straße.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-grundstuecksausfahrt",
+    "file": "scenes/vorfahrt-grundstuecksausfahrt.svg",
+    "kind": "scene",
+    "alt": "Ihr blaues Auto fährt aus einer Grundstücksausfahrt auf die Straße; auf der Straße kommt von links ein grünes Auto.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-linksabbiegen-gegenverkehr",
+    "file": "scenes/vorfahrt-linksabbiegen-gegenverkehr.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto kommt von unten und will nach links abbiegen, ein rotes Auto kommt von oben entgegen und fährt geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-einsatzfahrzeug",
+    "file": "scenes/vorfahrt-einsatzfahrzeug.svg",
+    "kind": "scene",
+    "alt": "Ihr blaues Auto fährt auf einer Vorfahrtstraße nach oben; von links nähert sich ein Einsatzfahrzeug mit Blaulicht.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-abknickend",
+    "file": "scenes/vorfahrt-abknickend.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit abknickender Vorfahrtstraße: Die Vorfahrtstraße führt von unten nach links; Ihr blaues Auto folgt ihrem Verlauf.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-rvl-drei",
+    "file": "scenes/vorfahrt-rvl-drei.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit rechts vor links: Ihr blaues Auto kommt von unten, ein rotes Auto von rechts, ein grünes Auto von links. Alle wollen geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-feldweg",
+    "file": "scenes/vorfahrt-feldweg.svg",
+    "kind": "scene",
+    "alt": "Landstraße: Ihr blaues Auto fährt nach links, von rechts kommt ein grünes Auto aus einem unbefestigten Feldweg auf die Landstraße.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-ampel-ausgefallen",
+    "file": "scenes/vorfahrt-ampel-ausgefallen.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit ausgefallener, dunkler Ampel und Zeichen 205 Vorfahrt gewähren an Ihrer Zufahrt: Ihr blaues Auto kommt von unten, ein rotes Auto von links auf der Vorfahrtstraße.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vorfahrt-rechtsabbiegen-radweg",
+    "file": "scenes/vorfahrt-rechtsabbiegen-radweg.svg",
+    "kind": "scene",
+    "alt": "Ihr blaues Auto will nach rechts abbiegen; auf dem Radweg rechts neben Ihnen fährt ein Radfahrer geradeaus weiter.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "kreisverkehr-beschildert",
+    "file": "scenes/kreisverkehr-beschildert.svg",
+    "kind": "scene",
+    "alt": "Kreisverkehr mit Zeichen 215 und 205 an der Zufahrt: Ihr blaues Auto will von unten einfahren, ein rotes Auto fährt bereits im Kreis.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "kreisverkehr-ohne-zeichen",
+    "file": "scenes/kreisverkehr-ohne-zeichen.svg",
+    "kind": "scene",
+    "alt": "Kreisverkehr ohne Verkehrszeichen: Ihr blaues Auto fährt im Kreis, ein rotes Auto will von rechts einfahren.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "kreisverkehr-ausfahrt-zebrastreifen",
+    "file": "scenes/kreisverkehr-ausfahrt-zebrastreifen.svg",
+    "kind": "scene",
+    "alt": "Kreisverkehr: Ihr blaues Auto verlässt den Kreis nach rechts; an der Ausfahrt liegt ein Zebrastreifen mit Fußgängern, ein Radfahrer nutzt den umlaufenden Radweg.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "kreisverkehr-richtung",
+    "file": "scenes/kreisverkehr-richtung.svg",
+    "kind": "scene",
+    "alt": "Kreisverkehr in Draufsicht: Die Pfeile zeigen die Fahrtrichtung im Kreis gegen den Uhrzeigersinn (rechts herum).",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "rettungsgasse-drei-fahrstreifen",
+    "file": "scenes/rettungsgasse-drei-fahrstreifen.svg",
+    "kind": "scene",
+    "alt": "Autobahn mit drei Fahrstreifen bei stockendem Verkehr: Die Fahrzeuge auf dem linken Fahrstreifen weichen nach links aus, alle anderen nach rechts; die Rettungsgasse verläuft zwischen dem linken und dem mittleren Fahrstreifen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "beschleunigungsstreifen",
+    "file": "scenes/beschleunigungsstreifen.svg",
+    "kind": "scene",
+    "alt": "Autobahnauffahrt: Ihr blaues Auto beschleunigt auf dem Beschleunigungsstreifen rechts und fädelt in eine Lücke auf dem rechten Fahrstreifen ein; auf der Autobahn fahren graue Fahrzeuge.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "reissverschluss",
+    "file": "scenes/reissverschluss.svg",
+    "kind": "scene",
+    "alt": "Ein Fahrstreifen endet: Die Fahrzeuge des endenden rechten Fahrstreifens fädeln erst unmittelbar an der Engstelle abwechselnd (Reißverschluss) in den linken Fahrstreifen ein.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "stau-rechts-schneller",
+    "file": "scenes/stau-rechts-schneller.svg",
+    "kind": "scene",
+    "alt": "Autobahn: Auf dem linken Fahrstreifen steht eine langsame Fahrzeugschlange, Ihr blaues Auto fährt auf dem rechten Fahrstreifen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "stauende-warnblinklicht",
+    "file": "scenes/stauende-warnblinklicht.svg",
+    "kind": "scene",
+    "alt": "Autobahn: Vor Ihrem blauen Auto steht ein Stauende; die vorderen Fahrzeuge haben das Warnblinklicht eingeschaltet.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "panne-warndreieck-autobahn",
+    "file": "scenes/panne-warndreieck-autobahn.svg",
+    "kind": "scene",
+    "alt": "Panne auf der Autobahn: Das Fahrzeug steht auf dem Standstreifen, das Warndreieck ist rund 150 m dahinter aufgestellt, die Insassen warten hinter der Leitplanke.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "notrufsaeule-leitpfosten",
+    "file": "scenes/notrufsaeule-leitpfosten.svg",
+    "kind": "scene",
+    "alt": "Leitpfosten am Straßenrand mit schwarzem Pfeil: Der Pfeil zeigt die Richtung zur nächsten Notrufsäule.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "linksabbieger-begegnen",
+    "file": "scenes/linksabbieger-begegnen.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto von unten und ein rotes Auto von oben wollen beide links abbiegen; sie biegen voreinander ab.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "hindernis-gegenverkehr",
+    "file": "scenes/hindernis-gegenverkehr.svg",
+    "kind": "scene",
+    "alt": "Auf Ihrer Fahrbahnseite parkt ein graues Auto; Ihr blaues Auto müsste auf die Gegenfahrbahn ausweichen, dort kommt ein rotes Auto entgegen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ueberholabstand-radfahrer",
+    "file": "scenes/ueberholabstand-radfahrer.svg",
+    "kind": "scene",
+    "alt": "Ihr blaues Auto überholt einen Radfahrer mit seitlichem Abstand: innerorts mindestens 1,5 m, außerorts mindestens 2 m.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "zebrastreifen-fussgaenger",
+    "file": "scenes/zebrastreifen-fussgaenger.svg",
+    "kind": "scene",
+    "alt": "Fußgängerüberweg (Zebrastreifen) mit Zeichen 350: Eine Person steht am Rand und will die Straße überqueren, Ihr blaues Auto nähert sich.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "linienbus-warnblinklicht",
+    "file": "scenes/linienbus-warnblinklicht.svg",
+    "kind": "scene",
+    "alt": "Ein Linienbus steht mit eingeschaltetem Warnblinklicht an einer Haltestelle (Zeichen 224); Ihr blaues Auto nähert sich von hinten, Gegenverkehr kommt entgegen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "einsatzfahrzeug-hinten",
+    "file": "scenes/einsatzfahrzeug-hinten.svg",
+    "kind": "scene",
+    "alt": "Innerorts: Hinter Ihrem blauen Auto nähert sich ein Einsatzfahrzeug mit Blaulicht und Horn; Sie machen Platz und weichen nach rechts aus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "halten-parken-kreuzung-5m",
+    "file": "scenes/halten-parken-kreuzung-5m.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit markierten 5 m Abstand vor und hinter den Schnittpunkten der Fahrbahnkanten; in diesem Bereich ist Parken verboten.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "schutzstreifen-radverkehr",
+    "file": "scenes/schutzstreifen-radverkehr.svg",
+    "kind": "scene",
+    "alt": "Straße mit Schutzstreifen für den Radverkehr (gestrichelte Linie mit Fahrradsymbol) am rechten Fahrbahnrand.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ampel-gelb",
+    "file": "scenes/ampel-gelb.svg",
+    "kind": "scene",
+    "alt": "Ampel zeigt Gelb (nur die mittlere Leuchte an).",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ampel-rot-gelb",
+    "file": "scenes/ampel-rot-gelb.svg",
+    "kind": "scene",
+    "alt": "Ampel zeigt Rot und Gelb gleichzeitig.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ampel-gruenpfeil-links",
+    "file": "scenes/ampel-gruenpfeil-links.svg",
+    "kind": "scene",
+    "alt": "Ampel zeigt einen grün leuchtenden Pfeil nach links.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ampel-rot-gruenpfeilschild",
+    "file": "scenes/ampel-rot-gruenpfeilschild.svg",
+    "kind": "scene",
+    "alt": "Rote Ampel mit Grünpfeilschild (Zeichen 720) rechts neben dem roten Licht.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "ampel-gruen-fussgaenger",
+    "file": "scenes/ampel-gruen-fussgaenger.svg",
+    "kind": "scene",
+    "alt": "Ampel zeigt Grün, aber ein Fußgänger befindet sich noch auf der Fahrbahn.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "polizist-seitlich",
+    "file": "scenes/polizist-seitlich.svg",
+    "kind": "scene",
+    "alt": "Ein Polizeibeamter steht mit seitlich ausgestreckten Armen quer zu Ihrer Fahrtrichtung: Sie sehen ihn von der Seite mit ausgestrecktem Arm zu Ihnen, das bedeutet Halt.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "dauerlichtzeichen-rotes-kreuz",
+    "file": "scenes/dauerlichtzeichen-rotes-kreuz.svg",
+    "kind": "scene",
+    "alt": "Über den Fahrstreifen einer Autobahn hängen Dauerlichtzeichen: rotes Kreuz über dem linken Fahrstreifen, grüne Pfeile über den anderen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "gelbes-blinklicht",
+    "file": "scenes/gelbes-blinklicht.svg",
+    "kind": "scene",
+    "alt": "Gelbes Blinklicht an einer Baustelle mit Zeichen 123: Es warnt vor einer Gefahrstelle.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "bahnuebergang-rotlicht",
+    "file": "scenes/bahnuebergang-rotlicht.svg",
+    "kind": "scene",
+    "alt": "Bahnübergang: Andreaskreuz mit rotem Blinklicht, die Halbschranke ist noch geöffnet; Ihr blaues Auto muss vor dem Andreaskreuz halten.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "bahnuebergang-baken",
+    "file": "scenes/bahnuebergang-baken.svg",
+    "kind": "scene",
+    "alt": "Außerorts: Vor einem Bahnübergang stehen rechts die Baken mit drei, zwei und einem Streifen (240 m, 160 m, 80 m); am Übergang das Andreaskreuz.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "anhalteweg-schema",
+    "file": "scenes/anhalteweg-schema.svg",
+    "kind": "scene",
+    "alt": "Schema Anhalteweg: Der Anhalteweg besteht aus dem Reaktionsweg (Fahrzeug fährt noch ungebremst weiter) und dem Bremsweg.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "abstand-halber-tacho",
+    "file": "scenes/abstand-halber-tacho.svg",
+    "kind": "scene",
+    "alt": "Schema Sicherheitsabstand: Bei 100 km/h beträgt der Abstand nach der Regel halber Tacho mindestens 50 m; außerorts hilft die Zwei-Sekunden-Regel.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  }
+]

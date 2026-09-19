@@ -5,8 +5,9 @@ import { apiFetch } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme";
 import { Button, Card, Loading, Screen, Txt } from "@/components/ui";
+import { QuestionMedia } from "@/components/question-media";
 
-interface ExamQ { id: string; position: number; points: number; text: string; mediaPath: string | null; numeric: boolean; answers: Array<{ position: number; text: string }> }
+interface ExamQ { id: string; position: number; points: number; text: string; mediaPath: string | null; mediaAlt: string | null; mediaCredit: string | null; numeric: boolean; answers: Array<{ position: number; text: string }> }
 interface Started { id: string; timeLimitSeconds: number | null; maxErrorPoints: number; questionsTotal: number; questions: ExamQ[] }
 interface Result { passed: boolean | null; error_points: number | null; correct_count: number | null; wrong_count: number | null; unsure_count: number | null; duration_seconds: number | null; fail_reasons: string[]; analysis: { statements?: string[]; recommendation?: { text: string } | null } | null }
 
@@ -66,6 +67,7 @@ export default function Exam() {
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>{exam.questions.map((x, k) => { const an = answers[x.id]; const d = an && (x.numeric ? an.numeric !== "" : an.selected.length > 0); return <Pressable key={x.id} accessibilityLabel={`Frage ${k + 1}`} onPress={() => setI(k)} style={{ width: 30, height: 30, borderRadius: 6, alignItems: "center", justifyContent: "center", backgroundColor: an?.unsure ? t.colors.status.warning.surface : d ? t.colors.status.success.surface : t.colors.bg.muted, borderWidth: k === i ? 2 : 0, borderColor: t.colors.action.primary }}><Txt size={11}>{k + 1}</Txt></Pressable>; })}</View>
       <Card>
         <Txt muted size={12}>{q.points} Punkte</Txt>
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <Txt bold size={18}>{q.text}</Txt>
         {q.numeric ? <TextInput accessibilityLabel="Antwort als Zahl" value={a.numeric} onChangeText={(v) => upd({ numeric: v })} keyboardType="decimal-pad" style={{ minHeight: 48, borderWidth: 1, borderColor: t.colors.border.default, borderRadius: 12, paddingHorizontal: 12, width: 160, color: t.colors.text.primary }} />
           : q.answers.map((ans) => { const sel = a.selected.includes(ans.position); return <Pressable key={ans.position} accessibilityRole="checkbox" accessibilityState={{ checked: sel }} onPress={() => upd({ selected: sel ? a.selected.filter((x) => x !== ans.position) : [...a.selected, ans.position] })} style={{ minHeight: 52, borderWidth: 2, borderRadius: 12, padding: 12, borderColor: sel ? t.colors.action.primary : t.colors.border.default, backgroundColor: sel ? t.colors.accent.surface : t.colors.bg.surface }}><Txt>{sel ? "☑ " : "☐ "}{ans.text}</Txt></Pressable>; })}

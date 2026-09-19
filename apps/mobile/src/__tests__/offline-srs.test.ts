@@ -6,7 +6,7 @@ import type { LocalQuestion } from "../offline/types";
 const now = new Date("2026-09-18T10:00:00.000Z");
 const question = (over: Partial<LocalQuestion> = {}): LocalQuestion => ({
   id: "q1", topic_id: "t1", material_kind: "basic", points: 3, difficulty: 0.5, question_kind: "multiple_choice", source: "official", license_codes: [], tags: [], version_id: "v1", locale: "de",
-  text: "Wann gilt rechts vor links?", media_path: null, explanation: "Ohne Verkehrszeichen.", mnemonic: null, legal_reference: "§ 8 StVO", legal_basis_date: "2025-01-01", numeric_answer: null, numeric_tolerance: null,
+  text: "Wann gilt rechts vor links?", media_path: null, media_alt: null, media_credit: null, explanation: "Ohne Verkehrszeichen.", mnemonic: null, legal_reference: "§ 8 StVO", legal_basis_date: "2025-01-01", numeric_answer: null, numeric_tolerance: null,
   answers: [{ position: 1, text: "Ohne Regelung", is_correct: true, explanation: null }, { position: 2, text: "Immer", is_correct: false, explanation: null }, { position: 3, text: "Auf Vorfahrtstraßen", is_correct: false, explanation: null }],
   updated_at: "2026-09-01T00:00:00.000Z", ...over,
 });

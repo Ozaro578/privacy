@@ -17,6 +17,8 @@ export interface ExamQuestionView {
   points: number;
   text: string;
   mediaPath: string | null;
+  mediaAlt: string | null;
+  mediaCredit: string | null;
   answers: Array<{ position: number; text: string }>;
   numeric: boolean;
 }
@@ -52,7 +54,7 @@ export async function createExamSimulation(): Promise<CreatedExamSimulation> {
     id: sim.id, clientSessionId, timeLimitSeconds: rule.rules.time_limit_seconds, maxErrorPoints: rule.rules.max_error_points, questionsTotal: rule.rules.questions_total,
     questions: questions.map((q, i) => {
       const full = byId.get(q.id)!;
-      return { id: q.id, position: i + 1, points: q.points, text: full.version.text, mediaPath: full.version.media_path, answers: full.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: full.version.numeric_answer !== null };
+      return { id: q.id, position: i + 1, points: q.points, text: full.version.text, mediaPath: full.version.media_path, mediaAlt: full.version.media_alt, mediaCredit: full.version.media_credit, answers: full.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: full.version.numeric_answer !== null };
     }),
   };
 }

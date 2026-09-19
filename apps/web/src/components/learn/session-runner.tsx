@@ -4,6 +4,7 @@ import Link from "next/link";
 import { recordAttempt, finishLearningSession, toggleBookmark, type StartedSession, type AttemptResult } from "@/lib/actions/learning";
 import { btn, Alert } from "@/components/ui";
 import { WhyButton } from "./why-button";
+import { QuestionMedia } from "./question-media";
 
 type Phase = "answer" | "feedback" | "done";
 
@@ -78,7 +79,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
       <div className="rounded-card bg-white p-5 shadow-card">
         {q.source === "own" && <p className="mb-2 text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p>}
-        {q.mediaPath && <img src={`/api/media?path=${encodeURIComponent(q.mediaPath)}`} alt="Verkehrssituation zur Frage" className="mb-3 w-full rounded-xl" />}
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <p className="text-lg font-medium">{q.text}</p>
         {q.numeric ? (
           <div className="mt-4">

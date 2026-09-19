@@ -2238,6 +2238,8 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          media_alt: string | null;
+          media_credit: string | null;
         };
         Insert: {
           id?: string;
@@ -2262,6 +2264,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          media_alt?: string | null;
+          media_credit?: string | null;
         };
         Update: {
           id?: string;
@@ -2286,6 +2290,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          media_alt?: string | null;
+          media_credit?: string | null;
         };
         Relationships: [
           { foreignKeyName: "question_versions_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },

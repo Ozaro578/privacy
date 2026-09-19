@@ -5,7 +5,7 @@ import type { LocalQuestion, LocalQuestionState } from "../offline/types";
 const now = new Date("2026-09-18T10:00:00.000Z");
 const q = (id: string, over: Partial<LocalQuestion> = {}): LocalQuestion => ({
   id, topic_id: "t1", material_kind: "basic", points: 3, difficulty: 0.4, question_kind: "multiple_choice", source: "official", license_codes: [], tags: [], version_id: `v-${id}`, locale: "de",
-  text: id, media_path: null, explanation: null, mnemonic: null, legal_reference: null, legal_basis_date: null, numeric_answer: null, numeric_tolerance: null,
+  text: id, media_path: null, media_alt: null, media_credit: null, explanation: null, mnemonic: null, legal_reference: null, legal_basis_date: null, numeric_answer: null, numeric_tolerance: null,
   answers: [{ position: 1, text: "a", is_correct: true, explanation: null }, { position: 2, text: "b", is_correct: false, explanation: null }], updated_at: "2026-09-01T00:00:00.000Z", ...over,
 });
 const seq = () => { let i = 0; return () => { i = (i * 9301 + 49297) % 233280; return i / 233280; }; };

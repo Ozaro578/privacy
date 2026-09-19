@@ -17,6 +17,8 @@ export interface SessionQuestion {
   source: string;
   text: string;
   mediaPath: string | null;
+  mediaAlt: string | null;
+  mediaCredit: string | null;
   answers: Array<{ position: number; text: string }>;
   numeric: boolean;
 }
@@ -48,7 +50,7 @@ export async function startLearningSession(input: { mode: LearningMode; topicId?
   return {
     sessionId: session.id, clientSessionId, mode,
     questions: selected.map((m) => byId.get(m.id)!).map((q) => ({
-      id: q.id, topicName: topicName(q.topic_id), points: q.points, kind: q.question_kind, source: q.source, text: q.version.text, mediaPath: q.version.media_path,
+      id: q.id, topicName: topicName(q.topic_id), points: q.points, kind: q.question_kind, source: q.source, text: q.version.text, mediaPath: q.version.media_path, mediaAlt: q.version.media_alt, mediaCredit: q.version.media_credit,
       answers: q.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: q.version.numeric_answer !== null,
     })),
   };

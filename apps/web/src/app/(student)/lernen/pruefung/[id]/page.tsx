@@ -10,10 +10,10 @@ export default async function ExamPage({ params }: { params: Promise<{ id: strin
   const ctx = await getStudentContext();
   const { data: sim } = await ctx.db.from("exam_simulations").select("*").eq("id", id).eq("student_id", ctx.student.id).maybeSingle();
   if (!sim) notFound();
-  const { data: results } = await ctx.db.from("exam_results").select("id, position, question_id, points, selected_positions, is_correct, marked_unsure, question_versions(text, media_path, numeric_answer, explanation, question_answers(position, text, is_correct))").eq("exam_simulation_id", sim.id).order("position");
-  type V = { text: string; media_path: string | null; numeric_answer: number | null; explanation: string | null; question_answers: Array<{ position: number; text: string; is_correct: boolean }> };
+  const { data: results } = await ctx.db.from("exam_results").select("id, position, question_id, points, selected_positions, is_correct, marked_unsure, question_versions(text, media_path, media_alt, media_credit, numeric_answer, explanation, question_answers(position, text, is_correct))").eq("exam_simulation_id", sim.id).order("position");
+  type V = { text: string; media_path: string | null; media_alt: string | null; media_credit: string | null; numeric_answer: number | null; explanation: string | null; question_answers: Array<{ position: number; text: string; is_correct: boolean }> };
   if (sim.status === "in_progress") {
-    const questions: ExamQuestionView[] = (results ?? []).map((r) => { const v = r.question_versions as unknown as V; return { id: r.question_id, position: r.position, text: v.text, points: r.points, mediaPath: v.media_path, numeric: v.numeric_answer !== null, answers: v.question_answers.sort((a, b) => a.position - b.position).map((a) => ({ position: a.position, text: a.text })) }; });
+    const questions: ExamQuestionView[] = (results ?? []).map((r) => { const v = r.question_versions as unknown as V; return { id: r.question_id, position: r.position, text: v.text, points: r.points, mediaPath: v.media_path, mediaAlt: v.media_alt, mediaCredit: v.media_credit, numeric: v.numeric_answer !== null, answers: v.question_answers.sort((a, b) => a.position - b.position).map((a) => ({ position: a.position, text: a.text })) }; });
     return <ExamRunner simulationId={sim.id} questions={questions} timeLimitSeconds={sim.time_limit_seconds} startedAt={sim.started_at} />;
   }
   const analysis = sim.analysis as unknown as ErrorAnalysis | null;

@@ -75,7 +75,7 @@ export const verkehrszeichen: readonly Question[] = [
   }),
   q({
     code: "own-verkehrszeichen-011", topic: "verkehrszeichen", points: 3, difficulty: 0.4, tags: ["vorfahrt_beschildert", "vorfahrt"],
-    text: "Wofür gilt das Zeichen 301 (Vorfahrt, gelbes Quadrat im weißen Dreieck)?",
+    text: "Wofür gilt das Zeichen 301 „Vorfahrt“ (Dreieck mit rotem Rand und breitem schwarzem Pfeil)?",
     answers: [t("Nur für die nächste Kreuzung oder Einmündung"), f("Für die gesamte Straße bis zum Aufhebungszeichen", "Das ist die Wirkung der Vorfahrtstraße (Zeichen 306)."), f("Für eine Strecke von einem Kilometer", "Es gibt keine feste Streckenlänge.")],
     explanation: "Zeichen 301 gewährt Vorfahrt nur an der nächsten Kreuzung oder Einmündung. Dauerhaft bevorrechtigt ist man nur auf einer Vorfahrtstraße (Zeichen 306).",
     legalReference: "§ 42 StVO, Anlage 3 (Zeichen 301)",

@@ -4,6 +4,7 @@ import postgres from "postgres";
 import { chapters } from "./chapters.de.js";
 import { validateContent } from "./index.js";
 import { knowledgeEntries } from "./knowledge.de.js";
+import { mediaForQuestion, mediaPublicPath } from "./media.js";
 import { practicalQuestions } from "./practical-questions.de.js";
 import { questions } from "./questions.de.js";
 import { TOPICS } from "./topics.js";
@@ -59,14 +60,17 @@ async function seedQuestions(sql: Sql, topicIds: Map<TopicCode, string>): Promis
       inserted += 1;
     }
 
+    const media = mediaForQuestion(q.code);
     const [version] = await sql<{ id: string }[]>`
-      insert into public.question_versions (question_id, version, locale, text, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, review_status, source_note)
+      insert into public.question_versions (question_id, version, locale, text, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, review_status, source_note, media_path, media_kind, media_alt, media_credit)
       values (${questionId}, ${VERSION}, ${LOCALE}, ${q.text}, ${q.explanation}, ${q.mnemonic ?? null}, ${q.legalReference ?? null}, ${q.legalBasisDate},
-              ${q.numericAnswer ?? null}, ${q.tolerance ?? null}, ${q.reviewStatus}, ${"Eigene Übungsfrage (kein amtlicher Prüfungsinhalt)"})
+              ${q.numericAnswer ?? null}, ${q.tolerance ?? null}, ${q.reviewStatus}, ${"Eigene Übungsfrage (kein amtlicher Prüfungsinhalt)"},
+              ${media ? mediaPublicPath(media) : null}, ${media ? "image" : null}, ${media?.alt ?? null}, ${media?.credit ?? null})
       on conflict (question_id, version, locale) do update
         set text = excluded.text, explanation = excluded.explanation, mnemonic = excluded.mnemonic, legal_reference = excluded.legal_reference,
             legal_basis_date = excluded.legal_basis_date, numeric_answer = excluded.numeric_answer, numeric_tolerance = excluded.numeric_tolerance,
-            review_status = excluded.review_status, source_note = excluded.source_note
+            review_status = excluded.review_status, source_note = excluded.source_note,
+            media_path = excluded.media_path, media_kind = excluded.media_kind, media_alt = excluded.media_alt, media_credit = excluded.media_credit
       returning id`;
     if (!version) throw new Error(`Version für ${q.code} konnte nicht angelegt werden`);
 
