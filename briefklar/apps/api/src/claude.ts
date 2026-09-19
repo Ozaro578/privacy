@@ -80,7 +80,7 @@ export async function explainLetter(
   try {
     const response = await client.messages.parse({
       model: config.model,
-      max_tokens: 8000,
+      max_tokens: 16000,
       system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       thinking: { type: "adaptive" },
       output_config: { effort: config.effort, format: EXPLAIN_OUTPUT_FORMAT },

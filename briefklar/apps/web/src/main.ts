@@ -1,7 +1,7 @@
 import { isLanguageCode, type ExplainResult, type LanguageCode, LIMITS } from "@briefklar/shared";
 import "./styles.css";
 import { clear } from "./render/dom";
-import { setUiLanguage, t } from "./i18n";
+import { setUiLanguage, t, type UiKey } from "./i18n";
 import { renderStart, renderLanguagePicker } from "./render/start";
 import { renderPreview } from "./render/preview";
 import { renderLoading } from "./render/loading";
@@ -136,23 +136,29 @@ function render(): void {
 }
 
 async function addFiles(existing: Page[], files: File[]): Promise<void> {
-  const pages = [...existing];
+  if (state.kind === "preview" && state.busy) return; // läuft schon
+  setState({ kind: "preview", pages: existing, error: null, busy: true });
+  const added: Page[] = [];
   let error: string | null = null;
-  setState({ kind: "preview", pages, error: null, busy: true });
   for (const f of files) {
-    if (pages.length >= LIMITS.MAX_IMAGES) {
+    if (existing.length + added.length >= LIMITS.MAX_IMAGES) {
       error = t("too_many_files", { n: LIMITS.MAX_IMAGES });
       break;
     }
     try {
-      pages.push(await preparePage(f));
+      added.push(await preparePage(f));
     } catch (e) {
       error = e instanceof PageError ? e.message : t("image_failed", { name: f.name });
     }
   }
-  if (state.kind !== "preview") return; // Nutzer hat inzwischen abgebrochen
-  setState(pages.length ? { kind: "preview", pages, error, busy: false } : { kind: "start" });
-  if (!pages.length && error) setState({ kind: "error", message: error, pages: [] });
+  if (state.kind !== "preview") {
+    added.forEach(revokePage); // Nutzer hat inzwischen abgebrochen
+    return;
+  }
+  const pages = [...state.pages, ...added];
+  if (pages.length) setState({ kind: "preview", pages, error, busy: false });
+  else if (error) setState({ kind: "error", message: error, pages: [] });
+  else setState({ kind: "start" });
 }
 
 async function runExplain(pages: Page[]): Promise<void> {
@@ -172,9 +178,29 @@ async function runExplain(pages: Page[]): Promise<void> {
     setState({ kind: "result", result, demo: false });
   } catch (e) {
     if (controller.signal.aborted) return;
-    const message = e instanceof ExplainError ? e.message : t("network_error");
+    const message = e instanceof ExplainError ? errorMessage(e) : t("network_error");
     setState({ kind: "error", message, pages });
   }
+}
+
+/** Fehlertext in der UI-Sprache; Servertext (deutsch) nur als Rückfall. */
+const ERROR_KEYS: Partial<Record<ExplainError["code"], UiKey>> = {
+  network: "network_error",
+  cancelled: "cancelled",
+  invalid_response: "invalid_response",
+  rate_limited: "err_rate_limited",
+  refused: "err_refused",
+  image_too_large: "err_image_too_large",
+  unsupported_media_type: "err_unsupported",
+  too_many_images: "err_too_many",
+  no_image: "no_pages",
+  upstream_error: "err_upstream",
+  internal_error: "err_upstream",
+  invalid_language: "err_upstream",
+};
+function errorMessage(e: ExplainError): string {
+  const key = ERROR_KEYS[e.code];
+  return key ? t(key, { n: LIMITS.MAX_IMAGES }) : e.message;
 }
 
 /* ---------- Start ---------- */

@@ -24,7 +24,7 @@ export const MESSAGE_BY_CODE: Record<ApiErrorCode, string> = {
   invalid_language: "Diese Sprache wird nicht unterstützt.",
   rate_limited: "Zu viele Anfragen in kurzer Zeit. Bitte in ein paar Minuten noch einmal versuchen.",
   upstream_error: "Der Brief konnte gerade nicht ausgewertet werden. Bitte später noch einmal versuchen.",
-  refused: "Dieser Inhalt kann nicht ausgewertet werden. Bitte nur amtliche oder geschäftliche Briefe hochladen.",
+  refused: "Dieser Brief konnte nicht ausgewertet werden. Bitte versuche es mit einer anderen Aufnahme oder wende dich an eine Beratungsstelle.",
   internal_error: "Ein unerwarteter Fehler ist aufgetreten. Bitte später noch einmal versuchen.",
 };
 

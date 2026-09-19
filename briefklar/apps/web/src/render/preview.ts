@@ -15,7 +15,6 @@ export interface PreviewActions {
 
 export function renderPreview(a: PreviewActions): HTMLElement {
   const input = h("input", { type: "file", accept: "image/*,application/pdf", multiple: true, class: "sr-only", tabindex: -1, "aria-hidden": "true" });
-  input.setAttribute("capture", "environment");
   input.addEventListener("change", () => {
     const files = Array.from(input.files ?? []);
     input.value = "";
@@ -31,12 +30,12 @@ export function renderPreview(a: PreviewActions): HTMLElement {
         { class: "page-tile" },
         p.thumbUrl ? h("img", { src: p.thumbUrl, alt: t("page_label", { n: i + 1 }) }) : h("div", { class: "pdf" }, t("pdf_badge")),
         h("span", { class: "label" }, t("page_label", { n: i + 1 })),
-        h("button", { type: "button", class: "remove", "aria-label": t("remove_page", { n: i + 1 }), onclick: () => a.onRemove(p.id) }, icon("close")),
+        h("button", { type: "button", class: "remove", disabled: a.busy, "aria-label": t("remove_page", { n: i + 1 }), onclick: () => a.onRemove(p.id) }, icon("close")),
       ),
     );
   });
   if (a.pages.length < LIMITS.MAX_IMAGES) {
-    grid.appendChild(h("button", { type: "button", class: "page-add", onclick: () => input.click() }, icon("plus"), t("add_page")));
+    grid.appendChild(h("button", { type: "button", class: "page-add", disabled: a.busy, onclick: () => input.click() }, icon("plus"), t("add_page")));
   }
 
   return h(
@@ -45,7 +44,7 @@ export function renderPreview(a: PreviewActions): HTMLElement {
     h(
       "header",
       { class: "topbar" },
-      h("button", { type: "button", class: "icon-btn", onclick: a.onBack, "aria-label": t("back") }, icon("chevron_start")),
+      h("button", { type: "button", class: "icon-btn", disabled: a.busy, onclick: a.onBack, "aria-label": t("back") }, icon("chevron_start")),
       h("h1", null, t("preview_title")),
     ),
     h("p", { class: "muted" }, `${t("pages_count", { n: a.pages.length })} · ${t("total_size", { size: formatBytes(total) })}`),

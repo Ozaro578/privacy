@@ -3,7 +3,7 @@ import { isRtl, type LanguageCode } from "@briefklar/shared";
 /**
  * UI-Texte (Chrome: Buttons, Überschriften, Hinweise).
  * Deutsch ist die Basis; en/tr/ar/uk/ru sind vollständig übersetzt,
- * alle anderen Sprachen fallen auf Deutsch zurück.
+ * alle anderen Sprachen fallen auf Englisch zurück (wie der Hinweis-Dialog).
  */
 const de = {
   appointments_title: "Termine",
@@ -133,6 +133,12 @@ const de = {
   demo_badge: "Beispiel",
 
   error_title: "Das hat leider nicht geklappt",
+  err_rate_limited: "Zu viele Anfragen in kurzer Zeit. Bitte warte ein paar Minuten und versuche es dann noch einmal.",
+  err_refused: "Dieser Brief konnte nicht ausgewertet werden. Versuche eine andere Aufnahme oder frag eine Beratungsstelle.",
+  err_image_too_large: "Die Bilder sind zu groß. Bitte weniger Seiten oder kleinere Dateien.",
+  err_unsupported: "Dieses Dateiformat wird nicht unterstützt. Bitte JPG, PNG, WebP oder PDF.",
+  err_too_many: "Zu viele Seiten. Bitte höchstens {n} Seiten pro Brief.",
+  err_upstream: "Der Dienst ist gerade nicht erreichbar. Bitte versuche es in ein paar Minuten noch einmal.",
   retry: "Noch einmal versuchen",
   network_error: "Keine Verbindung zum Server. Bitte prüfe dein Internet und versuche es noch einmal.",
   cancelled: "Abgebrochen.",
@@ -275,6 +281,12 @@ const en: UiStrings = {
   demo_badge: "Example",
 
   error_title: "Sorry, that didn't work",
+  err_rate_limited: "Too many requests in a short time. Please wait a few minutes and try again.",
+  err_refused: "This letter could not be analysed. Try another photo or ask a counselling centre.",
+  err_image_too_large: "The images are too large. Please use fewer pages or smaller files.",
+  err_unsupported: "This file type is not supported. Please use JPG, PNG, WebP or PDF.",
+  err_too_many: "Too many pages. Please use at most {n} pages per letter.",
+  err_upstream: "The service is currently unavailable. Please try again in a few minutes.",
   retry: "Try again",
   network_error: "No connection to the server. Please check your internet and try again.",
   cancelled: "Cancelled.",
@@ -414,6 +426,12 @@ const tr: UiStrings = {
   demo_badge: "Örnek",
 
   error_title: "Maalesef işe yaramadı",
+  err_rate_limited: "Kısa sürede çok fazla istek. Lütfen birkaç dakika bekleyip tekrar deneyin.",
+  err_refused: "Bu mektup değerlendirilemedi. Başka bir fotoğraf deneyin veya bir danışma merkezine sorun.",
+  err_image_too_large: "Görseller çok büyük. Lütfen daha az sayfa veya daha küçük dosyalar kullanın.",
+  err_unsupported: "Bu dosya türü desteklenmiyor. Lütfen JPG, PNG, WebP veya PDF kullanın.",
+  err_too_many: "Çok fazla sayfa. Mektup başına en fazla {n} sayfa.",
+  err_upstream: "Hizmet şu anda kullanılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.",
   retry: "Tekrar dene",
   network_error: "Sunucuya bağlanılamıyor. Lütfen internetini kontrol et ve tekrar dene.",
   cancelled: "İptal edildi.",
@@ -553,6 +571,12 @@ const ar: UiStrings = {
   demo_badge: "مثال",
 
   error_title: "للأسف لم ينجح ذلك",
+  err_rate_limited: "طلبات كثيرة في وقت قصير. يرجى الانتظار بضع دقائق ثم المحاولة مرة أخرى.",
+  err_refused: "تعذر تحليل هذه الرسالة. جرّب صورة أخرى أو اسأل مركز استشارة.",
+  err_image_too_large: "الصور كبيرة جدًا. يرجى استخدام صفحات أقل أو ملفات أصغر.",
+  err_unsupported: "نوع الملف هذا غير مدعوم. يرجى استخدام JPG أو PNG أو WebP أو PDF.",
+  err_too_many: "صفحات كثيرة جدًا. الحد الأقصى {n} صفحات لكل رسالة.",
+  err_upstream: "الخدمة غير متاحة حاليًا. يرجى المحاولة مرة أخرى بعد بضع دقائق.",
   retry: "حاول مرة أخرى",
   network_error: "لا يوجد اتصال بالخادم. يرجى التحقق من الإنترنت والمحاولة مجدداً.",
   cancelled: "تم الإلغاء.",
@@ -692,6 +716,12 @@ const uk: UiStrings = {
   demo_badge: "Приклад",
 
   error_title: "На жаль, не вдалося",
+  err_rate_limited: "Забагато запитів за короткий час. Зачекайте кілька хвилин і спробуйте ще раз.",
+  err_refused: "Цей лист не вдалося проаналізувати. Спробуйте інше фото або зверніться до консультаційного центру.",
+  err_image_too_large: "Зображення надто великі. Використайте менше сторінок або менші файли.",
+  err_unsupported: "Цей тип файлу не підтримується. Використовуйте JPG, PNG, WebP або PDF.",
+  err_too_many: "Забагато сторінок. Не більше {n} сторінок на лист.",
+  err_upstream: "Сервіс наразі недоступний. Спробуйте ще раз за кілька хвилин.",
   retry: "Спробувати ще раз",
   network_error: "Немає з'єднання з сервером. Перевір інтернет і спробуй ще раз.",
   cancelled: "Скасовано.",
@@ -831,6 +861,12 @@ const ru: UiStrings = {
   demo_badge: "Пример",
 
   error_title: "К сожалению, не получилось",
+  err_rate_limited: "Слишком много запросов за короткое время. Подождите несколько минут и попробуйте снова.",
+  err_refused: "Это письмо не удалось проанализировать. Попробуйте другое фото или обратитесь в консультационный центр.",
+  err_image_too_large: "Изображения слишком большие. Используйте меньше страниц или файлы меньшего размера.",
+  err_unsupported: "Этот тип файла не поддерживается. Используйте JPG, PNG, WebP или PDF.",
+  err_too_many: "Слишком много страниц. Не более {n} страниц на письмо.",
+  err_upstream: "Сервис сейчас недоступен. Попробуйте снова через несколько минут.",
   retry: "Попробовать ещё раз",
   network_error: "Нет соединения с сервером. Проверь интернет и попробуй ещё раз.",
   cancelled: "Отменено.",
@@ -848,7 +884,7 @@ let current: LanguageCode = "de";
 
 /** Sprache, in der die UI tatsächlich angezeigt wird (mit Fallback auf Deutsch). */
 export function uiLanguage(): LanguageCode {
-  return DICTS[current] ? current : "de";
+  return DICTS[current] ? current : "en";
 }
 
 export function hasUiTranslation(code: LanguageCode): boolean {
@@ -864,8 +900,8 @@ export function setUiLanguage(code: LanguageCode): void {
 }
 
 export function t(key: UiKey, vars?: Record<string, string | number>): string {
-  const dict = DICTS[current] ?? de;
-  let s = dict[key] ?? de[key];
+  const dict = DICTS[current] ?? en;
+  let s = dict[key] ?? en[key];
   if (vars) {
     for (const [k, v] of Object.entries(vars)) s = s.replaceAll(`{${k}}`, String(v));
   }

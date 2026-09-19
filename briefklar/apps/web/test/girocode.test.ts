@@ -15,7 +15,8 @@ describe("girocode", () => {
   });
   it("builds an EPC069-12 payload", () => {
     const lines = girocodePayload(payment).split("\n");
-    expect(lines).toEqual(["BCD", "002", "1", "SCT", "BYLADEM1001", "Jobcenter Berlin Mitte", "DE02120300000000202051", "EUR128.40", "", "962D-45 Erstattung", ""]);
+    expect(lines).toEqual(["BCD", "002", "1", "SCT", "BYLADEM1001", "Jobcenter Berlin Mitte", "DE02120300000000202051", "EUR128.40", "", "", "962D-45 Erstattung", ""]);
+    expect(lines).toHaveLength(12);
     expect(canBuildGirocode(payment)).toBe(true);
   });
   it("refuses without recipient or with bad IBAN", () => {

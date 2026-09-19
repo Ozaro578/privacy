@@ -43,7 +43,8 @@ export function girocodePayload(p: PaymentInfo): string {
     (p.recipient ?? "").slice(0, 70),
     normalizeIban(p.iban ?? ""),
     amount,
-    "", // Purpose code
+    "", // Purpose code (4 Zeichen, optional)
+    "", // strukturierter Verwendungszweck (ISO 11649 RF) – nicht genutzt
     (p.reference ?? "").slice(0, 140), // unstrukturierter Verwendungszweck
     "", // Hinweis an den Nutzer
   ];

@@ -29,7 +29,7 @@ function convertInner(schema: z.ZodTypeAny): JsonSchema {
     const required: string[] = [];
     for (const [key, value] of Object.entries(shape)) {
       properties[key] = convert(value);
-      required.push(key);
+      if (!(value instanceof z.ZodOptional)) required.push(key);
     }
     return { type: "object", properties, required, additionalProperties: false };
   }
@@ -39,8 +39,14 @@ function convertInner(schema: z.ZodTypeAny): JsonSchema {
     const isInt = schema._def.checks.some((c) => c.kind === "int");
     const out: JsonSchema = { type: isInt ? "integer" : "number" };
     for (const check of schema._def.checks) {
-      if (check.kind === "min") out.minimum = check.value;
-      if (check.kind === "max") out.maximum = check.value;
+      if (check.kind === "min") {
+        if (check.inclusive) out.minimum = check.value;
+        else out.exclusiveMinimum = check.value;
+      }
+      if (check.kind === "max") {
+        if (check.inclusive) out.maximum = check.value;
+        else out.exclusiveMaximum = check.value;
+      }
     }
     return out;
   }

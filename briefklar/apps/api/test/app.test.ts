@@ -194,7 +194,8 @@ describe("api", () => {
     const send = (ip: string) =>
       built.app.request("/api/explain", {
         method: "POST",
-        headers: { "x-forwarded-for": `${ip}, 10.0.0.1` },
+        // Client-gefälschter Eintrag zuerst, echte IP (vom Edge angehängt) zuletzt
+        headers: { "x-forwarded-for": `9.9.9.9, ${ip}` },
         body: multipart({ files: [{ bytes: PNG, type: "image/png" }] }),
       });
     expect((await send("1.1.1.1")).status).toBe(200);
@@ -208,9 +209,28 @@ describe("api", () => {
     expect((await send("4.4.4.4")).status).toBe(429);
   });
 
-  it("sets CORS and security headers", async () => {
+  it("sets security and cache headers, no CORS by default", async () => {
     const res = await built.app.request("/api/health", { headers: { origin: "https://example.org" } });
-    expect(res.headers.get("access-control-allow-origin")).toBe("*");
+    expect(res.headers.get("access-control-allow-origin")).toBeNull();
     expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("enables CORS only when CORS_ORIGIN is set", async () => {
+    built.close();
+    built = createApp({ config: testConfig({ corsOrigin: "https://briefklar.example" }) });
+    const res = await built.app.request("/api/health", { headers: { origin: "https://briefklar.example" } });
+    expect(res.headers.get("access-control-allow-origin")).toBe("https://briefklar.example");
+  });
+
+  it("rejects requests whose total size exceeds the limit", async () => {
+    const big = new Uint8Array(5 * 1024 * 1024);
+    big.set(PNG);
+    const res = await built.app.request("/api/explain", {
+      method: "POST",
+      body: multipart({ files: Array.from({ length: 4 }, () => ({ bytes: big, type: "image/png" })), language: "de" }),
+    });
+    expect(res.status).toBe(413);
+    expect((await res.json()).error.code).toBe("image_too_large");
   });
 });

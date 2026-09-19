@@ -20,7 +20,7 @@ services:
       - key: RATE_LIMIT_PER_15MIN
         value: "20"
       - key: CORS_ORIGIN
-        value: "*"
+        value: ""
       - key: TRUST_PROXY
         value: "true"
       - key: STATIC_DIR

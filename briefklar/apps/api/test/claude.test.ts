@@ -72,7 +72,7 @@ describe("explainLetter", () => {
     expect(parse).toHaveBeenCalledTimes(1);
     const params = parse.mock.calls[0]![0] as Record<string, any>;
     expect(params.model).toBe("claude-opus-5");
-    expect(params.max_tokens).toBe(8000);
+    expect(params.max_tokens).toBe(16000);
     expect(params.thinking).toEqual({ type: "adaptive" });
     expect(params.system).toEqual([{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }]);
     expect(params.output_config.effort).toBe("high");

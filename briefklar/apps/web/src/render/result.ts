@@ -1,7 +1,7 @@
 import { isRtl, type ExplainResult, type Appointment, type Deadline, type LanguageCode } from "@briefklar/shared";
 import { h, icon, toast, copyText, type Child } from "./dom";
 import { t, formatDate, bcp47, type UiKey } from "../i18n";
-import { buildIcs, downloadIcs, googleCalendarUrl, type IcsEvent } from "../ics";
+import { buildIcs, downloadIcs, googleCalendarUrl, isIsoDate, type IcsEvent } from "../ics";
 import { canBuildGirocode, formatIban, paymentAsText, renderGirocode } from "../girocode";
 
 export interface ResultActions {
@@ -65,7 +65,8 @@ function calendarButtons(ev: IcsEvent, filename: string): HTMLElement[] {
   return out;
 }
 
-function appointmentItem(ap: Appointment, r: ExplainResult, lang: LanguageCode): HTMLElement {
+function appointmentItem(ap: Appointment, r: ExplainResult, lang: LanguageCode): HTMLElement | null {
+  if (!isIsoDate(ap.date)) return null;
   const when = ap.time ? t("at_time", { date: formatDate(ap.date, lang), time: ap.time }) : `${formatDate(ap.date, lang)} · ${t("all_day")}`;
   const descParts = [ap.notes, r.sender.name ? t("from_letter", { sender: r.sender.name }) : null, r.reference_number ? `${t("reference")}: ${r.reference_number}` : null].filter(Boolean);
   const ev: IcsEvent = {
@@ -91,7 +92,7 @@ function appointmentItem(ap: Appointment, r: ExplainResult, lang: LanguageCode):
 
 function deadlineItem(dl: Deadline, r: ExplainResult, lang: LanguageCode): HTMLElement {
   const title = t("reminder_prefix", { text: dl.description });
-  const ev: IcsEvent | null = dl.date
+  const ev: IcsEvent | null = isIsoDate(dl.date)
     ? {
         title,
         date: dl.date,
@@ -195,13 +196,13 @@ export function renderResult(a: ResultActions): HTMLElement {
   /* ---------- Was tun ---------- */
   if (r.actions.length) {
     const list = h("ol", { class: "checklist" });
-    for (const st of r.actions) {
-      const id = `act-${st.step}`;
+    r.actions.forEach((st, i) => {
+      const id = `act-${i}`;
       const cb = h("input", { type: "checkbox", id });
       const li = h("li", null, cb, h("label", { for: id }, h("span", { class: "num" }, `${st.step}.`), st.text, " ", h("span", { class: `badge ${st.required ? "badge-req" : "badge-opt"}` }, st.required ? t("required") : t("optional"))));
       cb.addEventListener("change", () => li.classList.toggle("done", cb.checked));
       list.appendChild(li);
-    }
+    });
     cards.push(h("div", { class: "card" }, h("h2", { class: "card-title" }, icon("check"), t("actions_title")), list));
   }
 
@@ -225,6 +226,7 @@ export function renderResult(a: ResultActions): HTMLElement {
       if (r.scam_risk === "hoch") {
         body.push(h("p", { class: "msg-error" }, t("payment_blocked")));
       } else {
+        const suspicious = r.scam_risk === "mittel";
         const due = p.due_date ? formatDate(p.due_date, lang) : null;
         const kv = h("dl", { class: "kv" });
         const row = (k: string, v: string, cls = "") => kv.append(h("dt", null, k), h("dd", { class: cls }, v));
@@ -234,7 +236,8 @@ export function renderResult(a: ResultActions): HTMLElement {
         if (p.reference) row(t("purpose"), p.reference);
         if (due) row(t("due_date"), due);
         body.push(kv);
-        const btns = h(
+        if (suspicious) body.push(h("p", { class: "msg-error" }, t("scam_mittel")));
+        const btns = suspicious ? null : h(
           "div",
           { class: "btn-row" },
           p.iban ? h("button", { type: "button", class: "btn btn-secondary", onclick: async () => toast((await copyText(formatIban(p.iban!))) ? t("copied") : t("copy")) }, icon("copy"), t("copy_iban")) : null,
@@ -250,14 +253,14 @@ export function renderResult(a: ResultActions): HTMLElement {
             t("copy_all"),
           ),
         );
-        body.push(btns);
-        if (canBuildGirocode(p)) {
+        if (btns) body.push(btns);
+        if (!suspicious && canBuildGirocode(p)) {
           const canvas = h("canvas", { "aria-label": t("girocode_title") });
           const qr = h("div", { class: "qr" }, canvas, h("p", { class: "small muted center" }, t("girocode_hint")));
           body.push(h("h3", null, t("girocode_title")), qr);
           void renderGirocode(canvas, p).catch(() => qr.remove());
         }
-        if (p.due_date) {
+        if (p.due_date && isIsoDate(p.due_date)) {
           const ev: IcsEvent = {
             title: t("reminder_prefix", { text: `${p.amount_eur != null ? `${p.amount_eur.toFixed(2).replace(".", ",")} € ` : ""}${r.sender.name ?? ""}`.trim() }),
             date: p.due_date,
@@ -276,7 +279,8 @@ export function renderResult(a: ResultActions): HTMLElement {
   const c = r.sender.contact;
   const contactBtns: Child[] = [];
   if (c.phone) contactBtns.push(h("a", { class: "btn btn-secondary", href: `tel:${c.phone.replace(/[^\d+]/g, "")}` }, icon("phone"), t("call")));
-  if (c.email) contactBtns.push(h("a", { class: "btn btn-secondary", href: `mailto:${c.email}${r.reference_number ? `?subject=${encodeURIComponent(r.reference_number)}` : ""}` }, icon("mail"), t("write_email")));
+  const email = c.email && /^[^\s@?&#,;]+@[^\s@?&#,;]+\.[^\s@?&#,;]+$/.test(c.email) ? c.email : null;
+  if (email) contactBtns.push(h("a", { class: "btn btn-secondary", href: `mailto:${email}${r.reference_number ? `?subject=${encodeURIComponent(r.reference_number)}` : ""}` }, icon("mail"), t("write_email")));
   const web = c.website ? safeHttpUrl(c.website) : null;
   if (web) contactBtns.push(h("a", { class: "btn btn-secondary", href: web, target: "_blank", rel: "noopener noreferrer" }, icon("link"), t("open_website")));
   if (c.address) contactBtns.push(h("a", { class: "btn btn-secondary", href: mapsUrl(c.address), target: "_blank", rel: "noopener noreferrer" }, icon("pin"), t("route")));

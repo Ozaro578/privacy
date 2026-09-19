@@ -15,7 +15,7 @@ const EnvSchema = z.object({
   ANTHROPIC_MODEL: z.string().trim().min(1).default("claude-opus-5"),
   ANTHROPIC_EFFORT: z.enum(EFFORTS).default("medium"),
   RATE_LIMIT_PER_15MIN: z.coerce.number().int().min(0).default(20),
-  CORS_ORIGIN: z.string().trim().min(1).default("*"),
+  CORS_ORIGIN: z.string().trim().default(""),
   STATIC_DIR: z.string().trim().min(1).optional(),
   TRUST_PROXY: boolFromEnv,
 });

@@ -17,7 +17,7 @@ import { createRateLimiter } from "./rate-limit.js";
 
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 /** Multipart-Overhead (Boundaries, Felder) großzügig einplanen */
-const MAX_BODY_BYTES = LIMITS.MAX_IMAGES * LIMITS.MAX_IMAGE_BYTES + 1024 * 1024;
+const MAX_BODY_BYTES = LIMITS.MAX_TOTAL_BYTES + 1024 * 1024;
 
 function readVersion(): string {
   try {
@@ -45,9 +45,10 @@ export interface App {
 
 function clientIp(c: Context, trustProxy: boolean): string {
   if (trustProxy) {
+    // Der letzte Eintrag wurde vom eigenen Edge-Proxy angehängt; alles davor kann der Client fälschen.
     const xff = c.req.header("x-forwarded-for");
-    const first = xff?.split(",")[0]?.trim();
-    if (first) return first;
+    const last = xff?.split(",").map((s) => s.trim()).filter(Boolean).at(-1);
+    if (last) return last;
   }
   try {
     const info = getConnInfo(c);
@@ -70,15 +71,26 @@ export function createApp(options: AppOptions = {}): App {
   const app = new Hono();
 
   app.use("*", secureHeaders());
-  app.use(
-    "/api/*",
-    cors({
-      origin: config.corsOrigin === "*" ? "*" : config.corsOrigin.split(",").map((o) => o.trim()),
-      allowMethods: ["GET", "POST", "OPTIONS"],
-      allowHeaders: ["Content-Type"],
-      maxAge: 600,
-    }),
-  );
+  // Die App läuft same-origin (API liefert das Frontend aus). CORS nur, wenn explizit konfiguriert.
+  if (config.corsOrigin) {
+    app.use(
+      "/api/*",
+      cors({
+        origin: config.corsOrigin === "*" ? "*" : config.corsOrigin.split(",").map((o) => o.trim()),
+        allowMethods: ["GET", "POST", "OPTIONS"],
+        allowHeaders: ["Content-Type"],
+        maxAge: 600,
+      }),
+    );
+  }
+  // Cache-Regeln: API nie cachen, App-Shell immer neu prüfen, gehashte Assets lange cachen.
+  app.use("*", async (c, next) => {
+    await next();
+    const p = c.req.path;
+    if (p.startsWith("/api/")) c.header("Cache-Control", "no-store");
+    else if (p.startsWith("/assets/")) c.header("Cache-Control", "public, max-age=31536000, immutable");
+    else if (!c.res.headers.get("Cache-Control")) c.header("Cache-Control", "no-cache");
+  });
 
   app.onError((err, c) => {
     if (err instanceof AppError) {
@@ -143,6 +155,8 @@ export function createApp(options: AppOptions = {}): App {
       if (files.length > LIMITS.MAX_IMAGES) throw new AppError("too_many_images");
 
       const images: ExplainLetterInput["images"] = [];
+      const totalBytes = files.reduce((s, f) => s + f.size, 0);
+      if (totalBytes > LIMITS.MAX_TOTAL_BYTES) throw new AppError("image_too_large");
       for (const file of files) {
         if (file.size > LIMITS.MAX_IMAGE_BYTES) throw new AppError("image_too_large");
         const bytes = new Uint8Array(await file.arrayBuffer());

@@ -23,10 +23,13 @@ describe("ics", () => {
   it("escapes commas and newlines", () => {
     const ics = buildIcs([{ title: "A, B", date: "2026-01-01", time: null, description: "Zeile 1\nZeile 2", alarmsMinutesBefore: [] }]);
     expect(ics).toContain("SUMMARY:A\\, B");
+    const loc = buildIcs([{ title: "x", date: "2026-01-01", time: null, location: "Str. 1; Raum 2", alarmsMinutesBefore: [] }]);
+    expect(loc).toContain("LOCATION:Str. 1\\; Raum 2");
     expect(ics).toContain("DESCRIPTION:Zeile 1\\nZeile 2");
   });
   it("skips invalid dates", () => {
     expect(buildIcs([{ title: "x", date: "kein datum", time: null, alarmsMinutesBefore: [] }])).not.toContain("BEGIN:VEVENT");
+    expect(buildIcs([{ title: "x", date: "2026-13-45", time: null, alarmsMinutesBefore: [] }])).not.toContain("BEGIN:VEVENT");
   });
   it("google calendar url", () => {
     const u = googleCalendarUrl({ title: "T", date: "2026-09-24", time: "09:30", durationMinutes: 60, alarmsMinutesBefore: [] })!;

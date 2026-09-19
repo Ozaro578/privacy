@@ -47,7 +47,7 @@ npm run build -w @briefklar/shared        # Schema/Sprachen einmal bauen
 cp apps/api/.env.example apps/api/.env   # dann ANTHROPIC_API_KEY eintragen
 export ANTHROPIC_API_KEY=sk-ant-...       # oder in apps/api/.env
 
-npm run dev:api                           # API auf http://localhost:3000
+npm run dev:api                           # API auf http://localhost:8787
 npm run dev:web                           # Web-App auf http://localhost:5173 (Proxy → API)
 ```
 
@@ -59,7 +59,7 @@ Umgebungsvariablen der API:
 | `RATE_LIMIT_PER_15MIN` | nein | `20` | Anfragen pro IP-Adresse und 15 Minuten (im RAM) |
 | `CORS_ORIGIN` | nein | `*` (dev) | Erlaubte Origin der Web-App |
 | `STATIC_DIR` | nein | – | Wenn gesetzt: gebaute Web-App wird von der API ausgeliefert (Produktion) |
-| `PORT` | nein | `3000` | Port der API |
+| `PORT` | nein | `8787` | Port der API |
 
 ## Tests und Checks
 

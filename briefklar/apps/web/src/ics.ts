@@ -25,7 +25,7 @@ function pad(n: number): string {
 }
 
 function esc(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  return s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 }
 
 /** Zeilen auf 75 Oktette falten (RFC 5545 §3.1). */
@@ -53,6 +53,7 @@ function fold(line: string): string {
 }
 
 function parseDate(date: string): { y: number; m: number; d: number } | null {
+  if (!isIsoDate(date)) return null;
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(date);
   if (!m) return null;
   return { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) };
@@ -106,6 +107,13 @@ const VTIMEZONE = [
   "END:STANDARD",
   "END:VTIMEZONE",
 ];
+
+export function isIsoDate(s: string | null | undefined): s is string {
+  if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split("-").map(Number) as [number, number, number];
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
 
 export function buildIcs(events: IcsEvent[]): string {
   const lines: string[] = [

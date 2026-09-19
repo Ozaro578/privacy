@@ -64,10 +64,7 @@ export async function preparePage(file: File): Promise<Page> {
   try {
     source = await decode(file);
   } catch {
-    if (isAllowed(file.type) && file.size <= LIMITS.MAX_IMAGE_BYTES) {
-      // Kann nicht dekodiert werden, ist aber erlaubt: Original hochladen.
-      return { id, file, name: file.name, bytes: file.size, isPdf: false, thumbUrl: URL.createObjectURL(file) };
-    }
+    // Nicht dekodierbar -> nicht hochladen (Original könnte EXIF/GPS enthalten).
     throw new PageError(t("image_failed", { name: file.name }));
   }
 
@@ -91,9 +88,8 @@ export async function preparePage(file: File): Promise<Page> {
   canvas.width = canvas.height = 0;
   if (!blob) throw new PageError(t("image_failed", { name: file.name }));
 
-  // Falls das Original bereits kleiner und erlaubt ist, bleibt es beim Original.
-  const useOriginal = isAllowed(file.type) && file.size < blob.size && scale === 1;
-  const out = useOriginal ? file : new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  // Immer neu kodieren: entfernt EXIF-Metadaten (GPS, Gerät) zuverlässig.
+  const out = new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
   if (out.size > LIMITS.MAX_IMAGE_BYTES) {
     throw new PageError(t("file_too_large", { name: file.name, max: `${LIMITS.MAX_IMAGE_BYTES / (1024 * 1024)} MB` }));
   }
