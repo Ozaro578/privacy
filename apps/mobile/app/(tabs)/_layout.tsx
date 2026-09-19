@@ -1,10 +1,10 @@
 import { Tabs, Redirect } from "expo-router";
-import { Text } from "react-native";
+import { Text, type ColorValue } from "react-native";
 import { useSession } from "@/lib/session";
 import { ProfileProvider } from "@/lib/profile";
 import { useTheme } from "@/lib/theme";
 
-const icon = (glyph: string) => ({ color }: { color: string }) => <Text style={{ fontSize: 18, color }}>{glyph}</Text>;
+const icon = (glyph: string) => ({ color }: { color: ColorValue }) => <Text style={{ fontSize: 18, color }}>{glyph}</Text>;
 
 export default function TabsLayout() {
   const t = useTheme();

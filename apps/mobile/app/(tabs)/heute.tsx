@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useProfile } from "@/lib/profile";
 import { useTheme, readinessColor, bandLabel, fmtDate, fmtTime, parseRange } from "@/lib/theme";
 import { loadQuestions } from "@/lib/content";
+import { loadTopics } from "@/lib/db";
 import { stateStore, kvStore } from "@/lib/sync";
 import { KV_STREAK, KV_DAILY_GOAL } from "@/offline/sync";
 import { localOverview } from "@/offline/local-learning";
@@ -30,14 +31,16 @@ export default function Today() {
       supabase.from("theory_exams").select("scheduled_at").eq("student_license_id", profile.licenseId).eq("status", "scheduled").maybeSingle(),
       loadQuestions(), stateStore.loadAll(), kvStore.get(KV_STREAK), kvStore.get(KV_DAILY_GOAL),
     ]);
+    const topicNames = new Map((await loadTopics()).map((x) => [x.id, x.name] as const));
     const ov = localOverview(pool, states);
     const streak = streakRaw ? (JSON.parse(streakRaw) as { current_days: number }).current_days : 0;
     const goal = goalRaw ? (JSON.parse(goalRaw) as { answered: number; achieved: boolean }) : null;
     const nl = lesson ? { start: parseRange(lesson.period as unknown as string).start, instructor: (lesson.instructors as unknown as { display_name: string } | null)?.display_name ?? "" } : null;
     const nc = cls ? { start: parseRange(cls.period as unknown as string).start, title: cls.title } : null;
-    const weakest = ov.weakestTopicId;
-    const today = planToday({ now: new Date(), dueQuestions: ov.dueCount, weakestTopic: weakest ? { id: weakest, name: ov.weakestTopicName ?? "Thema" } : null, instructorFlaggedSkills: [], nextLesson: nl ? { starts_at: nl.start, instructor_name: nl.instructor } : null, nextTheoryClass: nc ? { starts_at: nc.start, title: nc.title } : null, missingDocuments: (docs ?? []).map((x) => x.title), theoryExamAt: exam?.scheduled_at ?? null, practicalExamAt: null, openInvoiceCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), dailyGoalDone: goal?.achieved ?? false, learnedToday: (goal?.answered ?? 0) > 0, streakDays: streak, readinessScore: snap?.overall_score ?? null });
-    setD({ readiness: snap?.overall_score ?? null, theory: snap?.theory_score ?? Math.round(ov.overallMastery * 100), practical: snap?.practical_score ?? null, nextLesson: nl, nextClass: nc, missingDocs: (docs ?? []).map((x) => x.title), openCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), today, streak, due: ov.dueCount, theoryExamAt: exam?.scheduled_at ?? null });
+    const weakestT = [...ov.topics].filter((x) => x.question_count > 0).sort((a, b) => a.mastery - b.mastery)[0];
+    const weakest = weakestT && weakestT.mastery < 0.7 ? weakestT.topic_id : null;
+    const today = planToday({ now: new Date(), dueQuestions: ov.due, weakestTopic: weakest ? { id: weakest, name: topicNames.get(weakest) ?? "Thema" } : null, instructorFlaggedSkills: [], nextLesson: nl ? { starts_at: nl.start, instructor_name: nl.instructor } : null, nextTheoryClass: nc ? { starts_at: nc.start, title: nc.title } : null, missingDocuments: (docs ?? []).map((x) => x.title), theoryExamAt: exam?.scheduled_at ?? null, practicalExamAt: null, openInvoiceCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), dailyGoalDone: goal?.achieved ?? false, learnedToday: (goal?.answered ?? 0) > 0, streakDays: streak, readinessScore: snap?.overall_score ?? null });
+    setD({ readiness: snap?.overall_score ?? null, theory: snap?.theory_score ?? Math.round(ov.overallMastery * 100), practical: snap?.practical_score ?? null, nextLesson: nl, nextClass: nc, missingDocs: (docs ?? []).map((x) => x.title), openCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), today, streak, due: ov.due, theoryExamAt: exam?.scheduled_at ?? null });
   }, [profile]);
   useEffect(() => { void load(); }, [load]);
   if (loading || (!d && !error)) return <Screen><Loading /></Screen>;

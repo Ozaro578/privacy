@@ -9,7 +9,7 @@ export const readinessColor = (t: NativeTheme, score: number | null): string => 
   if (score === null) return t.colors.text.muted;
   if (score < 40) return t.colors.readiness.red.fill;
   if (score < 70) return t.colors.readiness.orange.fill;
-  if (score < 85) return t.colors.readiness["yellow-green"].fill;
+  if (score < 85) return t.colors.readiness.yellow_green.fill;
   return t.colors.readiness.green.fill;
 };
 export const bandLabel = (score: number | null): string => score === null ? "Noch keine Daten" : score < 40 ? "Noch nicht prüfungsbereit" : score < 70 ? "Auf gutem Weg" : score < 85 ? "Fast bereit" : "Sehr gute Vorbereitung";

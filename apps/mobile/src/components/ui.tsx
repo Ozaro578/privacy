@@ -11,7 +11,7 @@ export function Card({ children, title, style }: { children: ReactNode; title?: 
   const t = useTheme();
   return <View style={[{ backgroundColor: t.colors.bg.surface, borderRadius: 16, padding: 16, gap: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: t.colors.border.subtle }, style]}>{title && <Text style={{ fontSize: 16, fontWeight: "600", color: t.colors.text.primary }}>{title}</Text>}{children}</View>;
 }
-export function Txt({ children, muted, bold, size = 15, color, center }: { children: ReactNode; muted?: boolean; bold?: boolean; size?: number; color?: string; center?: boolean }) {
+export function Txt({ children, muted, bold, size = 15, color, center }: { children: ReactNode; muted?: boolean; bold?: boolean; size?: number; color?: string | undefined; center?: boolean }) {
   const t = useTheme();
   return <Text style={{ fontSize: size, fontWeight: bold ? "600" : "400", color: color ?? (muted ? t.colors.text.secondary : t.colors.text.primary), textAlign: center ? "center" : "left" }}>{children}</Text>;
 }
@@ -25,7 +25,7 @@ export function Button({ label, onPress, variant = "primary", disabled, loading 
     </Pressable>
   );
 }
-export function ProgressBar({ value, label, color }: { value: number; label?: string; color?: string }) {
+export function ProgressBar({ value, label, color }: { value: number; label?: string; color?: string | undefined }) {
   const t = useTheme();
   const v = Math.max(0, Math.min(100, Math.round(value)));
   return (
@@ -35,7 +35,7 @@ export function ProgressBar({ value, label, color }: { value: number; label?: st
     </View>
   );
 }
-export function Pill({ children, color }: { children: ReactNode; color?: string }) {
+export function Pill({ children, color }: { children: ReactNode; color?: string | undefined }) {
   const t = useTheme();
   return <View style={{ alignSelf: "flex-start", paddingHorizontal: 10, paddingVertical: 3, borderRadius: 999, backgroundColor: color ?? t.colors.bg.muted }}><Text style={{ fontSize: 12, fontWeight: "600", color: t.colors.text.primary }}>{children}</Text></View>;
 }
