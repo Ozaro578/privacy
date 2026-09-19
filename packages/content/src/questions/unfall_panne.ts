@@ -5,17 +5,17 @@ import { q, t, f } from "./_helpers.js";
 export const unfallPanne: readonly Question[] = [
   q({
     code: "own-unfall_panne-001", topic: "unfall_panne", points: 3, difficulty: 0.3, tags: ["warndreieck", "autobahn", "absichern"],
-    text: "In welcher Entfernung stellen Sie das Warndreieck auf der Autobahn auf?",
+    text: "In welcher Entfernung stellen Sie das Warndreieck auf der Autobahn nach der üblichen Faustregel auf?",
     answers: [t("Etwa 150 bis 200 Meter hinter dem Fahrzeug"), f("Etwa 50 Meter hinter dem Fahrzeug", "Das reicht auf der Autobahn bei hohen Geschwindigkeiten nicht aus."), f("Etwa 400 Meter hinter dem Fahrzeug", "So weit ist nicht nötig; üblich sind 150 bis 200 Meter.")],
-    explanation: "Auf der Autobahn wird das Warndreieck etwa 150 bis 200 Meter hinter dem Fahrzeug aufgestellt, auf Landstraßen etwa 100 Meter, innerorts etwa 50 Meter. Vor Kurven und Kuppen entsprechend weiter.",
-    legalReference: "§ 15 StVO",
+    explanation: "Die StVO verlangt nur, das Warndreieck in ausreichender Entfernung aufzustellen; feste Meterangaben nennt sie nicht. Als Faustregel aus der Fahrpraxis gelten auf der Autobahn etwa 150 bis 200 Meter, auf Landstraßen etwa 100 Meter, innerorts etwa 50 Meter. Vor Kurven und Kuppen entsprechend weiter.",
+    legalReference: "§ 15 Abs. 1 StVO (ausreichende Entfernung); Meterangaben sind Praxisempfehlung",
   }),
   q({
     code: "own-unfall_panne-002", topic: "unfall_panne", points: 2, difficulty: 0.3, tags: ["warndreieck", "ausserorts", "absichern"],
-    text: "In welcher Entfernung stellen Sie das Warndreieck auf einer Landstraße auf?",
+    text: "In welcher Entfernung stellen Sie das Warndreieck auf einer Landstraße nach der üblichen Faustregel auf?",
     answers: [t("Etwa 100 Meter hinter dem Fahrzeug"), f("Etwa 20 Meter hinter dem Fahrzeug", "Das ist zu nah, um nachfolgende Fahrzeuge rechtzeitig zu warnen."), f("Etwa 300 Meter hinter dem Fahrzeug", "Auf Landstraßen sind etwa 100 Meter üblich.")],
-    explanation: "Auf Landstraßen wird das Warndreieck in etwa 100 Metern Entfernung aufgestellt. Wichtig ist, dass es vor Kurven oder Kuppen für den nachfolgenden Verkehr rechtzeitig sichtbar ist.",
-    legalReference: "§ 15 StVO",
+    explanation: "Die StVO schreibt nur eine ausreichende Entfernung vor, keine feste Meterzahl. Als Faustregel aus der Fahrpraxis gelten auf Landstraßen etwa 100 Meter. Wichtig ist, dass das Dreieck vor Kurven oder Kuppen für den nachfolgenden Verkehr rechtzeitig sichtbar ist.",
+    legalReference: "§ 15 Abs. 1 StVO (ausreichende Entfernung); Meterangaben sind Praxisempfehlung",
   }),
   q({
     code: "own-unfall_panne-003", topic: "unfall_panne", points: 3, difficulty: 0.2, tags: ["unfall", "absichern", "rettungskette"],

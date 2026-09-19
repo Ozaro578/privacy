@@ -101,7 +101,6 @@ export const QUESTION_MEDIA: Readonly<Record<string, string>> = {
   "own-fahrmanoever-009": "hindernis-gegenverkehr",
   // Halten und Parken
   "own-halten_parken-002": "halten-parken-kreuzung-5m",
-  "own-halten_parken-003": "halten-parken-kreuzung-5m",
   "own-halten_parken-004": "283_286",
   "own-halten_parken-005": "224",
   "own-halten_parken-008": "220-20",
@@ -117,7 +116,6 @@ export const QUESTION_MEDIA: Readonly<Record<string, string>> = {
   "own-besondere_situationen-008": "bahnuebergang-baken",
   // Unfall und Panne
   "own-unfall_panne-001": "panne-warndreieck-autobahn",
-  "own-unfall_panne-002": "panne-warndreieck-autobahn",
   "own-unfall_panne-007": "panne-warndreieck-autobahn",
   "own-unfall_panne-010": "notrufsaeule-leitpfosten",
   // Umwelt, Fahrzeugtechnik

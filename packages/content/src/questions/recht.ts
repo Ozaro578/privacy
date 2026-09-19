@@ -50,7 +50,7 @@ export const recht: readonly Question[] = [
     text: "Was trifft auf die Schlüsselzahl B196 zu?",
     answers: [t("Sie erlaubt das Führen von Krafträdern der Klasse A1 (bis 125 cm³ und 11 kW) mit einer Fahrerlaubnis der Klasse B"), t("Voraussetzung sind ein Mindestalter von 25 Jahren, mindestens fünf Jahre Klasse B und eine Fahrschulschulung ohne Prüfung"), f("Sie gilt auch im EU-Ausland", "B196 ist eine nationale Regelung und gilt nur in Deutschland.")],
     explanation: "Mit B196 dürfen Inhaber der Klasse B nach einer Schulung Leichtkrafträder bis 125 cm³ und 11 kW fahren. Es gibt keine Prüfung, dafür Mindestalter 25, fünf Jahre Klasse B und die Beschränkung auf Deutschland.",
-    legalReference: "§ 6b FeV",
+    legalReference: "§ 6 Abs. 4 FeV; Anlage 7b FeV",
   }),
   q({
     code: "own-recht-008", topic: "recht", points: 2, difficulty: 0.3, tags: ["sonderfahrten", "ausbildung"],
@@ -71,7 +71,7 @@ export const recht: readonly Question[] = [
     code: "own-recht-010", topic: "recht", points: 2, difficulty: 0.2, tags: ["fuehrerschein", "mitfuehrpflicht"],
     text: "Sie haben Ihren Führerschein zu Hause vergessen und fahren trotzdem. Was gilt?",
     answers: [t("Das ist eine Ordnungswidrigkeit, denn der Führerschein muss beim Fahren mitgeführt werden"), f("Die Fahrerlaubnis erlischt dadurch", "Die Fahrerlaubnis bleibt bestehen; nur der Nachweis fehlt."), f("Ein Foto des Führerscheins auf dem Handy genügt", "Ein Foto ersetzt das Dokument nicht.")],
-    explanation: "Der Führerschein ist beim Führen eines Kraftfahrzeugs mitzuführen und auf Verlangen vorzuzeigen. Wer ihn nicht dabeihat, handelt ordnungswidrig, verliert aber nicht die Fahrerlaubnis.",
+    explanation: "Der Führerschein ist beim Führen eines Kraftfahrzeugs mitzuführen und auf Verlangen vorzuzeigen. Wer ihn nicht dabeihat, handelt ordnungswidrig (Verwarnungsgeld 10 Euro), verliert aber nicht die Fahrerlaubnis.",
     legalReference: "§ 4 Abs. 2 FeV",
   }),
   q({

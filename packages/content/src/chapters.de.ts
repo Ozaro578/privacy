@@ -100,7 +100,7 @@ Verkehrszeichen ordnen sich in drei Gruppen. Wer die Form kennt, erkennt die Bed
 
 ## Typische Fehler
 
-- Zeichen 301 mit Zeichen 306 verwechseln: Das gelbe Quadrat im Dreieck gilt nur für die nächste Kreuzung.
+- Zeichen 301 mit Zeichen 306 verwechseln: Das Dreieck mit dem breiten schwarzen Pfeil (301) gilt nur für die nächste Kreuzung, das gelbe Quadrat (306) bis zum Ende der Vorfahrtstraße.
 - Am Stoppschild nur abbremsen statt vollständig anzuhalten.
 - Im verkehrsberuhigten Bereich außerhalb markierter Flächen parken oder schneller als Schrittgeschwindigkeit fahren.
 
@@ -194,7 +194,7 @@ Ampeln, Dauerlichtzeichen und Polizeibeamte regeln den Verkehr dort, wo die Grun
 - **Leuchtender grüner Pfeil:** Gibt nur die angezeigte Richtung frei; der kreuzende Verkehr hat in dieser Phase Rot.
 - **Dauerlichtzeichen:** Rotes Kreuz sperrt den Fahrstreifen, grüner Pfeil nach unten gibt ihn frei, gelb blinkender Schrägpfeil kündigt den Wechsel an.
 - **Gelbes Blinklicht:** Warnt vor Gefahr, verpflichtet nicht zum Anhalten.
-- **Polizei:** Seitlich ausgestreckte Arme quer zur Fahrtrichtung bedeuten freie Fahrt. Brust oder Rücken zugewandt bedeutet Halt. Ein hoch erhobener Arm kündigt den Wechsel an.
+- **Polizei:** Seitlich ausgestreckte Arme quer zu Ihrer Fahrtrichtung (Brust oder Rücken zugewandt) bedeuten Halt. Wer in Richtung der Arme fährt, also den Beamten von der Seite sieht, hat freie Fahrt. Ein hoch erhobener Arm kündigt den Wechsel an.
 - **Bahnübergang:** Rotes Licht oder rotes Blinklicht bedeutet Halt, auch bei offener Schranke.
 
 ## Typische Fehler
@@ -427,7 +427,7 @@ Bei einem Unfall zählt die richtige Reihenfolge: absichern, Notruf, Erste Hilfe
 
 ## Kernregeln
 
-- **Absichern:** Warnblinklicht einschalten, Warnweste anziehen, Warndreieck aufstellen. Abstände: innerorts etwa 50 Meter, Landstraße etwa 100 Meter, Autobahn 150 bis 200 Meter, vor Kurven und Kuppen entsprechend weiter.
+- **Absichern:** Warnblinklicht einschalten, Warnweste anziehen, Warndreieck in ausreichender Entfernung aufstellen (§ 15 StVO nennt keine Meterzahl). Faustregel aus der Praxis: innerorts etwa 50 Meter, Landstraße etwa 100 Meter, Autobahn 150 bis 200 Meter, vor Kurven und Kuppen entsprechend weiter.
 - **Notruf 112:** Wo ist es passiert, was ist passiert, wie viele Verletzte, welche Verletzungen, warten auf Rückfragen.
 - **Erste Hilfe:** Bewusstlose mit normaler Atmung in die stabile Seitenlage bringen und die Atmung überwachen. Ohne normale Atmung Wiederbelebung beginnen. Bewusstlosen Motorradfahrern wird der Helm vorsichtig abgenommen, damit die Atemwege frei bleiben.
 - **Panne auf der Autobahn:** Seitenstreifen, Warnblinklicht, Warnweste, Warndreieck, dann hinter die Schutzplanke. Notrufsäulen sind über die Pfeile auf den Leitpfosten zu finden.
@@ -499,7 +499,7 @@ Alkohol und Drogen verändern Wahrnehmung, Reaktion und Risikobereitschaft. Die 
 - **Ab 1,1 Promille** gilt absolute Fahruntüchtigkeit: Straftat mit Entzug der Fahrerlaubnis (§ 316 StGB).
 - **Ab 1,6 Promille** wird in der Regel eine medizinisch-psychologische Untersuchung angeordnet. Für Radfahrer gilt 1,6 Promille als Grenze der absoluten Fahruntüchtigkeit.
 - **Abbau:** Etwa 0,1 Promille pro Stunde. Kaffee, Schlaf, Bewegung oder Essen beschleunigen nichts. Restalkohol am Morgen ist ein häufiges Problem.
-- **Cannabis:** Seit 2024 gilt ein Grenzwert von 3,5 ng THC pro ml Blutserum. Für Fahranfänger und unter 21-Jährige gilt ein vollständiges Cannabisverbot am Steuer.
+- **Cannabis:** Seit August 2024 gilt ein Grenzwert von 3,5 ng THC pro ml Blutserum. Für Fahranfänger und unter 21-Jährige gilt ein vollständiges Cannabisverbot am Steuer. Mischkonsum mit Alkohol wird strenger geahndet.
 - **Medikamente:** Auch rezeptfreie Mittel können die Fahrtüchtigkeit beeinträchtigen. Beipackzettel lesen, im Zweifel Arzt oder Apotheke fragen.
 
 ## Wirkung von Alkohol

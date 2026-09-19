@@ -192,7 +192,7 @@
     "id": "307",
     "file": "signs/307.svg",
     "kind": "sign",
-    "alt": "Zeichen 307 Ende der Vorfahrtstraße: gelbes Quadrat auf der Spitze mit schwarzem Querbalken",
+    "alt": "Zeichen 307 Ende der Vorfahrtstraße: gelbes Quadrat auf der Spitze mit schwarzem Schrägbalken",
     "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
   },
   {
@@ -276,14 +276,14 @@
     "id": "201-50",
     "file": "signs/201-50.svg",
     "kind": "sign",
-    "alt": "Zeichen 201 Andreaskreuz: liegendes X mit roten Spitzen",
+    "alt": "Zeichen 201 Andreaskreuz: weißes X-förmiges Kreuz mit roten Spitzen",
     "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
   },
   {
-    "id": "209-10",
-    "file": "signs/209-10.svg",
+    "id": "209-20",
+    "file": "signs/209-20.svg",
     "kind": "sign",
-    "alt": "Zeichen 209 Vorgeschriebene Fahrtrichtung rechts: blauer Kreis mit weißem Pfeil nach rechts",
+    "alt": "Zeichen 209-20 Vorgeschriebene Fahrtrichtung rechts: blauer Kreis mit weißem Pfeil nach rechts",
     "credit": "Verkehrszeichen nach StVO (amtliches Werk, § 5 UrhG); Vektorzeichnung FahrPilot"
   },
   {
@@ -696,7 +696,7 @@
     "id": "polizist-seitlich",
     "file": "scenes/polizist-seitlich.svg",
     "kind": "scene",
-    "alt": "Ein Polizeibeamter steht mit seitlich ausgestreckten Armen quer zu Ihrer Fahrtrichtung: Sie sehen ihn von der Seite mit ausgestrecktem Arm zu Ihnen, das bedeutet Halt.",
+    "alt": "Ein Polizeibeamter steht Ihnen mit der Brust zugewandt und hat beide Arme seitlich ausgestreckt, also quer zu Ihrer Fahrtrichtung: Das bedeutet Halt vor der Kreuzung (wie Rot). Wer in Richtung der Arme fährt, hat freie Fahrt.",
     "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
   },
   {

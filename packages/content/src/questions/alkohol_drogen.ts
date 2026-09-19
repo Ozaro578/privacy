@@ -46,9 +46,9 @@ export const alkoholDrogen: readonly Question[] = [
   q({
     code: "own-alkohol_drogen-007", topic: "alkohol_drogen", points: 3, difficulty: 0.5, tags: ["cannabis", "thc", "drogen"],
     text: "Was gilt seit 2024 für Cannabis im Straßenverkehr?",
-    answers: [t("Ab 3,5 Nanogramm THC pro Milliliter Blutserum liegt eine Ordnungswidrigkeit vor"), t("Für Fahranfänger in der Probezeit und Fahrer unter 21 Jahren gilt ein vollständiges Cannabisverbot am Steuer"), t("Wer unter Cannabiseinfluss fährt, darf keinen Alkohol getrunken haben"), f("Cannabis ist am Steuer seit der Legalisierung ohne Grenzwert erlaubt", "Es gibt einen festen Grenzwert und strenge Regeln für Fahranfänger.")],
-    explanation: "Für THC gilt ein Grenzwert von 3,5 ng/ml im Blutserum. Für Fahranfänger und unter 21-Jährige gilt ein Cannabisverbot, und Mischkonsum mit Alkohol ist untersagt.",
-    legalReference: "§ 24a StVG", reviewStatus: "needs_verification",
+    answers: [t("Ab 3,5 Nanogramm THC pro Milliliter Blutserum liegt eine Ordnungswidrigkeit vor"), t("Für Fahranfänger in der Probezeit und Fahrer unter 21 Jahren gilt ein vollständiges Cannabisverbot am Steuer"), t("Wer mit 3,5 ng/ml THC oder mehr fährt und zusätzlich Alkohol getrunken hat, wird wegen Mischkonsums deutlich strenger geahndet"), f("Cannabis ist am Steuer seit der Legalisierung ohne Grenzwert erlaubt", "Es gibt einen festen Grenzwert und strenge Regeln für Fahranfänger.")],
+    explanation: "Für THC gilt seit August 2024 ein Grenzwert von 3,5 ng/ml im Blutserum. Für Fahranfänger in der Probezeit und unter 21-Jährige gilt ein vollständiges Cannabisverbot am Steuer. Wer den THC-Grenzwert erreicht und zugleich Alkohol getrunken hat, wird wegen Mischkonsums mit einem höheren Bußgeld belegt.",
+    legalReference: "§ 24a Abs. 1a StVG; § 24c StVG", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-alkohol_drogen-008", topic: "alkohol_drogen", points: 2, difficulty: 0.2, tags: ["medikamente"],

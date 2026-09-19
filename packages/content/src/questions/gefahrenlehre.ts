@@ -20,7 +20,7 @@ export const gefahrenlehre: readonly Question[] = [
     code: "own-gefahrenlehre-003", topic: "gefahrenlehre", points: 3, difficulty: 0.4, tags: ["ablenkung", "handy", "innerorts"],
     text: "Sie stehen mit laufendem Motor an einer roten Ampel. Dürfen Sie das Smartphone in die Hand nehmen, um eine Nachricht zu lesen?",
     answers: [t("Nein, das Aufnehmen und Halten des Geräts ist bei laufendem Motor verboten"), f("Ja, weil das Fahrzeug steht", "Das Verbot gilt auch im Stand, solange der Motor läuft."), f("Ja, wenn es weniger als zehn Sekunden dauert", "Eine zeitliche Ausnahme gibt es nicht.")],
-    explanation: "Ein elektronisches Gerät darf nur benutzt werden, wenn es dafür weder aufgenommen noch gehalten wird. Nur bei stehendem Fahrzeug mit vollständig abgeschaltetem Motor ist das Halten erlaubt; ein automatisch abgeschalteter Motor der Start-Stopp-Funktion zählt dabei als abgeschaltet.",
+    explanation: "Ein elektronisches Gerät darf nur benutzt werden, wenn es dafür weder aufgenommen noch gehalten wird. Nur bei stehendem Fahrzeug mit vollständig ausgeschaltetem Motor ist das Halten erlaubt. Ein von der Start-Stopp-Automatik nur vorübergehend abgeschalteter Motor gilt dabei nicht als ausgeschaltet.",
     legalReference: "§ 23 Abs. 1a und 1b StVO",
   }),
   q({

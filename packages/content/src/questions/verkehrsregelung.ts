@@ -33,9 +33,9 @@ export const verkehrsregelung: readonly Question[] = [
   }),
   q({
     code: "own-verkehrsregelung-005", topic: "verkehrsregelung", points: 3, difficulty: 0.4, tags: ["polizei", "handzeichen"],
-    text: "Ein Polizeibeamter regelt den Verkehr und steht mit seitlich ausgestreckten Armen quer zu Ihrer Fahrtrichtung. Was bedeutet das für Sie?",
-    answers: [t("Freie Fahrt, entsprechend Grün"), f("Halt, entsprechend Rot", "Rot ist, wenn Ihnen Brust oder Rücken zugewandt sind."), f("Achtung, die Regelung wird gewechselt", "Das entspricht dem hoch erhobenen Arm.")],
-    explanation: "Steht der Beamte seitlich zu Ihrer Fahrtrichtung, bedeutet das freie Fahrt wie Grün. Sehen Sie Brust oder Rücken, ist das Halt wie Rot. Ein hoch erhobener Arm bedeutet: Achtung, die Freigabe wechselt.",
+    text: "Ein Polizeibeamter regelt den Verkehr. Ihnen ist seine Brust zugewandt, beide Arme sind seitlich ausgestreckt, also quer zu Ihrer Fahrtrichtung. Was bedeutet das für Sie?",
+    answers: [t("Halt vor der Kreuzung, entsprechend Rot"), f("Freie Fahrt, entsprechend Grün", "Freie Fahrt gilt für den Verkehr, der in Richtung der ausgestreckten Arme fährt, also von der Seite kommt."), f("Achtung, die Regelung wird gewechselt", "Das entspricht dem hoch erhobenen Arm.")],
+    explanation: "Seitlich ausgestreckte Arme quer zu Ihrer Fahrtrichtung bedeuten Halt wie Rot: Sie sehen Brust oder Rücken des Beamten. Wer in Richtung der Arme fährt, also den Beamten von der Seite sieht, hat freie Fahrt wie Grün. Ein hoch erhobener Arm bedeutet: Achtung, die Freigabe wechselt.",
     mnemonic: "Seite = Grün, Brust und Rücken = Rot, Arm hoch = Gelb.",
     legalReference: "§ 36 StVO",
   }),

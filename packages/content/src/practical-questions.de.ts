@@ -124,7 +124,7 @@ export const practicalQuestions: readonly PracticalQuestion[] = [
     ["Warndreieck", "Verbandkasten nach DIN 13164", "Warnweste", "Aufbewahrungsort im Fahrzeug zeigen können"],
     "Warndreieck, Verbandkasten und Warnweste sind Pflicht. Sie müssen im Notfall schnell erreichbar sein."),
   p("safety_equipment", "Wie sichern Sie eine Unfall- oder Pannenstelle ab?",
-    ["Warnblinklicht einschalten", "Warnweste vor dem Aussteigen anlegen", "Warndreieck aufstellen: innerorts etwa 50 m, Landstraße etwa 100 m, Autobahn 150 bis 200 m", "Mitfahrende in Sicherheit bringen, auf der Autobahn hinter die Schutzplanke"],
+    ["Warnblinklicht einschalten", "Warnweste vor dem Aussteigen anlegen", "Warndreieck in ausreichender Entfernung aufstellen, Faustregel: innerorts etwa 50 m, Landstraße etwa 100 m, Autobahn 150 bis 200 m", "Mitfahrende in Sicherheit bringen, auf der Autobahn hinter die Schutzplanke"],
     "Die Absicherung schützt Helfer und nachfolgenden Verkehr. Auf der Autobahn ist die Entfernung wegen der hohen Geschwindigkeiten größer."),
   p("safety_equipment", "Wie prüfen Sie den Sicherheitsgurt?",
     ["Gurt muss sich leicht ausziehen lassen", "Bei ruckartigem Ziehen muss er blockieren", "Gurtschloss muss hörbar einrasten", "Gurtband auf Beschädigungen prüfen", "Gurt darf nicht verdreht sein"],
