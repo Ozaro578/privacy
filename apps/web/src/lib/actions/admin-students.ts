@@ -269,6 +269,18 @@ export async function updateDataRequest(_prev: ActionResult | null, fd: FormData
   if (p.data.status === "completed" && req.kind === "export" && p.data.student_id) patch.export_path = `/verwaltung/schueler/${p.data.student_id}/export`;
   const { error } = await ctx.db.from("data_requests").update(patch).eq("id", p.data.id);
   if (error) return { ok: false, message: error.message };
+  if (p.data.status === "completed" && req.kind === "deletion" && p.data.student_id) {
+    // Pseudonymisierung in der Datenbank (Lern- und Kontaktdaten weg, Nachweise bleiben), danach Dateien und Login entfernen.
+    const { data: result, error: rpcError } = await ctx.db.rpc("anonymize_student", { p_student_id: p.data.student_id, ...(p.data.legal_hold_until ? { p_legal_hold_until: p.data.legal_hold_until } : {}) });
+    if (rpcError) return { ok: false, message: `Löschung fehlgeschlagen: ${rpcError.message}` };
+    const r = result as { user_id: string | null; storage_paths: string[]; user_removed: boolean };
+    const admin = createSupabaseAdminClient();
+    if (r.storage_paths.length > 0) await admin.storage.from("documents").remove(r.storage_paths);
+    if (r.user_removed && r.user_id) await admin.auth.admin.deleteUser(r.user_id);
+    revalidatePath(`/verwaltung/schueler/${p.data.student_id}`);
+    revalidatePath("/verwaltung/schueler");
+    return { ok: true, message: `Schüler pseudonymisiert, ${r.storage_paths.length} Dateien gelöscht${r.user_removed ? ", Zugang entfernt" : ""}. Rechnungen, Verträge und Ausbildungsnachweise bleiben bis zum Ende der Aufbewahrungsfrist erhalten.` };
+  }
   if (p.data.status === "completed" || p.data.status === "rejected") {
     await ctx.db.from("notifications").insert({ tenant_id: ctx.tenantId, user_id: req.user_id, notification_type: "data_request", title: p.data.status === "completed" ? "Datenschutzanfrage bearbeitet" : "Datenschutzanfrage abgelehnt", body: p.data.status === "completed" ? "Deine Anfrage wurde bearbeitet. Bei Fragen wende dich an die Fahrschule." : `Deine Anfrage wurde abgelehnt. ${p.data.reason ?? ""}`.trim(), data: { data_request_id: req.id }, channels: ["push", "in_app"], dedupe_key: `data_request:${req.id}:${p.data.status}` });
   }

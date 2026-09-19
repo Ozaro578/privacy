@@ -7,6 +7,7 @@ export function DataRequestForm({ request }: { request: { id: string; status: st
       <input type="hidden" name="id" value={request.id} />
       {request.student_id && <input type="hidden" name="student_id" value={request.student_id} />}
       <div><label htmlFor={`st-${request.id}`} className={label}>Status</label><select id={`st-${request.id}`} name="status" defaultValue={request.status} className={field}><option value="open">Offen</option><option value="in_progress">In Bearbeitung</option><option value="completed">Erledigt</option><option value="rejected">Abgelehnt</option></select></div>
+      {request.kind === "deletion" && request.status !== "completed" && <p className="md:col-span-2 rounded-lg bg-warn-100 p-2 text-xs">Status „Erledigt“ führt die Löschung sofort aus: Lern-, Chat- und Kontaktdaten werden entfernt, der Login gelöscht und der Name durch ein Pseudonym ersetzt. Rechnungen, Verträge, Fahrstunden und Prüfungen bleiben bis zum Ende der Aufbewahrungsfrist. Das ist nicht rückgängig zu machen.</p>}
       {request.kind === "deletion" && <div><label htmlFor={`lh-${request.id}`} className={label}>Aufbewahrungspflicht bis</label><input id={`lh-${request.id}`} name="legal_hold_until" type="date" defaultValue={request.legal_hold_until ?? ""} className={field} /></div>}
       <div className="md:col-span-2"><label htmlFor={`rs-${request.id}`} className={label}>Begründung oder Hinweis</label><input id={`rs-${request.id}`} name="reason" defaultValue={request.reason ?? ""} className={field} /></div>
     </ActionForm>

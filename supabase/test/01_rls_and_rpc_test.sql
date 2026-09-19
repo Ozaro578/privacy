@@ -229,5 +229,24 @@ do $$ begin
 end $$;
 select pg_temp.logout();
 
+-- 11) DSGVO-Löschung: Büro pseudonymisiert den dritten Schüler; Lerndaten weg, Name ersetzt, Schüler selbst darf es nicht
+select pg_temp.login('00000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  begin
+    perform public.anonymize_student('20000000-0000-0000-0000-000000000003');
+    raise exception 'Schüler konnte sich selbst pseudonymisieren';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', 'office');
+do $$ declare r jsonb; begin
+  r := public.anonymize_student('20000000-0000-0000-0000-000000000003', '2036-12-31');
+  if (r->>'student_id') is null then raise exception 'Kein Ergebnis'; end if;
+  if exists (select 1 from public.students where id = '20000000-0000-0000-0000-000000000003' and (first_name <> 'Gelöscht' or email is not null or user_id is not null)) then raise exception 'Personenbezug nicht entfernt'; end if;
+  if exists (select 1 from public.student_question_state where student_id = '20000000-0000-0000-0000-000000000003') then raise exception 'Lerndaten nicht gelöscht'; end if;
+  if exists (select 1 from public.tenant_memberships where user_id = '00000000-0000-0000-0000-000000000006') then raise exception 'Mitgliedschaft nicht entfernt'; end if;
+end $$;
+select pg_temp.logout();
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;
