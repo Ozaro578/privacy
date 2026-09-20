@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 /** Automatische Prüfung nach WCAG 2.1 AA (axe-core) auf allen öffentlichen Seiten und der Vorschau. Schwere und kritische Verstöße lassen den Test scheitern. */
-const PAGES = ["/login", "/registrieren", "/datenschutz", "/nutzungsbedingungen", "/vorschau"];
+const PAGES = ["/login", "/registrieren", "/datenschutz", "/nutzungsbedingungen", "/impressum", "/vorschau"];
 
 for (const path of PAGES) {
   test(`keine schweren Barrierefreiheits-Verstöße auf ${path}`, async ({ page }) => {

@@ -7,7 +7,10 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "bundleIdentifier": "de.fahrpilot.app",
       "supportsTablet": true,
@@ -19,29 +22,74 @@
     },
     "android": {
       "package": "de.fahrpilot.app",
-      "permissions": ["CAMERA", "POST_NOTIFICATIONS"],
+      "permissions": [
+        "CAMERA",
+        "POST_NOTIFICATIONS"
+      ],
       "intentFilters": [
         {
           "action": "VIEW",
           "autoVerify": false,
-          "data": [{ "scheme": "fahrpilot" }],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "data": [
+            {
+              "scheme": "fahrpilot"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1d4ed8"
+      }
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
       "expo-sqlite",
-      ["expo-notifications", { "color": "#2B66B0" }],
-      ["expo-camera", { "cameraPermission": "FahrPilot nutzt die Kamera für den QR-Check-in im Theorieunterricht." }],
-      ["expo-image-picker", { "photosPermission": "FahrPilot greift auf Fotos zu, um Dokumente hochzuladen." }],
-      ["expo-video", { "supportsBackgroundPlayback": false, "supportsPictureInPicture": false }]
+      [
+        "expo-notifications",
+        {
+          "color": "#2B66B0"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "FahrPilot nutzt die Kamera für den QR-Check-in im Theorieunterricht."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FahrPilot greift auf Fotos zu, um Dokumente hochzuladen."
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": false,
+          "supportsPictureInPicture": false
+        }
+      ]
     ],
-    "experiments": { "typedRoutes": false },
+    "experiments": {
+      "typedRoutes": false
+    },
     "extra": {
-      "eas": { "projectId": "" },
+      "eas": {
+        "projectId": ""
+      },
       "router": {}
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1d4ed8"
     }
   }
 }
