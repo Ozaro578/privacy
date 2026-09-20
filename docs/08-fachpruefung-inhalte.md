@@ -205,3 +205,34 @@ Geprüft wurden die neuen Übungsfragen own-gefahrenlehre-011 bis 040, own-recht
 Ausdrücklich bestätigt wurden unter anderem: alle Faustformeln (40, 56, 60, 64, 36, 80, 18, 9, 65 m; 130 m bei 100 km/h), Klasse B mit Anhänger (3.500 kg, B96 4.250 kg, BE), Probezeit-Stufensystem, Punktesystem und Tilgungsfristen 2,5/5/10 Jahre, Fahreignungsseminar (1 Punkt, alle 5 Jahre, bis 5 Punkte), Sehtest 0,7 und zwei Jahre, Erste Hilfe 9 Einheiten, Prüfung 30 Fragen und Fehlerpunktregel, Rettungsgasse, § 7 Abs. 3c StVO (mittlerer Fahrstreifen), Kraftfahrstraße und Zeichen 223.1 bis 223.3, Baken 300/200/100 m und 240/160/80 m, Leitpfosten 50 m, Ampelrangfolge, qualifizierter Rotlichtverstoß ab 1 s, Grünpfeil 720/721, Fahrverbotsschwellen 31/41 km/h und A-Verstoß ab 21 km/h, Nässe als Wasserfilm, Schneeketten 50 km/h, Nebelschlussleuchte 50 m/50 km/h, Überholabstand 1,5 m und 2 m, Zeichen 277.1, E-Scooter 20 km/h, S-Pedelec, Bus mit Warnblinklicht (§ 20), Kreisverkehrregeln (§ 8 Abs. 1a, § 9a), Zeichen 253, 262 bis 265, Zonenzeichen, Parkscheibe (halbe Stunde nach Ankunft), werktags inkl. Samstag, Zeichen 306 außerorts Parkverbot, Zeichen 357-50, 201-52, 211/214/222, 251, 282, 385.
 
 Testergebnis: `pnpm test` und `pnpm typecheck` im Paket content nach den Änderungen grün (siehe Abschlussbericht). Nicht committet.
+
+## Nachprüfung Fragen Gruppe B, Teil 2 (September 2026)
+
+Geprüft wurden own-befoerderung-011 bis 040 und own-fahrphysik-011 bis 040 (Rechtsstand September 2026) sowie die zugehörigen Bildzuordnungen in media.extra.b.ts. Alle Faustformel-Aufgaben wurden nachgerechnet.
+
+| Thema | geprüft | korrigiert | needs_verification | entfernt |
+|---|---|---|---|---|
+| befoerderung 011 bis 040 | 30 | 1 | 1 (bereits vorhanden, own-befoerderung-033) | 0 |
+| fahrphysik 011 bis 040 | 30 | 1 | 0 | 0 |
+| Bildzuordnungen Beförderung und Fahrphysik | 12 | 0 | 0 | 1 |
+
+### Korrekturen
+
+- own-befoerderung-030: Die Befreiung von der Gurtpflicht aus gesundheitlichen Gründen ist eine Ausnahmegenehmigung der Straßenverkehrsbehörde nach § 46 Abs. 1 Nr. 5b StVO, die auf einer ärztlichen Bescheinigung beruht; die ärztliche Bescheinigung allein befreit nicht. Antwort und Erklärung entsprechend präzisiert, Bescheinigung ist mitzuführen.
+- own-fahrphysik-022: Formulierung zur Profiltiefe präzisiert (Wasserverdrängung nimmt unter etwa 3 mm spürbar ab, nicht "ab 3 mm").
+
+### needs_verification
+
+- own-befoerderung-033 (Ausnahme § 21 Abs. 1a Satz 2 Nr. 2 StVO für ein drittes Kind ab drei Jahren auf dem Rücksitz) trug die Markierung bereits; der Inhalt entspricht dem Gesetzeswortlaut, Markierung belassen. Keine neuen Fälle.
+
+### Bildzuordnungen
+
+- Entfernt: own-befoerderung-025 (Bild Zeichen 265 zeigt 3,8 m, die Frage nennt 2,5 m und einen Pkw mit Dachbox von 2,6 m; keine Bildpflicht in diesem Thema).
+- Bestätigt: own-befoerderung-023 (253), own-befoerderung-024 (1010-59), own-fahrphysik-011, 012, 013, 014, 018, 039, 040 (anhalteweg-schema), own-fahrphysik-032 (117-10), own-fahrphysik-038 (108-10).
+- Die übrigen 36 Zuordnungen der Themen Halten und Parken, besondere Situationen, Unfall und Panne, Umwelt, Fahrzeugtechnik und Beleuchtung gehören zu Teil 1 und wurden hier nicht verändert.
+
+### Ausdrücklich bestätigt
+
+Zuladung 550 kg, Klasse B mit Anhänger (1.200 kg bei 2.300 kg Zugfahrzeug, 3.400 kg Kombination, B96 bis 4.250 kg, BE), Stützlast 4 Prozent und 25 kg Deckel, Gespann 80 km/h und Tempo 100 Voraussetzungen, Zeichen 253 mit Pkw-Ausnahme, Zusatzzeichen 1010-59 und 1024-11, Ladung 2,55 m, 4 m, 1,5 m und 3 m bis 100 km, Kennzeichnung ab 1 m, seitlich ab 40 cm, nach vorn ab 2,5 m Höhe bis 50 cm, Gurtausnahmen, Personen in Wohnanhängern und auf Ladeflächen, Kindersitzregeln, Faustformeln (88, 36, 36, 72, 16, 9, 15/30 und 25/100, 80 m), Fliehkraft quadratisch, Kammscher Kreis, Haft- und Gleitreibung, Aquaplaning, ABS, ASR, ESP, Pendeln, Seitenwind, Reifendruck, Bremsassistent, Bewegungsenergie.
+
+Testergebnis: `pnpm test` (19 Tests) und `pnpm typecheck` im Paket content grün. Nicht committet.
