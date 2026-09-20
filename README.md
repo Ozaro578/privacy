@@ -37,6 +37,12 @@ pnpm db:test
 # Übungsinhalte in die lokale Datenbank einspielen
 pnpm --filter @fahrpilot/content seed
 
+# Abnahme-Seite für die fachliche Prüfung durch eine Fahrlehrerin erzeugen (packages/content/review/abnahme.html)
+pnpm --filter @fahrpilot/content abnahme
+
+# Lizenzierten amtlichen Katalog importieren (Format und Ablauf in docs/13-import-amtlicher-katalog.md)
+pnpm --filter @fahrpilot/content import-official -- lieferung.json --dry-run
+
 # Web-App
 cp apps/web/.env.example apps/web/.env.local   # Werte eintragen
 pnpm --filter @fahrpilot/web dev

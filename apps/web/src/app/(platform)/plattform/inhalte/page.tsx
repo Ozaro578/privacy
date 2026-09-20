@@ -36,9 +36,32 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     const { data } = await q;
     items = (data ?? []).map((d) => ({ id: d.id, title: d.question, meta: `${d.category}${d.source ? ` · ${d.source}` : ""}`, status: d.review_status, table: "practical_check_questions" }));
   }
+  const [{ data: catalogRows }, { data: lastImport }, { data: pending }] = await Promise.all([
+    db.from("theory_questions").select("source, license_id_for_source, status").is("tenant_id", null),
+    db.from("audit_logs").select("created_at, new_data").eq("actor_role", "import").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    db.from("question_versions").select("id, valid_from, theory_questions!question_versions_question_id_fkey!inner(source)").gt("valid_from", new Date().toISOString().slice(0, 10)).eq("theory_questions.source", "official_licensed").order("valid_from").limit(1000),
+  ]);
+  const catalog = new Map<string, { published: number; waiting: number; retired: number }>();
+  for (const r of catalogRows ?? []) {
+    const key = r.source === "official_licensed" ? `Lizenzierter Katalog ${r.license_id_for_source ?? ""}` : r.source === "own" ? "Eigene Übungsfragen" : "Fahrschul-Inhalte";
+    const c = catalog.get(key) ?? { published: 0, waiting: 0, retired: 0 };
+    if (r.status === "published") c.published += 1; else if (r.status === "retired") c.retired += 1; else c.waiting += 1;
+    catalog.set(key, c);
+  }
+  const nextStichtag = (pending ?? [])[0]?.valid_from ?? null;
+  const importInfo = lastImport ? (lastImport.new_data as { license_id?: string; valid_from?: string; counts?: Record<string, number> } | null) : null;
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">Inhalte und Freigaben</h1>
+      <Card title="Fragenbestand nach Quelle">
+        <ul className="divide-y divide-ink-100 text-sm">
+          {[...catalog.entries()].map(([name, c]) => <li key={name} className="flex flex-wrap items-center justify-between gap-2 py-2"><span className="font-medium">{name}</span><span className="flex gap-2"><Pill tone="success">{c.published} veröffentlicht</Pill>{c.waiting > 0 && <Pill tone="brand">{c.waiting} wartend</Pill>}{c.retired > 0 && <Pill tone="neutral">{c.retired} zurückgezogen</Pill>}</span></li>)}
+        </ul>
+        <p className="mt-3 text-xs text-ink-500">
+          {importInfo ? `Letzter Katalogimport: Lizenz ${importInfo.license_id ?? "?"}, Stichtag ${importInfo.valid_from ?? "?"}, ${importInfo.counts?.insert ?? 0} neu, ${importInfo.counts?.new_version ?? 0} geändert, ${importInfo.counts?.retired ?? 0} zurückgezogen (${lastImport ? new Date(lastImport.created_at).toLocaleDateString("de-DE") : ""}).` : "Noch kein lizenzierter Katalog importiert; Ablauf in docs/13-import-amtlicher-katalog.md."}
+          {nextStichtag ? ` ${(pending ?? []).length} Fassungen warten auf den Stichtag ${new Date(nextStichtag).toLocaleDateString("de-DE")}; die Aktivierung läuft täglich automatisch.` : ""}
+        </p>
+      </Card>
       <p className="text-sm text-ink-700">Keine KI-generierte Information wird automatisch veröffentlicht. Jeder Eintrag durchläuft Entwurf, fachliche Prüfung, Freigabe und Veröffentlichung (Vier-Augen-Prinzip). Eigene Übungsfragen sind strikt von lizenzierten amtlichen Fragen getrennt (Feld source).</p>
       <div className="flex flex-wrap gap-2">{tabs.map(([k, l]) => <Link key={k} href={`/plattform/inhalte?tab=${k}&status=${status}`} className={`rounded-full px-3 py-1 text-sm ${tab === k ? "bg-brand-500 text-white" : "bg-ink-100"}`}>{l}</Link>)}
         <span className="mx-2 text-ink-300">|</span>{["offen", "published", "retired"].map((s) => <Link key={s} href={`/plattform/inhalte?tab=${tab}&status=${s}`} className={`rounded-full px-3 py-1 text-sm ${status === s ? "bg-ink-900 text-white" : "bg-ink-100"}`}>{s === "offen" ? "Offen" : s === "published" ? "Veröffentlicht" : "Zurückgezogen"}</Link>)}</div>
