@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, type ViewStyle } from "react-native";
-import { useTheme } from "@/lib/theme";
+import { useFontScale, useTheme } from "@/lib/theme";
 
 export function Screen({ children, title, scroll = true }: { children: ReactNode; title?: string; scroll?: boolean }) {
   const t = useTheme();
@@ -13,7 +13,8 @@ export function Card({ children, title, style }: { children: ReactNode; title?: 
 }
 export function Txt({ children, muted, bold, size = 15, color, center }: { children: ReactNode; muted?: boolean; bold?: boolean; size?: number; color?: string | undefined; center?: boolean }) {
   const t = useTheme();
-  return <Text style={{ fontSize: size, fontWeight: bold ? "600" : "400", color: color ?? (muted ? t.colors.text.secondary : t.colors.text.primary), textAlign: center ? "center" : "left" }}>{children}</Text>;
+  const scale = useFontScale();
+  return <Text style={{ fontSize: size * scale, fontWeight: bold ? "600" : "400", color: color ?? (muted ? t.colors.text.secondary : t.colors.text.primary), textAlign: center ? "center" : "left" }}>{children}</Text>;
 }
 export function Button({ label, onPress, variant = "primary", disabled, loading }: { label: string; onPress: () => void; variant?: "primary" | "secondary" | "ghost" | "danger"; disabled?: boolean; loading?: boolean }) {
   const t = useTheme();

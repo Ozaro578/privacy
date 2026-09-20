@@ -1,9 +1,16 @@
 import { useColorScheme } from "react-native";
-import { nativeDark, nativeLight, type NativeTheme } from "@fahrpilot/ui/native";
+import { nativeThemeFor, type NativeTheme } from "@fahrpilot/ui/native";
+import { useAppearance } from "./appearance";
 
 export function useTheme(): NativeTheme {
   const scheme = useColorScheme();
-  return scheme === "dark" ? nativeDark : nativeLight;
+  const { appearance } = useAppearance();
+  return nativeThemeFor(appearance, scheme === "dark" ? "dark" : "light");
+}
+/** Skalierungsfaktor für Schriftgrößen aus der Darstellungseinstellung. */
+export function useFontScale(): number {
+  const { appearance } = useAppearance();
+  return appearance.fontSize === "xl" ? 1.25 : appearance.fontSize === "lg" ? 1.125 : 1;
 }
 export const readinessColor = (t: NativeTheme, score: number | null): string => {
   if (score === null) return t.colors.text.muted;

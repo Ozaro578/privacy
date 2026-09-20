@@ -1,16 +1,20 @@
+import { parseAppearance, type Appearance } from "@fahrpilot/ui/palettes";
 import { supabase } from "./supabase";
 import { loadQuestions, loadTopics, saveQuestions, kvSet, kvGet } from "./content-store";
 import type { LocalQuestion, LocalQuestionState, LocalTopic } from "@/offline/types";
 import { stateStore } from "./sync";
 
-export interface StudentProfile { studentId: string; tenantId: string; firstName: string; licenseId: string; licenseCode: string; baseClass: string | null; transmission: string; locale: string; theoryExamStatus: string; practicalExamStatus: string }
+export interface StudentProfile { studentId: string; tenantId: string; firstName: string; licenseId: string; licenseCode: string; baseClass: string | null; transmission: string; locale: string; theoryExamStatus: string; practicalExamStatus: string; appearance: Appearance }
 
 export async function loadProfile(userId: string, tenantId: string): Promise<StudentProfile | null> {
-  const { data: s } = await supabase.from("students").select("id, first_name, preferred_locale").eq("user_id", userId).eq("tenant_id", tenantId).maybeSingle();
+  const [{ data: s }, { data: u }] = await Promise.all([
+    supabase.from("students").select("id, first_name, preferred_locale").eq("user_id", userId).eq("tenant_id", tenantId).maybeSingle(),
+    supabase.from("users").select("accessibility").eq("id", userId).maybeSingle(),
+  ]);
   if (!s) return null;
   const { data: lic } = await supabase.from("student_licenses").select("id, license_code, transmission, theory_exam_status, practical_exam_status, licenses(base_class)").eq("student_id", s.id).eq("status", "active").order("started_at", { ascending: false }).limit(1).maybeSingle();
   if (!lic) return null;
-  return { studentId: s.id, tenantId, firstName: s.first_name, licenseId: lic.id, licenseCode: lic.license_code, baseClass: (lic.licenses as unknown as { base_class: string | null } | null)?.base_class ?? null, transmission: lic.transmission, locale: s.preferred_locale, theoryExamStatus: lic.theory_exam_status, practicalExamStatus: lic.practical_exam_status };
+  return { studentId: s.id, tenantId, firstName: s.first_name, licenseId: lic.id, licenseCode: lic.license_code, baseClass: (lic.licenses as unknown as { base_class: string | null } | null)?.base_class ?? null, transmission: lic.transmission, locale: s.preferred_locale, theoryExamStatus: lic.theory_exam_status, practicalExamStatus: lic.practical_exam_status, appearance: parseAppearance(u?.accessibility) };
 }
 
 /** Lädt Fragenpool, Themen und Zustände vom Server in SQLite (Offline-Bundle). */

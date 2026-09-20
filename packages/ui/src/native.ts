@@ -50,3 +50,22 @@ export function nativeTheme(name: ThemeName): NativeTheme {
 
 export const nativeLight = nativeTheme("light");
 export const nativeDark = nativeTheme("dark");
+
+import { PALETTES, type Appearance, type PaletteId } from "./palettes.js";
+
+/** Theme mit Farbwelt des Nutzers: Primäraktion, Link, Sekundärflächen und Akzent folgen der Palette. */
+export function nativeThemeFor(appearance: Pick<Appearance, "palette" | "theme">, systemScheme: "light" | "dark" | null | undefined): NativeTheme {
+  const name: ThemeName = appearance.theme === "system" ? (systemScheme === "dark" ? "dark" : "light") : appearance.theme;
+  const base = nativeTheme(name);
+  const p = PALETTES[appearance.palette as PaletteId] ?? PALETTES.klar;
+  const s = name === "dark" ? p.dark : p.light;
+  return {
+    ...base,
+    colors: {
+      ...base.colors,
+      text: { ...base.colors.text, link: s["700"], onAccent: p.accent.text },
+      action: { ...base.colors.action, primary: s["500"], primaryHover: s["600"], primaryActive: s["700"], secondary: s["50"], secondaryHover: s["100"] },
+      accent: { base: p.accent["400"], strong: p.accent["500"], surface: s["50"] },
+    },
+  };
+}
