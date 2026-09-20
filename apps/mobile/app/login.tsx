@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, TextInput } from "react-native";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import * as Linking from "expo-linking";
-import { API_URL, supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { useSession } from "@/lib/session";
 import { useTheme } from "@/lib/theme";
 import { Button, Card, Screen, Txt } from "@/components/ui";
@@ -10,6 +10,7 @@ import { Button, Card, Screen, Txt } from "@/components/ui";
 export default function Login() {
   const t = useTheme();
   const { session } = useSession();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
@@ -42,7 +43,7 @@ export default function Login() {
           <Button label="Anmeldelink per E-Mail" variant="ghost" onPress={() => void magic()} disabled={!email || busy} />
         </Card>
         <Txt muted size={12} center>Neu hier? Deine Fahrschule schickt dir einen Anmeldelink.</Txt>
-        <Button label="Ohne Fahrschule lernen: Konto erstellen" variant="ghost" onPress={() => void Linking.openURL(`${API_URL}/registrieren`)} />
+        <Button label="Ohne Fahrschule lernen: Konto erstellen" variant="ghost" onPress={() => router.push("/registrieren")} />
       </Screen>
     </KeyboardAvoidingView>
   );

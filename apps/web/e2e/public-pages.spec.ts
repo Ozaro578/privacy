@@ -22,6 +22,12 @@ test.describe("Öffentliche Seiten", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/Datenschutz/);
   });
 
+  test("Nutzungsbedingungen sind ohne Anmeldung erreichbar", async ({ page }) => {
+    await page.goto("/nutzungsbedingungen");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/Nutzungsbedingungen/);
+    await expect(page.getByText("kein amtlicher Prüfungsinhalt", { exact: false })).toBeVisible();
+  });
+
   test("Seite scrollt bei Handybreite nicht horizontal", async ({ page }) => {
     await page.goto("/vorschau");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);

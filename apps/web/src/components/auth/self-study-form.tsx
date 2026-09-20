@@ -22,7 +22,7 @@ export function SelfStudyForm() {
         <div><label htmlFor="transmission" className="mb-1 block text-sm font-medium">Getriebe</label><select id="transmission" name="transmission" className={field} defaultValue="manual"><option value="manual">Schaltung</option><option value="automatic">Automatik</option></select></div>
       </div>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="consent_privacy" required className="mt-1 h-5 w-5" />Ich habe die <a href="/datenschutz" className="underline">Datenschutzerklärung</a> gelesen.</label>
-      <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="consent_terms" required className="mt-1 h-5 w-5" />Ich akzeptiere die Nutzungsbedingungen.</label>
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="consent_terms" required className="mt-1 h-5 w-5" />Ich akzeptiere die <a href="/nutzungsbedingungen" className="underline">Nutzungsbedingungen</a>.</label>
       {state.error && <Alert tone="error">{state.error}</Alert>}
       <button type="submit" disabled={pending} className={`${btn.primary} w-full`}>{pending ? "Konto wird angelegt …" : "Konto erstellen und loslegen"}</button>
     </form>

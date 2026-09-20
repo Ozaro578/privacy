@@ -353,5 +353,42 @@ do $$ begin
 end $$;
 select pg_temp.logout();
 
+-- 14) Selbstlern-Registrierung aus der App: neuer Auth-Nutzer ohne Mandant legt sich selbst als Selbstlernender an
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000014', 'solo@test.de');
+insert into public.users (id, email, first_name, last_name) values ('00000000-0000-0000-0000-000000000014', 'solo@test.de', '', '') on conflict (id) do nothing;
+select pg_temp.login('00000000-0000-0000-0000-000000000014', null, null);
+do $$ begin
+  begin
+    perform public.register_self_study('{"first_name":"Sina","last_name":"Solo","consent_privacy":true,"consent_terms":false}'::jsonb);
+    raise exception 'Registrierung ohne Nutzungsbedingungen möglich';
+  exception when invalid_parameter_value then null; end;
+end $$;
+create temp table if not exists pg_temp.solo (student_id uuid);
+do $$ declare s1 uuid; s2 uuid; begin
+  s1 := public.register_self_study('{"first_name":"Sina","last_name":"Solo","date_of_birth":"2008-05-04","license_code":"B","transmission":"automatic","consent_privacy":true,"consent_terms":true,"channel":"app"}'::jsonb);
+  -- Zweiter Aufruf legt keinen zweiten Datensatz an
+  s2 := public.register_self_study('{"first_name":"Sina","last_name":"Solo","consent_privacy":true,"consent_terms":true}'::jsonb);
+  if s2 <> s1 then raise exception 'Doppelte Registrierung'; end if;
+  insert into pg_temp.solo values (s1);
+end $$;
+select pg_temp.logout();
+-- Prüfung als Superuser (ohne RLS), weil der Token des neuen Nutzers noch keinen Mandanten trägt
+do $$ declare s1 uuid; begin
+  select student_id into s1 from pg_temp.solo;
+  if not exists (select 1 from public.students where id = s1 and user_id = '00000000-0000-0000-0000-000000000014' and status = 'active' and tenant_id = '10000000-0000-4000-8000-000000000001') then raise exception 'Selbstlern-Schüler fehlt oder falscher Mandant'; end if;
+  if not exists (select 1 from public.tenant_memberships where user_id = '00000000-0000-0000-0000-000000000014' and tenant_id = '10000000-0000-4000-8000-000000000001' and role = 'student' and status = 'active') then raise exception 'Mitgliedschaft fehlt'; end if;
+  if (select active_tenant_id from public.users where id = '00000000-0000-0000-0000-000000000014') <> '10000000-0000-4000-8000-000000000001' then raise exception 'Aktiver Mandant nicht gesetzt'; end if;
+  if (select count(*) from public.consents where student_id = s1 and granted) <> 2 then raise exception 'Einwilligungen fehlen'; end if;
+  if exists (select 1 from public.documents where student_id = s1) then raise exception 'Selbstlernender hat Dokumenten-Checkliste'; end if;
+  if (select first_name from public.users where id = '00000000-0000-0000-0000-000000000014') <> 'Sina' then raise exception 'Name nicht übernommen'; end if;
+  if (select count(*) from public.students where user_id = '00000000-0000-0000-0000-000000000014') <> 1 then raise exception 'Zweiter Schülerdatensatz'; end if;
+end $$;
+do $$ begin
+  begin
+    perform public.register_self_study('{"first_name":"X","last_name":"Y","consent_privacy":true,"consent_terms":true}'::jsonb);
+    raise exception 'Registrierung ohne Anmeldung möglich';
+  exception when insufficient_privilege then null; end;
+end $$;
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

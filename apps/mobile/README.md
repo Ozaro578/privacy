@@ -1,6 +1,6 @@
 # FahrPilot Mobile (Expo)
 
-Schüler-App für iOS und Android: Heute-Modus mit Tages-Challenge, Lernen (offline) mit Stufen-Modus, Zeichen-Trainer, Verkehrszeichenkatalog, Vorfahrt-Trainer, Vorlesen, Farbwelten, Prüfungssimulation, Fahrstunden, Finanzen, Profil, QR-Check-in. Selbstlernende ohne Fahrschule registrieren sich über die Web-App (`/registrieren`).
+Schüler-App für iOS und Android: Heute-Modus mit Tages-Challenge, Lernen (offline) mit Stufen-Modus, Zeichen-Trainer, Verkehrszeichenkatalog, Vorfahrt-Trainer, Vorlesen, Farbwelten, Prüfungssimulation, Fahrstunden, Finanzen, Profil, QR-Check-in. Selbstlernende ohne Fahrschule registrieren sich direkt in der App (`app/registrieren.tsx`, RPC `register_self_study`) oder über die Web-App (`/registrieren`).
 
 ## Voraussetzungen
 
