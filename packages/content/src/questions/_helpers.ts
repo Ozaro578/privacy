@@ -1,6 +1,6 @@
 // Hilfsfunktionen zum kompakten Formulieren der Übungsfragen.
-import { defaultLicenseCodes, materialKindOf } from "../topics.js";
-import { LEGAL_BASIS_DATE, type Answer, type Question } from "../types.js";
+import { defaultLicenseCodes, materialKindOf } from "../topics";
+import { LEGAL_BASIS_DATE, type Answer, type Question } from "../types";
 
 export type Draft = Omit<Question, "legalBasisDate" | "kind" | "reviewStatus" | "materialKind" | "licenseCodes"> &
   Partial<Pick<Question, "kind" | "reviewStatus" | "materialKind" | "licenseCodes">>;

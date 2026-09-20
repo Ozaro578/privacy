@@ -1,5 +1,5 @@
 // Automatisch erzeugt von scripts/gen-media.mjs. Nicht von Hand ändern.
-import type { SignEntry } from "./signs.js";
+import type { SignEntry } from "./signs";
 
 export const SIGN_CATALOG: readonly SignEntry[] = [
   {
@@ -1807,7 +1807,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-50 Parken auf Gehwegen halb in Längsaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-50.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-51",
@@ -1815,9 +1815,9 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "name": "Parken auf Gehwegen halb in Längsaufstellung rechts (Anfang)",
     "category": "richtzeichen",
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt den Anfang der Parkfläche an.",
-    "alt": "Zeichen 315-51 Parken auf Gehwegen halb in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "alt": "Zeichen 315-51 Parken auf Gehwegen halb in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P und Pfeil nach rechts, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-51.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert. Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links)."
   },
   {
     "id": "315-52",
@@ -1825,9 +1825,9 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "name": "Parken auf Gehwegen halb in Längsaufstellung rechts (Ende)",
     "category": "richtzeichen",
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt das Ende der Parkfläche an.",
-    "alt": "Zeichen 315-52 Parken auf Gehwegen halb in Längsaufstellung rechts (Ende): blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "alt": "Zeichen 315-52 Parken auf Gehwegen halb in Längsaufstellung rechts (Ende): blaues Schild mit weißem P und Pfeil nach links, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-52.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert. Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links)."
   },
   {
     "id": "315-55",
@@ -1837,7 +1837,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-55 Parken auf Gehwegen ganz in Längsaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-55.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-56",
@@ -1845,9 +1845,9 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "name": "Parken auf Gehwegen ganz in Längsaufstellung rechts (Anfang)",
     "category": "richtzeichen",
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt den Anfang der Parkfläche an.",
-    "alt": "Zeichen 315-56 Parken auf Gehwegen ganz in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "alt": "Zeichen 315-56 Parken auf Gehwegen ganz in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P und Pfeil nach rechts, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-56.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert. Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links)."
   },
   {
     "id": "315-57",
@@ -1855,9 +1855,9 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "name": "Parken auf Gehwegen ganz in Längsaufstellung rechts (Ende)",
     "category": "richtzeichen",
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt das Ende der Parkfläche an.",
-    "alt": "Zeichen 315-57 Parken auf Gehwegen ganz in Längsaufstellung rechts (Ende): blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "alt": "Zeichen 315-57 Parken auf Gehwegen ganz in Längsaufstellung rechts (Ende): blaues Schild mit weißem P und Pfeil nach links, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-57.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert. Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links)."
   },
   {
     "id": "315-60",
@@ -1867,7 +1867,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Querstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-60 Parken auf Gehwegen halb in Querstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-60.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-65",
@@ -1877,7 +1877,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Querstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-65 Parken auf Gehwegen ganz in Querstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-65.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-70",
@@ -1887,7 +1887,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Schrägaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-70 Parken auf Gehwegen halb in Schrägaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-70.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-75",
@@ -1897,7 +1897,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Schrägaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-75 Parken auf Gehwegen ganz in Schrägaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-75.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-80",
@@ -1907,7 +1907,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der linksen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-80 Parken auf Gehwegen halb in Längsaufstellung links: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
     "file": "signs/315-80.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "315-85",
@@ -1917,7 +1917,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der linksen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
     "alt": "Zeichen 315-85 Parken auf Gehwegen ganz in Längsaufstellung links: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
     "file": "signs/315-85.svg",
-    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert."
   },
   {
     "id": "316",
@@ -2725,6 +2725,16 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "file": "signs/458.svg"
   },
   {
+    "id": "459",
+    "number": "459",
+    "name": "Umleitungstafel",
+    "category": "richtzeichen",
+    "meaning": "Gelbe Tafel, die vor einer Sperrung die Umleitung für bestimmte Ziele ankündigt: Sie nennt das Ziel und die Richtung oder den Verlauf der Umleitungsstrecke, damit rechtzeitig eingeordnet werden kann.",
+    "alt": "Zeichen 459 Umleitungstafel: gelbes Rechteck mit U-Symbol, Aufschrift Umleitung, Zielname und Pfeil",
+    "file": "signs/459.svg",
+    "note": "Gestaltung (Aufteilung von U-Symbol, Ziel und Pfeil) nach Katalogbild angenähert, bitte prüfen."
+  },
+  {
     "id": "460",
     "number": "460",
     "name": "Bedarfsumleitung",
@@ -2982,5 +2992,846 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "alt": "Zeichen 630-20 Parkwarntafel: rechteckige Tafel mit rot-weißen Schrägstreifen, die nach rechts abfallen",
     "file": "signs/630-20.svg",
     "note": "Suffix -10/-20 nach Streifenrichtung gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "1000-10",
+    "number": "1000-10",
+    "name": "Richtung der Gefahrstelle, linksweisend",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, dass die durch das Hauptzeichen bezeichnete Gefahrstelle oder Regelung links liegt, etwa ein Bahnübergang oder eine Arbeitsstelle in der nach links abzweigenden Straße.",
+    "alt": "Zusatzzeichen 1000-10: weißes Rechteck mit schwarzem Pfeil nach links",
+    "file": "signs/1000-10.svg"
+  },
+  {
+    "id": "1000-20",
+    "number": "1000-20",
+    "name": "Richtung der Gefahrstelle, rechtsweisend",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, dass die durch das Hauptzeichen bezeichnete Gefahrstelle oder Regelung rechts liegt, etwa ein Bahnübergang oder eine Arbeitsstelle in der nach rechts abzweigenden Straße.",
+    "alt": "Zusatzzeichen 1000-20: weißes Rechteck mit schwarzem Pfeil nach rechts",
+    "file": "signs/1000-20.svg"
+  },
+  {
+    "id": "1000-30",
+    "number": "1000-30",
+    "name": "Beide Richtungen (Pfeile nach links und rechts)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt an, dass die Regelung des Hauptzeichens nach beiden Seiten gilt, etwa ein Parkverbot oder eine Parkfläche, die links und rechts des Schildes weiterführt (Mitte einer Strecke).",
+    "alt": "Zusatzzeichen 1000-30: weißes Rechteck mit schwarzem Doppelpfeil nach links und rechts",
+    "file": "signs/1000-30.svg"
+  },
+  {
+    "id": "1000-31",
+    "number": "1000-31",
+    "name": "Beide Richtungen (Pfeile nach oben und unten)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt an, dass die Regelung für beide Fahrtrichtungen gilt, zum Beispiel unter Zeichen 138, wenn Radverkehr aus beiden Richtungen zu erwarten ist, oder unter einem Radwegzeichen, wenn der Weg in beiden Richtungen befahren werden darf.",
+    "alt": "Zusatzzeichen 1000-31: hochkantes weißes Rechteck mit schwarzem Doppelpfeil nach oben und unten",
+    "file": "signs/1000-31.svg"
+  },
+  {
+    "id": "1000-32",
+    "number": "1000-32",
+    "name": "Radverkehr kreuzt von rechts und links",
+    "category": "zusatzzeichen",
+    "meaning": "Warnt unter Zeichen 205 oder beim Einbiegen davor, dass Radverkehr aus beiden Richtungen kreuzt, etwa auf einem Zweirichtungsradweg. Vor dem Abbiegen und Einfahren nach beiden Seiten auf Radfahrer achten und ihnen Vorrang gewähren.",
+    "alt": "Zusatzzeichen 1000-32: weißes Rechteck mit Fahrrad zwischen einem Pfeil nach links und einem Pfeil nach rechts",
+    "file": "signs/1000-32.svg"
+  },
+  {
+    "id": "1000-33",
+    "number": "1000-33",
+    "name": "Radverkehr im Gegenverkehr",
+    "category": "zusatzzeichen",
+    "meaning": "Weist darauf hin, dass Radverkehr entgegen der Fahrtrichtung zu erwarten ist, etwa in einer für den Radverkehr in Gegenrichtung freigegebenen Einbahnstraße oder an deren Einmündungen. Beim Einbiegen und Ausfahren mit entgegenkommenden Radfahrern rechnen.",
+    "alt": "Zusatzzeichen 1000-33: weißes Rechteck mit Fahrrad, daneben ein Pfeil nach oben und ein Pfeil nach unten",
+    "file": "signs/1000-33.svg"
+  },
+  {
+    "id": "1001-30",
+    "number": "1001-30",
+    "name": "Streckenlänge in Metern",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, auf welcher Strecke (in Metern) das Hauptzeichen gilt, etwa eine Geschwindigkeitsbeschränkung oder ein Überholverbot ab dem Standort des Zeichens.",
+    "alt": "Zusatzzeichen 1001-30: weißes Rechteck mit schwarzem Rand und der Aufschrift auf 500 m",
+    "file": "signs/1001-30.svg"
+  },
+  {
+    "id": "1001-31",
+    "number": "1001-31",
+    "name": "Streckenlänge in Kilometern",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, auf welcher Strecke (in Kilometern) das Hauptzeichen gilt, etwa eine Gefahrstelle oder ein Überholverbot ab dem Standort des Zeichens.",
+    "alt": "Zusatzzeichen 1001-31: weißes Rechteck mit schwarzem Rand und der Aufschrift auf 3 km",
+    "file": "signs/1001-31.svg"
+  },
+  {
+    "id": "1002-10",
+    "number": "1002-10",
+    "name": "Verlauf der Vorfahrtstraße an Kreuzungen (von unten nach links)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-10: weißes Quadrat mit breiter Linie von unten nach links und schmalen Linien geradeaus und nach rechts",
+    "file": "signs/1002-10.svg"
+  },
+  {
+    "id": "1002-12",
+    "number": "1002-12",
+    "name": "Verlauf der Vorfahrtstraße an Einmündungen (von unten nach links, Nebenstraße geradeaus)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-12: weißes Quadrat mit breiter Linie von unten nach links und schmaler Linie geradeaus",
+    "file": "signs/1002-12.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1002-13",
+    "number": "1002-13",
+    "name": "Verlauf der Vorfahrtstraße an Einmündungen (von unten nach links, Nebenstraße rechts)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-13: weißes Quadrat mit breiter Linie von unten nach links und schmaler Linie nach rechts",
+    "file": "signs/1002-13.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1002-20",
+    "number": "1002-20",
+    "name": "Verlauf der Vorfahrtstraße an Kreuzungen (von unten nach rechts)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-20: weißes Quadrat mit breiter Linie von unten nach rechts und schmalen Linien geradeaus und nach links",
+    "file": "signs/1002-20.svg"
+  },
+  {
+    "id": "1002-22",
+    "number": "1002-22",
+    "name": "Verlauf der Vorfahrtstraße an Einmündungen (von unten nach rechts, Nebenstraße geradeaus)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-22: weißes Quadrat mit breiter Linie von unten nach rechts und schmaler Linie geradeaus",
+    "file": "signs/1002-22.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1002-23",
+    "number": "1002-23",
+    "name": "Verlauf der Vorfahrtstraße an Einmündungen (von unten nach rechts, Nebenstraße links)",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter Zeichen 306 oder 301 den Verlauf der abknickenden Vorfahrtstraße und unter Zeichen 205 oder 206, wie die Vorfahrtstraße verläuft: Die breite Linie ist die Vorfahrtstraße, die schmalen Linien sind die untergeordneten Straßen. Wer der abknickenden Vorfahrtstraße folgt, muss blinken; wer sie geradeaus verlässt, darf nicht blinken und muss dem Verkehr auf der Vorfahrtstraße (auch dem Gegenverkehr, der ihr folgend abbiegt) Vorrang geben.",
+    "alt": "Zusatzzeichen 1002-23: weißes Quadrat mit breiter Linie von unten nach rechts und schmaler Linie nach links",
+    "file": "signs/1002-23.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1004-30",
+    "number": "1004-30",
+    "name": "Entfernungsangabe in Metern",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, in welcher Entfernung (in Metern) die Gefahrstelle oder die Regelung des Hauptzeichens beginnt, zum Beispiel bei Gefahrzeichen innerorts oder bei vorzeitig angekündigten Verboten.",
+    "alt": "Zusatzzeichen 1004-30: weißes Rechteck mit schwarzem Rand und der Aufschrift 100 m",
+    "file": "signs/1004-30.svg"
+  },
+  {
+    "id": "1004-31",
+    "number": "1004-31",
+    "name": "Entfernungsangabe in Kilometern",
+    "category": "zusatzzeichen",
+    "meaning": "Gibt an, in welcher Entfernung (in Kilometern) die Gefahrstelle oder die Regelung des Hauptzeichens beginnt.",
+    "alt": "Zusatzzeichen 1004-31: weißes Rechteck mit schwarzem Rand und der Aufschrift 2 km",
+    "file": "signs/1004-31.svg"
+  },
+  {
+    "id": "1004-32",
+    "number": "1004-32",
+    "name": "Stopp in ... m",
+    "category": "zusatzzeichen",
+    "meaning": "Kündigt unter Zeichen 205 an, dass in der angegebenen Entfernung das Zeichen 206 (Halt, Vorfahrt gewähren) steht: dort ist anzuhalten.",
+    "alt": "Zusatzzeichen 1004-32: weißes Rechteck mit schwarzem Rand und der Aufschrift STOP 100 m",
+    "file": "signs/1004-32.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1006-30",
+    "number": "1006-30",
+    "name": "Ölspur",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101 oder 114: Auf der Fahrbahn liegt Öl, die Fahrbahn ist rutschig. Geschwindigkeit verringern, nicht stark bremsen oder lenken.",
+    "alt": "Zusatzzeichen 1006-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Ölspur",
+    "file": "signs/1006-30.svg"
+  },
+  {
+    "id": "1006-31",
+    "number": "1006-31",
+    "name": "Rauch",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101: Rauch kann die Sicht plötzlich stark einschränken. Geschwindigkeit anpassen und bremsbereit sein.",
+    "alt": "Zusatzzeichen 1006-31: weißes Rechteck mit schwarzem Rand und der Aufschrift Rauch",
+    "file": "signs/1006-31.svg"
+  },
+  {
+    "id": "1006-32",
+    "number": "1006-32",
+    "name": "Splitt",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101 oder 114: Loser Splitt auf der Fahrbahn verlängert den Bremsweg und kann aufgewirbelt werden. Langsam fahren und Abstand halten, besonders für Zweiräder.",
+    "alt": "Zusatzzeichen 1006-32: weißes Rechteck mit schwarzem Rand und der Aufschrift Splitt",
+    "file": "signs/1006-32.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1006-33",
+    "number": "1006-33",
+    "name": "Baustellenausfahrt",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101: Baustellenfahrzeuge fahren aus einer Zufahrt auf die Straße. Mit langsam ausfahrenden, oft verschmutzten Fahrzeugen rechnen.",
+    "alt": "Zusatzzeichen 1006-33: weißes Rechteck mit schwarzem Rand und der Aufschrift Baustellen- ausfahrt",
+    "file": "signs/1006-33.svg"
+  },
+  {
+    "id": "1006-34",
+    "number": "1006-34",
+    "name": "Glatteis",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101 oder 114: An dieser Stelle bildet sich häufig Glatteis, etwa auf Brücken oder in Waldstücken. Vorsichtig und mit ausreichendem Abstand fahren.",
+    "alt": "Zusatzzeichen 1006-34: weißes Rechteck mit schwarzem Rand und der Aufschrift Glatteis",
+    "file": "signs/1006-34.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1006-35",
+    "number": "1006-35",
+    "name": "Straßenschäden",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101: Die Fahrbahn hat Schlaglöcher oder andere Schäden. Geschwindigkeit verringern und den Lenker sicher halten.",
+    "alt": "Zusatzzeichen 1006-35: weißes Rechteck mit schwarzem Rand und der Aufschrift Straßenschäden",
+    "file": "signs/1006-35.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1007-30",
+    "number": "1007-30",
+    "name": "Unfall",
+    "category": "zusatzzeichen",
+    "meaning": "Erklärt die Gefahr unter Zeichen 101: Es liegt eine Unfallstelle voraus. Geschwindigkeit verringern, bremsbereit sein und den Anweisungen von Polizei und Rettungskräften folgen.",
+    "alt": "Zusatzzeichen 1007-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Unfall",
+    "file": "signs/1007-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1008-30",
+    "number": "1008-30",
+    "name": "Vorfahrt geändert",
+    "category": "zusatzzeichen",
+    "meaning": "Weist darauf hin, dass die Vorfahrtregelung an dieser Kreuzung oder Einmündung kürzlich geändert wurde. Besonders aufmerksam auf die Verkehrszeichen achten und sich nicht auf die gewohnte Regelung verlassen.",
+    "alt": "Zusatzzeichen 1008-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Vorfahrt geändert",
+    "file": "signs/1008-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1008-31",
+    "number": "1008-31",
+    "name": "Verkehrsführung geändert",
+    "category": "zusatzzeichen",
+    "meaning": "Weist darauf hin, dass die Verkehrsführung an dieser Stelle geändert wurde, etwa durch eine neue Einbahnstraße oder geänderte Fahrstreifen. Auf die neuen Zeichen und Markierungen achten.",
+    "alt": "Zusatzzeichen 1008-31: weißes Rechteck mit schwarzem Rand und der Aufschrift Verkehrsführung geändert",
+    "file": "signs/1008-31.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-51",
+    "number": "1010-51",
+    "name": "Fußgänger",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Fußgänger oder erklärt, dass es sich auf Fußgänger bezieht, etwa unter einem Gefahr- oder Richtzeichen.",
+    "alt": "Zusatzzeichen 1010-51 Fußgänger: weißes Rechteck mit gehender Person",
+    "file": "signs/1010-51.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-52",
+    "number": "1010-52",
+    "name": "Radverkehr",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf den Radverkehr oder erklärt, dass es sich auf Radfahrer bezieht.",
+    "alt": "Zusatzzeichen 1010-52 Radverkehr: weißes Rechteck mit Fahrrad",
+    "file": "signs/1010-52.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-53",
+    "number": "1010-53",
+    "name": "Reiter",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Reiter oder erklärt, dass es sich auf Reiter bezieht.",
+    "alt": "Zusatzzeichen 1010-53 Reiter: weißes Rechteck mit Reiter auf Pferd",
+    "file": "signs/1010-53.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-54",
+    "number": "1010-54",
+    "name": "Viehtrieb",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Viehtrieb oder weist darauf hin, dass mit Viehtrieb zu rechnen ist.",
+    "alt": "Zusatzzeichen 1010-54 Viehtrieb: weißes Rechteck mit Rind",
+    "file": "signs/1010-54.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-55",
+    "number": "1010-55",
+    "name": "Straßenbahn",
+    "category": "zusatzzeichen",
+    "meaning": "Weist darauf hin, dass das Hauptzeichen die Straßenbahn betrifft oder dass mit Straßenbahnverkehr zu rechnen ist.",
+    "alt": "Zusatzzeichen 1010-55 Straßenbahn: weißes Rechteck mit Straßenbahn von vorn",
+    "file": "signs/1010-55.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-56",
+    "number": "1010-56",
+    "name": "Kraftomnibus",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Kraftomnibusse oder erklärt, dass es sich auf Busse bezieht.",
+    "alt": "Zusatzzeichen 1010-56 Kraftomnibus: weißes Rechteck mit Bus von vorn",
+    "file": "signs/1010-56.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-57",
+    "number": "1010-57",
+    "name": "Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t einschließlich ihrer Anhänger und Zugmaschinen; ausgenommen sind Pkw und Kraftomnibusse.",
+    "alt": "Zusatzzeichen 1010-57 Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t: weißes Rechteck mit Lkw von vorn",
+    "file": "signs/1010-57.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-58",
+    "number": "1010-58",
+    "name": "Personenkraftwagen",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Personenkraftwagen oder erklärt, dass es sich auf Pkw bezieht.",
+    "alt": "Zusatzzeichen 1010-58 Personenkraftwagen: weißes Rechteck mit Pkw von vorn",
+    "file": "signs/1010-58.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-59",
+    "number": "1010-59",
+    "name": "Personenkraftwagen mit Anhänger",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Personenkraftwagen mit Anhänger, etwa bei einer Geschwindigkeitsbeschränkung oder einem Überholverbot für Gespanne.",
+    "alt": "Zusatzzeichen 1010-59 Personenkraftwagen mit Anhänger: weißes Rechteck mit Pkw mit Anhänger von der Seite",
+    "file": "signs/1010-59.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-60",
+    "number": "1010-60",
+    "name": "Lastkraftwagen mit Anhänger",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Lastkraftwagen mit Anhänger (Lastzüge).",
+    "alt": "Zusatzzeichen 1010-60 Lastkraftwagen mit Anhänger: weißes Rechteck mit Lkw mit Anhänger von der Seite",
+    "file": "signs/1010-60.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-62",
+    "number": "1010-62",
+    "name": "Krafträder, auch mit Beiwagen, Kleinkrafträder und Mopeds",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Krafträder (auch mit Beiwagen), Kleinkrafträder und Mopeds.",
+    "alt": "Zusatzzeichen 1010-62 Krafträder, auch mit Beiwagen, Kleinkrafträder und Mopeds: weißes Rechteck mit Motorrad",
+    "file": "signs/1010-62.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-63",
+    "number": "1010-63",
+    "name": "Mofas",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Mofas (einspurige Fahrräder mit Hilfsmotor bis 25 km/h).",
+    "alt": "Zusatzzeichen 1010-63 Mofas: weißes Rechteck mit Mofa",
+    "file": "signs/1010-63.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-66",
+    "number": "1010-66",
+    "name": "Elektrisch betriebene Fahrzeuge",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf elektrisch betriebene Fahrzeuge mit E-Kennzeichen (reine Elektrofahrzeuge, Brennstoffzellenfahrzeuge und bestimmte Plug-in-Hybride), etwa bei bevorrechtigten Parkflächen.",
+    "alt": "Zusatzzeichen 1010-66 Elektrisch betriebene Fahrzeuge: weißes Rechteck mit Pkw mit Stecker",
+    "file": "signs/1010-66.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-68",
+    "number": "1010-68",
+    "name": "E-Bikes",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf E-Bikes (elektrisch angetriebene Zweiräder bis 25 km/h, die keine Pedelecs sind); Pedelecs bis 25 km/h gelten als Fahrräder.",
+    "alt": "Zusatzzeichen 1010-68 E-Bikes: weißes Rechteck mit Fahrrad mit Blitz",
+    "file": "signs/1010-68.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-69",
+    "number": "1010-69",
+    "name": "Elektrokleinstfahrzeuge",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Elektrokleinstfahrzeuge (etwa E-Tretroller) im Sinne der Elektrokleinstfahrzeuge-Verordnung.",
+    "alt": "Zusatzzeichen 1010-69 Elektrokleinstfahrzeuge: weißes Rechteck mit E-Tretroller",
+    "file": "signs/1010-69.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1010-70",
+    "number": "1010-70",
+    "name": "Carsharingfahrzeuge",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf gekennzeichnete Carsharingfahrzeuge, etwa bei für Carsharing reservierten Parkflächen.",
+    "alt": "Zusatzzeichen 1010-70 Carsharingfahrzeuge: weißes Rechteck mit Pkw mit drei Personen darüber",
+    "file": "signs/1010-70.svg",
+    "note": "Zuordnung von Nummer und Sinnbild (1010er-Reihe) nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1012-31",
+    "number": "1012-31",
+    "name": "Ende",
+    "category": "zusatzzeichen",
+    "meaning": "Zeigt unter einem Zeichen das Ende seiner Wirkung an, etwa das Ende einer Parkfläche, eines Halteverbots oder einer Zone.",
+    "alt": "Zusatzzeichen 1012-31: weißes Rechteck mit schwarzem Rand und der Aufschrift Ende",
+    "file": "signs/1012-31.svg"
+  },
+  {
+    "id": "1012-32",
+    "number": "1012-32",
+    "name": "Radfahrer absteigen",
+    "category": "zusatzzeichen",
+    "meaning": "Fordert Radfahrer auf, an dieser Stelle abzusteigen und das Fahrrad zu schieben, zum Beispiel an einer engen Arbeitsstelle oder auf einem Fußgängerüberweg. Schiebende Radfahrer gelten als Fußgänger.",
+    "alt": "Zusatzzeichen 1012-32: weißes Rechteck mit schwarzem Rand und der Aufschrift Radfahrer absteigen",
+    "file": "signs/1012-32.svg"
+  },
+  {
+    "id": "1012-34",
+    "number": "1012-34",
+    "name": "Grüne Welle bei ... km/h",
+    "category": "zusatzzeichen",
+    "meaning": "Weist darauf hin, dass die Ampeln der Straße so geschaltet sind, dass bei gleichmäßiger Fahrt mit der angegebenen Geschwindigkeit die Grünphasen erreicht werden. Es handelt sich um eine Empfehlung, die Höchstgeschwindigkeit bleibt unberührt.",
+    "alt": "Zusatzzeichen 1012-34: weißes Rechteck mit schwarzem Rand und der Aufschrift Grüne Welle bei 50 km/h",
+    "file": "signs/1012-34.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1020-11",
+    "number": "1020-11",
+    "name": "Schwerbehinderte mit Parkausweis frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt schwerbehinderte Menschen mit außergewöhnlicher Gehbehinderung, blinde Menschen und gleichgestellte Personen mit dem angegebenen Parkausweis von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Zum Beispiel unter Zeichen 286 dürfen sie hier parken.",
+    "alt": "Zusatzzeichen 1020-11: weißes Rechteck mit Rollstuhlsymbol und der Aufschrift mit Parkausweis Nr. ... frei",
+    "file": "signs/1020-11.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1020-12",
+    "number": "1020-12",
+    "name": "Radverkehr und Anlieger frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt den Radverkehr und Anlieger von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Anlieger sind alle, die zu einem Grundstück an der Straße wollen oder von dort kommen, auch Besucher und Lieferanten.",
+    "alt": "Zusatzzeichen 1020-12: weißes Rechteck mit Fahrrad und der Aufschrift Anlieger frei",
+    "file": "signs/1020-12.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1020-30",
+    "number": "1020-30",
+    "name": "Anlieger frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Anlieger von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Anlieger sind alle, die zu einem Grundstück an dieser Straße wollen oder von dort kommen: Bewohner, Besucher, Kunden, Lieferanten. Wer die Straße nur zum Durchfahren nutzt, darf nicht einfahren.",
+    "alt": "Zusatzzeichen 1020-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Anlieger frei",
+    "file": "signs/1020-30.svg"
+  },
+  {
+    "id": "1020-32",
+    "number": "1020-32",
+    "name": "Bewohner mit Parkausweis frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Bewohner mit dem angegebenen Bewohnerparkausweis von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Zum Beispiel dürfen sie im eingeschränkten Halteverbot oder in einer Parkraumbewirtschaftungszone ohne Parkschein parken.",
+    "alt": "Zusatzzeichen 1020-32: weißes Rechteck mit schwarzem Rand und der Aufschrift Bewohner mit Parkausweis Nr. ... frei",
+    "file": "signs/1020-32.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1022-10",
+    "number": "1022-10",
+    "name": "Radverkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt den Radverkehr von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Zum Beispiel dürfen Radfahrer unter Zeichen 267 in Gegenrichtung in die Einbahnstraße einfahren oder unter Zeichen 239 den Gehweg befahren; dort müssen sie Schrittgeschwindigkeit fahren und Fußgängern Vorrang lassen.",
+    "alt": "Zusatzzeichen 1022-10 Radverkehr frei: weißes Rechteck mit Fahrrad und der Aufschrift frei",
+    "file": "signs/1022-10.svg"
+  },
+  {
+    "id": "1022-11",
+    "number": "1022-11",
+    "name": "Krafträder frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Krafträder, auch mit Beiwagen, Kleinkrafträder und Mopeds von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1022-11 Krafträder frei: weißes Rechteck mit Motorrad und der Aufschrift frei",
+    "file": "signs/1022-11.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1022-12",
+    "number": "1022-12",
+    "name": "Mofas frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Mofas von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1022-12 Mofas frei: weißes Rechteck mit Mofa und der Aufschrift frei",
+    "file": "signs/1022-12.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1022-16",
+    "number": "1022-16",
+    "name": "Elektrokleinstfahrzeuge frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Elektrokleinstfahrzeuge wie E-Tretroller von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Zum Beispiel dürfen sie eine für sie sonst gesperrte Einbahnstraße in Gegenrichtung befahren oder einen Gehweg benutzen; auf Gehwegen ist dann Schrittgeschwindigkeit geboten.",
+    "alt": "Zusatzzeichen 1022-16 Elektrokleinstfahrzeuge frei: weißes Rechteck mit E-Tretroller und der Aufschrift frei",
+    "file": "signs/1022-16.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1024-10",
+    "number": "1024-10",
+    "name": "Personenkraftwagen frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Personenkraftwagen von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-10 Personenkraftwagen frei: weißes Rechteck mit Pkw von vorn und der Aufschrift frei",
+    "file": "signs/1024-10.svg"
+  },
+  {
+    "id": "1024-11",
+    "number": "1024-11",
+    "name": "Personenkraftwagen mit Anhänger frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Personenkraftwagen mit Anhänger von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-11 Personenkraftwagen mit Anhänger frei: weißes Rechteck mit Pkw mit Anhänger und der Aufschrift frei",
+    "file": "signs/1024-11.svg"
+  },
+  {
+    "id": "1024-12",
+    "number": "1024-12",
+    "name": "Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t einschließlich ihrer Anhänger und Zugmaschinen (Lkw) von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-12 Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t frei: weißes Rechteck mit Lkw von vorn und der Aufschrift frei",
+    "file": "signs/1024-12.svg"
+  },
+  {
+    "id": "1024-13",
+    "number": "1024-13",
+    "name": "Lastkraftwagen mit Anhänger frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Lastkraftwagen mit Anhänger von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-13 Lastkraftwagen mit Anhänger frei: weißes Rechteck mit Lkw mit Anhänger und der Aufschrift frei",
+    "file": "signs/1024-13.svg"
+  },
+  {
+    "id": "1024-14",
+    "number": "1024-14",
+    "name": "Kraftomnibusse frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Kraftomnibusse von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-14 Kraftomnibusse frei: weißes Rechteck mit Bus von vorn und der Aufschrift frei",
+    "file": "signs/1024-14.svg"
+  },
+  {
+    "id": "1024-20",
+    "number": "1024-20",
+    "name": "Elektrofahrzeuge frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt elektrisch betriebene Fahrzeuge mit E-Kennzeichen von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1024-20 Elektrofahrzeuge frei: weißes Rechteck mit Pkw mit Stecker und der Aufschrift frei",
+    "file": "signs/1024-20.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1026-30",
+    "number": "1026-30",
+    "name": "Taxi frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Taxis von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Taxi frei",
+    "file": "signs/1026-30.svg"
+  },
+  {
+    "id": "1026-32",
+    "number": "1026-32",
+    "name": "Linienverkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge des öffentlichen Linienverkehrs (Linienbusse) von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-32: weißes Rechteck mit schwarzem Rand und der Aufschrift Linienverkehr frei",
+    "file": "signs/1026-32.svg"
+  },
+  {
+    "id": "1026-34",
+    "number": "1026-34",
+    "name": "Schulbus frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Schulbusse von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-34: weißes Rechteck mit schwarzem Rand und der Aufschrift Schulbus frei",
+    "file": "signs/1026-34.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1026-35",
+    "number": "1026-35",
+    "name": "Lieferverkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt den Lieferverkehr von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert. Lieferverkehr ist die geschäftsmäßige Beförderung von Gütern zu oder von Anliegern; das reine Abholen privater Einkäufe zählt in der Regel nicht dazu.",
+    "alt": "Zusatzzeichen 1026-35: weißes Rechteck mit schwarzem Rand und der Aufschrift Lieferverkehr frei",
+    "file": "signs/1026-35.svg"
+  },
+  {
+    "id": "1026-36",
+    "number": "1026-36",
+    "name": "Land- und forstwirtschaftlicher Verkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge, die land- oder forstwirtschaftlichen Zwecken dienen, etwa Traktoren und Erntemaschinen auf dem Weg zu Feldern oder Wäldern von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-36: weißes Rechteck mit schwarzem Rand und der Aufschrift Land- und forst- wirtschaftlicher Verkehr frei",
+    "file": "signs/1026-36.svg"
+  },
+  {
+    "id": "1026-37",
+    "number": "1026-37",
+    "name": "Landwirtschaftlicher Verkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge, die landwirtschaftlichen Zwecken dienen von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-37: weißes Rechteck mit schwarzem Rand und der Aufschrift Landwirtschaft- licher Verkehr frei",
+    "file": "signs/1026-37.svg"
+  },
+  {
+    "id": "1026-38",
+    "number": "1026-38",
+    "name": "Forstwirtschaftlicher Verkehr frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge, die forstwirtschaftlichen Zwecken dienen von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-38: weißes Rechteck mit schwarzem Rand und der Aufschrift Forstwirtschaft- licher Verkehr frei",
+    "file": "signs/1026-38.svg"
+  },
+  {
+    "id": "1026-39",
+    "number": "1026-39",
+    "name": "Polizei frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge der Polizei von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1026-39: weißes Rechteck mit schwarzem Rand und der Aufschrift Polizei frei",
+    "file": "signs/1026-39.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1028-30",
+    "number": "1028-30",
+    "name": "Zufahrt bis ... frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt die Zufahrt bis zu der angegebenen Stelle, etwa bis zu einer Baustelle oder einem Ortsteil von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1028-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Zufahrt bis ... frei",
+    "file": "signs/1028-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1028-33",
+    "number": "1028-33",
+    "name": "Baustellenfahrzeuge frei",
+    "category": "zusatzzeichen",
+    "meaning": "Nimmt Fahrzeuge, die für die Arbeiten an der Baustelle eingesetzt werden von dem Verbot oder der Beschränkung des Zeichens aus, unter dem das Zusatzzeichen steht. Für alle anderen gilt das Hauptzeichen unverändert.",
+    "alt": "Zusatzzeichen 1028-33: weißes Rechteck mit schwarzem Rand und der Aufschrift Baustellen- fahrzeuge frei",
+    "file": "signs/1028-33.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1031-50",
+    "number": "1031-50",
+    "name": "Freistellung vom Verkehrsverbot: rote, gelbe und grüne Plakette",
+    "category": "zusatzzeichen",
+    "meaning": "Kennzeichnet unter Zeichen 270.1 (Umweltzone), dass Kraftfahrzeuge mit roter, gelber oder grüner Feinstaubplakette in die Zone einfahren dürfen. Fahrzeuge ohne Plakette dürfen nicht einfahren.",
+    "alt": "Zusatzzeichen 1031-50: weißes Rechteck mit roter, gelber und grüner Plakette und der Aufschrift frei",
+    "file": "signs/1031-50.svg"
+  },
+  {
+    "id": "1031-51",
+    "number": "1031-51",
+    "name": "Freistellung vom Verkehrsverbot: gelbe und grüne Plakette",
+    "category": "zusatzzeichen",
+    "meaning": "Kennzeichnet unter Zeichen 270.1 (Umweltzone), dass nur Kraftfahrzeuge mit gelber oder grüner Feinstaubplakette einfahren dürfen.",
+    "alt": "Zusatzzeichen 1031-51: weißes Rechteck mit gelber und grüner Plakette und der Aufschrift frei",
+    "file": "signs/1031-51.svg"
+  },
+  {
+    "id": "1031-52",
+    "number": "1031-52",
+    "name": "Freistellung vom Verkehrsverbot: grüne Plakette",
+    "category": "zusatzzeichen",
+    "meaning": "Kennzeichnet unter Zeichen 270.1 (Umweltzone), dass nur Kraftfahrzeuge mit grüner Feinstaubplakette einfahren dürfen. Das ist heute in fast allen Umweltzonen die geltende Regelung.",
+    "alt": "Zusatzzeichen 1031-52: weißes Rechteck mit grüner Plakette und der Aufschrift frei",
+    "file": "signs/1031-52.svg"
+  },
+  {
+    "id": "1040-30",
+    "number": "1040-30",
+    "name": "Zeitliche Beschränkung",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt die Regelung des Hauptzeichens auf die angegebene Tageszeit, hier von 7 bis 18 Uhr. Außerhalb dieser Zeit gilt das Zeichen nicht.",
+    "alt": "Zusatzzeichen 1040-30: weißes Rechteck mit schwarzem Rand und der Aufschrift 7 - 18 h",
+    "file": "signs/1040-30.svg"
+  },
+  {
+    "id": "1040-31",
+    "number": "1040-31",
+    "name": "Zeitliche Beschränkung (zwei Zeiträume)",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt die Regelung des Hauptzeichens auf die angegebenen Zeiträume des Tages. Außerhalb dieser Zeiten gilt das Zeichen nicht.",
+    "alt": "Zusatzzeichen 1040-31: weißes Rechteck mit schwarzem Rand und der Aufschrift 8 - 11 h 16 - 18 h",
+    "file": "signs/1040-31.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1040-32",
+    "number": "1040-32",
+    "name": "Parkscheibe (Höchstparkdauer)",
+    "category": "zusatzzeichen",
+    "meaning": "Das Parken ist nur mit Parkscheibe und höchstens für die angegebene Dauer erlaubt, hier zwei Stunden. Die Parkscheibe wird auf die nächste halbe Stunde nach der Ankunft eingestellt und gut sichtbar hinter der Windschutzscheibe ausgelegt.",
+    "alt": "Zusatzzeichen 1040-32: weißes Rechteck mit blauer Parkscheibe und der Aufschrift 2 Std.",
+    "file": "signs/1040-32.svg"
+  },
+  {
+    "id": "1040-33",
+    "number": "1040-33",
+    "name": "Parkscheibe mit Zeitangabe",
+    "category": "zusatzzeichen",
+    "meaning": "Das Parken ist mit Parkscheibe höchstens für die angegebene Dauer erlaubt, und zwar nur während der genannten Zeit, hier zwei Stunden zwischen 9 und 18 Uhr. Außerhalb dieser Zeit darf ohne Parkscheibe unbegrenzt geparkt werden.",
+    "alt": "Zusatzzeichen 1040-33: weißes Rechteck mit blauer Parkscheibe und der Aufschrift 2 Std. 9 - 18 h",
+    "file": "signs/1040-33.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1042-30",
+    "number": "1042-30",
+    "name": "Zeitliche Beschränkung an Wochentagen",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt die Regelung des Hauptzeichens auf die Tage Montag bis Freitag. An Samstagen, Sonntagen und Feiertagen gilt das Zeichen nicht.",
+    "alt": "Zusatzzeichen 1042-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Mo - Fr",
+    "file": "signs/1042-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1042-31",
+    "number": "1042-31",
+    "name": "Zeitliche Beschränkung an Wochentagen mit Uhrzeit",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt die Regelung des Hauptzeichens auf die angegebenen Tage und Uhrzeiten, hier Montag bis Freitag von 16 bis 18 Uhr.",
+    "alt": "Zusatzzeichen 1042-31: weißes Rechteck mit schwarzem Rand und der Aufschrift Mo - Fr 16 - 18 h",
+    "file": "signs/1042-31.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1042-33",
+    "number": "1042-33",
+    "name": "Zeitliche Beschränkung werktags",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt die Regelung des Hauptzeichens auf Werktage zu den angegebenen Zeiten. Werktage sind Montag bis Samstag, sofern der Samstag kein gesetzlicher Feiertag ist.",
+    "alt": "Zusatzzeichen 1042-33: weißes Rechteck mit schwarzem Rand und der Aufschrift werktags 7 - 18 h",
+    "file": "signs/1042-33.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1044-10",
+    "number": "1044-10",
+    "name": "Schwerbehinderte mit Parkausweis",
+    "category": "zusatzzeichen",
+    "meaning": "Die Parkfläche ist Menschen mit außergewöhnlicher Gehbehinderung, blinden Menschen und gleichgestellten Personen vorbehalten, die den angegebenen (blauen) Parkausweis gut sichtbar auslegen. Alle anderen dürfen hier weder parken noch halten, um zu warten.",
+    "alt": "Zusatzzeichen 1044-10: weißes Rechteck mit Rollstuhlsymbol und der Aufschrift mit Parkausweis Nr. ...",
+    "file": "signs/1044-10.svg"
+  },
+  {
+    "id": "1044-30",
+    "number": "1044-30",
+    "name": "Bewohner mit Parkausweis",
+    "category": "zusatzzeichen",
+    "meaning": "Die Parkfläche ist Bewohnern mit dem angegebenen Bewohnerparkausweis vorbehalten. Andere dürfen hier nicht parken, es sei denn, ein weiteres Zusatzzeichen lässt es (etwa mit Parkschein) zu.",
+    "alt": "Zusatzzeichen 1044-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Bewohner mit Parkausweis Nr. ...",
+    "file": "signs/1044-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1049-13",
+    "number": "1049-13",
+    "name": "Kraftfahrzeuge über 3,5 t, Kraftomnibusse und Personenkraftwagen mit Anhänger",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5 t, Kraftomnibusse und Personenkraftwagen mit Anhänger, zum Beispiel bei einem Überholverbot oder einer Geschwindigkeitsbeschränkung für diese Fahrzeugarten.",
+    "alt": "Zusatzzeichen 1049-13: weißes Rechteck mit Lkw, Bus und Pkw mit Anhänger nebeneinander",
+    "file": "signs/1049-13.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1050-30",
+    "number": "1050-30",
+    "name": "Taxi (Taxenstand)",
+    "category": "zusatzzeichen",
+    "meaning": "Kennzeichnet unter Zeichen 229 oder 314 einen Taxenstand oder eine Parkfläche für Taxis. Andere Fahrzeuge dürfen hier nicht parken; Halten ist nur zum Ein- und Aussteigen erlaubt, wenn kein Taxi behindert wird.",
+    "alt": "Zusatzzeichen 1050-30: weißes Rechteck mit schwarzem Rand und der Aufschrift Taxi",
+    "file": "signs/1050-30.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1050-33",
+    "number": "1050-33",
+    "name": "Elektrofahrzeuge während des Ladevorgangs",
+    "category": "zusatzzeichen",
+    "meaning": "Die Parkfläche ist elektrisch betriebenen Fahrzeugen vorbehalten, und zwar nur während sie an der Ladesäule laden. Andere Fahrzeuge und nicht ladende Elektrofahrzeuge dürfen hier nicht parken.",
+    "alt": "Zusatzzeichen 1050-33: weißes Rechteck mit Pkw mit Stecker und der Aufschrift während des Ladevorgangs",
+    "file": "signs/1050-33.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
+  },
+  {
+    "id": "1053-31",
+    "number": "1053-31",
+    "name": "Mit Parkschein",
+    "category": "zusatzzeichen",
+    "meaning": "Das Parken ist nur mit gültigem Parkschein aus dem Parkscheinautomaten erlaubt; der Schein muss gut sichtbar ausgelegt werden. Zeitangaben auf weiteren Zusatzzeichen begrenzen die Pflicht auf bestimmte Zeiten.",
+    "alt": "Zusatzzeichen 1053-31: weißes Rechteck mit schwarzem Rand und der Aufschrift mit Parkschein",
+    "file": "signs/1053-31.svg"
+  },
+  {
+    "id": "1053-33",
+    "number": "1053-33",
+    "name": "Gebührenpflichtig",
+    "category": "zusatzzeichen",
+    "meaning": "Für das Parken ist eine Gebühr zu entrichten, etwa am Parkscheinautomaten oder per Handyparken.",
+    "alt": "Zusatzzeichen 1053-33: weißes Rechteck mit schwarzem Rand und der Aufschrift gebührenpflichtig",
+    "file": "signs/1053-33.svg"
+  },
+  {
+    "id": "1053-35",
+    "number": "1053-35",
+    "name": "Bei Nässe",
+    "category": "zusatzzeichen",
+    "meaning": "Die Regelung des Hauptzeichens, meist eine Geschwindigkeitsbeschränkung, gilt nur bei Nässe. Nässe liegt vor, wenn die Fahrbahn mit einem durchgehenden Wasserfilm bedeckt ist, nicht schon bei einzelnen feuchten Stellen.",
+    "alt": "Zusatzzeichen 1053-35: weißes Rechteck mit schwarzem Rand und der Aufschrift bei Nässe",
+    "file": "signs/1053-35.svg"
+  },
+  {
+    "id": "1053-37",
+    "number": "1053-37",
+    "name": "Massenangabe",
+    "category": "zusatzzeichen",
+    "meaning": "Beschränkt das Hauptzeichen auf Fahrzeuge über der angegebenen zulässigen Gesamtmasse, zum Beispiel unter Zeichen 253 auf Lkw über 12 t.",
+    "alt": "Zusatzzeichen 1053-37: weißes Rechteck mit schwarzem Rand und der Aufschrift 12 t",
+    "file": "signs/1053-37.svg",
+    "note": "Nummer der Variante nach Verkehrszeichenkatalog bitte prüfen."
   }
 ];

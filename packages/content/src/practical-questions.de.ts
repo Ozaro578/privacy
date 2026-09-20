@@ -1,7 +1,7 @@
 // Prüferfragen zu Sicherheitskontrollen und Fahrzeugtechnik für die praktische Prüfung Klasse B
 // (eigene Formulierungen, Stand September 2026). Die Stichpunkte beschreiben eine vollständige Antwort.
-import { CLASS_B_CODES } from "./topics.js";
-import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type PracticalCategory, type PracticalQuestion, type ReviewStatus } from "./types.js";
+import { CLASS_B_CODES } from "./topics";
+import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type PracticalCategory, type PracticalQuestion, type ReviewStatus } from "./types";
 
 function p(category: PracticalCategory, question: string, expectedPoints: string[], explanation: string, reviewStatus: ReviewStatus = "published"): PracticalQuestion {
   return { category, question, expectedPoints, explanation, licenseCodes: [...CLASS_B_CODES], legalBasisDate: LEGAL_BASIS_DATE, source: CONTENT_SOURCE, reviewStatus };

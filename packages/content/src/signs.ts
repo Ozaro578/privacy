@@ -1,5 +1,5 @@
 // Verkehrszeichenkatalog: alle Zeichen der StVO-Anlagen 1 bis 4 und die gebräuchlichen Zusatzzeichen als eigene Vektorzeichnungen.
-import { SIGN_CATALOG } from "./signs.catalog.js";
+import { SIGN_CATALOG } from "./signs.catalog";
 
 export type SignCategory = "gefahrzeichen" | "vorschriftzeichen" | "richtzeichen" | "verkehrseinrichtungen" | "zusatzzeichen";
 export interface SignEntry {

@@ -1,7 +1,7 @@
 // Wissensbasis für den KI-Coach (eigene Formulierungen, Stand September 2026). Jeder Eintrag ist quellenbelegt
 // mit allgemein dokumentierten Regeln; Zweifelsfälle stehen auf reviewStatus "needs_verification".
-import { defaultLicenseCodes, materialKindOf } from "./topics.js";
-import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type KnowledgeEntry, type ReviewStatus, type TopicCode } from "./types.js";
+import { defaultLicenseCodes, materialKindOf } from "./topics";
+import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type KnowledgeEntry, type ReviewStatus, type TopicCode } from "./types";
 
 function k(topic: TopicCode, slug: string, title: string, summary: string, legalReference: string, bodyMarkdown: string, reviewStatus: ReviewStatus = "published"): KnowledgeEntry {
   return {

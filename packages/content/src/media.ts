@@ -1,8 +1,8 @@
 // Bildmedien der Übungsfragen: Verkehrszeichen (StVO, amtliche Werke) und Situationsgrafiken.
 // Die SVG-Dateien werden mit `node scripts/gen-media.mjs` erzeugt und liegen unter media/ (manifest.json).
-import { MEDIA_MANIFEST } from "./media.manifest.js";
-import { QUESTION_MEDIA_A } from "./media.extra.a.js";
-import { ZEICHEN_MEDIA } from "./questions/zeichen.generated.js";
+import { MEDIA_MANIFEST } from "./media.manifest";
+import { QUESTION_MEDIA_A } from "./media.extra.a";
+import { ZEICHEN_MEDIA } from "./questions/zeichen.generated";
 
 export type MediaKind = "sign" | "scene";
 export interface MediaItem {

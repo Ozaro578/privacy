@@ -1,4 +1,4 @@
-import type { MaterialKind, TopicCode, TopicMeta } from "./types.js";
+import type { MaterialKind, TopicCode, TopicMeta } from "./types";
 
 /** Fahrerlaubnisklassen, für die der Zusatzstoff dieses Pakets gilt. */
 export const CLASS_B_CODES: readonly string[] = ["B", "B197", "B78"];

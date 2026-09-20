@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { chapters } from "./chapters.de.js";
-import { byTopic, validateContent } from "./index.js";
-import { knowledgeEntries } from "./knowledge.de.js";
-import { practicalQuestions } from "./practical-questions.de.js";
-import { questions } from "./questions.de.js";
-import { TOPICS } from "./topics.js";
-import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES } from "./types.js";
+import { chapters } from "./chapters.de";
+import { byTopic, validateContent } from "./index";
+import { knowledgeEntries } from "./knowledge.de";
+import { practicalQuestions } from "./practical-questions.de";
+import { questions } from "./questions.de";
+import { TOPICS } from "./topics";
+import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES } from "./types";
 
 const DASH = /[–—]/;
 const topicSet = new Set<string>(TOPIC_CODES);

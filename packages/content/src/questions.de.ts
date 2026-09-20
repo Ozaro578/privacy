@@ -4,27 +4,27 @@
 // Rechtswerte nur aus allgemein dokumentierten Regeln (StVO, StVG, FeV, StVZO, FahrschAusbO).
 // Die Fragen liegen je Thema in src/questions/<thema>.ts und werden hier zusammengeführt.
 
-import type { Question } from "./types.js";
-import { alkoholDrogen } from "./questions/alkohol_drogen.js";
-import { andereTeilnehmer } from "./questions/andere_teilnehmer.js";
-import { befoerderung } from "./questions/befoerderung.js";
-import { beleuchtung } from "./questions/beleuchtung.js";
-import { besondereSituationen } from "./questions/besondere_situationen.js";
-import { fahrmanoever } from "./questions/fahrmanoever.js";
-import { fahrphysik } from "./questions/fahrphysik.js";
-import { fahrzeugtechnik } from "./questions/fahrzeugtechnik.js";
-import { gefahrenlehre } from "./questions/gefahrenlehre.js";
-import { geschwindigkeit } from "./questions/geschwindigkeit.js";
-import { haltenParken } from "./questions/halten_parken.js";
-import { kreisverkehr } from "./questions/kreisverkehr.js";
-import { recht } from "./questions/recht.js";
-import { strassenbenutzung } from "./questions/strassenbenutzung.js";
-import { umwelt } from "./questions/umwelt.js";
-import { unfallPanne } from "./questions/unfall_panne.js";
-import { verkehrsregelung } from "./questions/verkehrsregelung.js";
-import { verkehrszeichen } from "./questions/verkehrszeichen.js";
-import { vorfahrt } from "./questions/vorfahrt.js";
-import { zeichenGenerated } from "./questions/zeichen.generated.js";
+import type { Question } from "./types";
+import { alkoholDrogen } from "./questions/alkohol_drogen";
+import { andereTeilnehmer } from "./questions/andere_teilnehmer";
+import { befoerderung } from "./questions/befoerderung";
+import { beleuchtung } from "./questions/beleuchtung";
+import { besondereSituationen } from "./questions/besondere_situationen";
+import { fahrmanoever } from "./questions/fahrmanoever";
+import { fahrphysik } from "./questions/fahrphysik";
+import { fahrzeugtechnik } from "./questions/fahrzeugtechnik";
+import { gefahrenlehre } from "./questions/gefahrenlehre";
+import { geschwindigkeit } from "./questions/geschwindigkeit";
+import { haltenParken } from "./questions/halten_parken";
+import { kreisverkehr } from "./questions/kreisverkehr";
+import { recht } from "./questions/recht";
+import { strassenbenutzung } from "./questions/strassenbenutzung";
+import { umwelt } from "./questions/umwelt";
+import { unfallPanne } from "./questions/unfall_panne";
+import { verkehrsregelung } from "./questions/verkehrsregelung";
+import { verkehrszeichen } from "./questions/verkehrszeichen";
+import { vorfahrt } from "./questions/vorfahrt";
+import { zeichenGenerated } from "./questions/zeichen.generated";
 
 export const questions: readonly Question[] = [
   ...gefahrenlehre,

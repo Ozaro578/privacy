@@ -1,7 +1,7 @@
 // Lernkapitel je Thema (eigene Formulierungen, Stand September 2026). Markdown, 250 bis 500 Wörter je Kapitel.
 // Nur allgemein dokumentierte Regeln; keine amtlichen Prüfungsinhalte.
-import { defaultLicenseCodes, materialKindOf } from "./topics.js";
-import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type Chapter, type ReviewStatus, type TopicCode } from "./types.js";
+import { defaultLicenseCodes, materialKindOf } from "./topics";
+import { CONTENT_SOURCE, LEGAL_BASIS_DATE, type Chapter, type ReviewStatus, type TopicCode } from "./types";
 
 function ch(topic: TopicCode, title: string, estimatedMinutes: number, bodyMarkdown: string, reviewStatus: ReviewStatus = "published"): Chapter {
   return {

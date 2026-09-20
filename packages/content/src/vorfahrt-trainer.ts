@@ -1,7 +1,7 @@
 // Vorfahrt-Trainer: Situationen in Draufsicht, bei denen die Reihenfolge der Fahrzeuge bestimmt werden muss.
 // Regeln nach § 8 StVO (rechts vor links, Vorfahrtstraße, Zeichen 205/206), § 9 StVO (Abbiegen, Gegenverkehr),
 // § 38 StVO (Einsatzfahrzeuge), § 8 Abs. 1a StVO (Kreisverkehr). Rechtsstand 1.9.2026. Eigene Formulierungen.
-import { LEGAL_BASIS_DATE, type LegalBasisDate, type ReviewStatus } from "./types.js";
+import { LEGAL_BASIS_DATE, type LegalBasisDate, type ReviewStatus } from "./types";
 
 export interface PriorityVehicle { key: string; label: string }
 export interface PriorityScenario {

@@ -1,3 +1,5 @@
+import { mediaById, priorityScenarios } from "@fahrpilot/content";
+import { PriorityTrainer } from "@/components/learn/priority-trainer";
 import { nowMs } from "@/lib/time";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -43,6 +45,7 @@ export default function PreviewPage() {
       <div className="mb-4 rounded-xl border border-warn-500/40 bg-warn-100 p-3 text-sm">Vorschau mit Beispieldaten. Aktionen sind hier ohne Anmeldung nicht aktiv. <Link href="/login" className="underline">Zum Login</Link></div>
       <div id="heute"><TodayView firstName="Lisa" licenseName="Klasse B (Pkw)" transmission="manual" rulesNeedVerification={false} d={d} /></div>
       <div id="session" className="mt-10 space-y-3"><h2 className="text-xl font-bold">Lernsession</h2><SessionRunner session={session} /></div>
+      <div id="vorfahrt" className="mt-10 space-y-3"><h2 className="text-xl font-bold">Vorfahrt-Trainer</h2><PriorityTrainer scenarios={priorityScenarios.slice(0, 4).flatMap((sc) => { const m = mediaById(sc.media); return m ? [{ ...sc, file: m.file, alt: m.alt }] : []; })} /></div>
       <div className="mt-10"><Card title="Weitere Bereiche"><div className="flex flex-wrap gap-2"><Link href="/login" className={btn.primary}>Login</Link><Link href="/datenschutz" className={btn.secondary}>Datenschutz</Link></div></Card></div>
     </StudentShell>
   );

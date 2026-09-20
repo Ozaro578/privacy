@@ -1,19 +1,19 @@
 // Öffentliche Schnittstelle von @fahrpilot/content: eigene Übungsinhalte Klasse B (Stand September 2026).
-export * from "./types.js";
-export { TOPICS, TOPIC_BY_CODE, CLASS_B_CODES, materialKindOf, defaultLicenseCodes } from "./topics.js";
-export { questions } from "./questions.de.js";
-export { chapters } from "./chapters.de.js";
-export { knowledgeEntries } from "./knowledge.de.js";
-export { practicalQuestions } from "./practical-questions.de.js";
-export { MEDIA, QUESTION_MEDIA, mediaById, mediaForQuestion, mediaPublicPath, PUBLIC_MEDIA_PREFIX, type MediaItem, type MediaKind } from "./media.js";
+export * from "./types";
+export { TOPICS, TOPIC_BY_CODE, CLASS_B_CODES, materialKindOf, defaultLicenseCodes } from "./topics";
+export { questions } from "./questions.de";
+export { chapters } from "./chapters.de";
+export { knowledgeEntries } from "./knowledge.de";
+export { practicalQuestions } from "./practical-questions.de";
+export { MEDIA, QUESTION_MEDIA, mediaById, mediaForQuestion, mediaPublicPath, PUBLIC_MEDIA_PREFIX, type MediaItem, type MediaKind } from "./media";
 
-import { chapters } from "./chapters.de.js";
-import { knowledgeEntries } from "./knowledge.de.js";
-import { practicalQuestions } from "./practical-questions.de.js";
-import { questions } from "./questions.de.js";
-import { MEDIA, QUESTION_MEDIA, QUESTION_MEDIA_A } from "./media.js";
-import { TOPICS, TOPIC_BY_CODE } from "./topics.js";
-import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES, type Question, type TopicCode } from "./types.js";
+import { chapters } from "./chapters.de";
+import { knowledgeEntries } from "./knowledge.de";
+import { practicalQuestions } from "./practical-questions.de";
+import { questions } from "./questions.de";
+import { MEDIA, QUESTION_MEDIA, QUESTION_MEDIA_A } from "./media";
+import { TOPICS, TOPIC_BY_CODE } from "./topics";
+import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES, type Question, type TopicCode } from "./types";
 
 /** Fragen gruppiert nach Themen-Code (jedes Thema ist enthalten, ggf. mit leerer Liste). */
 export function byTopic(list: readonly Question[] = questions): Record<TopicCode, Question[]> {
@@ -120,5 +120,5 @@ export function validateContent(): string[] {
 
   return problems;
 }
-export * from "./signs.js";
-export { priorityScenarios, type PriorityScenario, type PriorityVehicle } from "./vorfahrt-trainer.js";
+export * from "./signs";
+export { priorityScenarios, type PriorityScenario, type PriorityVehicle } from "./vorfahrt-trainer";

@@ -1,14 +1,14 @@
 // Spielt die eigenen Übungsinhalte idempotent in die Datenbank ein (globale Inhalte, tenant_id NULL).
 // Aufruf: pnpm --filter @fahrpilot/content seed   (DATABASE_URL, Default: lokale Testdatenbank)
 import postgres from "postgres";
-import { chapters } from "./chapters.de.js";
-import { validateContent } from "./index.js";
-import { knowledgeEntries } from "./knowledge.de.js";
-import { mediaForQuestion, mediaPublicPath } from "./media.js";
-import { practicalQuestions } from "./practical-questions.de.js";
-import { questions } from "./questions.de.js";
-import { TOPICS } from "./topics.js";
-import { CONTENT_SOURCE, type TopicCode } from "./types.js";
+import { chapters } from "./chapters.de";
+import { validateContent } from "./index";
+import { knowledgeEntries } from "./knowledge.de";
+import { mediaForQuestion, mediaPublicPath } from "./media";
+import { practicalQuestions } from "./practical-questions.de";
+import { questions } from "./questions.de";
+import { TOPICS } from "./topics";
+import { CONTENT_SOURCE, type TopicCode } from "./types";
 
 const DEFAULT_URL = "postgresql://postgres@127.0.0.1:54329/fahrpilot_test";
 const LOCALE = "de";
