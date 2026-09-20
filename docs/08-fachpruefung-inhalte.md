@@ -157,3 +157,51 @@ Ausdrücklich bestätigt wurden unter anderem: Prüfungsregeln Klasse B Ersterwe
 - `pnpm --filter @fahrpilot/content test`: 18 Tests bestanden (inkl. Gedankenstrich-Prüfung, Wortzahl der Kapitel 250 bis 500, Satzzahl der Wissenseinträge, Medien-Existenz und Titel).
 - `pnpm --filter @fahrpilot/content typecheck`: ohne Fehler.
 - Nicht committet.
+
+## Nachprüfung Fragen Gruppe A (September 2026)
+
+Geprüft wurden die neuen Übungsfragen own-gefahrenlehre-011 bis 040, own-recht-013 bis 042, own-strassenbenutzung-012 bis 041, own-vorfahrt-012 bis 041, own-verkehrsregelung-011 bis 040, own-geschwindigkeit-013 bis 042, own-andere_teilnehmer-012 bis 041, own-fahrmanoever-012 bis 041, own-kreisverkehr-010 bis 039 und own-verkehrszeichen-013 bis 042 sowie die Bildzuordnungen in `src/media.extra.a.ts`. Alle numerischen Fragen wurden nachgerechnet. Keine Frage wurde entfernt.
+
+| Thema | geprüft | korrigiert | needs_verification | entfernt |
+|---|---|---|---|---|
+| Gefahrenlehre | 30 | 1 | 1 | 0 |
+| Recht | 30 | 4 | 3 | 0 |
+| Straßenbenutzung | 30 | 2 (nur Rechtsquelle) | 0 | 0 |
+| Vorfahrt | 30 | 2 | 0 | 0 |
+| Verkehrsregelung | 30 | 3 (nur Rechtsquelle) | 0 | 0 |
+| Geschwindigkeit | 30 | 1 | 0 | 0 |
+| Andere Verkehrsteilnehmer | 30 | 1 (nur Rechtsquelle) | 1 | 0 |
+| Fahrmanöver | 30 | 1 | 0 | 0 |
+| Kreisverkehr | 30 | 0 | 0 | 0 |
+| Verkehrszeichen | 30 | 4 | 0 | 0 |
+| Bildzuordnungen (QUESTION_MEDIA_A) | 125 | 5 entfernt, 3 Fragen an das Bild angepasst | | |
+
+### Korrekturen
+
+- own-gefahrenlehre-037: Erklärung präzisiert. Das schnellere Fahrzeug (70 km/h) hat nach 40 m bereits 19 m seines 49 m langen Bremswegs zurückgelegt und trifft mit über 50 km/h auf; zuvor stand "erst begonnen abzubremsen".
+- own-recht-021: Bei BF17 ohne Begleitperson wird die Fahrerlaubnis widerrufen (§ 48a Abs. 3 FeV), nicht nur die Prüfungsbescheinigung. Antwort und Erklärung angepasst.
+- own-recht-026: Das Fahrverbot dauert nur bei Ordnungswidrigkeiten einen bis drei Monate (§ 25 StVG); als Nebenstrafe nach § 44 StGB bis zu sechs Monate. Antwort und Erklärung angepasst; "gilt für alle Kraftfahrzeuge" zu "in der Regel für Kraftfahrzeuge jeder Art" abgeschwächt, weil eine Beschränkung auf bestimmte Fahrzeugarten möglich ist.
+- own-recht-040: Die vertiefte Hauptuntersuchung wird bereits ab mehr als zwei Monaten Fristüberschreitung fällig (Anlage VIII StVZO), nicht erst ab acht Monaten. Erklärung korrigiert; der Punkt ab acht Monaten bleibt richtig.
+- own-strassenbenutzung-015 und 038: Rechtsquelle um § 7a Abs. 3 StVO ergänzt (schnelleres Fahren auf dem Einfädelungsstreifen).
+- own-vorfahrt-020: Fragetext an das Bild angepasst (Ampel dunkel oder gelb blinkend statt nur gelb blinkend); die Aussage zum gelben Blinklicht bleibt.
+- own-vorfahrt-033: Die Antwort sprach von "entgegenkommenden" Fahrzeugen, gemeint sind Fahrzeuge, die von links auf der abknickenden Vorfahrtstraße kommen und ihr nach rechts folgen. Antwort und Erklärung eindeutig formuliert (Fahrzeug von links, das nach links verlässt, muss rechts vor links beachten).
+- own-verkehrsregelung-028, 029, 034: Nummern innerhalb von § 37 Abs. 2 StVO entfernt (nicht sicher zutreffend), bei 029 § 51 BOStrab ergänzt.
+- own-geschwindigkeit-022: "fast unverminderte Geschwindigkeit" durch den nachgerechneten Wert "etwa 40 km/h" ersetzt (nach 25 m sind 15 m Reaktionsweg und 10 m von 25 m Bremsweg zurückgelegt).
+- own-andere_teilnehmer-020: Rechtsquelle um § 20 Abs. 2 StVO (Überholverbot bei Annäherung mit Warnblinklicht) ergänzt.
+- own-fahrmanoever-017: Vor Bahnübergängen dürfen Kraftfahrzeuge vom Gefahrzeichen an nicht überholen (§ 19 Abs. 1 StVO); die Einschränkung auf "mehrspurige" Fahrzeuge war falsch.
+- own-verkehrszeichen-016: Zahlenwert an das Bild angepasst (Zeichen 262 zeigt 5,5 t); die Aussage zur tatsächlichen Masse bleibt.
+- own-verkehrszeichen-017: Beispiel an das Bild angepasst (Zeichen 265 zeigt 3,8 m; Transporter 2,9 m, mit Ladung 3,9 m).
+- own-verkehrszeichen-033: Bezeichnung des Zeichens auf 101-51 (Splitt, Schotter) korrigiert, passend zum Bild und zur heutigen StVO.
+- own-verkehrszeichen-034: Fachlicher Fehler. Bei einer rechts verengten Fahrbahn muss, wer nach links ausweicht, nach § 6 StVO den Gegenverkehr durchfahren lassen; die Frage hatte diese Aussage als falsch markiert. Antworten und Erklärung neu gefasst.
+- Bildzuordnungen entfernt, weil das Bild eine andere Situation zeigt: own-fahrmanoever-021 (Bild zeigt Sie als Linksabbieger, Frage betrifft Vorbeifahren an einem Linksabbieger), own-fahrmanoever-025 (Bild zeigt Radweg, Frage betrifft Straßenbahn), own-fahrmanoever-029 (Bild zeigt Hindernis auf Ihrer Seite, Frage beschreibt Hindernis auf der Gegenseite), own-fahrmanoever-035 (Bild zeigt Abbiegen voreinander, Frage betrifft hintereinander), own-kreisverkehr-019 (Bild zeigt Zebrastreifen, Frage sagt ausdrücklich ohne Zebrastreifen). Alle übrigen 120 Zuordnungen bestätigt; Vorfahrt und Verkehrszeichen haben weiterhin durchgehend Bilder.
+
+### needs_verification
+
+- own-gefahrenlehre-016: Bußgeldhöhe 100 Euro für die Handynutzung gegen die aktuelle BKatV prüfen.
+- own-recht-021: Wortlaut von § 48a Abs. 3 FeV (Widerruf, Absehen vom Widerruf) und die Bußgeldregelung der BKatV prüfen.
+- own-recht-034 und own-recht-035: Theoriestunden 12 plus 2 und Sonderfahrten 5/4/3 hängen von der geplanten Neufassung der FahrschAusbO ab (siehe offener Punkt 2 oben).
+- own-andere_teilnehmer-017: Kernaussagen zur eKFV (Alkoholgrenzen, Versicherungsplakette, Mitnahmeverbot, Mindestalter 14) gegen die 2025 novellierte Fassung prüfen (siehe offener Punkt 5 oben).
+
+Ausdrücklich bestätigt wurden unter anderem: alle Faustformeln (40, 56, 60, 64, 36, 80, 18, 9, 65 m; 130 m bei 100 km/h), Klasse B mit Anhänger (3.500 kg, B96 4.250 kg, BE), Probezeit-Stufensystem, Punktesystem und Tilgungsfristen 2,5/5/10 Jahre, Fahreignungsseminar (1 Punkt, alle 5 Jahre, bis 5 Punkte), Sehtest 0,7 und zwei Jahre, Erste Hilfe 9 Einheiten, Prüfung 30 Fragen und Fehlerpunktregel, Rettungsgasse, § 7 Abs. 3c StVO (mittlerer Fahrstreifen), Kraftfahrstraße und Zeichen 223.1 bis 223.3, Baken 300/200/100 m und 240/160/80 m, Leitpfosten 50 m, Ampelrangfolge, qualifizierter Rotlichtverstoß ab 1 s, Grünpfeil 720/721, Fahrverbotsschwellen 31/41 km/h und A-Verstoß ab 21 km/h, Nässe als Wasserfilm, Schneeketten 50 km/h, Nebelschlussleuchte 50 m/50 km/h, Überholabstand 1,5 m und 2 m, Zeichen 277.1, E-Scooter 20 km/h, S-Pedelec, Bus mit Warnblinklicht (§ 20), Kreisverkehrregeln (§ 8 Abs. 1a, § 9a), Zeichen 253, 262 bis 265, Zonenzeichen, Parkscheibe (halbe Stunde nach Ankunft), werktags inkl. Samstag, Zeichen 306 außerorts Parkverbot, Zeichen 357-50, 201-52, 211/214/222, 251, 282, 385.
+
+Testergebnis: `pnpm test` und `pnpm typecheck` im Paket content nach den Änderungen grün (siehe Abschlussbericht). Nicht committet.

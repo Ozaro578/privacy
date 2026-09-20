@@ -109,7 +109,7 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Sie befinden sich in der Probezeit und werden mit dem Handy in der Hand am Steuer erwischt. Welche Folgen sind zu erwarten?",
     answers: [t("Ein Bußgeld und ein Punkt im Fahreignungsregister"), t("Die Anordnung eines Aufbauseminars"), t("Die Verlängerung der Probezeit um zwei Jahre"), f("Der sofortige Entzug der Fahrerlaubnis", "Ein Entzug erfolgt beim ersten Verstoß nicht; er droht erst bei weiteren Verstößen in der Probezeit.")],
     explanation: "Die verbotene Handynutzung kostet 100 Euro und einen Punkt. In der Probezeit zählt sie als schwerwiegender Verstoß (A-Verstoß): Es wird ein Aufbauseminar angeordnet und die Probezeit verlängert sich auf vier Jahre.",
-    legalReference: "§ 23 Abs. 1a StVO; § 2a StVG; BKatV",
+    legalReference: "§ 23 Abs. 1a StVO; § 2a StVG; BKatV", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-gefahrenlehre-017", topic: "gefahrenlehre", points: 3, difficulty: 0.55, tags: ["ablenkung", "handy", "start_stopp"],
@@ -255,7 +255,7 @@ export const gefahrenlehre: readonly Question[] = [
     code: "own-gefahrenlehre-037", topic: "gefahrenlehre", points: 3, difficulty: 0.7, tags: ["bremsweg", "geschwindigkeit", "aufprallgeschwindigkeit", "fahrphysik"],
     text: "Zwei Fahrzeuge fahren nebeneinander, eines mit 50 km/h, eines mit 70 km/h. Beide bremsen im selben Moment gleich stark. Das langsamere kommt gerade noch vor einem Hindernis zum Stehen. Was gilt für das schnellere Fahrzeug?",
     answers: [t("Es trifft das Hindernis mit einer noch sehr hohen Geschwindigkeit, weil der Bremsweg mit dem Quadrat der Geschwindigkeit wächst"), f("Es kommt ebenfalls gerade noch zum Stehen, weil die Differenz nur 20 km/h beträgt", "Bei 70 km/h beträgt allein der Bremsweg 49 Meter statt 25 Meter bei 50 km/h."), f("Es trifft das Hindernis mit etwa 20 km/h", "Die Aufprallgeschwindigkeit ist deutlich höher, weil auch der Reaktionsweg länger ist.")],
-    explanation: "Bei 50 km/h beträgt der Anhalteweg nach Faustformel 40 Meter, bei 70 km/h dagegen 70 Meter. Nach 40 Metern hat das schnellere Fahrzeug erst begonnen abzubremsen und trifft das Hindernis noch mit sehr hoher Geschwindigkeit. Kleine Tempounterschiede haben große Folgen.",
+    explanation: "Bei 50 km/h beträgt der Anhalteweg nach Faustformel 40 Meter, bei 70 km/h dagegen 70 Meter. Nach 40 Metern hat das schnellere Fahrzeug erst 19 Meter seines 49 Meter langen Bremswegs zurückgelegt und trifft das Hindernis noch mit über 50 km/h. Kleine Tempounterschiede haben große Folgen.",
     legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({

@@ -118,8 +118,8 @@ export const fahrmanoever: readonly Question[] = [
   q({
     code: "own-fahrmanoever-017", topic: "fahrmanoever", points: 3, difficulty: 0.65, tags: ["ueberholverbot", "bahnuebergang", "ueberholen", "andreaskreuz"],
     text: "Vor einem Bahnübergang mit Andreaskreuz fährt ein langsamer Traktor. Dürfen Sie ihn dort überholen?",
-    answers: [t("Nein, zwischen dem Gefahrzeichen Bahnübergang und dem Übergang selbst ist das Überholen mehrspuriger Kraftfahrzeuge verboten"), f("Ja, wenn kein Zug kommt", "Das Überholverbot vor Bahnübergängen gilt unabhängig vom Zugverkehr."), f("Ja, weil der Traktor langsamer als 25 km/h fährt", "Das Überholverbot gilt für alle Kraftfahrzeuge; Ausnahmen für langsame Fahrzeuge gibt es dort nicht.")],
-    explanation: "Vor Bahnübergängen darf ab dem Gefahrzeichen Bahnübergang bis zum Übergang nicht überholt werden. Der Traktor muss hinter dem Übergang überholt werden, wenn es dann sicher ist.",
+    answers: [t("Nein, von dem Gefahrzeichen Bahnübergang an bis zum Übergang selbst dürfen Kraftfahrzeuge nicht überholen"), f("Ja, wenn kein Zug kommt", "Das Überholverbot vor Bahnübergängen gilt unabhängig vom Zugverkehr."), f("Ja, weil der Traktor langsamer als 25 km/h fährt", "Das Überholverbot gilt für alle Kraftfahrzeuge; Ausnahmen für langsame Fahrzeuge gibt es dort nicht.")],
+    explanation: "Vor Bahnübergängen dürfen Kraftfahrzeuge von dem Gefahrzeichen Bahnübergang an bis zum Übergang nicht überholen. Der Traktor muss hinter dem Übergang überholt werden, wenn es dann sicher ist.",
     legalReference: "§ 19 Abs. 1 StVO",
   }),
   q({

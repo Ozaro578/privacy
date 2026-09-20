@@ -150,8 +150,8 @@ export const geschwindigkeit: readonly Question[] = [
   q({
     code: "own-geschwindigkeit-022", topic: "geschwindigkeit", points: 3, difficulty: 0.7, tags: ["anhalteweg", "faustformel", "vergleich", "innerorts"],
     text: "Ein Kind läuft 25 Meter vor Ihnen auf die Straße. Mit 30 km/h könnten Sie bei normaler Bremsung rechtzeitig anhalten. Was passiert bei 50 km/h?",
-    answers: [t("Sie erreichen das Kind noch mit fast unverminderter Geschwindigkeit, weil bei 50 km/h allein der Reaktionsweg 15 Meter beträgt und der Bremsweg 25 Meter"), f("Sie kommen ebenfalls rechtzeitig zum Stehen, weil der Unterschied nur 20 km/h beträgt", "Der Anhalteweg bei 50 km/h beträgt 40 Meter, also deutlich mehr als 25 Meter."), f("Sie treffen das Kind mit etwa 10 km/h", "Nach 25 Metern haben Sie erst 10 Meter gebremst und sind noch sehr schnell.")],
-    explanation: "Bei 30 km/h beträgt der Anhalteweg 18 Meter, bei 50 km/h 40 Meter. Nach 25 Metern hat das Fahrzeug bei 50 km/h gerade erst 10 Meter gebremst und ist noch sehr schnell. Kleine Unterschiede in der Geschwindigkeit entscheiden über schwere Verletzungen.",
+    answers: [t("Sie erreichen das Kind noch mit etwa 40 km/h, weil bei 50 km/h allein der Reaktionsweg 15 Meter beträgt und der Bremsweg 25 Meter"), f("Sie kommen ebenfalls rechtzeitig zum Stehen, weil der Unterschied nur 20 km/h beträgt", "Der Anhalteweg bei 50 km/h beträgt 40 Meter, also deutlich mehr als 25 Meter."), f("Sie treffen das Kind mit etwa 10 km/h", "Nach 25 Metern haben Sie erst 10 Meter gebremst und sind noch sehr schnell.")],
+    explanation: "Bei 30 km/h beträgt der Anhalteweg 18 Meter, bei 50 km/h 40 Meter. Nach 25 Metern hat das Fahrzeug bei 50 km/h gerade erst 10 Meter gebremst und ist noch etwa 40 km/h schnell. Kleine Unterschiede in der Geschwindigkeit entscheiden über schwere Verletzungen.",
     legalReference: "§ 3 Abs. 1 und 2a StVO",
   }),
   q({

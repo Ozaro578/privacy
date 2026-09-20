@@ -147,9 +147,9 @@ export const recht: readonly Question[] = [
   q({
     code: "own-recht-021", topic: "recht", points: 3, difficulty: 0.65, tags: ["bf17", "begleitperson", "entzug"],
     text: "Ein 17-Jähriger fährt mit der BF17-Prüfungsbescheinigung ohne eingetragene Begleitperson. Welche Folgen hat das?",
-    answers: [t("Die Prüfungsbescheinigung wird widerrufen"), t("Es wird ein Bußgeld verhängt und ein Punkt eingetragen"), t("Vor der Neuerteilung ist die Teilnahme an einem Aufbauseminar erforderlich"), f("Es liegt Fahren ohne Fahrerlaubnis nach § 21 StVG vor", "Die Fahrerlaubnis besteht; die Auflage der Begleitung wurde verletzt, was eine Ordnungswidrigkeit ist.")],
-    explanation: "Das Fahren ohne Begleitperson verstößt gegen die Auflage der Prüfungsbescheinigung. Die Bescheinigung wird widerrufen, es gibt ein Bußgeld und einen Punkt, und die Fahrerlaubnis wird erst nach Teilnahme an einem Aufbauseminar wieder erteilt.",
-    legalReference: "§ 48a FeV; § 2a StVG",
+    answers: [t("Die Fahrerlaubnis wird widerrufen"), t("Es wird ein Bußgeld verhängt und ein Punkt eingetragen"), t("Vor der Neuerteilung ist die Teilnahme an einem Aufbauseminar erforderlich"), f("Es liegt Fahren ohne Fahrerlaubnis nach § 21 StVG vor", "Die Fahrerlaubnis besteht; die Auflage der Begleitung wurde verletzt, was eine Ordnungswidrigkeit ist.")],
+    explanation: "Das Fahren ohne Begleitperson verstößt gegen die Auflage der Prüfungsbescheinigung. Die Fahrerlaubnis wird widerrufen, es gibt ein Bußgeld und einen Punkt, und die Fahrerlaubnis wird erst nach Teilnahme an einem Aufbauseminar wieder erteilt.",
+    legalReference: "§ 48a FeV; § 2a StVG", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-recht-022", topic: "recht", points: 3, difficulty: 0.6, tags: ["punktesystem", "fahreignungsregister", "massnahmen"],
@@ -182,8 +182,8 @@ export const recht: readonly Question[] = [
   q({
     code: "own-recht-026", topic: "recht", points: 3, difficulty: 0.65, tags: ["fahrverbot", "entzug", "sperrfrist"],
     text: "Worin unterscheiden sich Fahrverbot und Entzug der Fahrerlaubnis?",
-    answers: [t("Das Fahrverbot dauert einen bis drei Monate; danach wird der Führerschein ohne neue Prüfung zurückgegeben"), t("Beim Entzug erlischt die Fahrerlaubnis; nach der Sperrfrist muss sie neu beantragt werden, gegebenenfalls mit MPU"), f("Das Fahrverbot gilt nur für die Klasse, mit der der Verstoß begangen wurde", "Das Fahrverbot gilt für alle Kraftfahrzeuge."), f("Nach einem Entzug bekommt man den Führerschein nach Ablauf der Sperrfrist automatisch zurück", "Die Fahrerlaubnis muss neu beantragt werden; eine automatische Rückgabe gibt es nicht.")],
-    explanation: "Das Fahrverbot ist eine zeitlich begrenzte Nebenstrafe von einem bis drei Monaten, in der der Führerschein in amtliche Verwahrung kommt. Beim Entzug erlischt die Fahrerlaubnis vollständig und muss nach der Sperrfrist neu beantragt werden.",
+    answers: [t("Das Fahrverbot ist zeitlich befristet, bei Ordnungswidrigkeiten auf einen bis drei Monate; danach wird der Führerschein ohne neue Prüfung zurückgegeben"), t("Beim Entzug erlischt die Fahrerlaubnis; nach der Sperrfrist muss sie neu beantragt werden, gegebenenfalls mit MPU"), f("Das Fahrverbot gilt nur für die Klasse, mit der der Verstoß begangen wurde", "Das Fahrverbot gilt in der Regel für Kraftfahrzeuge jeder Art."), f("Nach einem Entzug bekommt man den Führerschein nach Ablauf der Sperrfrist automatisch zurück", "Die Fahrerlaubnis muss neu beantragt werden; eine automatische Rückgabe gibt es nicht.")],
+    explanation: "Das Fahrverbot ist zeitlich begrenzt (bei Ordnungswidrigkeiten ein bis drei Monate, als Nebenstrafe bei Straftaten bis zu sechs Monate); der Führerschein kommt in amtliche Verwahrung. Beim Entzug erlischt die Fahrerlaubnis vollständig und muss nach der Sperrfrist neu beantragt werden.",
     legalReference: "§ 25 StVG; § 44 StGB; § 69 StGB",
   }),
   q({
@@ -240,7 +240,7 @@ export const recht: readonly Question[] = [
     text: "Wie viele Theoriestunden sind für den Ersterwerb der Klasse B mindestens vorgeschrieben?",
     answers: [t("12 Doppelstunden Grundstoff und 2 Doppelstunden klassenspezifischer Zusatzstoff zu je 90 Minuten"), f("14 Doppelstunden Grundstoff ohne Zusatzstoff", "Der Zusatzstoff Klasse B umfasst 2 eigene Doppelstunden."), f("Es gibt keine Mindestzahl, nur die Prüfung zählt", "Die Fahrschüler-Ausbildungsordnung schreibt Mindeststunden vor.")],
     explanation: "Der theoretische Unterricht besteht aus 12 Doppelstunden Grundstoff und 2 Doppelstunden Zusatzstoff für Klasse B. Eine Doppelstunde dauert 90 Minuten.",
-    legalReference: "§ 4 FahrschAusbO",
+    legalReference: "§ 4 FahrschAusbO", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-recht-035", topic: "recht", points: 2, difficulty: 0.55, tags: ["ausbildung", "sonderfahrten", "fahrschule"], kind: "numeric", numericAnswer: 12, tolerance: 0, unit: "Fahrten",
@@ -248,7 +248,7 @@ export const recht: readonly Question[] = [
     answers: [],
     explanation: "Vorgeschrieben sind 5 Überlandfahrten, 4 Autobahnfahrten und 3 Fahrten bei Dunkelheit, also zusammen 12 Sonderfahrten zu je 45 Minuten. Die Zahl der übrigen Übungsstunden hängt vom Fortschritt des Fahrschülers ab.",
     mnemonic: "5 + 4 + 3 = 12.",
-    legalReference: "§ 5 FahrschAusbO",
+    legalReference: "§ 5 FahrschAusbO", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-recht-036", topic: "recht", points: 2, difficulty: 0.5, tags: ["erste_hilfe", "antrag", "fahrerlaubnis"],
@@ -282,7 +282,7 @@ export const recht: readonly Question[] = [
     code: "own-recht-040", topic: "recht", points: 3, difficulty: 0.6, tags: ["hauptuntersuchung", "hu", "halter", "pflichten"],
     text: "Sie haben den Termin der Hauptuntersuchung um mehr als acht Monate überschritten. Was gilt?",
     answers: [t("Es droht ein Bußgeld mit Eintragung eines Punktes"), t("Die Hauptuntersuchung wird um eine vertiefte Untersuchung erweitert"), f("Nichts, solange das Fahrzeug technisch in Ordnung ist", "Die Fristüberschreitung selbst ist ordnungswidrig."), f("Die Zulassung erlischt automatisch", "Die Zulassung bleibt bestehen; die Behörde kann aber die Vorführung anordnen.")],
-    explanation: "Wer die Hauptuntersuchung überzieht, handelt ordnungswidrig. Ab mehr als acht Monaten Überschreitung gibt es neben dem Bußgeld einen Punkt, und die Untersuchung wird um eine vertiefte Prüfung erweitert, die zusätzlich kostet.",
+    explanation: "Wer die Hauptuntersuchung überzieht, handelt ordnungswidrig. Ab mehr als acht Monaten Überschreitung gibt es neben dem Bußgeld einen Punkt. Schon ab mehr als zwei Monaten Überschreitung wird die Untersuchung um eine vertiefte Prüfung erweitert, die zusätzlich kostet.",
     legalReference: "§ 29 StVZO; BKatV",
   }),
   q({

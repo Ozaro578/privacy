@@ -139,9 +139,9 @@ export const vorfahrt: readonly Question[] = [
   }),
   q({
     code: "own-vorfahrt-020", topic: "vorfahrt", points: 5, difficulty: 0.65, tags: ["ampel_ausgefallen", "vorfahrt_beschildert", "gelbes_blinklicht"],
-    text: "An einer Kreuzung blinkt die Ampel nur noch gelb. An Ihrer Zufahrt steht das Zeichen 205. Von links kommt ein Fahrzeug auf der Vorfahrtstraße. Was gilt?",
+    text: "An einer Kreuzung ist die Ampel ausgefallen; sie ist dunkel oder blinkt nur noch gelb. An Ihrer Zufahrt steht das Zeichen 205. Von links kommt ein Fahrzeug auf der Vorfahrtstraße. Was gilt?",
     answers: [t("Sie müssen dem Fahrzeug von links Vorfahrt gewähren, weil das Zeichen 205 gilt"), t("Gelbes Blinklicht bedeutet: Die Ampel regelt nicht; es gelten die Verkehrszeichen"), f("Es gilt rechts vor links, weil die Ampel nicht funktioniert", "Rechts vor links gilt nur, wenn auch keine Verkehrszeichen aufgestellt sind."), f("Gelbes Blinklicht bedeutet für Sie freie Fahrt", "Gelbes Blinklicht ist nur ein Warnsignal.")],
-    explanation: "Blinkt eine Ampel gelb, ist sie außer Betrieb; es gelten die Verkehrszeichen. Mit Zeichen 205 an Ihrer Zufahrt sind Sie wartepflichtig gegenüber dem Verkehr auf der Vorfahrtstraße, egal aus welcher Richtung er kommt.",
+    explanation: "Ist eine Ampel dunkel oder blinkt sie gelb, regelt sie nicht; es gelten die Verkehrszeichen. Mit Zeichen 205 an Ihrer Zufahrt sind Sie wartepflichtig gegenüber dem Verkehr auf der Vorfahrtstraße, egal aus welcher Richtung er kommt.",
     legalReference: "§ 37 Abs. 1 StVO; § 38 Abs. 3 StVO; Zeichen 205",
   }),
   q({
@@ -231,8 +231,8 @@ export const vorfahrt: readonly Question[] = [
   q({
     code: "own-vorfahrt-033", topic: "vorfahrt", points: 5, difficulty: 0.75, tags: ["abknickende_vorfahrt", "vorfahrt_beschildert", "geradeaus"],
     text: "Das Zeichen 306 mit Zusatzzeichen zeigt: Die Vorfahrtstraße knickt nach links ab. Sie wollen geradeaus in die nicht bevorrechtigte Straße weiterfahren. Was gilt?",
-    answers: [t("Gegenüber Fahrzeugen aus der nicht bevorrechtigten Straße haben Sie Vorfahrt"), t("Sie müssen entgegenkommende Fahrzeuge auf der Vorfahrtstraße, die der Vorfahrtstraße nach rechts folgen, nicht durchfahren lassen, weil sich Ihre Wege beim Rechtsabbiegen nicht kreuzen"), t("Sie müssen nicht blinken, weil Sie geradeaus fahren"), f("Sie müssen allen Fahrzeugen Vorfahrt gewähren, weil Sie die Vorfahrtstraße verlassen", "Wer geradeaus die Vorfahrtstraße verlässt, bleibt gegenüber den untergeordneten Straßen bevorrechtigt.")],
-    explanation: "Wer die abknickende Vorfahrtstraße geradeaus verlässt, bleibt gegenüber der untergeordneten Straße bevorrechtigt und blinkt nicht. Gegenverkehr, der der Vorfahrtstraße nach rechts folgt, kreuzt Ihren Weg nicht. Nur ein Linksabbieger auf der Vorfahrtstraße müsste Sie durchfahren lassen.",
+    answers: [t("Gegenüber Fahrzeugen aus der nicht bevorrechtigten Straße haben Sie Vorfahrt"), t("Fahrzeuge, die von links auf der Vorfahrtstraße kommen und ihr nach rechts folgen, kreuzen Ihren Weg nicht; auf sie müssen Sie nicht warten"), t("Sie müssen nicht blinken, weil Sie geradeaus fahren"), f("Sie müssen allen Fahrzeugen Vorfahrt gewähren, weil Sie die Vorfahrtstraße verlassen", "Wer geradeaus die Vorfahrtstraße verlässt, bleibt gegenüber den untergeordneten Straßen bevorrechtigt.")],
+    explanation: "Wer die abknickende Vorfahrtstraße geradeaus verlässt, bleibt gegenüber der untergeordneten Straße bevorrechtigt und blinkt nicht. Verkehr von links, der der Vorfahrtstraße nach rechts folgt, kreuzt Ihren Weg nicht. Ein Fahrzeug von links, das die Vorfahrtstraße nach links verlässt, muss Sie als Fahrzeug von rechts durchfahren lassen.",
     legalReference: "§ 8 Abs. 1 StVO; § 9 Abs. 1 und 3 StVO; Zeichen 306 mit Zusatzzeichen 1002",
   }),
   q({

@@ -107,7 +107,7 @@ export const strassenbenutzung: readonly Question[] = [
     text: "Sie fahren auf den Beschleunigungsstreifen einer Autobahn, auf der Richtgeschwindigkeit gilt. Was ist richtig?",
     answers: [t("Auf dem Beschleunigungsstreifen dürfen Sie schneller fahren als die Fahrzeuge auf der durchgehenden Fahrbahn"), t("Der Verkehr auf der durchgehenden Fahrbahn hat Vorfahrt"), f("Die Fahrzeuge auf dem rechten Fahrstreifen müssen Ihnen das Einfädeln durch Bremsen ermöglichen", "Sie sind zur Rücksicht verpflichtet, müssen aber keinen Vorrang gewähren."), f("Sie müssen am Ende des Streifens anhalten, wenn keine Lücke frei ist", "Anhalten ist gefährlich; besser die Länge des Streifens nutzen und die Geschwindigkeit anpassen.")],
     explanation: "Auf dem Beschleunigungsstreifen darf schneller gefahren werden als auf der durchgehenden Fahrbahn, damit das Einfädeln gelingt. Vorfahrt hat der Verkehr auf der Autobahn; der Auffahrende darf niemanden gefährden.",
-    legalReference: "§ 18 Abs. 3 StVO",
+    legalReference: "§ 18 Abs. 3 StVO; § 7a Abs. 3 StVO",
   }),
   q({
     code: "own-strassenbenutzung-016", topic: "strassenbenutzung", points: 3, difficulty: 0.65, tags: ["autobahn", "ausfahrt", "verzoegerungsstreifen"],
@@ -268,7 +268,7 @@ export const strassenbenutzung: readonly Question[] = [
     text: "Auf der Autobahn fährt links neben Ihnen ein Lkw mit 80 km/h. Sie befinden sich auf dem Beschleunigungsstreifen und sind schneller. Dürfen Sie rechts an ihm vorbeifahren?",
     answers: [t("Ja, auf dem Beschleunigungsstreifen darf rechts an Fahrzeugen auf der durchgehenden Fahrbahn vorbeigefahren werden"), f("Nein, rechts überholen ist auf der Autobahn ausnahmslos verboten", "Der Beschleunigungsstreifen bildet eine ausdrückliche Ausnahme."), f("Nur, wenn der Lkw das Warnblinklicht eingeschaltet hat", "Das Warnblinklicht spielt dafür keine Rolle.")],
     explanation: "Auf dem Beschleunigungsstreifen darf schneller gefahren werden als auf den durchgehenden Fahrstreifen; das Vorbeifahren rechts an Fahrzeugen der durchgehenden Fahrbahn ist dort erlaubt. Das Einfädeln erfolgt dann in eine ausreichende Lücke.",
-    legalReference: "§ 18 Abs. 3 StVO",
+    legalReference: "§ 7a Abs. 3 StVO; § 18 Abs. 3 StVO",
   }),
   q({
     code: "own-strassenbenutzung-039", topic: "strassenbenutzung", points: 2, difficulty: 0.45, tags: ["autobahn", "leitpfosten", "abstand"], kind: "numeric", numericAnswer: 50, tolerance: 0, unit: "m",

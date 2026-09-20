@@ -119,7 +119,7 @@ export const andereTeilnehmer: readonly Question[] = [
     text: "Welche Regeln gelten zusätzlich für E-Scooter (Elektrokleinstfahrzeuge)?",
     answers: [t("Es gelten die Alkoholgrenzen wie für Kraftfahrzeuge, in der Probezeit also das absolute Alkoholverbot"), t("Eine Versicherungsplakette ist Pflicht"), t("Die Mitnahme einer weiteren Person ist verboten"), f("Es ist eine Fahrerlaubnis der Klasse AM erforderlich", "Eine Fahrerlaubnis ist nicht nötig, nur das Mindestalter von 14 Jahren.")],
     explanation: "E-Scooter sind Kraftfahrzeuge: Es gelten die Promillegrenzen für Kraftfahrer, die Versicherungspflicht mit Plakette und das Verbot, Personen mitzunehmen. Eine Fahrerlaubnis ist nicht erforderlich, das Mindestalter beträgt 14 Jahre.",
-    legalReference: "Elektrokleinstfahrzeuge-Verordnung (eKFV); § 24a StVG; § 24c StVG",
+    legalReference: "Elektrokleinstfahrzeuge-Verordnung (eKFV); § 24a StVG; § 24c StVG", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-andere_teilnehmer-018", topic: "andere_teilnehmer", points: 2, difficulty: 0.5, tags: ["e_scooter", "elektrokleinstfahrzeuge", "hoechstgeschwindigkeit"], kind: "numeric", numericAnswer: 20, tolerance: 0, unit: "km/h",
@@ -140,7 +140,7 @@ export const andereTeilnehmer: readonly Question[] = [
     text: "Außerorts nähert sich vor Ihnen ein Schulbus mit eingeschaltetem Warnblinklicht einer Haltestelle. Was gilt?",
     answers: [t("Sie dürfen den Bus nicht überholen"), t("Steht der Bus mit Warnblinklicht an der Haltestelle, dürfen Sie nur mit Schrittgeschwindigkeit und ausreichendem Abstand vorbeifahren"), f("Sie dürfen den Bus überholen, solange er noch fährt", "Bussen mit Warnblinklicht, die sich einer Haltestelle nähern, darf nicht überholt werden."), f("Außerorts gelten die Regeln zum Warnblinklicht nicht", "Sie gelten innerorts und außerorts.")],
     explanation: "Ein Linien- oder Schulbus, der sich mit Warnblinklicht einer Haltestelle nähert, darf nicht überholt werden. Steht er mit Warnblinklicht, darf nur mit Schrittgeschwindigkeit und so vorbeigefahren werden, dass Fahrgäste nicht gefährdet werden; das gilt auch für den Gegenverkehr.",
-    legalReference: "§ 20 Abs. 4 StVO",
+    legalReference: "§ 20 Abs. 2 und 4 StVO",
   }),
   q({
     code: "own-andere_teilnehmer-021", topic: "andere_teilnehmer", points: 3, difficulty: 0.6, tags: ["linienbus", "haltestelle", "ausserorts", "abfahren"],

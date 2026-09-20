@@ -199,14 +199,14 @@ export const verkehrsregelung: readonly Question[] = [
     text: "Am Bahnübergang schaltet das Lichtzeichen von Gelb auf Rot, während Sie sich nähern. Die Halbschranke beginnt sich zu senken. Was ist richtig?",
     answers: [t("Anhalten und warten, bis das Rotlicht erlischt und die Schranke wieder offen ist"), t("Gelb bedeutet bereits: Vor dem Andreaskreuz anhalten, wenn es gefahrlos möglich ist"), f("Schnell noch hinüberfahren, bevor die Schranke unten ist", "Das ist lebensgefährlich und ein schwerer Verstoß."), f("Um die halbe Schranke herumfahren, wenn kein Zug zu sehen ist", "Das Umfahren geschlossener Halbschranken ist verboten.")],
     explanation: "Am Bahnübergang bedeutet Gelb wie an der Ampel: anhalten, wenn möglich. Bei Rot ist das Warten Pflicht, unabhängig von der Schrankenstellung. Halbschranken dürfen nicht umfahren werden.",
-    legalReference: "§ 19 Abs. 2 StVO; § 37 Abs. 2 Nr. 3 StVO",
+    legalReference: "§ 19 Abs. 2 StVO; § 37 Abs. 2 StVO",
   }),
   q({
     code: "own-verkehrsregelung-029", topic: "verkehrsregelung", points: 3, difficulty: 0.65, tags: ["strassenbahn", "lichtzeichen", "sondersignale"],
     text: "An einer Kreuzung sehen Sie ein Lichtzeichen mit weißen Balken auf schwarzem Grund. Was bedeutet es für Sie als Autofahrer?",
     answers: [t("Nichts, diese Signale gelten nur für Straßenbahnen und Linienbusse"), f("Ein waagerechter Balken bedeutet für Sie Halt", "Die Balkensignale richten sich ausschließlich an Schienenfahrzeuge und Busse des Linienverkehrs."), f("Ein senkrechter Balken gibt Ihnen die Fahrt frei", "Für Sie gelten nur die farbigen Lichtzeichen.")],
     explanation: "Weiße Balkensignale sind Lichtzeichen für Straßenbahnen und Linienbusse. Für den übrigen Verkehr gelten nur die roten, gelben und grünen Lichtzeichen. Man sollte die Balkensignale aber kennen, um das Verhalten der Straßenbahn vorherzusehen.",
-    legalReference: "§ 37 Abs. 2 Nr. 4 StVO",
+    legalReference: "§ 37 Abs. 2 StVO; § 51 BOStrab",
   }),
   q({
     code: "own-verkehrsregelung-030", topic: "verkehrsregelung", points: 3, difficulty: 0.6, tags: ["fussgaengerampel", "fussgaenger", "rot", "kreuzung_raeumen"],
@@ -241,7 +241,7 @@ export const verkehrsregelung: readonly Question[] = [
     text: "Vor einer Feuerwehrausfahrt blinkt ein rotes Licht. Was bedeutet das?",
     answers: [t("Halt; ein Einsatzfahrzeug wird ausfahren"), f("Nur eine Warnung, es besteht keine Anhaltepflicht", "Rotes Blinklicht bedeutet Halt, gelbes Blinklicht nur Warnung."), f("Die Fahrbahn ist dauerhaft gesperrt", "Das Signal gilt nur, solange es blinkt.")],
     explanation: "Rotes Blinklicht, etwa vor Feuerwehrausfahrten oder an Bahnübergängen, bedeutet Halt. Gelbes Blinklicht dagegen mahnt nur zur Vorsicht.",
-    legalReference: "§ 37 Abs. 2 Nr. 3 StVO; § 38 Abs. 3 StVO",
+    legalReference: "§ 37 Abs. 2 StVO; § 38 Abs. 3 StVO",
   }),
   q({
     code: "own-verkehrsregelung-035", topic: "verkehrsregelung", points: 4, difficulty: 0.7, tags: ["rangfolge", "polizei", "lichtzeichen", "verkehrszeichen", "rechts_vor_links"],
