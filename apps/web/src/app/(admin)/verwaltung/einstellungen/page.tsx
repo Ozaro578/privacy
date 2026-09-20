@@ -1,7 +1,7 @@
 import type { Tables } from "@fahrpilot/db";
 import { getSettings, ROLE_MATRIX } from "@/lib/data/admin-settings";
 import { berlinDate } from "@/lib/data/admin";
-import { deleteCancellationPolicy, deleteLocation, saveCancellationPolicy, saveLocation, updateBillingSettings, updateSchool } from "@/lib/actions/admin-settings";
+import { deleteCancellationPolicy, deleteLocation, grantSupportAccess, revokeSupportAccess, saveCancellationPolicy, saveLocation, updateBillingSettings, updateSchool } from "@/lib/actions/admin-settings";
 import { Card, Pill, fmt } from "@/components/ui";
 import { ActionForm, field, label } from "@/components/admin/action-form";
 import { ActionButton } from "@/components/admin/action-button";
@@ -150,6 +150,24 @@ export default async function SettingsPage() {
         <details className="mt-4 rounded-xl border border-ink-100 p-3"><summary className="cursor-pointer font-medium">Stornierungsregel anlegen</summary>
           <div className="mt-3"><ActionForm action={saveCancellationPolicy} submitLabel="Regel anlegen" className="grid gap-2 md:grid-cols-2" resetOnSuccess><PolicyFields idPrefix="pol-new" /></ActionForm></div>
         </details>
+      </Card>
+
+      <Card title="Support-Zugriff der Plattform">
+        <p className="mb-3 text-sm text-ink-700">Der Plattform-Support kann Ihre Daten nur einsehen, wenn Sie es hier ausdrücklich und befristet freigeben. Jede Freigabe und jede Support-Sitzung steht im Änderungsprotokoll. Sie können jederzeit widerrufen.</p>
+        {d.supportGrants.length === 0 ? <p className="text-sm text-ink-500">Keine Freigaben.</p> : (
+          <ul className="mb-4 divide-y divide-ink-100 text-sm">
+            {d.supportGrants.map((g) => (
+              <li key={g.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span><Pill tone={g.active ? "success" : "neutral"}>{g.active ? "aktiv" : g.revoked_at ? "widerrufen" : "abgelaufen"}</Pill> <span className="ml-2">{g.reason}</span><span className="block text-xs text-ink-500">erteilt {fmt.date(g.created_at)} {fmt.time(g.created_at)}, gültig bis {fmt.date(g.expires_at)} {fmt.time(g.expires_at)}</span></span>
+                {g.active && <ActionButton action={revokeSupportAccess.bind(null, g.id)} label="Widerrufen" tone="danger" small confirm="Support-Zugriff jetzt widerrufen? Laufende Support-Sitzungen werden beendet." />}
+              </li>
+            ))}
+          </ul>
+        )}
+        <ActionForm action={grantSupportAccess} submitLabel="Support-Zugriff erteilen" className="grid gap-3 md:grid-cols-3" resetOnSuccess>
+          <div className="md:col-span-2"><label htmlFor="sg-reason" className={label}>Grund (Ticket, Anliegen)</label><input id="sg-reason" name="reason" required minLength={5} className={field} placeholder="z. B. Rechnung 2026-0042 wird nicht erzeugt" /></div>
+          <div><label htmlFor="sg-hours" className={label}>Dauer</label><select id="sg-hours" name="hours" defaultValue="24" className={field}><option value="4">4 Stunden</option><option value="24">24 Stunden</option><option value="72">3 Tage</option><option value="168">7 Tage</option></select></div>
+        </ActionForm>
       </Card>
 
       <Card title="Rollen und Rechte">

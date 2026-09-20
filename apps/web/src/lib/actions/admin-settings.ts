@@ -166,3 +166,28 @@ export async function deleteCancellationPolicy(id: string): Promise<ActionResult
   revalidatePath(PATH);
   return { ok: true, message: "Stornierungsregel gelöscht." };
 }
+
+const GrantSchema = z.object({ reason: z.string().min(5, "Bitte den Grund nennen (mindestens 5 Zeichen)").max(300), hours: z.enum(["4", "24", "72", "168"]) });
+
+/** Erteilt der Plattform einen befristeten Support-Zugriff (nur Admin). Der Zugriff ist im Änderungsprotokoll sichtbar. */
+export async function grantSupportAccess(_prev: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  const session = await requireAdmin();
+  const ctx = await getOfficeContext();
+  const p = GrantSchema.safeParse({ reason: opt(fd.get("reason")) ?? "", hours: fd.get("hours") });
+  if (!p.success) return { ok: false, message: issues(p.error) };
+  const expires = new Date(Date.now() + Number(p.data.hours) * 3_600_000).toISOString();
+  const { error } = await ctx.db.from("support_access_grants").insert({ tenant_id: ctx.tenantId, granted_by: session.userId, reason: p.data.reason, expires_at: expires });
+  if (error) return { ok: false, message: error.message };
+  revalidatePath(PATH);
+  return { ok: true, message: `Support-Zugriff bis ${new Date(expires).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} erteilt.` };
+}
+
+/** Widerruft eine Support-Freigabe; laufende Support-Sitzungen enden sofort. */
+export async function revokeSupportAccess(id: string): Promise<ActionResult> {
+  const session = await requireAdmin();
+  const ctx = await getOfficeContext();
+  const { error } = await ctx.db.from("support_access_grants").update({ revoked_at: new Date().toISOString(), revoked_by: session.userId }).eq("id", id).is("revoked_at", null);
+  if (error) return { ok: false, message: error.message };
+  revalidatePath(PATH);
+  return { ok: true, message: "Support-Zugriff widerrufen." };
+}

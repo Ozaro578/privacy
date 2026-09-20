@@ -2890,6 +2890,43 @@ export type Database = {
           { foreignKeyName: "students_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
         ];
       };
+      support_access_grants: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          granted_by: string;
+          reason: string;
+          expires_at: string;
+          revoked_at: string | null;
+          revoked_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          granted_by: string;
+          reason: string;
+          expires_at: string;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          tenant_id?: string;
+          granted_by?: string;
+          reason?: string;
+          expires_at?: string;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          { foreignKeyName: "support_access_grants_granted_by_fkey"; columns: ["granted_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
+          { foreignKeyName: "support_access_grants_revoked_by_fkey"; columns: ["revoked_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
+          { foreignKeyName: "support_access_grants_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "driving_schools"; referencedColumns: ["id"] }
+        ];
+      };
       tenant_memberships: {
         Row: {
           id: string;
@@ -2900,6 +2937,7 @@ export type Database = {
           invited_by: string | null;
           created_at: string;
           updated_at: string;
+          support_grant_id: string | null;
         };
         Insert: {
           id?: string;
@@ -2910,6 +2948,7 @@ export type Database = {
           invited_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          support_grant_id?: string | null;
         };
         Update: {
           id?: string;
@@ -2920,9 +2959,11 @@ export type Database = {
           invited_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          support_grant_id?: string | null;
         };
         Relationships: [
           { foreignKeyName: "tenant_memberships_invited_by_fkey"; columns: ["invited_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
+          { foreignKeyName: "tenant_memberships_support_grant_id_fkey"; columns: ["support_grant_id"]; isOneToOne: false; referencedRelation: "support_access_grants"; referencedColumns: ["id"] },
           { foreignKeyName: "tenant_memberships_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "driving_schools"; referencedColumns: ["id"] },
           { foreignKeyName: "tenant_memberships_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
         ];
@@ -3505,6 +3546,8 @@ export type Database = {
       current_instructor_id: { Args: {  }; Returns: string };
       current_student_id: { Args: {  }; Returns: string };
       custom_access_token_hook: { Args: { event: Json }; Returns: unknown };
+      end_support_session: { Args: {  }; Returns: unknown };
+      expire_support_sessions: { Args: {  }; Returns: number };
       handle_auth_user_signed_in: { Args: {  }; Returns: unknown };
       handle_new_auth_user: { Args: {  }; Returns: unknown };
       issue_invoice: { Args: { p_invoice_id: string; p_due_days?: number | null }; Returns: Database["public"]["Tables"]["invoices"]["Row"] };
@@ -3516,6 +3559,7 @@ export type Database = {
       rule_version_for_any: { Args: { p_rule_type: string; p_license_code: string; p_acquisition: string; p_on?: string | null }; Returns: Database["public"]["Tables"]["rule_versions"]["Row"][] };
       set_question_bookmark: { Args: { p_question_id: string; p_bookmarked: boolean }; Returns: unknown };
       special_drive_progress: { Args: { p_student_license_id: string }; Returns: Record<string, unknown>[] };
+      start_support_session: { Args: { p_tenant_id: string }; Returns: string };
       switch_active_tenant: { Args: { p_tenant_id: string }; Returns: unknown };
       update_student_notes: { Args: { p_student_id: string; p_notes: string }; Returns: unknown };
     };

@@ -248,5 +248,48 @@ do $$ declare r jsonb; begin
 end $$;
 select pg_temp.logout();
 
+-- 12) Support-Zugriff: Plattform-Admin kommt nur mit aktiver Freigabe in den Mandanten; Widerruf beendet die Sitzung
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000007', 'support@plattform.de');
+insert into public.users (id, email, first_name, last_name, is_platform_admin) values ('00000000-0000-0000-0000-000000000007', 'support@plattform.de', 'Pia', 'Plattform', true)
+  on conflict (id) do update set is_platform_admin = true;
+select pg_temp.login('00000000-0000-0000-0000-000000000007', null, null, true);
+do $$ begin
+  begin
+    perform public.start_support_session('10000000-0000-0000-0000-000000000001');
+    raise exception 'Support-Sitzung ohne Freigabe möglich';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+-- Büro darf keine Freigabe erteilen, Admin schon
+select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'office');
+do $$ begin
+  begin
+    insert into public.support_access_grants (tenant_id, granted_by, reason, expires_at) values ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000003', 'Test', now() + interval '1 day');
+    raise exception 'Büro konnte Support-Freigabe erteilen';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+insert into public.tenant_memberships (tenant_id, user_id, role) values ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000003', 'admin')
+  on conflict (tenant_id, user_id) do update set role = 'admin';
+select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'admin');
+insert into public.support_access_grants (id, tenant_id, granted_by, reason, expires_at) values ('c0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000003', 'Fehleranalyse Rechnung 2026-0042', now() + interval '1 day');
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000007', null, null, true);
+do $$ declare g uuid; begin
+  g := public.start_support_session('10000000-0000-0000-0000-000000000001');
+  if g <> 'c0000000-0000-0000-0000-000000000001' then raise exception 'Falsche Freigabe'; end if;
+  if not exists (select 1 from public.tenant_memberships where user_id = '00000000-0000-0000-0000-000000000007' and support_grant_id = g and role = 'admin') then raise exception 'Support-Mitgliedschaft fehlt'; end if;
+  if (select active_tenant_id from public.users where id = '00000000-0000-0000-0000-000000000007') <> '10000000-0000-0000-0000-000000000001' then raise exception 'Aktiver Mandant nicht gesetzt'; end if;
+end $$;
+select pg_temp.logout();
+-- Widerruf durch den Admin beendet die Sitzung sofort
+select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'admin');
+update public.support_access_grants set revoked_at = now(), revoked_by = '00000000-0000-0000-0000-000000000003' where id = 'c0000000-0000-0000-0000-000000000001';
+select pg_temp.logout();
+do $$ begin
+  if exists (select 1 from public.tenant_memberships where user_id = '00000000-0000-0000-0000-000000000007') then raise exception 'Support-Sitzung nach Widerruf noch aktiv'; end if;
+  if exists (select 1 from public.users where id = '00000000-0000-0000-0000-000000000007' and active_tenant_id is not null) then raise exception 'Aktiver Mandant nach Widerruf gesetzt'; end if;
+end $$;
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

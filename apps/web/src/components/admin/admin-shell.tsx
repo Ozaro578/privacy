@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { logoutAction } from "@/lib/actions/auth";
+import { endSupportSession } from "@/lib/actions/platform";
 
 const NAV: Array<{ href: string; label: string; adminOnly?: boolean }> = [
   { href: "/verwaltung", label: "Übersicht" },
@@ -21,7 +22,7 @@ function isCurrent(current: string, href: string): boolean {
   return href === "/verwaltung" ? current === "/verwaltung" : current.startsWith(href);
 }
 
-export function AdminShell({ children, schoolName, roleLabel, isAdmin, current }: { children: ReactNode; schoolName: string; roleLabel: string; isAdmin: boolean; current: string }) {
+export function AdminShell({ children, schoolName, roleLabel, isAdmin, current, supportSession = false }: { children: ReactNode; schoolName: string; roleLabel: string; isAdmin: boolean; current: string; supportSession?: boolean }) {
   const items = NAV.filter((n) => !n.adminOnly || isAdmin);
   return (
     <div className="mx-auto flex min-h-dvh max-w-7xl flex-col md:flex-row">
@@ -40,7 +41,10 @@ export function AdminShell({ children, schoolName, roleLabel, isAdmin, current }
         </ul>
         <form action={logoutAction} className="mt-6"><button className="text-sm underline">Abmelden</button></form>
       </nav>
-      <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
+      <main className="min-w-0 flex-1 p-4 md:p-8">
+        {supportSession && <div role="status" className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warn-500/40 bg-warn-100 p-3 text-sm"><span>Support-Sitzung der Plattform in dieser Fahrschule. Alle Aktionen werden protokolliert.</span><form action={endSupportSession}><button className="min-h-9 rounded-full border border-ink-300 bg-white px-3 text-sm">Sitzung beenden</button></form></div>}
+        {children}
+      </main>
     </div>
   );
 }

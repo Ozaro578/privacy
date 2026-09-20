@@ -64,5 +64,6 @@ export async function GET(request: NextRequest) {
   }
   // Pseudonymisierte Datenschutzanfragen nach Ablauf der Aufbewahrungsfrist endgültig entfernen (Betroffener ist bereits gelöscht).
   const { count: purgedRequests } = await admin.from("data_requests").delete({ count: "exact" }).eq("kind", "deletion").eq("status", "completed").lt("legal_hold_until", today);
-  return NextResponse.json({ learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0, purgedDocuments, purgedRequests: purgedRequests ?? 0 });
+  const { data: endedSupport } = await admin.rpc("expire_support_sessions");
+  return NextResponse.json({ learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0, purgedDocuments, purgedRequests: purgedRequests ?? 0, endedSupportSessions: endedSupport ?? 0 });
 }

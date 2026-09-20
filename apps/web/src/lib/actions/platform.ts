@@ -102,3 +102,26 @@ export async function createTenant(_prev: ActionResult | null, formData: FormDat
   revalidatePath("/plattform/fahrschulen");
   return { ok: true, message: "Fahrschule angelegt, Inhaber eingeladen." };
 }
+
+/** Startet eine Support-Sitzung in einer Fahrschule (nur mit aktiver Freigabe der Fahrschule) und wechselt in deren Verwaltung. */
+export async function startSupportSession(tenantId: string): Promise<void> {
+  await requirePlatformAdmin();
+  const { createSupabaseServerClient } = await import("@/lib/supabase/server");
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("start_support_session", { p_tenant_id: tenantId });
+  if (error) throw new Error(error.message);
+  await supabase.auth.refreshSession();
+  const { redirect } = await import("next/navigation");
+  redirect("/verwaltung");
+}
+
+/** Beendet die eigene Support-Sitzung und kehrt zur Plattform zurück. */
+export async function endSupportSession(): Promise<void> {
+  const { createSupabaseServerClient } = await import("@/lib/supabase/server");
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("end_support_session");
+  if (error) throw new Error(error.message);
+  await supabase.auth.refreshSession();
+  const { redirect } = await import("next/navigation");
+  redirect("/plattform");
+}

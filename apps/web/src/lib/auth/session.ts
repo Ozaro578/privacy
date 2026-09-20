@@ -11,9 +11,11 @@ export interface AppSession {
   tenantId: string | null;
   role: TenantRole | null;
   platformAdmin: boolean;
+  /** Plattform-Support arbeitet mit befristeter Freigabe im Mandanten. */
+  supportSession: boolean;
 }
 
-interface JwtAppMetadata { tenant_id?: string | null; tenant_role?: TenantRole | null; platform_admin?: boolean }
+interface JwtAppMetadata { tenant_id?: string | null; tenant_role?: TenantRole | null; platform_admin?: boolean; support_session?: boolean }
 
 function decodeJwtPayload(token: string): Record<string, unknown> | null {
   try {
@@ -50,6 +52,7 @@ export const getSession = cache(async (): Promise<AppSession | null> => {
     tenantId: meta.tenant_id ?? null,
     role: meta.tenant_role ?? null,
     platformAdmin: meta.platform_admin === true,
+    supportSession: meta.support_session === true,
   };
 });
 

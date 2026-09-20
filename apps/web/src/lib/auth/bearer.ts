@@ -13,7 +13,7 @@ export interface BearerAuth {
   accessToken: string;
 }
 
-interface JwtAppMetadata { tenant_id?: string | null; tenant_role?: TenantRole | null; platform_admin?: boolean }
+interface JwtAppMetadata { tenant_id?: string | null; tenant_role?: TenantRole | null; platform_admin?: boolean; support_session?: boolean }
 
 /**
  * Baut aus einem "Authorization: Bearer <access_token>"-Header einen Supabase-Client und prüft die Claims.
@@ -43,6 +43,7 @@ export async function getBearerAuth(authorization: string | null | undefined): P
       tenantId: meta.tenant_id ?? null,
       role: meta.tenant_role ?? null,
       platformAdmin: meta.platform_admin === true,
+      supportSession: meta.support_session === true,
     },
   };
 }
