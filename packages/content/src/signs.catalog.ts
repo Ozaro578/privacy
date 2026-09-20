@@ -2231,8 +2231,7 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "category": "richtzeichen",
     "meaning": "Hinweis auf eine Notrufsäule, über die Polizei oder Pannenhilfe gerufen werden kann; auf Autobahnen zeigen schwarze Pfeile auf den Leitpfosten den Weg zur nächsten Säule.",
     "alt": "Zeichen 365-51 Notrufsäule: blaues Quadrat mit weißem Notrufsäule mit der Aufschrift SOS",
-    "file": "signs/365-51.svg",
-    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+    "file": "signs/365-51.svg"
   },
   {
     "id": "365-52",

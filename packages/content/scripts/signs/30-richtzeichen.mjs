@@ -85,22 +85,25 @@ const parkArrow = (dir) => {
   return `${text(60, 74, 64, "P", WHITE)}${a}`;
 };
 /** Parken auf Gehwegen (315): Gehwegkante mit Auto; kind: halb | ganz, mode: laengs | quer | schraeg, side: rechts | links */
-function gehweg(kind, mode, side) {
+function gehweg(kind, mode, side, extra = "") {
   const curb = side === "rechts" ? `<path d="M6 154 H60 V140 H114" stroke="${WHITE}" stroke-width="4" fill="none"/>` : `<path d="M114 154 H60 V140 H6" stroke="${WHITE}" stroke-width="4" fill="none"/>`;
   let cx = kind === "halb" ? 60 : side === "rechts" ? 87 : 33;
   const pic = mode === "laengs" ? carFront() : carSide();
   const rot = mode === "schraeg" ? (side === "rechts" ? -30 : 30) : 0;
   const car = `<g transform="translate(${cx - 25} 104) scale(0.5) rotate(${rot} 50 50)">${pic}</g>`;
-  return rectBlue(120, 180, `${text(60, 78, 70, "P", WHITE)}${curb}${car}`, "");
+  // Anfang: Pfeil nach rechts, Ende: Pfeil nach links (Rechtsaufstellung), unter dem P
+  const arrow = extra === "Anfang" ? `<path d="M30 88 H72 V80 L96 94 L72 108 V100 H30 Z" fill="${WHITE}"/>` : extra === "Ende" ? `<path d="M90 88 H48 V80 L24 94 L48 108 V100 H90 Z" fill="${WHITE}"/>` : "";
+  const p = extra ? text(60, 70, 62, "P", WHITE) : text(60, 78, 70, "P", WHITE);
+  return rectBlue(120, 180, `${p}${arrow}${curb}${car}`, "");
 }
 const gehwegEntry = (suffix, kind, mode, side, extra = "") => {
   const modeName = { laengs: "in Längsaufstellung", quer: "in Querstellung", schraeg: "in Schrägaufstellung" }[mode];
   const name = `Parken auf Gehwegen ${kind} ${modeName} ${side}${extra ? ` (${extra})` : ""}`;
   return E(`315-${suffix}`, `315-${suffix}`, name,
     `Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: ${kind === "halb" ? "mit zwei Rädern auf dem Gehweg" : "mit dem ganzen Fahrzeug auf dem Gehweg"}, ${modeName} auf der ${side}en Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.${extra === "Anfang" ? " Der Pfeil zeigt den Anfang der Parkfläche an." : extra === "Ende" ? " Der Pfeil zeigt das Ende der Parkfläche an." : ""}`,
-    `Zeichen 315-${suffix} ${name}: blaues Schild mit weißem P, darunter Gehwegkante und Auto ${kind} auf dem Gehweg`,
-    () => { const s = gehweg(kind, mode, side); return s.replace('aria-label=""', `aria-label="Zeichen 315-${suffix} ${name}"`).replace("<title></title>", `<title>Zeichen 315-${suffix} ${name}</title>`) + (extra ? "" : ""); },
-    "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen.");
+    `Zeichen 315-${suffix} ${name}: blaues Schild mit weißem P${extra === "Anfang" ? " und Pfeil nach rechts" : extra === "Ende" ? " und Pfeil nach links" : ""}, darunter Gehwegkante und Auto ${kind} auf dem Gehweg`,
+    () => gehweg(kind, mode, side, extra).replace('aria-label=""', `aria-label="Zeichen 315-${suffix} ${name}"`).replace("<title></title>", `<title>Zeichen 315-${suffix} ${name}</title>`),
+    `Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert.${extra ? " Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links)." : ""}`);
 };
 /** Dienstleistungs-Sinnbild 365-5x */
 const dienst = (suffix, name, meaning, altPict, inner, size = 76, note = "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen.") =>
@@ -183,7 +186,7 @@ export default [
   E("360", "360", "Fernsprecher", "Hinweis auf ein öffentliches Telefon.", "Zeichen 360 Fernsprecher: blaues Quadrat mit weißem Telefonhörer", () => sq(pict(handset(), 10, 10, 100), "Zeichen 360 Fernsprecher")),
   E("361", "361", "Tankstelle", "Hinweis auf eine Tankstelle.", "Zeichen 361 Tankstelle: blaues Quadrat mit weißer Zapfsäule", () => sq(pict(pump(), 10, 10, 100), "Zeichen 361 Tankstelle")),
   E("363", "363", "Polizei", "Hinweis auf eine Polizeidienststelle.", "Zeichen 363 Polizei: blaues Quadrat mit weißer Aufschrift Polizei", () => sq(`${text(60, 74, 27, "Polizei", WHITE)}`, "Zeichen 363 Polizei")),
-  dienst("51", "Notrufsäule", "Hinweis auf eine Notrufsäule, über die Polizei oder Pannenhilfe gerufen werden kann; auf Autobahnen zeigen schwarze Pfeile auf den Leitpfosten den Weg zur nächsten Säule.", "Notrufsäule mit der Aufschrift SOS", sosColumn(), 76, undefined),
+  dienst("51", "Notrufsäule", "Hinweis auf eine Notrufsäule, über die Polizei oder Pannenhilfe gerufen werden kann; auf Autobahnen zeigen schwarze Pfeile auf den Leitpfosten den Weg zur nächsten Säule.", "Notrufsäule mit der Aufschrift SOS", sosColumn(), 76, ""),
   dienst("52", "Gaststätte", "Hinweis auf eine Gaststätte.", "Messer und Gabel", cutlery()),
   dienst("53", "Hotel oder Motel", "Hinweis auf eine Übernachtungsmöglichkeit (Hotel, Motel).", "Bett", bed()),
   dienst("54", "Toilette", "Hinweis auf eine öffentliche Toilette.", "Aufschrift WC", text(50, 68, 44, "WC", WHITE), 90),
@@ -235,6 +238,7 @@ export default [
   E("457-1", "457.1", "Umleitungspfeil", "Gelber Pfeil mit U-Symbol, der entlang der Umleitungsstrecke den Weg weist, bis die ursprüngliche Straße wieder erreicht ist.", "Zeichen 457.1 Umleitungspfeil: gelber Pfeilwegweiser mit schwarzem U", () => pfeil(200, 80, YELLOW, BLACK, `${text(90, 56, 40, "U")}`, "Zeichen 457.1 Umleitungspfeil")),
   E("457-2", "457.2", "Ende der Umleitung", "Zeigt das Ende der Umleitungsstrecke an; ab hier gilt wieder die reguläre Wegweisung.", "Zeichen 457.2 Ende der Umleitung: gelbes Rechteck mit schwarzem U und Aufschrift Ende", () => rectYellow(200, 100, `${text(60, 68, 40, "U")}${text(140, 68, 30, "Ende")}`, "Zeichen 457.2 Ende der Umleitung"), "Bezeichnung und Gestaltung nach Katalog bitte prüfen."),
   E("458", "458", "Planskizze", "Gelbe Tafel, die den gesperrten Streckenabschnitt und den Verlauf der Umleitung schematisch darstellt.", "Zeichen 458 Planskizze: gelbes Rechteck mit schematischem Straßennetz, gesperrter Strecke und Umleitungsweg", () => rectYellow(280, 200, `<path d="M60 180 V30 M60 60 H220 V180" fill="none" stroke="${BLACK}" stroke-width="10"/><path d="M60 120 H220" fill="none" stroke="${BLACK}" stroke-width="10" stroke-dasharray="14 10"/><path d="M128 100 L152 140 M152 100 L128 140" stroke="${RED}" stroke-width="8" stroke-linecap="round"/><rect x="176" y="20" width="40" height="34" rx="3" fill="${BLACK}"/>${text(196, 47, 26, "U", YELLOW)}`, "Zeichen 458 Planskizze")),
+  E("459", "459", "Umleitungstafel", "Gelbe Tafel, die vor einer Sperrung die Umleitung für bestimmte Ziele ankündigt: Sie nennt das Ziel und die Richtung oder den Verlauf der Umleitungsstrecke, damit rechtzeitig eingeordnet werden kann.", "Zeichen 459 Umleitungstafel: gelbes Rechteck mit U-Symbol, Aufschrift Umleitung, Zielname und Pfeil", () => rectYellow(280, 160, `<rect x="20" y="22" width="44" height="42" rx="3" fill="${BLACK}"/>${text(42, 56, 32, "U", YELLOW)}${T(166, 56, 30, "Umleitung", BLACK, "middle", 180)}<path d="M20 78 H260" stroke="${BLACK}" stroke-width="2"/>${T(120, 126, 28, "Musterstadt", BLACK, "middle", 170)}${arr(236, 116, "right", BLACK, 1.8)}`, "Zeichen 459 Umleitungstafel"), "Gestaltung (Aufteilung von U-Symbol, Ziel und Pfeil) nach Katalogbild angenähert, bitte prüfen."),
   E("460", "460", "Bedarfsumleitung", "Kennzeichnet mit U und Nummer eine vorbereitete Umleitungsstrecke für die Autobahn. Bei einer Sperrung wird der Verkehr über diese Bedarfsumleitung zur nächsten Anschlussstelle geführt; sonst hat das Zeichen keine Bedeutung.", "Zeichen 460 Bedarfsumleitung: blaues Rechteck mit weißem U, Nummer und Pfeil", () => rectBlue(200, 100, `${text(74, 66, 40, "U 12", WHITE)}${arr(160, 50, "right", WHITE, 1.8)}`, "Zeichen 460 Bedarfsumleitung"), "Farbgebung (blau mit weißer Schrift) und Pfeil dem Katalogbild angenähert."),
   E("466", "466", "Streckenempfehlung", "Empfiehlt bei Stau oder Sperrung eine Ausweichstrecke über die angegebene Bedarfsumleitung; keine Pflicht, sondern ein Hinweis.", "Zeichen 466 Streckenempfehlung: blaue Tafel mit Zielname und Empfehlung über U-Nummer", () => rectBlue(280, 140, `${T(140, 50, 28, "Kassel", WHITE, "middle", 200)}${text(140, 88, 22, "über", WHITE)}${text(140, 124, 30, "U 12", WHITE)}`, "Zeichen 466 Streckenempfehlung"), "Bezeichnung und Bild nach Katalog bitte prüfen; Zeichen 459 wurde nicht aufgenommen."),
   { id: "720", number: "720", name: "Grünpfeilschild", category: "verkehrseinrichtungen", meaning: "Erlaubt das Rechtsabbiegen bei rotem Licht, aber nur nach vollständigem Anhalten an der Haltlinie und wenn dabei niemand behindert oder gefährdet wird; besonders auf Fußgänger und Radfahrer der freigegebenen Richtung achten. Wer sich unsicher ist, darf warten; die Ausnahme gilt nur für die Fahrtrichtung rechts.", alt: "Zeichen 720 Grünpfeilschild: schwarzes Quadrat mit grünem Pfeil nach rechts", svg: () => `${svgOpen(120, 120, "Zeichen 720 Grünpfeilschild")}<rect x="2" y="2" width="116" height="116" rx="10" fill="${BLACK}" stroke="${FRAME}" stroke-width="1"/><path d="M26 50 H66 V30 L96 60 L66 90 V70 H26 Z" fill="${GREEN}" stroke="${WHITE}" stroke-width="3"/></svg>` },
