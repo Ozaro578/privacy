@@ -236,3 +236,44 @@ Geprüft wurden own-befoerderung-011 bis 040 und own-fahrphysik-011 bis 040 (Rec
 Zuladung 550 kg, Klasse B mit Anhänger (1.200 kg bei 2.300 kg Zugfahrzeug, 3.400 kg Kombination, B96 bis 4.250 kg, BE), Stützlast 4 Prozent und 25 kg Deckel, Gespann 80 km/h und Tempo 100 Voraussetzungen, Zeichen 253 mit Pkw-Ausnahme, Zusatzzeichen 1010-59 und 1024-11, Ladung 2,55 m, 4 m, 1,5 m und 3 m bis 100 km, Kennzeichnung ab 1 m, seitlich ab 40 cm, nach vorn ab 2,5 m Höhe bis 50 cm, Gurtausnahmen, Personen in Wohnanhängern und auf Ladeflächen, Kindersitzregeln, Faustformeln (88, 36, 36, 72, 16, 9, 15/30 und 25/100, 80 m), Fliehkraft quadratisch, Kammscher Kreis, Haft- und Gleitreibung, Aquaplaning, ABS, ASR, ESP, Pendeln, Seitenwind, Reifendruck, Bremsassistent, Bewegungsenergie.
 
 Testergebnis: `pnpm test` (19 Tests) und `pnpm typecheck` im Paket content grün. Nicht committet.
+
+## Nachprüfung Fragen Gruppe B, Teil 1 (September 2026)
+
+Geprüft wurden die neuen Fragen der Themen Halten und Parken, besondere Situationen, Unfall und Panne, Umwelt, Alkohol und Drogen, Fahrzeugtechnik und Beleuchtung (Rechtsstand September 2026). Alle numerischen Aufgaben wurden nachgerechnet.
+
+| Thema | geprüft | korrigiert | needs_verification | entfernt |
+|---|---|---|---|---|
+| halten_parken 013 bis 042 | 30 | 2 | 0 | 0 |
+| besondere_situationen 011 bis 040 | 30 | 3 | 1 | 0 |
+| unfall_panne 012 bis 041 | 30 | 0 | 1 | 0 |
+| umwelt 011 bis 040 | 30 | 1 | 0 | 0 |
+| alkohol_drogen 012 bis 041 | 30 | 0 | 1 | 0 |
+| fahrzeugtechnik 011 bis 040 | 30 | 0 | 0 | 0 |
+| beleuchtung 010 bis 039 | 30 | 0 | 0 | 0 |
+
+### Korrekturen
+
+- own-halten_parken-023: Die Frage kombinierte die Parkscheibenregel mit einem Zeitfenster (werktags 8 bis 18 Uhr) und einer Ankunft um 17:20 Uhr. Nach 18 Uhr gilt keine Beschränkung mehr, sodass "bis 19:30 Uhr" nicht die einzig vertretbare Antwort war. Zeitfenster entfernt; die Frage prüft jetzt nur noch die Einstellung auf die folgende halbe Stunde (17:30 Uhr) und die Höchstparkdauer (bis 19:30 Uhr) nach § 13 Abs. 2 StVO.
+- own-halten_parken-040: Erklärung präzisiert. Statt "Das gilt nicht auf Autobahnen und Kraftfahrstraßen" jetzt "Auf Autobahnen und Kraftfahrstraßen ist das Halten ohnehin verboten", damit nicht der Eindruck entsteht, dort dürfe auf der Fahrbahn gehalten werden.
+- own-besondere_situationen-018: Die als richtig markierte Antwort "Rechts darf nicht vorbeigefahren werden, solange Fahrgäste ein- oder aussteigen" widersprach § 20 Abs. 2 StVO. Danach darf rechts mit Schrittgeschwindigkeit und ausreichendem Abstand vorbeigefahren werden; Fahrgäste dürfen nicht behindert werden, wenn nötig ist zu warten. Antworten und Erklärung an den Gesetzeswortlaut angepasst.
+- own-besondere_situationen-019: Die Erklärung gab § 11 Abs. 1 StVO so wieder, als nenne er Bahnübergänge. Die Vorschrift betrifft Kreuzungen und Einmündungen; das Halteverbot auf Bahnübergängen folgt aus § 12 Abs. 1 Nr. 4 StVO. Erklärung und legalReference angepasst, Antworten unverändert.
+- own-besondere_situationen-032: Die Antwort nannte ein "abgeschlepptes Fahrzeug" als Anwendungsfall für Blaulicht ohne Einsatzhorn. § 38 Abs. 2 StVO nennt Unfall- und Einsatzstellen sowie die Begleitung von Fahrzeugen und geschlossenen Verbänden. Formulierung auf "begleiteter Schwertransport" geändert.
+- own-umwelt-013: Antwort "Unnützes Hin- und Herfahren innerhalb geschlossener Ortschaften" um den Zusatz "wenn andere dadurch belästigt werden" ergänzt (Wortlaut § 30 Abs. 1 Satz 3 StVO).
+
+### needs_verification
+
+- own-besondere_situationen-029: Ob bei Zeichen 264 (tatsächliche Breite) die Außenspiegel mitzählen, ist nicht abschließend geklärt; die Frage behandelt Spiegel als Teil der tatsächlichen Breite. Fachliche Bestätigung nötig.
+- own-unfall_panne-014: Die Strafmilderung nach § 142 Abs. 4 StGB (Meldung innerhalb von 24 Stunden bei nicht bedeutendem Sachschaden außerhalb des fließenden Verkehrs) entspricht dem geltenden Wortlaut. Eine Reform der Unfallflucht bei reinem Sachschaden wurde politisch diskutiert; der Stand ist zu prüfen.
+- own-alkohol_drogen-031: Mischkonsum Cannabis und Alkohol (§ 24a Abs. 1a StVG, höheres Bußgeld nach BKatV). Inhalt entspricht der Rechtslage seit August 2024, Bußgeldhöhe und Detailwortlaut wie bei own-alkohol_drogen-007 zu bestätigen.
+
+### Ausdrücklich bestätigt
+
+Halten und Parken: Panne kein Halten, Zeichen 286 mit Be- und Entladen, 5 m vor Fußgängerüberweg, 10 m vor Lichtzeichen bei Verdeckung, 2,8 t Gehwegparken, Anhänger 2 Wochen, Parklückenvorrang, Halteverbote auf Ein- und Ausfädelungsstreifen, Autobahn und Feuerwehrzufahrten, Vorfahrtstraße außerorts, defekter Parkscheinautomat, Einbahnstraße links, 7,5 t und 2 t Nachtparkverbot, Taxen in zweiter Reihe, 8 m bei baulichem Radweg und Ausfahrt gegenüber, verkehrsberuhigter Bereich, Zone 290.1, Bewohnerparken, E-Kennzeichen, Sperrfläche und Zickzacklinie, Taxenstand, Radverkehrsanlagen, Bordsteinabsenkung und Schachtdeckel, § 14 StVO, Haltestelle 15 m, Parkscheibe, Seitenstreifen, platzsparend, Samstag als Werktag.
+Besondere Situationen: 50 km/h unter 50 m Sicht, Leitpfosten 50 m, Tunnelbrand und Stau, Busse mit Warnblinklicht (§ 20 Abs. 3 und 4), Bahnübergang und Rotlicht, Gefälle, Winter, Zeichen 268 mit 50 km/h, Falschfahrer, nasse Bremsen, Aquaplaning, Seitenwind, gelbe Markierungen, Ölspur, Blendung, gelbes Blinklicht, Erntezeit, Kuppe, Rettungsgasse, Gewitter, Glätte, Wild, Zeichen 128.
+Unfall und Panne: § 34 StVO Pflichten, Wildunfall, § 15a StVO Abschleppen, Starthilfe, Radwechsel, Überhitzung, 30 zu 2, AED, Druckverband, Schock, Rettungsgriff, Helm, Verbrennung, 112 und eCall, Warndreieck vor der Kurve, Reihenfolge auf der Autobahn, Warnweste EN ISO 20471, DIN 13164, Schuldanerkenntnis, § 201a StGB, Airbag, Hochvolt, 9 Unterrichtseinheiten Erste Hilfe, Zeichen 328, § 15 Abs. 1 StVO.
+Umwelt: 7,5 t und 0 bis 22 Uhr, § 30 Abs. 1 StVO, Umweltzone und Plakette, Luftwiderstand, Start-Stopp, Reifenlabel, Kaltstart, Fahrzeugwäsche, Entsorgung mit Batteriepfand, Reifendruck, Rauchfarben, Tanken, Rekuperation, Gangwahl, Hupe, Klimaanlage, 6 l/100 km, 40 l, Zeichen 253 mit Zeitzusatz.
+Alkohol und Drogen: 500 Euro, 1 Monat, 2 Punkte; 1,1 Promille Straftat mit Sperrfrist; Probezeit 0,2 Promille mit Aufbauseminar und Verlängerung; 0,25 mg/l; Atemtest freiwillig, Blutentnahme § 81a StPO; E-Tretroller und Mofa als Kraftfahrzeuge; Kokain ohne Wirkungsgrenzwert; THC 3,5 ng/ml; Arzneimittelausnahme § 24a Abs. 2 Satz 3 StVG; Restalkohol 0,4 Promille; Radfahrer 1,6 Promille mit MPU; Wiederholung 3 Monate; 0,8 Promille mit Unfall; Versicherungsregress; MPU ab 1,6; Halterverantwortung; § 24c Cannabis; Anlage 4 FeV; 8 Stunden Abbau.
+Fahrzeugtechnik: 205 mm, 16 Zoll, Geschwindigkeitsindex T 190, H 210, V 240, W 270 mit Hinweisschild bei Winterreifen, HU über 8 Monate mit Punkt und 36 Monate Erstfrist, Kontrollleuchten, Zweikreisbremse, Reifendruck, einseitiger Verschleiß, § 19 StVZO, Halterpflichten, § 13 FZV, Saisonkennzeichen, Abfahrtkontrolle, Ölüberfüllung, Kühlmittel, AVAS, Servolenkung, Abgasanlage, Sitzposition, Reifenalter, Frostschutz, Verschleißanzeiger 1,6 mm, Batterie, Winterreifenpflicht mit Bußgeld und Punkt.
+Beleuchtung: Nebelschlussleuchte 50 m und 50 km/h, Lichtautomatik, Fernlichtassistent, defekter Scheinwerfer, Parkleuchte innerorts, Nebelscheinwerfer nur bei erheblicher Sichtbehinderung, Abblendpflichten § 17 Abs. 2, Warnblinklicht, Lichtfarben, Lichthupe innerorts nur als Warnung, Dämmerung, Nachtsicht, Zug außerorts, Bremsleuchten, Krafträder am Tag, Fernlicht innerorts auf unbeleuchteter Straße, Blaulicht und gelbes Blinklicht, Leuchtweite, Tunnel Zeichen 327, Kontrollleuchte gelb, Ersatzlampen nicht vorgeschrieben, Sichtweite mit Abblendlicht, Rückfahrscheinwerfer.
+
+Testergebnis: `pnpm test` und `pnpm typecheck` im Paket content grün. Nicht committet.

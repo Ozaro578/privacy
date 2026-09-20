@@ -159,10 +159,10 @@ export const haltenParken: readonly Question[] = [
   }),
   q({
     code: "own-halten_parken-023", topic: "halten_parken", points: 3, difficulty: 0.6, tags: ["parken", "parkscheibe", "zusatzzeichen"],
-    text: "Ein Parkplatz mit Zeichen 314 trägt das Zusatzzeichen mit Parkscheibe und der Angabe 2 Stunden werktags 8 bis 18 Uhr. Sie parken um 17:20 Uhr an einem Mittwoch. Wie lange dürfen Sie stehen bleiben?",
-    answers: [t("Bis 19:30 Uhr, weil die Parkscheibe auf 17:30 Uhr eingestellt wird und die zwei Stunden ab dann laufen"), f("Nur bis 18:00 Uhr, weil danach die Regelung endet", "Nach 18 Uhr gilt keine Beschränkung mehr; die Parkzeit läuft trotzdem ab der eingestellten Zeit weiter."), f("Bis 19:20 Uhr, weil die Ankunftszeit zählt", "Die Parkscheibe wird auf die folgende halbe Stunde eingestellt, also auf 17:30 Uhr."), f("Unbegrenzt, weil die Parkscheibenpflicht kurz vor 18 Uhr nicht mehr gilt", "Bei Ankunft um 17:20 Uhr gilt die Regelung noch.")],
-    explanation: "Die Parkscheibe wird auf die halbe Stunde nach der Ankunft eingestellt, hier auf 17:30 Uhr. Ab dann darf zwei Stunden geparkt werden, also bis 19:30 Uhr. Dass die zeitliche Beschränkung um 18 Uhr endet, verkürzt die zulässige Parkzeit nicht.",
-    legalReference: "§ 13 Abs. 2 StVO; Zusatzzeichen 1040-32 und 1042-33",
+    text: "Ein Parkplatz mit Zeichen 314 trägt das Zusatzzeichen mit Parkscheibe und der Angabe 2 Stunden. Sie kommen um 17:20 Uhr an. Bis wann dürfen Sie höchstens parken?",
+    answers: [t("Bis 19:30 Uhr, weil die Parkscheibe auf 17:30 Uhr eingestellt wird und die zwei Stunden ab dann laufen"), f("Bis 19:20 Uhr, weil die Ankunftszeit zählt", "Die Parkscheibe wird auf die folgende halbe Stunde eingestellt, also auf 17:30 Uhr."), f("Bis 19:00 Uhr, weil auf die vorangehende volle Stunde abgerundet wird", "Eingestellt wird auf die halbe Stunde, die der Ankunft folgt, nicht auf eine frühere Zeit."), f("Bis 20:00 Uhr, weil auf die nächste volle Stunde aufgerundet wird", "Eingestellt wird auf die nächste halbe Stunde, also 17:30 Uhr.")],
+    explanation: "Die Parkscheibe wird so eingestellt, dass der Pfeil auf den Strich der halben Stunde zeigt, die dem Zeitpunkt der Ankunft folgt, hier 17:30 Uhr. Ab dann darf zwei Stunden geparkt werden, also bis 19:30 Uhr.",
+    legalReference: "§ 13 Abs. 2 StVO; Zusatzzeichen 1040-32",
   }),
   q({
     code: "own-halten_parken-024", topic: "halten_parken", points: 3, difficulty: 0.55, tags: ["parken", "einbahnstrasse", "linke_seite", "gehweg"],
@@ -280,7 +280,7 @@ export const haltenParken: readonly Question[] = [
     code: "own-halten_parken-040", topic: "halten_parken", points: 2, difficulty: 0.35, tags: ["halten", "parken", "fahrbahnrand", "seitenstreifen"],
     text: "Wo müssen Sie halten oder parken, wenn rechts ein befestigter Seitenstreifen vorhanden ist?",
     answers: [t("Auf dem Seitenstreifen, wenn er dafür ausreichend befestigt ist"), f("Immer auf der Fahrbahn, damit der Seitenstreifen frei bleibt", "Zum Halten und Parken ist der befestigte Seitenstreifen zu benutzen."), f("Auf dem Gehweg, wenn der Seitenstreifen belegt ist", "Gehwegparken ist nur bei ausdrücklicher Freigabe erlaubt.")],
-    explanation: "Zum Halten und Parken ist der rechte Seitenstreifen einschließlich entlang der Fahrbahn angelegter Parkstreifen zu benutzen, wenn er ausreichend befestigt ist. Sonst wird an den rechten Fahrbahnrand herangefahren. Das gilt nicht auf Autobahnen und Kraftfahrstraßen.",
+    explanation: "Zum Halten und Parken ist der rechte Seitenstreifen einschließlich entlang der Fahrbahn angelegter Parkstreifen zu benutzen, wenn er ausreichend befestigt ist. Sonst wird an den rechten Fahrbahnrand herangefahren. Auf Autobahnen und Kraftfahrstraßen ist das Halten ohnehin verboten.",
     legalReference: "§ 12 Abs. 4 StVO",
   }),
   q({

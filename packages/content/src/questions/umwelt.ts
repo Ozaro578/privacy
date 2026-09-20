@@ -84,7 +84,7 @@ export const umwelt: readonly Question[] = [
   q({
     code: "own-umwelt-013", topic: "umwelt", points: 3, difficulty: 0.6, tags: ["laerm", "abgase", "innerorts", "hin_und_herfahren"],
     text: "Welche Verhaltensweisen sind nach der StVO wegen unnötigen Lärms oder vermeidbarer Abgase verboten?",
-    answers: [t("Unnützes Hin- und Herfahren innerhalb geschlossener Ortschaften"), t("Den Motor beim Warten vor einer geschlossenen Bahnschranke laufen zu lassen"), t("Türen und Klappen des Fahrzeugs nachts laut zuzuschlagen oder im Stand hoch zu drehen"), f("Mit eingeschaltetem Tagfahrlicht zu fahren", "Tagfahrlicht verursacht weder Lärm noch Abgase.")],
+    answers: [t("Unnützes Hin- und Herfahren innerhalb geschlossener Ortschaften, wenn andere dadurch belästigt werden"), t("Den Motor beim Warten vor einer geschlossenen Bahnschranke laufen zu lassen"), t("Türen und Klappen des Fahrzeugs nachts laut zuzuschlagen oder im Stand hoch zu drehen"), f("Mit eingeschaltetem Tagfahrlicht zu fahren", "Tagfahrlicht verursacht weder Lärm noch Abgase.")],
     explanation: "Bei der Benutzung von Fahrzeugen sind unnötiger Lärm und vermeidbare Abgasbelästigungen verboten. Dazu gehören unnötiges Laufenlassen des Motors, hohes Drehen im Stand, lautes Türenschlagen und das unnütze Hin- und Herfahren innerorts, das andere belästigt.",
     legalReference: "§ 30 Abs. 1 StVO",
   }),

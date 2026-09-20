@@ -120,16 +120,16 @@ export const besondereSituationen: readonly Question[] = [
   q({
     code: "own-besondere_situationen-018", topic: "besondere_situationen", points: 3, difficulty: 0.6, tags: ["strassenbahn", "haltestelle", "fahrgaeste"],
     text: "Eine Straßenbahn hält an einer Haltestelle ohne Haltestelleninsel, die Fahrgäste steigen direkt auf die Fahrbahn aus. Was gilt?",
-    answers: [t("Rechts von der Straßenbahn darf nicht vorbeigefahren werden, solange Fahrgäste ein- oder aussteigen"), t("Fahrgäste dürfen nicht behindert werden; wenn nötig muss gewartet werden"), f("Mit Schrittgeschwindigkeit darf immer vorbeigefahren werden", "Solange Fahrgäste ein- oder aussteigen, ist das Vorbeifahren verboten."), f("Links darf an der Straßenbahn vorbeigefahren werden", "Straßenbahnen werden grundsätzlich rechts überholt; links nur, wenn die Schienen zu weit rechts liegen.")],
-    explanation: "An einer haltenden Straßenbahn ohne Haltestelleninsel darf rechts nur vorbeigefahren werden, wenn keine Fahrgäste ein- oder aussteigen. Steigen Fahrgäste ein oder aus, muss gewartet werden. Danach ist nur Schrittgeschwindigkeit mit ausreichendem Abstand erlaubt.",
+    answers: [t("Rechts darf nur mit Schrittgeschwindigkeit und nur in einem solchen Abstand vorbeigefahren werden, dass Fahrgäste nicht gefährdet werden"), t("Fahrgäste dürfen nicht behindert werden; wenn nötig muss gewartet werden"), f("Mit Schrittgeschwindigkeit darf immer vorbeigefahren werden, auch wenn Fahrgäste dabei behindert werden", "Wer Fahrgäste behindern oder gefährden würde, muss warten."), f("Links darf an der Straßenbahn vorbeigefahren werden", "Straßenbahnen werden grundsätzlich rechts überholt; links nur, wenn die Schienen zu weit rechts liegen.")],
+    explanation: "Steigen an einer haltenden Straßenbahn Fahrgäste ein oder aus, darf rechts nur mit Schrittgeschwindigkeit und mit so großem Abstand vorbeigefahren werden, dass niemand gefährdet wird. Fahrgäste dürfen nicht behindert werden; wenn nötig, muss gewartet werden.",
     legalReference: "§ 20 Abs. 2 StVO",
   }),
   q({
     code: "own-besondere_situationen-019", topic: "besondere_situationen", points: 4, difficulty: 0.7, tags: ["bahnuebergang", "stau", "andreaskreuz", "hohes_risiko"],
     text: "Vor Ihnen staut sich der Verkehr direkt hinter einem Bahnübergang. Die Schranken sind offen, kein Zug ist zu sehen. Wie verhalten Sie sich?",
     answers: [t("Vor dem Andreaskreuz warten, bis Sie den Übergang in einem Zug vollständig überqueren können"), f("Auf den Übergang fahren und dort warten, bis es weitergeht", "Auf dem Bahnübergang darf niemals angehalten werden."), f("Bis zur Schranke vorfahren und die Gleise erst bei Zugannäherung räumen", "Ein Fahrzeug im Gleisbereich kann bei Zugannäherung nicht mehr rechtzeitig weg."), f("Zügig über den Übergang fahren und dicht auffahren, damit der Stau nicht länger wird", "Wer nicht sicher hinter dem Übergang Platz findet, darf nicht einfahren.")],
-    explanation: "Wer ein Fahrzeug führt, darf in eine Kreuzung oder einen Bahnübergang nicht einfahren, wenn er dort wegen stockenden Verkehrs warten müsste. Am Bahnübergang ist vor dem Andreaskreuz zu warten, bis die Weiterfahrt ohne Halt auf den Gleisen möglich ist.",
-    legalReference: "§ 11 Abs. 1 StVO; § 19 StVO",
+    explanation: "Wer bei stockendem Verkehr in einer Kreuzung oder Einmündung warten müsste, darf nicht einfahren. Erst recht gilt das am Bahnübergang: Auf den Gleisen darf nie gehalten werden. Deshalb ist vor dem Andreaskreuz zu warten, bis die Weiterfahrt ohne Halt auf dem Übergang möglich ist.",
+    legalReference: "§ 11 Abs. 1 StVO; § 12 Abs. 1 Nr. 4 StVO; § 19 StVO",
   }),
   q({
     code: "own-besondere_situationen-020", topic: "besondere_situationen", points: 4, difficulty: 0.7, tags: ["bahnuebergang", "rotlicht", "schranke", "hohes_risiko"],
@@ -195,7 +195,7 @@ export const besondereSituationen: readonly Question[] = [
     text: "In einer Autobahnbaustelle ist der linke Fahrstreifen mit dem Zeichen 264 auf 2 Meter Breite beschränkt. Was ist zu beachten?",
     answers: [t("Fahrzeuge, die einschließlich Ladung und Außenspiegeln breiter als 2 Meter sind, dürfen diesen Streifen nicht benutzen"), t("Sie müssen die tatsächliche Breite Ihres Fahrzeugs kennen, bevor Sie den Streifen wählen"), f("Die Beschränkung gilt nur für Lkw", "Sie gilt für alle Fahrzeuge, deren tatsächliche Breite den Wert überschreitet."), f("Die Breite wird ohne Außenspiegel gemessen, daher passt jeder Pkw", "Maßgeblich ist die tatsächliche Breite einschließlich Anbauten.")],
     explanation: "Zeichen 264 verbietet Fahrzeugen, deren tatsächliche Breite einschließlich Ladung den angegebenen Wert überschreitet, die Benutzung. In Baustellen wird die Breite oft auf 2 Meter begrenzt; viele Pkw und Wohnmobile mit Spiegeln liegen darüber und müssen rechts bleiben.",
-    legalReference: "Anlage 2 StVO, Zeichen 264",
+    legalReference: "Anlage 2 StVO, Zeichen 264", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-besondere_situationen-030", topic: "besondere_situationen", points: 3, difficulty: 0.6, tags: ["oelspur", "gefahrzeichen", "schleudergefahr"],
@@ -214,7 +214,7 @@ export const besondereSituationen: readonly Question[] = [
   q({
     code: "own-besondere_situationen-032", topic: "besondere_situationen", points: 3, difficulty: 0.6, tags: ["einsatzfahrzeug", "blaulicht", "kolonne", "ueberholen"],
     text: "Vor Ihnen fährt eine geschlossene Kolonne von Einsatzfahrzeugen mit Blaulicht ohne Einsatzhorn. Was gilt?",
-    answers: [t("Sie dürfen nicht in die Kolonne einscheren und sie nicht unterbrechen"), t("Blaulicht ohne Einsatzhorn kann auch eine Unfallstelle oder ein abgeschlepptes Fahrzeug ankündigen; erhöhte Aufmerksamkeit ist nötig"), f("Ohne Einsatzhorn haben die Fahrzeuge keine Sonderrechte, deshalb dürfen Sie normal überholen", "Geschlossene Verbände dürfen nicht unterbrochen werden."), f("Sie müssen sofort anhalten und den Motor abstellen", "Anhalten ist nur nötig, wenn freie Bahn anders nicht möglich ist.")],
+    answers: [t("Sie dürfen nicht in die Kolonne einscheren und sie nicht unterbrechen"), t("Blaulicht ohne Einsatzhorn kann auch vor einer Unfallstelle warnen oder einen begleiteten Schwertransport ankündigen; erhöhte Aufmerksamkeit ist nötig"), f("Ohne Einsatzhorn haben die Fahrzeuge keine Sonderrechte, deshalb dürfen Sie normal überholen", "Geschlossene Verbände dürfen nicht unterbrochen werden."), f("Sie müssen sofort anhalten und den Motor abstellen", "Anhalten ist nur nötig, wenn freie Bahn anders nicht möglich ist.")],
     explanation: "Blaues Blinklicht allein warnt vor einer Unfall- oder Einsatzstelle, kündigt einen geschlossenen Verband an oder begleitet Schwertransporte. Geschlossene Verbände dürfen nicht unterbrochen werden. Nur Blaulicht zusammen mit Einsatzhorn verpflichtet zum sofortigen Freimachen der Bahn.",
     legalReference: "§ 38 Abs. 1 und 2 StVO; § 27 Abs. 2 StVO",
   }),

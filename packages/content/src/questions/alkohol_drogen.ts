@@ -212,7 +212,7 @@ export const alkoholDrogen: readonly Question[] = [
     text: "Ein Fahrer erreicht 3,5 ng/ml THC und hat zusätzlich 0,3 Promille Alkohol im Blut, ohne Ausfallerscheinungen. Was gilt?",
     answers: [t("Es liegt eine Ordnungswidrigkeit vor, die wegen des Mischkonsums mit einem höheren Bußgeld belegt wird als eine reine Cannabisfahrt"), f("Es liegt keine Ordnungswidrigkeit vor, weil 0,5 Promille nicht erreicht sind", "Der THC-Grenzwert ist erreicht; der zusätzliche Alkohol verschärft die Sanktion."), f("Es liegt automatisch eine Straftat vor", "Ohne Ausfallerscheinungen bleibt es eine Ordnungswidrigkeit; sie wird aber strenger geahndet.")],
     explanation: "Wer den THC-Grenzwert erreicht und zusätzlich Alkohol getrunken hat, verstößt gegen das Mischkonsumverbot. Das Gesetz sieht dafür ein deutlich höheres Bußgeld vor als für die reine Cannabisfahrt, dazu Fahrverbot und Punkte. Mit Ausfallerscheinungen wäre die Fahrt strafbar.",
-    legalReference: "§ 24a Abs. 1a StVG; BKatV",
+    legalReference: "§ 24a Abs. 1a StVG; BKatV", reviewStatus: "needs_verification",
   }),
   q({
     code: "own-alkohol_drogen-032", topic: "alkohol_drogen", points: 3, difficulty: 0.55, tags: ["drogen", "nachweis", "kontrolle", "speicheltest"],
