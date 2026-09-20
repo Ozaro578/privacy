@@ -1,6 +1,6 @@
 // Übungsfragen zum Thema "fahrphysik" (eigene Formulierungen, kein amtlicher Prüfungsinhalt).
-import type { Question } from "../types.js";
-import { q, t, f } from "./_helpers.js";
+import type { Question } from "../types";
+import { q, t, f } from "./_helpers";
 
 export const fahrphysik: readonly Question[] = [
   q({
