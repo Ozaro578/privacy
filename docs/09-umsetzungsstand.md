@@ -25,7 +25,7 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 | Stripe SEPA | Stripe-Konto, Webhook-Secret, Testzahlungen | Auftraggeber |
 | KI-Funktionen | API-Schlüssel des KI-Anbieters, Auftragsverarbeitungsvertrag | Auftraggeber |
 | Push und E-Mail | Expo-Push-Zugang oder FCM, SMTP-Zugang | Auftraggeber |
-| Amtliche Prüfungsfragen | Lizenz (TÜV | DEKRA arge tp 21); bis dahin nur eigene Übungsfragen | Auftraggeber |
+| Amtliche Prüfungsfragen | Lizenz (TÜV | DEKRA arge tp 21); Rechtslage, Optionen, Kontakt und Anfrage-Vorlage in `12-lizenz-pruefungsinhalte.md`; bis dahin nur eigene Übungsfragen | Auftraggeber |
 | Fachliche Freigabe | Prüfung aller Inhalte und Regelwerte durch einen zugelassenen Fahrlehrer, Rechtsstand dokumentieren | Fachprüfer |
 | Store-Veröffentlichung | Apple- und Google-Entwicklerkonten, EAS-Builds, Datenschutzangaben | Auftraggeber |
 
