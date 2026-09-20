@@ -25,6 +25,17 @@ export function TodayView({ firstName, licenseName, transmission, rulesNeedVerif
 
       {rulesNeedVerification && <Alert tone="warning" title="Regelwerte in Prüfung">Die Prüfungsregeln für {licenseName} sind hinterlegt, aber noch nicht fachlich freigegeben. Simulationen sind vorläufig.</Alert>}
 
+      <Card className={d.todayGoal?.challengeDone ? "border border-success-500/40" : "border border-accent-400/60"}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-ink-500">Tages-Challenge</p>
+            <p className="font-semibold">{d.todayGoal?.challengeDone ? "Heute geschafft. Stark!" : "10 Fragen deiner Stufe, mindestens 8 richtig"}</p>
+            <p className="text-sm text-ink-700">{d.todayGoal?.challengeDone ? "Morgen wartet die nächste Challenge." : "Bringt 20 Bonus-XP und hält deine Serie am Leben."}</p>
+          </div>
+          {d.todayGoal?.challengeDone ? <span className="rounded-full bg-success-100 px-3 py-1 text-sm font-semibold">✓ erledigt</span> : <Link href="/lernen/session?mode=ladder&limit=10&challenge=1" className={btn.primary}>Challenge starten</Link>}
+        </div>
+      </Card>
+
       <Card>
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
           <ReadinessGauge score={d.readinessScore} />

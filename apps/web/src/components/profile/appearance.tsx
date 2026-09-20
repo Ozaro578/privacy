@@ -9,6 +9,7 @@ function apply(a: Appearance) {
   if (a.theme === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", a.theme);
   if (a.fontSize === "md") root.removeAttribute("data-fontsize"); else root.setAttribute("data-fontsize", a.fontSize);
   if (a.motion === "reduced") root.setAttribute("data-motion", "reduced"); else root.removeAttribute("data-motion");
+  if (a.sound) root.removeAttribute("data-sound"); else root.setAttribute("data-sound", "off");
 }
 
 const chip = (active: boolean) => `min-h-10 rounded-full border px-3 text-sm ${active ? "border-brand-500 bg-brand-50 font-medium text-brand-700" : "border-ink-300 bg-surface"}`;

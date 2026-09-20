@@ -5,6 +5,7 @@ import { recordAttempt, finishLearningSession, toggleBookmark, type StartedSessi
 import { btn, Alert } from "@/components/ui";
 import { WhyButton } from "./why-button";
 import { QuestionMedia } from "./question-media";
+import { Confetti, playSuccessTone } from "./celebration";
 
 type Phase = "answer" | "feedback" | "done";
 
@@ -16,6 +17,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
   const [phase, setPhase] = useState<Phase>("answer");
   const [result, setResult] = useState<AttemptResult | null>(null);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, xp: 0, badges: [] as string[] });
+  const [finish, setFinish] = useState<{ challengeCompleted: boolean; bonusXp: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const startedAt = useRef(0);
@@ -34,6 +36,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
         const r = await recordAttempt({ sessionId: session.sessionId, questionId: q.id, clientAttemptId: attemptId.current || crypto.randomUUID(), selected, numericAnswer: q.numeric ? Number(numeric.replace(",", ".")) : null, confidence, responseMs: Date.now() - startedAt.current });
         setResult(r);
         setStats((s) => ({ correct: s.correct + (r.correct ? 1 : 0), wrong: s.wrong + (r.correct ? 0 : 1), xp: s.xp + r.xpGained, badges: [...s.badges, ...r.newBadges] }));
+        if (r.correct) playSuccessTone("correct");
         setPhase("feedback");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Antwort konnte nicht gespeichert werden. Bitte erneut versuchen.");
@@ -43,7 +46,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
 
   function next() {
     if (index + 1 >= total) {
-      start(async () => { await finishLearningSession(session.sessionId); setPhase("done"); });
+      start(async () => { const f = await finishLearningSession(session.sessionId); setFinish(f); setPhase("done"); if (f.challengeCompleted || stats.correct / total >= 0.8) playSuccessTone("finish"); });
       return;
     }
     setIndex(index + 1); setSelected([]); setNumeric(""); setConfidence(null); setResult(null); setPhase("answer"); setError(null);
@@ -53,12 +56,15 @@ export function SessionRunner({ session }: { session: StartedSession }) {
 
   if (phase === "done") {
     const pct = Math.round((stats.correct / total) * 100);
+    const celebrate = (finish?.challengeCompleted ?? false) || pct >= 80;
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Session abgeschlossen</h1>
+        <Confetti active={celebrate} />
+        <h1 className="text-2xl font-bold">{session.challenge ? (finish?.challengeCompleted ? "Tages-Challenge geschafft!" : "Tages-Challenge beendet") : "Session abgeschlossen"}</h1>
         <div className="rounded-card bg-surface p-5 shadow-card">
           <p className="text-4xl font-bold tabular-nums">{pct} %</p>
-          <p className="text-ink-700">{stats.correct} richtig, {stats.wrong} falsch · +{stats.xp} XP</p>
+          <p className="text-ink-700">{stats.correct} richtig, {stats.wrong} falsch · +{stats.xp + (finish?.bonusXp ?? 0)} XP{finish?.bonusXp ? ` (davon ${finish.bonusXp} Challenge-Bonus)` : ""}</p>
+          {session.challenge && !finish?.challengeCompleted && <p className="mt-2 text-sm text-ink-700">Für die Challenge brauchst du 10 Fragen mit mindestens 80 % richtig. Morgen gibt es eine neue Chance, oder du versuchst es gleich noch einmal.</p>}
           {stats.badges.length > 0 && <p className="mt-2 rounded-lg bg-accent-400/30 p-2 text-sm">Neues Abzeichen: {stats.badges.join(", ")}</p>}
         </div>
         <div className="flex flex-wrap gap-2">

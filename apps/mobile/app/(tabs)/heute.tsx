@@ -12,7 +12,7 @@ import { KV_STREAK, KV_DAILY_GOAL } from "@/offline/sync";
 import { localOverview } from "@/offline/local-learning";
 import { Card, Loading, ProgressBar, Screen, Txt, Button } from "@/components/ui";
 
-interface Data { readiness: number | null; theory: number; practical: number | null; nextLesson: { start: string; instructor: string } | null; nextClass: { start: string; title: string } | null; missingDocs: string[]; openCents: number; today: TodayItem[]; streak: number; due: number; theoryExamAt: string | null }
+interface Data { challengeDone: boolean; readiness: number | null; theory: number; practical: number | null; nextLesson: { start: string; instructor: string } | null; nextClass: { start: string; title: string } | null; missingDocs: string[]; openCents: number; today: TodayItem[]; streak: number; due: number; theoryExamAt: string | null }
 
 export default function Today() {
   const t = useTheme();
@@ -34,13 +34,13 @@ export default function Today() {
     const topicNames = new Map((await loadTopics()).map((x) => [x.id, x.name] as const));
     const ov = localOverview(pool, states);
     const streak = streakRaw ? (JSON.parse(streakRaw) as { current_days: number }).current_days : 0;
-    const goal = goalRaw ? (JSON.parse(goalRaw) as { answered: number; achieved: boolean }) : null;
+    const goal = goalRaw ? (JSON.parse(goalRaw) as { answered: number; achieved: boolean; challenge_done?: boolean }) : null;
     const nl = lesson ? { start: parseRange(lesson.period as unknown as string).start, instructor: (lesson.instructors as unknown as { display_name: string } | null)?.display_name ?? "" } : null;
     const nc = cls ? { start: parseRange(cls.period as unknown as string).start, title: cls.title } : null;
     const weakestT = [...ov.topics].filter((x) => x.question_count > 0).sort((a, b) => a.mastery - b.mastery)[0];
     const weakest = weakestT && weakestT.mastery < 0.7 ? weakestT.topic_id : null;
     const today = planToday({ now: new Date(), dueQuestions: ov.due, weakestTopic: weakest ? { id: weakest, name: topicNames.get(weakest) ?? "Thema" } : null, instructorFlaggedSkills: [], nextLesson: nl ? { starts_at: nl.start, instructor_name: nl.instructor } : null, nextTheoryClass: nc ? { starts_at: nc.start, title: nc.title } : null, missingDocuments: (docs ?? []).map((x) => x.title), theoryExamAt: exam?.scheduled_at ?? null, practicalExamAt: null, openInvoiceCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), dailyGoalDone: goal?.achieved ?? false, learnedToday: (goal?.answered ?? 0) > 0, streakDays: streak, readinessScore: snap?.overall_score ?? null });
-    setD({ readiness: snap?.overall_score ?? null, theory: snap?.theory_score ?? Math.round(ov.overallMastery * 100), practical: snap?.practical_score ?? null, nextLesson: nl, nextClass: nc, missingDocs: (docs ?? []).map((x) => x.title), openCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), today, streak, due: ov.due, theoryExamAt: exam?.scheduled_at ?? null });
+    setD({ challengeDone: goal?.challenge_done === true, readiness: snap?.overall_score ?? null, theory: snap?.theory_score ?? Math.round(ov.overallMastery * 100), practical: snap?.practical_score ?? null, nextLesson: nl, nextClass: nc, missingDocs: (docs ?? []).map((x) => x.title), openCents: (inv ?? []).reduce((s, i) => s + Math.max(0, i.gross_cents - i.paid_cents), 0), today, streak, due: ov.due, theoryExamAt: exam?.scheduled_at ?? null });
   }, [profile]);
   useEffect(() => { void load(); }, [load]);
   if (loading || (!d && !error)) return <Screen><Loading /></Screen>;
@@ -54,6 +54,12 @@ export default function Today() {
   return (
     <Screen title={`Hallo, ${profile.firstName} 👋`}>
       {!online && <Card style={{ backgroundColor: t.colors.status.warning.surface }}><Txt>Offline. Deine Antworten werden synchronisiert, sobald du wieder online bist.</Txt></Card>}
+      <Card>
+        <Txt muted size={12}>TAGES-CHALLENGE</Txt>
+        <Txt bold>{d!.challengeDone ? "Heute geschafft. Stark!" : "10 Fragen deiner Stufe, mindestens 8 richtig"}</Txt>
+        <Txt muted size={13}>{d!.challengeDone ? "Morgen wartet die nächste Challenge." : "Bringt 20 Bonus-XP und hält deine Serie am Leben."}</Txt>
+        {!d!.challengeDone && <Button label="Challenge starten" onPress={() => router.push({ pathname: "/(tabs)/lernen/session", params: { mode: "ladder", topic: "", limit: "10", challenge: "1" } })} />}
+      </Card>
       <Card>
         <Txt muted size={12}>PRÜFUNGSREIFE</Txt>
         <Txt bold size={40} color={readinessColor(t, d!.readiness)}>{d!.readiness === null ? "?" : `${d!.readiness} %`}</Txt>

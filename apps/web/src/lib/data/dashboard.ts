@@ -21,7 +21,7 @@ export interface DashboardData {
   unreadMessages: number;
   unreadNotifications: Array<{ id: string; title: string; body: string; created_at: string }>;
   streak: { current_days: number; longest_days: number; total_xp: number; level: number } | null;
-  todayGoal: { answered: number; target: number; achieved: boolean } | null;
+  todayGoal: { answered: number; target: number; achieved: boolean; challengeDone: boolean } | null;
   learnedToday: boolean;
   today: TodayItem[];
   training: Awaited<ReturnType<typeof loadTrainingStatus>>;
@@ -71,7 +71,7 @@ export async function loadDashboard(ctx: StudentContext): Promise<DashboardData>
   return {
     overview, readinessScore: readiness.score, readinessBand: readiness.band, readinessFactors: readiness.factors.map((f) => ({ key: f.key, label: f.label, detail: f.detail, score: f.score })),
     theoryPercent, practicalPercent: training.practicalPercent, nextLesson, nextTheoryClass, missingDocuments: (docs ?? []).map((d) => ({ id: d.id, title: d.title })), openInvoiceCents, unreadMessages: unread,
-    unreadNotifications: notifications ?? [], streak, todayGoal: goal ? { answered: goal.answered, target: goal.target_questions, achieved: goal.achieved } : null, learnedToday, today: todayItems, training,
+    unreadNotifications: notifications ?? [], streak, todayGoal: goal ? { answered: goal.answered, target: goal.target_questions, achieved: goal.achieved, challengeDone: goal.challenge_done } : null, learnedToday, today: todayItems, training,
     exams: { theoryAt: theoryExam?.scheduled_at ?? null, practicalAt: practicalExam?.scheduled_at ?? null, theoryStatus: license.theory_exam_status, practicalStatus: license.practical_exam_status },
     weaknessStatement: weakest ? `Persönliche Schwachstelle: ${weakest.name} (${Math.round(weakest.mastery * 100)} % Mastery)` : null,
   };

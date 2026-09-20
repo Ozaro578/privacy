@@ -21,7 +21,7 @@ export default function PreviewPage() {
     readinessScore: 71, readinessBand: "yellow_green", readinessFactors: [], theoryPercent: 78, practicalPercent: 62,
     nextLesson: { id: "1", start: in2d, end: in2d, instructor: "Max Mustermann", kind: "overland" }, nextTheoryClass: { id: "2", start: new Date(nowMs() + 4 * 86_400_000).toISOString(), title: "Vorfahrt" },
     missingDocuments: [{ id: "d", title: "Biometrisches Passfoto" }], openInvoiceCents: 61000, unreadMessages: 1, unreadNotifications: [{ id: "n", title: "Freigabe für die Theorieprüfung", body: "Dein Fahrlehrer hat dich für die Theorieprüfung freigegeben.", created_at: new Date().toISOString() }],
-    streak: { current_days: 7, longest_days: 12, total_xp: 1240, level: 4 }, todayGoal: { answered: 12, target: 20, achieved: false }, learnedToday: true,
+    streak: { current_days: 7, longest_days: 12, total_xp: 1240, level: 4 }, todayGoal: { answered: 12, target: 20, achieved: false, challengeDone: false }, learnedToday: true,
     today: [
       { kind: "coupling", priority: 85, title: "Vorfahrt-Training für heute", subtitle: "Dein Fahrlehrer hat hier Übungsbedarf gesehen", action: { type: "learn", mode: "topic", minutes: 10 } },
       { kind: "review", priority: 77, title: "14 fällige Fragen wiederholen", action: { type: "learn", mode: "review", minutes: 7 } },
@@ -34,7 +34,7 @@ export default function PreviewPage() {
     weaknessStatement: "Persönliche Schwachstelle: Vorfahrt (48 % Mastery)",
   };
   const session = {
-    sessionId: "00000000-0000-0000-0000-000000000000", clientSessionId: "00000000-0000-0000-0000-000000000000", mode: "review" as const,
+    sessionId: "00000000-0000-0000-0000-000000000000", clientSessionId: "00000000-0000-0000-0000-000000000000", mode: "review" as const, challenge: false,
     questions: [{ id: "00000000-0000-0000-0000-000000000001", topicName: "Vorfahrt", points: 5, kind: "multiple_choice", source: "own", text: "Sie nähern sich einer Kreuzung ohne Verkehrszeichen und ohne Lichtzeichen. Was gilt?", mediaPath: "/media/questions/scenes/vorfahrt-rechts-vor-links.svg", mediaAlt: "Kreuzung ohne Verkehrszeichen: Ihr blaues Auto kommt von unten, ein rotes Auto von rechts. Beide wollen geradeaus.", mediaCredit: "Grafik FahrPilot (eigene Darstellung, schematisch)", numeric: false, answers: [{ position: 1, text: "Rechts vor links" }, { position: 2, text: "Wer zuerst kommt, fährt zuerst" }, { position: 3, text: "Die breitere Straße hat Vorfahrt" }] }],
   };
   return (

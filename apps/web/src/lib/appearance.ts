@@ -19,5 +19,6 @@ export function appearanceAttributes(a: Appearance): Record<string, string | und
     "data-theme": a.theme === "system" ? undefined : a.theme,
     "data-fontsize": a.fontSize === "md" ? undefined : a.fontSize,
     "data-motion": a.motion === "reduced" ? "reduced" : undefined,
+    "data-sound": a.sound ? undefined : "off",
   };
 }

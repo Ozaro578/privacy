@@ -12,7 +12,7 @@ import { loadStates } from "@/lib/data/learning";
  * Auth: Supabase-Session-Cookie (Schüler-Web) oder Authorization: Bearer <access_token> (Mobile-App).
  */
 const Body = z.object({
-  sessions: z.array(z.object({ client_session_id: z.string().uuid(), mode: z.string(), topic_id: z.string().uuid().nullable().default(null), ended: z.boolean().default(false) })).default([]),
+  sessions: z.array(z.object({ client_session_id: z.string().uuid(), mode: z.string(), topic_id: z.string().uuid().nullable().default(null), ended: z.boolean().default(false), challenge: z.boolean().default(false) })).default([]),
   attempts: z.array(z.object({ client_attempt_id: z.string().uuid(), client_session_id: z.string().uuid(), question_id: z.string().uuid(), selected: z.array(z.number().int()).default([]), numeric_answer: z.number().nullable().default(null), confidence: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable().default(null), response_ms: z.number().int().nullable().default(null), answered_at: z.string() })).max(500).default([]),
   /** Zeitstempel des letzten bekannten Server-Zustands; Antwort enthält nur neuere Zustände */
   states_since: z.string().nullable().default(null),
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const results: Array<{ client_attempt_id: string; ok: boolean; correct?: boolean; error?: string }> = [];
   for (const s of parsed.data.sessions) {
     try {
-      const started = await startLearningSession({ mode: s.mode as never, limit: 1, clientSessionId: s.client_session_id, ...(s.topic_id ? { topicId: s.topic_id } : {}) }).catch(async () => {
+      const started = await startLearningSession({ mode: s.mode as never, limit: 1, clientSessionId: s.client_session_id, challenge: s.challenge, ...(s.topic_id ? { topicId: s.topic_id } : {}) }).catch(async () => {
         const { data } = await ctx.db.from("learning_sessions").select("id").eq("student_id", ctx.student.id).eq("client_session_id", s.client_session_id).maybeSingle();
         return data ? { sessionId: data.id } : null;
       });
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
   const changed = [...states.entries()].filter(([, s]) => !since || (s.last_answered_at ?? "") > since).map(([question_id, s]) => ({ question_id, ...s }));
   const [{ data: streak }, { data: goal }] = await Promise.all([
     ctx.db.from("student_streaks").select("current_days, longest_days, total_xp, level, last_active_date").eq("student_id", ctx.student.id).maybeSingle(),
-    ctx.db.from("daily_goals").select("answered, target_questions, achieved").eq("student_id", ctx.student.id).eq("goal_date", new Date().toLocaleDateString("en-CA", { timeZone: ctx.school.timezone })).maybeSingle(),
+    ctx.db.from("daily_goals").select("answered, target_questions, achieved, challenge_done").eq("student_id", ctx.student.id).eq("goal_date", new Date().toLocaleDateString("en-CA", { timeZone: ctx.school.timezone })).maybeSingle(),
   ]);
   return NextResponse.json({ results, states: changed, streak, daily_goal: goal, server_time: new Date().toISOString() });
 }

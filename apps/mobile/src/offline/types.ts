@@ -66,6 +66,7 @@ export interface QueuedSession {
   mode: LearningMode;
   topic_id: string | null;
   ended: boolean;
+  challenge?: boolean;
 }
 
 export interface QueuedAttempt {

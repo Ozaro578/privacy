@@ -15,7 +15,7 @@ import { QuestionMedia } from "@/components/question-media";
 export default function Session() {
   const t = useTheme();
   const router = useRouter();
-  const p = useLocalSearchParams<{ mode?: string; topic?: string; limit?: string }>();
+  const p = useLocalSearchParams<{ mode?: string; topic?: string; limit?: string; challenge?: string }>();
   const mode = (p.mode ?? "review") as LearningMode;
   const [questions, setQuestions] = useState<LocalQuestion[] | null>(null);
   const [topics, setTopics] = useState<LocalTopic[]>([]);
@@ -36,7 +36,7 @@ export default function Session() {
       const limit = Math.min(50, Math.max(5, Number(p.limit ?? 10) || 10));
       const sel = selectLocalQuestions(pool, st, { mode, limit, ...(p.topic ? { topicId: p.topic } : {}) });
       setQuestions(sel); setStates(st); setTopics(ts);
-      await queueSession({ client_session_id: sessionId, mode, topic_id: p.topic || null, ended: false });
+      await queueSession({ client_session_id: sessionId, mode, topic_id: p.topic || null, ended: false, challenge: p.challenge === "1" });
     })();
   }, [mode, p.limit, p.topic, sessionId]);
   useEffect(() => { startedAt.current = Date.now(); }, [i]);
@@ -60,7 +60,7 @@ export default function Session() {
   }
   async function next() {
     if (i + 1 >= questions!.length) {
-      await queueSession({ client_session_id: sessionId, mode, topic_id: p.topic || null, ended: true });
+      await queueSession({ client_session_id: sessionId, mode, topic_id: p.topic || null, ended: true, challenge: p.challenge === "1" });
       void syncService.flush();
       setDone({ ...stats.current });
       return;

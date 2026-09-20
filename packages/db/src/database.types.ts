@@ -519,6 +519,7 @@ export type Database = {
           target_minutes: number;
           minutes: number;
           achieved: boolean;
+          challenge_done: boolean;
         };
         Insert: {
           tenant_id: string;
@@ -529,6 +530,7 @@ export type Database = {
           target_minutes?: number;
           minutes?: number;
           achieved?: boolean;
+          challenge_done?: boolean;
         };
         Update: {
           tenant_id?: string;
@@ -539,6 +541,7 @@ export type Database = {
           target_minutes?: number;
           minutes?: number;
           achieved?: boolean;
+          challenge_done?: boolean;
         };
         Relationships: [
           { foreignKeyName: "daily_goals_student_id_fkey"; columns: ["student_id"]; isOneToOne: false; referencedRelation: "students"; referencedColumns: ["id"] },
@@ -1271,6 +1274,7 @@ export type Database = {
           question_count: number;
           correct_count: number;
           device: string | null;
+          is_challenge: boolean;
         };
         Insert: {
           id?: string;
@@ -1285,6 +1289,7 @@ export type Database = {
           question_count?: number;
           correct_count?: number;
           device?: string | null;
+          is_challenge?: boolean;
         };
         Update: {
           id?: string;
@@ -1299,6 +1304,7 @@ export type Database = {
           question_count?: number;
           correct_count?: number;
           device?: string | null;
+          is_challenge?: boolean;
         };
         Relationships: [
           { foreignKeyName: "learning_sessions_student_id_fkey"; columns: ["student_id"]; isOneToOne: false; referencedRelation: "students"; referencedColumns: ["id"] },

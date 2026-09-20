@@ -27,11 +27,12 @@ export interface StartedSession {
   sessionId: string;
   clientSessionId: string;
   mode: LearningMode;
+  challenge: boolean;
   questions: SessionQuestion[];
 }
 
 /** Startet eine Lernsession und wählt Fragen adaptiv aus (fällige und schwache zuerst, neue eingestreut). */
-export async function startLearningSession(input: { mode: LearningMode; topicId?: string; limit?: number; clientSessionId?: string }): Promise<StartedSession> {
+export async function startLearningSession(input: { mode: LearningMode; topicId?: string; limit?: number; clientSessionId?: string; challenge?: boolean }): Promise<StartedSession> {
   const mode = ModeSchema.parse(input.mode);
   const limit = Math.min(Math.max(input.limit ?? 10, 1), 50);
   const ctx = await getStudentContext();
@@ -43,12 +44,12 @@ export async function startLearningSession(input: { mode: LearningMode; topicId?
   if (selected.length === 0) throw new Error("Für diesen Modus gibt es aktuell keine Fragen.");
   const clientSessionId = input.clientSessionId ?? crypto.randomUUID();
   const admin = createSupabaseAdminClient();
-  const { data: session, error } = await admin.from("learning_sessions").upsert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, student_license_id: ctx.license.id, mode, topic_id: input.topicId ?? null, client_session_id: clientSessionId, device: "web" }, { onConflict: "student_id,client_session_id" }).select("id").single();
+  const { data: session, error } = await admin.from("learning_sessions").upsert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, student_license_id: ctx.license.id, mode, topic_id: input.topicId ?? null, client_session_id: clientSessionId, device: "web", is_challenge: input.challenge === true }, { onConflict: "student_id,client_session_id" }).select("id").single();
   if (error || !session) throw new Error("Session konnte nicht gestartet werden");
   const byId = new Map(pool.map((q) => [q.id, q]));
   const topicName = (id: string) => topics.find((t) => t.id === id)?.name ?? "";
   return {
-    sessionId: session.id, clientSessionId, mode,
+    sessionId: session.id, clientSessionId, mode, challenge: input.challenge === true,
     questions: selected.map((m) => byId.get(m.id)!).map((q) => ({
       id: q.id, topicName: topicName(q.topic_id), points: q.points, kind: q.question_kind, source: q.source, text: q.version.text, mediaPath: q.version.media_path, mediaAlt: q.version.media_alt, mediaCredit: q.version.media_credit,
       answers: q.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: q.version.numeric_answer !== null,
@@ -153,16 +154,34 @@ export async function recordAttempt(raw: z.input<typeof AttemptSchema>): Promise
   };
 }
 
-export async function finishLearningSession(sessionId: string): Promise<void> {
+export interface SessionFinishResult { challengeCompleted: boolean; bonusXp: number }
+
+/** Beendet eine Session; ab 5 Fragen gibt es Session-XP. Eine Tages-Challenge (10 Fragen, mindestens 80 % richtig) bringt einmal am Tag Bonus-XP. */
+export async function finishLearningSession(sessionId: string): Promise<SessionFinishResult> {
   const ctx = await getStudentContext();
   const admin = createSupabaseAdminClient();
   await admin.from("learning_sessions").update({ ended_at: new Date().toISOString() }).eq("id", sessionId).eq("student_id", ctx.student.id);
-  const { data: s } = await admin.from("learning_sessions").select("question_count").eq("id", sessionId).eq("student_id", ctx.student.id).single();
+  const { data: s } = await admin.from("learning_sessions").select("question_count, correct_count, is_challenge").eq("id", sessionId).eq("student_id", ctx.student.id).single();
   if ((s?.question_count ?? 0) >= 5) {
     await admin.from("xp_events").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, kind: "session_completed", xp: XP_TABLE.session_completed, ref_id: sessionId, client_event_id: crypto.randomUUID() });
   }
+  let challengeCompleted = false, bonusXp = 0;
+  if (s?.is_challenge && s.question_count >= 10 && s.correct_count / s.question_count >= 0.8) {
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: ctx.school.timezone });
+    const { data: goal } = await ctx.db.from("daily_goals").select("challenge_done, answered, target_questions, target_minutes, minutes, achieved").eq("student_id", ctx.student.id).eq("goal_date", today).maybeSingle();
+    if (!goal?.challenge_done) {
+      bonusXp = XP_TABLE.daily_goal;
+      await admin.from("daily_goals").upsert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, goal_date: today, challenge_done: true, answered: goal?.answered ?? 0, target_questions: goal?.target_questions ?? 20, target_minutes: goal?.target_minutes ?? 15, minutes: goal?.minutes ?? 0, achieved: goal?.achieved ?? false }, { onConflict: "student_id,goal_date" });
+      await admin.from("xp_events").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, kind: "daily_goal", xp: bonusXp, ref_id: sessionId, client_event_id: crypto.randomUUID() });
+      const { data: streak } = await ctx.db.from("student_streaks").select("total_xp").eq("student_id", ctx.student.id).maybeSingle();
+      const totalXp = (streak?.total_xp ?? 0) + bonusXp;
+      await admin.from("student_streaks").update({ total_xp: totalXp, level: levelForXp(totalXp).level }).eq("student_id", ctx.student.id);
+    }
+    challengeCompleted = true;
+  }
   revalidatePath("/heute");
   revalidatePath("/lernen");
+  return { challengeCompleted, bonusXp };
 }
 
 export async function toggleBookmark(questionId: string): Promise<boolean> {
