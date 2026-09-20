@@ -25,7 +25,9 @@ test.describe("Lernsession (Vorschau mit Beispieldaten)", () => {
   });
 
   test("Farbwelt und Dunkelmodus wirken über html-Attribute", async ({ page }) => {
-    await page.goto("/vorschau");
+    await page.goto("/vorschau#session");
+    // Erst nach der Hydration eingreifen, sonst setzt der Appearance-Client die Attribute noch einmal zurück.
+    await expect(page.locator("#session [data-ready=\"true\"]")).toBeVisible({ timeout: 30_000 });
     const before = await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
     await page.evaluate(() => { document.documentElement.setAttribute("data-theme", "dark"); document.documentElement.setAttribute("data-palette", "wald"); });
     const after = await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
