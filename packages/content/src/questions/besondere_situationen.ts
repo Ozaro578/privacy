@@ -195,7 +195,7 @@ export const besondereSituationen: readonly Question[] = [
     text: "In einer Autobahnbaustelle ist der linke Fahrstreifen mit dem Zeichen 264 auf 2 Meter Breite beschränkt. Was ist zu beachten?",
     answers: [t("Fahrzeuge, die einschließlich Ladung und Außenspiegeln breiter als 2 Meter sind, dürfen diesen Streifen nicht benutzen"), t("Sie müssen die tatsächliche Breite Ihres Fahrzeugs kennen, bevor Sie den Streifen wählen"), f("Die Beschränkung gilt nur für Lkw", "Sie gilt für alle Fahrzeuge, deren tatsächliche Breite den Wert überschreitet."), f("Die Breite wird ohne Außenspiegel gemessen, daher passt jeder Pkw", "Maßgeblich ist die tatsächliche Breite einschließlich Anbauten.")],
     explanation: "Zeichen 264 verbietet Fahrzeugen, deren tatsächliche Breite einschließlich Ladung den angegebenen Wert überschreitet, die Benutzung. In Baustellen wird die Breite oft auf 2 Meter begrenzt; viele Pkw und Wohnmobile mit Spiegeln liegen darüber und müssen rechts bleiben.",
-    legalReference: "Anlage 2 StVO, Zeichen 264", reviewStatus: "needs_verification",
+    legalReference: "Anlage 2 StVO, Zeichen 264",
   }),
   q({
     code: "own-besondere_situationen-030", topic: "besondere_situationen", points: 3, difficulty: 0.6, tags: ["oelspur", "gefahrzeichen", "schleudergefahr"],

@@ -149,7 +149,7 @@ export const recht: readonly Question[] = [
     text: "Ein 17-Jähriger fährt mit der BF17-Prüfungsbescheinigung ohne eingetragene Begleitperson. Welche Folgen hat das?",
     answers: [t("Die Fahrerlaubnis wird widerrufen"), t("Es wird ein Bußgeld verhängt und ein Punkt eingetragen"), t("Vor der Neuerteilung ist die Teilnahme an einem Aufbauseminar erforderlich"), f("Es liegt Fahren ohne Fahrerlaubnis nach § 21 StVG vor", "Die Fahrerlaubnis besteht; die Auflage der Begleitung wurde verletzt, was eine Ordnungswidrigkeit ist.")],
     explanation: "Das Fahren ohne Begleitperson verstößt gegen die Auflage der Prüfungsbescheinigung. Die Fahrerlaubnis wird widerrufen, es gibt ein Bußgeld und einen Punkt, und die Fahrerlaubnis wird erst nach Teilnahme an einem Aufbauseminar wieder erteilt.",
-    legalReference: "§ 48a FeV; § 2a StVG", reviewStatus: "needs_verification",
+    legalReference: "§ 48a FeV; § 2a StVG",
   }),
   q({
     code: "own-recht-022", topic: "recht", points: 3, difficulty: 0.6, tags: ["punktesystem", "fahreignungsregister", "massnahmen"],
@@ -240,7 +240,7 @@ export const recht: readonly Question[] = [
     text: "Wie viele Theoriestunden sind für den Ersterwerb der Klasse B mindestens vorgeschrieben?",
     answers: [t("12 Doppelstunden Grundstoff und 2 Doppelstunden klassenspezifischer Zusatzstoff zu je 90 Minuten"), f("14 Doppelstunden Grundstoff ohne Zusatzstoff", "Der Zusatzstoff Klasse B umfasst 2 eigene Doppelstunden."), f("Es gibt keine Mindestzahl, nur die Prüfung zählt", "Die Fahrschüler-Ausbildungsordnung schreibt Mindeststunden vor.")],
     explanation: "Der theoretische Unterricht besteht aus 12 Doppelstunden Grundstoff und 2 Doppelstunden Zusatzstoff für Klasse B. Eine Doppelstunde dauert 90 Minuten.",
-    legalReference: "§ 4 FahrschAusbO", reviewStatus: "needs_verification",
+    legalReference: "§ 4 FahrschAusbO",
   }),
   q({
     code: "own-recht-035", topic: "recht", points: 2, difficulty: 0.55, tags: ["ausbildung", "sonderfahrten", "fahrschule"], kind: "numeric", numericAnswer: 12, tolerance: 0, unit: "Fahrten",
@@ -248,7 +248,7 @@ export const recht: readonly Question[] = [
     answers: [],
     explanation: "Vorgeschrieben sind 5 Überlandfahrten, 4 Autobahnfahrten und 3 Fahrten bei Dunkelheit, also zusammen 12 Sonderfahrten zu je 45 Minuten. Die Zahl der übrigen Übungsstunden hängt vom Fortschritt des Fahrschülers ab.",
     mnemonic: "5 + 4 + 3 = 12.",
-    legalReference: "§ 5 FahrschAusbO", reviewStatus: "needs_verification",
+    legalReference: "§ 5 FahrschAusbO",
   }),
   q({
     code: "own-recht-036", topic: "recht", points: 2, difficulty: 0.5, tags: ["erste_hilfe", "antrag", "fahrerlaubnis"],

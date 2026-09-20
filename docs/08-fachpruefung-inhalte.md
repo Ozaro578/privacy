@@ -281,3 +281,18 @@ Testergebnis: `pnpm test` und `pnpm typecheck` im Paket content grün. Nicht com
 ## Abnahme durch die Fahrlehrerin (ab 20. September 2026)
 
 Die offenen Punkte dieser Datei (10 Fragen mit Verifikationskennzeichnung, 1 Wissenseintrag, 1 Vorfahrt-Situation, 25 korrigierte Fragen zur Bestätigung, 11 Grundsatzfragen) sind als Prüfseite aufbereitet: `pnpm --filter @fahrpilot/content abnahme` erzeugt `packages/content/review/abnahme.html`. Die Seite läuft ohne Server, jede Bewertung (Richtig so, Ändern, Unsicher) mit Kommentar wird im Browser gespeichert und lässt sich als Text kopieren. Rückmeldungen werden in die Inhalte eingearbeitet; nach Freigabe wird `reviewStatus` der betroffenen Elemente auf `published` gesetzt und der Seed erneut ausgeführt.
+
+## Abnahme durch die Fahrlehrerin, Runde 1 (20. September 2026)
+
+48 Punkte bewertet: 37 "Richtig so", 4 "Ändern", 9 "Unsicher", 1 nicht bewertet. Ergebnis eingearbeitet, Seed erneuert.
+
+Freigegeben (Kennzeichnung "Verifikation ausstehend" entfernt): own-recht-021, own-recht-034, own-recht-035 (FahrschAusbO: Sonderfahrten 5/4/3 und Theorie 12 plus 2 bestätigt), own-andere_teilnehmer-017, own-besondere_situationen-029 (Außenspiegel zählen bei Zeichen 264 zur tatsächlichen Breite, ausdrücklich bestätigt), own-unfall_panne-014, own-alkohol_drogen-007, Vorfahrt-Situation Straßenbahn. Alle 25 Korrekturen aus den Nachprüfungen bestätigt (own-halten_parken-023 noch offen). Sperrfrist zwei Wochen und Prüfungsregeln Klasse B bestätigt.
+
+Geändert nach Rückmeldung:
+- own-gefahrenlehre-016: Rückmeldung "Probezeitverlängerung um 4 Jahre". Gesetz (§ 2a Abs. 2a StVG): Verlängerung um zwei Jahre, also auf vier Jahre. Antwort präzisiert zu "um zwei Jahre auf insgesamt vier Jahre", Rechtsquelle ergänzt, freigegeben; Rückfrage in Runde 2, ob die Rückmeldung so gemeint war.
+- own-verkehrszeichen-034: Rückmeldung "Wer das Hindernis hat, muss warten" (entspricht § 6 StVO und der bisherigen Aussage). Frage und Antworten klarer formuliert, damit die Regel sofort erkennbar ist.
+- own-befoerderung-030: Rückmeldung "immer Gurtpflicht außer Lieferverkehr Tür zu Tür". § 21a Abs. 1 Satz 2 StVO nennt zusätzlich Schrittgeschwindigkeit (Nr. 3) und § 46 StVO die gesundheitliche Ausnahmegenehmigung. Haus-zu-Haus-Verkehr als richtige Antwort ergänzt, die beiden anderen Ausnahmen bleiben; Gegenprüfung in Runde 2 erbeten.
+- Grundsatz "rechts schneller innerorts": Rückmeldung bestätigt den Wissenseintrag (Kfz bis 3,5 t, freie Fahrstreifenwahl, § 7 Abs. 3 StVO). own-strassenbenutzung-008 (Autobahn, Schlange links, § 7 Abs. 2a) unverändert; die Frage nach der 20-km/h-Grenze bleibt offen.
+- Bild own-besondere_situationen-003 (Glätte auf Brücken) auf Zeichen 113 (Schnee- oder Eisglätte) umgestellt.
+
+Weiter offen ("Unsicher"): own-alkohol_drogen-031, own-befoerderung-033, Wissenseintrag Cannabis (Bußgeld- und Wortlautfragen), Grundsatzfragen eKFV, FZV, Klasse B nach EU-Richtlinie, Bußgeldkatalog, Unfallflucht-Reform. Diese Punkte bilden Runde 2 der Abnahme-Seite (`pnpm --filter @fahrpilot/content abnahme`).

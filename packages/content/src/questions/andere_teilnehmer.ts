@@ -119,7 +119,7 @@ export const andereTeilnehmer: readonly Question[] = [
     text: "Welche Regeln gelten zusätzlich für E-Scooter (Elektrokleinstfahrzeuge)?",
     answers: [t("Es gelten die Alkoholgrenzen wie für Kraftfahrzeuge, in der Probezeit also das absolute Alkoholverbot"), t("Eine Versicherungsplakette ist Pflicht"), t("Die Mitnahme einer weiteren Person ist verboten"), f("Es ist eine Fahrerlaubnis der Klasse AM erforderlich", "Eine Fahrerlaubnis ist nicht nötig, nur das Mindestalter von 14 Jahren.")],
     explanation: "E-Scooter sind Kraftfahrzeuge: Es gelten die Promillegrenzen für Kraftfahrer, die Versicherungspflicht mit Plakette und das Verbot, Personen mitzunehmen. Eine Fahrerlaubnis ist nicht erforderlich, das Mindestalter beträgt 14 Jahre.",
-    legalReference: "Elektrokleinstfahrzeuge-Verordnung (eKFV); § 24a StVG; § 24c StVG", reviewStatus: "needs_verification",
+    legalReference: "Elektrokleinstfahrzeuge-Verordnung (eKFV); § 24a StVG; § 24c StVG",
   }),
   q({
     code: "own-andere_teilnehmer-018", topic: "andere_teilnehmer", points: 2, difficulty: 0.5, tags: ["e_scooter", "elektrokleinstfahrzeuge", "hoechstgeschwindigkeit"], kind: "numeric", numericAnswer: 20, tolerance: 0, unit: "km/h",

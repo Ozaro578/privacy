@@ -97,7 +97,7 @@ export const unfallPanne: readonly Question[] = [
     text: "Sie streifen nachts auf einem Parkplatz ein geparktes Auto und fahren nach Hause, weil niemand da ist. Was gilt?",
     answers: [t("Sie haben sich unerlaubt vom Unfallort entfernt und damit eine Straftat begangen"), t("Wer sich bei nicht bedeutendem Sachschaden außerhalb des fließenden Verkehrs innerhalb von 24 Stunden freiwillig meldet, kann milder bestraft werden oder straffrei bleiben"), f("Auf Parkplätzen gilt die Pflicht zum Warten nicht", "Auch auf öffentlich zugänglichen Parkplätzen gilt § 142 StGB."), f("Ein Zettel an der Windschutzscheibe hätte alle Pflichten erfüllt", "Ein Zettel kann verloren gehen; er ersetzt weder Wartezeit noch Meldung.")],
     explanation: "Wer sich nach einem Unfall entfernt, ohne eine angemessene Zeit zu warten oder die Feststellungen zu ermöglichen, macht sich strafbar. Bei geringem Sachschaden außerhalb des fließenden Verkehrs sieht das Gesetz eine Strafmilderung oder das Absehen von Strafe vor, wenn die Meldung freiwillig innerhalb von 24 Stunden nachgeholt wird.",
-    legalReference: "§ 142 Abs. 1 und 4 StGB", reviewStatus: "needs_verification",
+    legalReference: "§ 142 Abs. 1 und 4 StGB",
   }),
   q({
     code: "own-unfall_panne-015", topic: "unfall_panne", points: 3, difficulty: 0.6, tags: ["wildunfall", "wild", "polizei", "versicherung"],

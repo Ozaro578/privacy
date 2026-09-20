@@ -107,9 +107,9 @@ export const gefahrenlehre: readonly Question[] = [
   q({
     code: "own-gefahrenlehre-016", topic: "gefahrenlehre", points: 3, difficulty: 0.7, tags: ["ablenkung", "handy", "probezeit", "punktesystem"],
     text: "Sie befinden sich in der Probezeit und werden mit dem Handy in der Hand am Steuer erwischt. Welche Folgen sind zu erwarten?",
-    answers: [t("Ein Bußgeld und ein Punkt im Fahreignungsregister"), t("Die Anordnung eines Aufbauseminars"), t("Die Verlängerung der Probezeit um zwei Jahre"), f("Der sofortige Entzug der Fahrerlaubnis", "Ein Entzug erfolgt beim ersten Verstoß nicht; er droht erst bei weiteren Verstößen in der Probezeit.")],
+    answers: [t("Ein Bußgeld und ein Punkt im Fahreignungsregister"), t("Die Anordnung eines Aufbauseminars"), t("Die Verlängerung der Probezeit um zwei Jahre auf insgesamt vier Jahre"), f("Der sofortige Entzug der Fahrerlaubnis", "Ein Entzug erfolgt beim ersten Verstoß nicht; er droht erst bei weiteren Verstößen in der Probezeit.")],
     explanation: "Die verbotene Handynutzung kostet 100 Euro und einen Punkt. In der Probezeit zählt sie als schwerwiegender Verstoß (A-Verstoß): Es wird ein Aufbauseminar angeordnet und die Probezeit verlängert sich auf vier Jahre.",
-    legalReference: "§ 23 Abs. 1a StVO; § 2a StVG; BKatV", reviewStatus: "needs_verification",
+    legalReference: "§ 23 Abs. 1a StVO; § 2a Abs. 2a StVG; BKatV",
   }),
   q({
     code: "own-gefahrenlehre-017", topic: "gefahrenlehre", points: 3, difficulty: 0.55, tags: ["ablenkung", "handy", "start_stopp"],

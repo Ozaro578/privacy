@@ -236,9 +236,9 @@ export const verkehrszeichen: readonly Question[] = [
   }),
   q({
     code: "own-verkehrszeichen-034", topic: "verkehrszeichen", points: 3, difficulty: 0.65, tags: ["gefahrzeichen", "verengte_fahrbahn", "gegenverkehr", "vorrang"],
-    text: "Das Gefahrzeichen 121 zeigt eine rechts verengte Fahrbahn an. Es sind keine weiteren Zeichen aufgestellt. Wer hat an der Engstelle Vorrang?",
-    answers: [t("Das Gefahrzeichen selbst regelt keinen Vorrang; müssen Sie wegen der Verengung auf Ihrer Seite nach links ausweichen, müssen Sie den Gegenverkehr durchfahren lassen"), f("Sie haben Vorrang, weil das Gefahrzeichen auf Ihrer Seite steht", "Gefahrzeichen warnen nur; wer an einer Fahrbahnverengung links vorbeifahren will, muss nach § 6 StVO den Gegenverkehr durchfahren lassen."), f("Der Gegenverkehr muss warten, weil Sie das Zeichen zuerst gesehen haben", "Das Zeichen warnt nur und begründet keinen Vorrang.")],
-    explanation: "Gefahrzeichen warnen, sie regeln keinen Vorrang. Wer an einer Fahrbahnverengung, einem Hindernis oder einem haltenden Fahrzeug links vorbeifahren will, muss nach § 6 StVO den Gegenverkehr durchfahren lassen. Nur die Zeichen 208 und 308 ordnen abweichend davon einen Vorrang an.",
+    text: "Das Gefahrzeichen 121 kündigt eine Verengung auf Ihrer rechten Fahrbahnseite an. Es sind keine weiteren Zeichen aufgestellt. Was gilt an der Engstelle?",
+    answers: [t("Sie müssen warten und den Gegenverkehr durchfahren lassen, weil die Verengung auf Ihrer Seite liegt und Sie nach links ausweichen müssten"), t("Das Gefahrzeichen selbst regelt keinen Vorrang, es warnt nur"), f("Sie haben Vorrang, weil das Gefahrzeichen auf Ihrer Seite steht", "Gefahrzeichen warnen nur; wer an einer Fahrbahnverengung links vorbeifahren will, muss nach § 6 StVO den Gegenverkehr durchfahren lassen."), f("Der Gegenverkehr muss warten, weil Sie das Zeichen zuerst gesehen haben", "Das Zeichen warnt nur und begründet keinen Vorrang.")],
+    explanation: "Gefahrzeichen warnen, sie regeln keinen Vorrang. Wer an einer Fahrbahnverengung, einem Hindernis oder einem haltenden Fahrzeug auf seiner Seite links vorbeifahren will, muss nach § 6 StVO den Gegenverkehr durchfahren lassen: Wer das Hindernis auf seiner Seite hat, wartet. Nur die Zeichen 208 und 308 ordnen abweichend davon einen Vorrang an.",
     legalReference: "§ 40 StVO, Anlage 1 (Zeichen 121); § 6 StVO; § 1 StVO",
   }),
   q({

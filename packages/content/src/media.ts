@@ -117,7 +117,7 @@ export const QUESTION_MEDIA: Readonly<Record<string, string>> = {
   "own-halten_parken-012": "201-50",
   // Besondere Situationen
   "own-besondere_situationen-002": "142-10",
-  "own-besondere_situationen-003": "114",
+  "own-besondere_situationen-003": "113",
   "own-besondere_situationen-004": "stauende-warnblinklicht",
   "own-besondere_situationen-005": "einsatzfahrzeug-hinten",
   "own-besondere_situationen-007": "117-10",

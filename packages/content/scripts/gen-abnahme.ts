@@ -12,46 +12,19 @@ const OUT = path.join(ROOT, "review", "abnahme.html");
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 
 const CORRECTED: Record<string, string> = {
-  "own-gefahrenlehre-037": "Erklärung präzisiert: Nach 40 m hat das 70-km/h-Fahrzeug erst 19 m seines 49 m langen Bremswegs hinter sich, Aufprall mit über 50 km/h.",
-  "own-recht-021": "BF17 ohne Begleitperson: Die Fahrerlaubnis wird widerrufen (§ 48a Abs. 3 FeV), nicht nur die Prüfungsbescheinigung.",
-  "own-recht-026": "Fahrverbot 1 bis 3 Monate nur bei Ordnungswidrigkeit (§ 25 StVG); als Nebenstrafe nach § 44 StGB bis 6 Monate.",
-  "own-recht-040": "Vertiefte HU bereits ab mehr als 2 Monaten Überschreitung (Anlage VIII StVZO); Punkt ab mehr als 8 Monaten.",
-  "own-strassenbenutzung-015": "Rechtsquelle um § 7a Abs. 3 StVO ergänzt.",
-  "own-strassenbenutzung-038": "Rechtsquelle um § 7a Abs. 3 StVO ergänzt.",
-  "own-vorfahrt-020": "Fragetext an das Bild angepasst (Ampel dunkel oder gelb blinkend).",
-  "own-vorfahrt-033": "Formulierung geschärft: Fahrzeuge von links, die der Vorfahrtstraße nach rechts folgen; rechts vor links für das nach links verlassende Fahrzeug.",
-  "own-verkehrsregelung-028": "Unsichere Nummern innerhalb § 37 Abs. 2 StVO aus der Rechtsquelle entfernt.",
-  "own-verkehrsregelung-029": "Rechtsquelle um § 51 BOStrab ergänzt.",
-  "own-verkehrsregelung-034": "Unsichere Nummern innerhalb § 37 Abs. 2 StVO aus der Rechtsquelle entfernt.",
-  "own-geschwindigkeit-022": "Nachgerechnet: statt 'fast unverminderte Geschwindigkeit' jetzt 'etwa 40 km/h'.",
-  "own-andere_teilnehmer-020": "Rechtsquelle um § 20 Abs. 2 StVO ergänzt.",
-  "own-fahrmanoever-017": "Vor Bahnübergängen dürfen Kraftfahrzeuge ab dem Gefahrzeichen nicht überholen (§ 19 Abs. 1 StVO); Einschränkung auf 'mehrspurige' war falsch.",
-  "own-verkehrszeichen-016": "Zahlenwert an das Bild angepasst (Zeichen 262 zeigt 5,5 t).",
-  "own-verkehrszeichen-017": "Beispiel an das Bild angepasst (Zeichen 265 zeigt 3,8 m).",
-  "own-verkehrszeichen-033": "Zeichen als 101-51 (Splitt, Schotter) bezeichnet, passend zu Bild und heutiger StVO.",
-  "own-verkehrszeichen-034": "Fachlicher Fehler behoben: Wer an der Verengung nach links ausweicht, muss nach § 6 StVO den Gegenverkehr durchfahren lassen; das war als falsch markiert.",
-  "own-halten_parken-023": "Zeitfenster entfernt; Frage prüft nur Parkscheibe auf folgende halbe Stunde (17:30) und Höchstparkdauer bis 19:30.",
-  "own-halten_parken-040": "Erklärung: 'Auf Autobahnen und Kraftfahrstraßen ist das Halten ohnehin verboten' statt missverständlicher Formulierung.",
-  "own-besondere_situationen-018": "Fehler behoben: Rechts am haltenden Linienbus darf mit Schrittgeschwindigkeit und Abstand vorbeigefahren werden (§ 20 Abs. 2 StVO), Fahrgäste nicht behindern.",
-  "own-besondere_situationen-019": "Erklärung: § 11 Abs. 1 StVO nennt nur Kreuzungen und Einmündungen; Bahnübergang über § 12 Abs. 1 Nr. 4 StVO.",
-  "own-besondere_situationen-032": "Blaulicht ohne Horn: 'abgeschlepptes Fahrzeug' durch 'begleiteter Schwertransport' ersetzt (§ 38 Abs. 2 StVO).",
-  "own-umwelt-013": "Antwort um 'wenn andere dadurch belästigt werden' ergänzt (Wortlaut § 30 Abs. 1 StVO).",
-  "own-befoerderung-030": "Gurtbefreiung: Ausnahmegenehmigung der Behörde aus gesundheitlichen Gründen (§ 46 Abs. 1 Nr. 5b StVO), nicht die ärztliche Bescheinigung allein.",
-  "own-fahrphysik-022": "Erklärung: 'Unter etwa 3 mm Profiltiefe' statt 'ab etwa 3 mm'.",
+  "own-gefahrenlehre-016": "Nach Ihrer Rückmeldung (Probezeitverlängerung) präzisiert: 'um zwei Jahre auf insgesamt vier Jahre' (§ 2a Abs. 2a StVG: Die Probezeit verlängert sich um zwei Jahre). Bitte bestätigen, dass die Formulierung so gemeint war.",
+  "own-verkehrszeichen-034": "Nach Ihrer Rückmeldung klarer formuliert: Wer die Verengung auf seiner Seite hat, wartet und lässt den Gegenverkehr durchfahren (§ 6 StVO).",
+  "own-befoerderung-030": "Nach Ihrer Rückmeldung um den Haus-zu-Haus-Verkehr ergänzt (§ 21a Abs. 1 Satz 2 Nr. 2 StVO). Die Ausnahmen Schrittgeschwindigkeit (Nr. 3) und gesundheitliche Ausnahmegenehmigung (§ 46 StVO) stehen ebenfalls im Gesetz und bleiben als richtig markiert; bitte gegenprüfen.",
+  "own-halten_parken-023": "In Runde 1 noch nicht bewertet: Parkscheibe auf die folgende halbe Stunde einstellen, Höchstparkdauer ab dieser Zeit (§ 13 Abs. 2 StVO).",
 };
 
 const OPEN_POINTS = [
-  { id: "g-fahrschausbo", title: "Reform der Fahrschüler-Ausbildungsordnung", text: "Ist die Neufassung der FahrschAusbO (Optimierung der Fahrausbildung) inzwischen in Kraft? Gelten weiterhin Sonderfahrten 5 Überland, 4 Autobahn, 3 Nachtfahrt und Theorie 12 plus 2 Doppelstunden für Klasse B Ersterwerb? Betroffen: own-recht-008, own-recht-034, own-recht-035, Wissenseintrag Sonderfahrten, Kapitel Recht." },
-  { id: "g-sperrfrist", title: "Sperrfrist nach nicht bestandener Theorieprüfung", text: "Die App nennt eine Sperrfrist von zwei Wochen bis zur Wiederholung (own-recht-004). Ist das die aktuelle Prüfungspraxis in Ihrer Region und stimmt die Fundstelle (Anlage 7 FeV bzw. Prüfungsrichtlinie)?" },
-  { id: "g-7-2a", title: "Rechts schneller fahren innerorts (§ 7 Abs. 2a StVO)", text: "own-strassenbenutzung-008 spricht von 'geringfügig höherer Geschwindigkeit'. Soll die konkrete Grenze (Differenz höchstens 20 km/h) ergänzt werden?" },
-  { id: "g-ekfv", title: "E-Scooter (eKFV nach der Novelle 2025)", text: "Kernaussagen der App: ab 14 Jahren, 20 km/h, Radweg oder Fahrbahn, keine Helmpflicht, keine Mitfahrer, Blinkerpflicht für neue Fahrzeuge. Stimmt das mit der aktuellen Fassung überein? Betroffen: own-andere_teilnehmer-006 und -017." },
+  { id: "g-7-2a", title: "Rechts schneller fahren außerorts (§ 7 Abs. 2a StVO)", text: "Innerorts ist geklärt (Kfz bis 3,5 t dürfen bei mehreren Fahrstreifen frei wählen und rechts schneller fahren, § 7 Abs. 3). Offen ist nur die Autobahn-Frage own-strassenbenutzung-008: Bei einer Schlange links darf rechts 'mit geringfügig höherer Geschwindigkeit' vorbeigefahren werden. Soll die konkrete Grenze (Differenz höchstens 20 km/h, wenn links langsamer als 60 km/h) ergänzt werden, und ist diese Grenze so richtig?" },
+  { id: "g-ekfv", title: "E-Scooter (eKFV nach der Novelle 2025)", text: "Kernaussagen der App: ab 14 Jahren, 20 km/h, Radweg oder Fahrbahn, keine Helmpflicht, keine Mitfahrer, Blinkerpflicht für neue Fahrzeuge. Stimmt das mit der aktuellen Fassung überein? Betroffen: own-andere_teilnehmer-006 und -017. Falls unsicher: Welche Aussage konkret?" },
   { id: "g-fzv", title: "Zulassungsbescheinigung Teil I (FZV)", text: "own-fahrzeugtechnik-009 nennt § 11 FZV als Rechtsquelle (Fassung ab 2023). Stimmen Paragraf und Absatz? Soll i-Kfz (digitale Zulassung) erwähnt werden?" },
   { id: "g-klasse-b", title: "Umfang Klasse B nach der 4. EU-Führerscheinrichtlinie", text: "own-recht-009 beschreibt Klasse B mit 3.500 kg. Wurde die Richtlinie inzwischen in deutsches Recht umgesetzt (z. B. 4.250 kg für alternative Antriebe, digitaler Führerschein)? Auch own-recht-010: 'Foto des Führerscheins ersetzt das Dokument nicht'." },
-  { id: "g-bild-113", title: "Bild zu Glätte auf Brücken", text: "own-besondere_situationen-003 zeigt Zeichen 114 (Schleudergefahr). Wäre Zeichen 113 (Schnee- oder Eisglätte) treffender? Dann ergänzen wir das Zeichen." },
-  { id: "g-bussgeld", title: "Bußgeld- und Punkteangaben", text: "Alle genannten Beträge und Punkte (z. B. Verwarnungsgeld 10 Euro, 250 Euro bei Alkoholverbot in der Probezeit, 500 Euro und 1 Monat bei 0,5 Promille, 100 Euro Handy, Alpine-Symbol-Bußgeld) bitte gegen die aktuelle BKatV prüfen. Bitte im Kommentar nennen, welche Werte nicht mehr stimmen." },
-  { id: "g-zeichen-264", title: "Zeichen 264: zählen Außenspiegel zur tatsächlichen Breite?", text: "own-besondere_situationen-029 behandelt Außenspiegel als mitzählend. Wie wird das in der Ausbildung und Prüfung gehandhabt?" },
-  { id: "g-unfallflucht", title: "Unfallflucht bei reinem Sachschaden", text: "own-unfall_panne-014 nennt die 24-Stunden-Regel des § 142 Abs. 4 StGB. Gab es die diskutierte Reform (Herabstufung zur Ordnungswidrigkeit bei Sachschaden)?" },
-  { id: "g-pruefregeln", title: "Prüfungsregeln Klasse B Ersterwerb", text: "Die Prüfungssimulation nutzt: 30 Fragen (20 Grundstoff, 10 Zusatzstoff), maximal 10 Fehlerpunkte, nicht bestanden bei zwei falschen 5-Punkte-Fragen, Theorieprüfung 12 Monate gültig für die praktische Prüfung. Bitte bestätigen." },
+  { id: "g-bussgeld", title: "Bußgeld- und Punkteangaben", text: "Alle genannten Beträge und Punkte (z. B. Verwarnungsgeld 10 Euro, 250 Euro bei Alkoholverbot in der Probezeit, 500 Euro und 1 Monat bei 0,5 Promille, 100 Euro Handy, Alpine-Symbol-Bußgeld) bitte gegen die aktuelle BKatV prüfen. Bitte im Kommentar nennen, welche Werte nicht mehr stimmen; nur die genannten werden geändert." },
+  { id: "g-unfallflucht", title: "Unfallflucht bei reinem Sachschaden", text: "own-unfall_panne-014 nennt die 24-Stunden-Regel des § 142 Abs. 4 StGB (in Runde 1 als richtig bestätigt). Gab es die diskutierte Reform (Herabstufung zur Ordnungswidrigkeit bei Sachschaden)? Falls nicht bekannt: Punkt bleibt offen, Frage ist freigegeben." },
 ];
 
 const inlineSvg = (code: string) => { const m = mediaForQuestion(code); if (!m) return null; return { svg: fs.readFileSync(path.join(MEDIA_DIR, m.file), "utf8").replace(/<title>[\s\S]*?<\/title>/, ""), alt: m.alt }; };
@@ -133,13 +106,13 @@ textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:1
 <div class="wrap">
 <header class="top"><div class="row"><h1>FahrPilot Abnahme</h1><div class="progress"><span id="count">0 von ${items.length}</span><div class="bar" aria-hidden="true"><i id="fill"></i></div></div></div></header>
 <div class="intro">
-<p>Fachliche Prüfung der Lerninhalte für Klasse B durch eine zugelassene Fahrlehrerin. Rechtsstand der Inhalte: 1. September 2026.</p>
+<p>Fachliche Prüfung der Lerninhalte für Klasse B durch eine zugelassene Fahrlehrerin, Runde 2. Runde 1 ist eingearbeitet (37 Punkte bestätigt, 3 Fragen nach Ihren Hinweisen geändert). Rechtsstand der Inhalte: 1. September 2026.</p>
 <p>Zu jedem Punkt bitte eine Bewertung setzen. Bei <strong>Ändern</strong> oder <strong>Unsicher</strong> hilft ein kurzer Kommentar, was stattdessen richtig ist. Bewertungen werden automatisch gespeichert; am Ende gibt es unten eine Zusammenfassung zum Kopieren.</p>
 </div>
 <div class="filters" role="group" aria-label="Filter"><button class="chip" data-f="alle" aria-pressed="true">Alle (${items.length})</button><button class="chip" data-f="offen" aria-pressed="false">Noch nicht bewertet</button><button class="chip" data-f="bad" aria-pressed="false">Ändern</button><button class="chip" data-f="unsure" aria-pressed="false">Unsicher</button></div>
 <section id="s-offen"><h2>Offene Verifikation (${counts.offen})</h2><p class="lead">Diese Inhalte sind in der App als "fachliche Verifikation ausstehend" gekennzeichnet. Nach Ihrer Freigabe verschwindet die Kennzeichnung.</p><div id="l-offen"></div></section>
-<section id="s-korrigiert"><h2>Im Faktencheck korrigiert (${counts.korrigiert})</h2><p class="lead">Diese Fragen wurden bei der Nachprüfung geändert. Bitte die jetzige Fassung bestätigen oder beanstanden.</p><div id="l-korrigiert"></div></section>
-<section id="s-grundsatz"><h2>Grundsatzfragen (${counts.grundsatz})</h2><p class="lead">Punkte, die mehrere Fragen und Kapitel zugleich betreffen.</p><div id="l-grundsatz"></div></section>
+<section id="s-korrigiert"><h2>Nach Ihrer Rückmeldung geändert (${counts.korrigiert})</h2><p class="lead">Diese Fragen wurden nach Runde 1 geändert. Bitte die jetzige Fassung bestätigen oder beanstanden.</p><div id="l-korrigiert"></div></section>
+<section id="s-grundsatz"><h2>Noch offene Grundsatzfragen (${counts.grundsatz})</h2><p class="lead">Punkte aus Runde 1 mit "Unsicher"; hier hilft ein kurzer Kommentar, was konkret unsicher ist.</p><div id="l-grundsatz"></div></section>
 <div class="export"><h2>Zusammenfassung</h2><p class="note">Der Text enthält alle Bewertungen und Kommentare. Kopieren und an den Entwickler schicken, falls die automatische Speicherung nicht verfügbar ist.</p><button class="primary" id="copy" type="button">Zusammenfassung kopieren</button> <span class="saved" id="copied"></span><textarea id="summary" aria-label="Zusammenfassung" readonly></textarea></div>
 </div>
 <script>
@@ -147,7 +120,7 @@ textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:1
 var ITEMS=${DATA};
 var VERDICT={ok:"Richtig so",bad:"Ändern",unsure:"Unsicher"};
 var state={};var db=null;var filter="alle";
-try{state=JSON.parse(localStorage.getItem("fp-abnahme")||"{}")||{};}catch(e){state={};}
+try{state=JSON.parse(localStorage.getItem("fp-abnahme-r2")||"{}")||{};}catch(e){state={};}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function render(){
   ["offen","korrigiert","grundsatz"].forEach(function(g){
@@ -171,7 +144,7 @@ function applyFilter(){
     var show=filter==="alle"||(filter==="offen"&&!st.verdict)||(filter==="bad"&&st.verdict==="bad")||(filter==="unsure"&&st.verdict==="unsure");el.hidden=!show;});
 }
 function updateProgress(){var done=ITEMS.filter(function(i){return state[i.id]&&state[i.id].verdict;}).length;document.getElementById("count").textContent=done+" von "+ITEMS.length;document.getElementById("fill").style.width=(100*done/ITEMS.length)+"%";document.getElementById("summary").value=summary();}
-function persistLocal(){try{localStorage.setItem("fp-abnahme",JSON.stringify(state));}catch(e){}}
+function persistLocal(){try{localStorage.setItem("fp-abnahme-r2",JSON.stringify(state));}catch(e){}}
 function mark(id,text){var el=document.getElementById("sv-"+id);if(el)el.textContent=text;}
 function save(id){persistLocal();updateProgress();var st=state[id];var card=document.getElementById("it-"+id);if(card)card.dataset.v=st.verdict||"";
   if(!db){mark(id,"Lokal gespeichert");return;}
@@ -180,7 +153,7 @@ function save(id){persistLocal();updateProgress();var st=state[id];var card=docu
 }
 function setVerdict(id,v){state[id]=state[id]||{};state[id].verdict=v;var card=document.getElementById("it-"+id);card.querySelectorAll(".verdict button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.v===v));});save(id);applyFilter();}
 function setNote(id,n){state[id]=state[id]||{};if(state[id].note===n)return;state[id].note=n;save(id);}
-function summary(){var lines=["FahrPilot Abnahme, Stand "+new Date().toLocaleDateString("de-DE")];ITEMS.forEach(function(it){var st=state[it.id]||{};lines.push("- "+it.id+" ["+(st.verdict?VERDICT[st.verdict]:"nicht bewertet")+"]"+(st.note?" "+st.note.replace(/\\s+/g," "):""));});return lines.join("\\n");}
+function summary(){var lines=["FahrPilot Abnahme Runde 2, Stand "+new Date().toLocaleDateString("de-DE")];ITEMS.forEach(function(it){var st=state[it.id]||{};lines.push("- "+it.id+" ["+(st.verdict?VERDICT[st.verdict]:"nicht bewertet")+"]"+(st.note?" "+st.note.replace(/\\s+/g," "):""));});return lines.join("\\n");}
 document.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){filter=c.dataset.f;document.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",String(x===c));});applyFilter();});});
 document.getElementById("copy").addEventListener("click",function(){var t=document.getElementById("summary");t.value=summary();var done=function(){document.getElementById("copied").textContent="Kopiert";};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(done,function(){t.select();done();});}else{t.select();try{document.execCommand("copy");}catch(e){}done();}});
 render();
