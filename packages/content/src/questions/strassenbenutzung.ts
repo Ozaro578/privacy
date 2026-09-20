@@ -275,6 +275,7 @@ export const strassenbenutzung: readonly Question[] = [
     text: "In welchem Abstand stehen die Leitpfosten am Rand der Autobahn in der Regel? Angabe in Metern.",
     answers: [],
     explanation: "Leitpfosten stehen auf geraden Strecken in der Regel im Abstand von 50 Metern. Damit lässt sich der Sicherheitsabstand nach der Regel halber Tacho bei 100 km/h leicht abschätzen: mindestens ein Leitpfostenabstand.",
+    legalReference: "§ 43 StVO, Anlage 4 (Zeichen 620)",
   }),
   q({
     code: "own-strassenbenutzung-040", topic: "strassenbenutzung", points: 3, difficulty: 0.5, tags: ["verkehrsberuhigter_bereich", "einfahren", "innerorts"],

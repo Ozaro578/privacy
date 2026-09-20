@@ -73,18 +73,21 @@ export const gefahrenlehre: readonly Question[] = [
     answers: [],
     explanation: "Reaktionsweg = (50 / 10) × 3 = 15 Meter, Bremsweg = (50 / 10)² = 25 Meter. Der Anhalteweg ist die Summe, also 40 Meter. Das ist deutlich mehr als die Länge eines üblichen Zebrastreifenbereichs.",
     mnemonic: "Anhalteweg = Reaktionsweg + Bremsweg.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-012", topic: "gefahrenlehre", points: 3, difficulty: 0.7, tags: ["anhalteweg", "gefahrenbremsung", "faustformel", "ausserorts"], kind: "numeric", numericAnswer: 56, tolerance: 0, unit: "m",
     text: "Sie fahren 80 km/h und müssen eine Gefahrenbremsung durchführen. Wie lang ist der Anhalteweg nach den Faustformeln? Angabe in Metern.",
     answers: [],
     explanation: "Reaktionsweg = (80 / 10) × 3 = 24 Meter. Bremsweg bei Gefahrenbremsung = (80 / 10)² / 2 = 32 Meter. Zusammen ergibt das 56 Meter. Der Reaktionsweg wird durch die Gefahrenbremsung nicht kürzer.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-013", topic: "gefahrenlehre", points: 3, difficulty: 0.65, tags: ["reaktionsweg", "reaktionszeit", "ablenkung", "faustformel"], kind: "numeric", numericAnswer: 60, tolerance: 0, unit: "m",
     text: "Sie fahren 100 km/h. Durch einen Blick auf das Smartphone verlängert sich Ihre Reaktionszeit von 1 auf 2 Sekunden. Wie lang ist dann der Reaktionsweg nach der Faustformel? Angabe in Metern.",
     answers: [],
     explanation: "Die Faustformel (100 / 10) × 3 = 30 Meter gilt für eine Sekunde Reaktionszeit. Bei zwei Sekunden verdoppelt sich der Reaktionsweg auf 60 Meter. Ein kurzer Blick aufs Handy kostet also mehrere Fahrzeuglängen ungebremster Fahrt.",
+    legalReference: "§ 3 Abs. 1 StVO; § 23 Abs. 1a StVO",
   }),
   q({
     code: "own-gefahrenlehre-014", topic: "gefahrenlehre", points: 3, difficulty: 0.6, tags: ["bremsweg", "faustformel", "fahrphysik"], kind: "numeric", numericAnswer: 64, tolerance: 0, unit: "m",
@@ -92,6 +95,7 @@ export const gefahrenlehre: readonly Question[] = [
     answers: [],
     explanation: "Bremsweg = (80 / 10)² = 8 × 8 = 64 Meter. Gegenüber 40 km/h (16 Meter) ist der Bremsweg bei doppelter Geschwindigkeit viermal so lang.",
     mnemonic: "Tempo durch 10, dann mit sich selbst malnehmen.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-015", topic: "gefahrenlehre", points: 3, difficulty: 0.6, tags: ["ablenkung", "handy", "sprachsteuerung"],
@@ -119,18 +123,21 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Welche Anzeichen deuten auf beginnenden Sekundenschlaf hin?",
     answers: [t("Sie können sich an die letzten Kilometer nicht mehr erinnern"), t("Sie halten die Spur nicht mehr sauber und erschrecken, wenn Sie über die Randmarkierung fahren"), t("Häufiges Gähnen, brennende Augen und Frösteln"), f("Erhöhte Aufmerksamkeit und schnellere Reaktionen", "Müdigkeit verlangsamt die Reaktion und verengt die Wahrnehmung.")],
     explanation: "Erinnerungslücken, Schlangenlinien, Gähnen, brennende Augen und Frösteln sind Warnsignale. Wer sie bemerkt, sollte sofort die nächste Möglichkeit zum Anhalten nutzen und schlafen; Fahrtwind und laute Musik helfen nicht.",
+    legalReference: "§ 2 FeV; § 315c StGB",
   }),
   q({
     code: "own-gefahrenlehre-019", topic: "gefahrenlehre", points: 2, difficulty: 0.5, tags: ["muedigkeit", "pause", "risikofaktor_mensch"],
     text: "Welche Maßnahmen beugen Müdigkeit auf langen Fahrten wirksam vor?",
     answers: [t("Ausgeschlafen starten und etwa alle zwei Stunden eine Pause mit Bewegung machen"), t("Schwere Mahlzeiten und Alkohol vor der Fahrt vermeiden"), f("Beim ersten Anzeichen von Müdigkeit das Tempo erhöhen, um schneller anzukommen", "Höhere Geschwindigkeit bei Müdigkeit vergrößert das Risiko erheblich."), f("Die Heizung hoch stellen, damit es gemütlich ist", "Warme, stickige Luft macht zusätzlich müde.")],
     explanation: "Gegen Müdigkeit hilft nur Vorbeugung durch ausreichenden Schlaf und regelmäßige Pausen. Schwere Mahlzeiten, Alkohol und warme Luft im Fahrzeug verstärken die Ermüdung.",
+    legalReference: "§ 2 FeV; § 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-020", topic: "gefahrenlehre", points: 3, difficulty: 0.6, tags: ["sehvermoegen", "nacht", "blendung"],
     text: "Bei Nachtfahrten werden Sie von einem entgegenkommenden Fahrzeug geblendet. Wie verhalten Sie sich?",
     answers: [t("Den Blick auf den rechten Fahrbahnrand richten und die Geschwindigkeit verringern"), t("Bremsbereit bleiben, weil Sie in diesem Moment Hindernisse kaum erkennen können"), f("Direkt in die Scheinwerfer sehen, um den Gegenverkehr besser einschätzen zu können", "Der direkte Blick verstärkt die Blendung."), f("Mit dem Fernlicht zurückblenden", "Zurückblenden blendet den anderen ebenfalls und erhöht die Gefahr für beide.")],
     explanation: "Bei Blendung sollte man den Blick nach rechts unten an den Fahrbahnrand lenken und langsamer werden. Die Augen brauchen nach der Blendung mehrere Sekunden, bis sie sich wieder an die Dunkelheit angepasst haben.",
+    legalReference: "§ 17 Abs. 2 StVO; § 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-021", topic: "gefahrenlehre", points: 3, difficulty: 0.65, tags: ["sehvermoegen", "nacht", "geschwindigkeit", "abblendlicht"],
@@ -144,6 +151,7 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Wie verändert sich die Wahrnehmung mit steigender Geschwindigkeit?",
     answers: [t("Das Blickfeld verengt sich; Vorgänge am Straßenrand werden schlechter wahrgenommen"), t("Der Blick richtet sich weiter nach vorn, Nahbereich und Seiten werden vernachlässigt"), f("Das Blickfeld erweitert sich, weil mehr Reize auf den Fahrer einwirken", "Es ist umgekehrt: Das nutzbare Blickfeld wird kleiner."), f("Entfernungen werden bei hoher Geschwindigkeit genauer eingeschätzt", "Gerade bei hohem Tempo werden Entfernungen und Geschwindigkeiten häufig unterschätzt.")],
     explanation: "Mit steigender Geschwindigkeit verengt sich das nutzbare Blickfeld zum sogenannten Tunnelblick. Der Fahrer sieht weiter nach vorn, nimmt aber Gefahren an den Seiten später oder gar nicht wahr.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-023", topic: "gefahrenlehre", points: 2, difficulty: 0.55, tags: ["sehvermoegen", "sehtest", "fahrerlaubnis"],
@@ -171,6 +179,7 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Sie fahren mit drei Freunden im Auto. Diese fordern Sie auf, bei Gelb noch schnell über die Kreuzung zu fahren und danach den Vordermann zu überholen. Wie verhalten Sie sich?",
     answers: [t("Sie fahren so, wie Sie es ohne Mitfahrer auch tun würden, und lassen sich nicht drängen"), t("Sie erklären, dass Sie als Fahrer allein die Verantwortung tragen"), f("Sie fahren schneller, damit die Stimmung nicht kippt", "Gruppendruck ist eine typische Ursache schwerer Unfälle junger Fahrer."), f("Sie bitten den Beifahrer, das Lenkrad kurz zu übernehmen", "Der Fahrer darf die Fahrzeugführung nicht abgeben.")],
     explanation: "Mitfahrer erhöhen bei jungen Fahrern das Unfallrisiko deutlich, wenn sie zu riskantem Fahren animieren. Der Fahrer trägt allein die Verantwortung und muss sich von Gruppendruck freimachen.",
+    legalReference: "§ 1 StVO; § 2a StVG",
   }),
   q({
     code: "own-gefahrenlehre-027", topic: "gefahrenlehre", points: 3, difficulty: 0.55, tags: ["fahranfaenger", "probezeit", "alkohol", "risikofaktor_mensch"],
@@ -184,18 +193,21 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Warum ist der tote Winkel bei Lkw besonders gefährlich?",
     answers: [t("Der Bereich rechts neben und direkt vor dem Fahrerhaus ist im Spiegel nicht oder kaum einsehbar"), t("Beim Rechtsabbiegen können Radfahrende und Fußgänger dort übersehen werden"), f("Lkw haben keine Außenspiegel", "Lkw haben mehrere Spiegel, dennoch bleiben Bereiche unsichtbar."), f("Der tote Winkel liegt bei Lkw nur hinter dem Fahrzeug", "Vor allem rechts neben dem Fahrerhaus ist die Sicht eingeschränkt.")],
     explanation: "Trotz mehrerer Spiegel bleiben bei Lkw große Bereiche rechts neben dem Fahrerhaus unsichtbar. Wer als Radfahrer oder Pkw-Fahrer dort steht, wird beim Rechtsabbiegen leicht übersehen. Deshalb Abstand halten und Blickkontakt suchen.",
+    legalReference: "§ 9 Abs. 6 StVO; § 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-029", topic: "gefahrenlehre", points: 3, difficulty: 0.6, tags: ["stress", "zeitdruck", "risikofaktor_mensch"],
     text: "Sie sind spät dran und stehen unter Zeitdruck. Wie wirkt sich das typischerweise auf Ihr Fahren aus?",
     answers: [t("Sie neigen zu knapperen Abständen und riskanteren Überholvorgängen"), t("Sie unterschätzen Gefahren und überschätzen die Zeitersparnis"), f("Zeitdruck verbessert die Konzentration auf das Wesentliche", "Stress verengt die Wahrnehmung und führt zu Fehlentscheidungen."), f("Schnelles Fahren spart innerorts sehr viel Zeit", "Innerorts bestimmen Ampeln und Verkehr die Fahrzeit; Rasen bringt fast nichts.")],
     explanation: "Zeitdruck erhöht die Risikobereitschaft und verschlechtert die Wahrnehmung. Die tatsächliche Zeitersparnis durch schnelleres Fahren ist gerade innerorts minimal, das Unfallrisiko steigt aber erheblich.",
+    legalReference: "§ 1 StVO; § 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-030", topic: "gefahrenlehre", points: 3, difficulty: 0.7, tags: ["reaktionszeit", "schrecksekunde", "bremsbereitschaft"],
     text: "Sie fahren vorausschauend und haben den Fuß bereits über dem Bremspedal, als ein Kind hinter einem parkenden Auto hervortritt. Welche Wirkung hat die Bremsbereitschaft?",
     answers: [t("Die Reaktionszeit und damit der Reaktionsweg verkürzen sich deutlich"), t("Die Bremsung beginnt früher, sodass die Aufprallgeschwindigkeit sinkt oder der Unfall ganz vermieden wird"), f("Der Bremsweg wird kürzer, weil die Bremsen schneller ansprechen", "Der Bremsweg selbst hängt von Geschwindigkeit, Bremse und Fahrbahn ab, nicht von der Fußstellung."), f("Keine, weil die Reaktionszeit unveränderlich ist", "Bremsbereitschaft spart wertvolle Zehntelsekunden.")],
     explanation: "Bremsbereitschaft verkürzt die Zeit zwischen Erkennen der Gefahr und Beginn der Bremsung. Der Reaktionsweg wird kürzer, die Bremsung setzt früher ein. Der Bremsweg als solcher bleibt bei gleicher Geschwindigkeit gleich.",
+    legalReference: "§ 3 Abs. 2a StVO",
   }),
   q({
     code: "own-gefahrenlehre-031", topic: "gefahrenlehre", points: 3, difficulty: 0.55, tags: ["ablenkung", "navigationsgeraet", "beifahrer"],
@@ -209,6 +221,7 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Warum wird die eigene Geschwindigkeit nach längerer schneller Autobahnfahrt an der Ausfahrt häufig unterschätzt?",
     answers: [t("Das Geschwindigkeitsgefühl hat sich an das hohe Tempo gewöhnt"), t("Ein Blick auf den Tacho ist deshalb beim Verlassen der Autobahn besonders wichtig"), f("Weil der Tacho bei hoher Geschwindigkeit ungenau wird", "Der Tacho zeigt eher etwas zu viel an, nie zu wenig."), f("Weil die Ausfahrt immer bergab führt", "Das Gefälle spielt für die Gewöhnung keine Rolle.")],
     explanation: "Nach langer schneller Fahrt fühlen sich 80 km/h wie 50 an. Diese Gewöhnung führt in Ausfahrten und auf der anschließenden Landstraße oft zu deutlich überhöhter Geschwindigkeit. Der Tacho ist der einzige verlässliche Maßstab.",
+    legalReference: "§ 3 Abs. 1 und 3 StVO",
   }),
   q({
     code: "own-gefahrenlehre-033", topic: "gefahrenlehre", points: 2, difficulty: 0.4, tags: ["medikamente", "risikofaktor_mensch", "reaktionszeit"],
@@ -222,6 +235,7 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Wie oft sollten Sie beim Fahren in die Spiegel schauen?",
     answers: [t("Regelmäßig alle paar Sekunden, zusätzlich immer vor dem Bremsen, Abbiegen und Fahrstreifenwechsel"), f("Nur vor dem Abbiegen", "Die Verkehrslage hinter dem Fahrzeug ändert sich ständig."), f("Nur wenn ein Fahrzeug hinter Ihnen hupt", "Dann ist es zu spät für eine vorausschauende Reaktion.")],
     explanation: "Die Verkehrsbeobachtung umfasst auch den Raum hinter und neben dem Fahrzeug. Regelmäßige Spiegelblicke und ein Kontrollblick vor jedem Bremsen, Abbiegen und Wechseln halten das Lagebild aktuell.",
+    legalReference: "§ 1 StVO; § 7 Abs. 5 StVO",
   }),
   q({
     code: "own-gefahrenlehre-035", topic: "gefahrenlehre", points: 3, difficulty: 0.6, tags: ["emotionen", "aggression", "risikofaktor_mensch"],
@@ -235,12 +249,14 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Wie führen Sie mit einem Fahrzeug mit ABS eine Gefahrenbremsung richtig durch?",
     answers: [t("Bremspedal sofort mit voller Kraft treten und gedrückt halten"), t("Gleichzeitig kuppeln, damit der Motor nicht abwürgt und die Bremskraft voll wirkt"), t("Dabei weiter lenken, weil das Fahrzeug mit ABS lenkbar bleibt"), f("Das Bremspedal mehrfach kurz antippen, um ein Blockieren zu verhindern", "Das Stotterbremsen ist mit ABS falsch; das System regelt selbst.")],
     explanation: "Bei der Gefahrenbremsung wird mit voller Kraft gebremst und gekuppelt. Das ABS verhindert das Blockieren der Räder, sodass das Fahrzeug lenkbar bleibt. Ein Pulsieren im Pedal ist normal und kein Grund, den Druck zu verringern.",
+    legalReference: "§ 1 Abs. 2 StVO",
   }),
   q({
     code: "own-gefahrenlehre-037", topic: "gefahrenlehre", points: 3, difficulty: 0.7, tags: ["bremsweg", "geschwindigkeit", "aufprallgeschwindigkeit", "fahrphysik"],
     text: "Zwei Fahrzeuge fahren nebeneinander, eines mit 50 km/h, eines mit 70 km/h. Beide bremsen im selben Moment gleich stark. Das langsamere kommt gerade noch vor einem Hindernis zum Stehen. Was gilt für das schnellere Fahrzeug?",
     answers: [t("Es trifft das Hindernis mit einer noch sehr hohen Geschwindigkeit, weil der Bremsweg mit dem Quadrat der Geschwindigkeit wächst"), f("Es kommt ebenfalls gerade noch zum Stehen, weil die Differenz nur 20 km/h beträgt", "Bei 70 km/h beträgt allein der Bremsweg 49 Meter statt 25 Meter bei 50 km/h."), f("Es trifft das Hindernis mit etwa 20 km/h", "Die Aufprallgeschwindigkeit ist deutlich höher, weil auch der Reaktionsweg länger ist.")],
     explanation: "Bei 50 km/h beträgt der Anhalteweg nach Faustformel 40 Meter, bei 70 km/h dagegen 70 Meter. Nach 40 Metern hat das schnellere Fahrzeug erst begonnen abzubremsen und trifft das Hindernis noch mit sehr hoher Geschwindigkeit. Kleine Tempounterschiede haben große Folgen.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
   q({
     code: "own-gefahrenlehre-038", topic: "gefahrenlehre", points: 3, difficulty: 0.55, tags: ["verkehrsbeobachtung", "defensiv", "vorausschauend"],
@@ -261,5 +277,6 @@ export const gefahrenlehre: readonly Question[] = [
     text: "Sie fahren 60 km/h und führen eine Gefahrenbremsung durch. Wie lang ist der Anhalteweg nach den Faustformeln? Angabe in Metern.",
     answers: [],
     explanation: "Reaktionsweg = (60 / 10) × 3 = 18 Meter. Bremsweg bei Gefahrenbremsung = (60 / 10)² / 2 = 36 / 2 = 18 Meter. Der Anhalteweg beträgt somit 36 Meter.",
+    legalReference: "§ 3 Abs. 1 StVO",
   }),
 ];
