@@ -20,7 +20,7 @@ Stand: 20. September 2026. Recherche per Websuche; die Seiten von TÜV | DEKRA a
 |---|---|---|---|---|
 | A: Lizenz arge tp 21 | Vollständiger Katalog als Datenbank mit Bildern und Videos, Änderungsdienst zweimal jährlich | Einzig marktübliche Lösung; Prüfungssimulation entspricht 1:1 der echten Prüfung; Werbung mit "amtliche Fragen" möglich | Lizenzgebühr (Höhe unbekannt, üblich sind Grundgebühr plus Betrag je Nutzer oder je Fahrschule); Vertragspflichten (Aktualisierungspflicht, Kennzeichnung, Prüfung der Umsetzung) | Ja, für Fahrschulen und für die 3,99-Euro-App |
 | B: Verkehrsblatt-Texte ohne Lizenz | Nur Fragetexte und Antworten nach § 5 UrhG, eigene Bilder | Keine laufende Gebühr | Bild- und Videofragen fehlen (ein Großteil der Prüfung); Rechtsrisiko bei Bildern; Änderungsdienst muss selbst aus dem Verkehrsblatt gepflegt werden; Anwalt nötig | Nur als Zwischenschritt, wenn A scheitert |
-| C: Eigene Übungsfragen (Ist-Zustand) | 962 eigene Fragen plus 400 Zeichenfragen, eigene Grafiken | Bereits vorhanden, rechtlich sauber, fachlich geprüft | Kein amtlicher Wortlaut, Prüfungssimulation nur "prüfungsnah" | Bleibt als Grundlage in jedem Fall |
+| C: Eigene Übungsfragen (Ist-Zustand) | 772 eigene Themenfragen plus 400 Zeichenfragen, eigene Grafiken | Bereits vorhanden, rechtlich sauber, fachlich geprüft | Kein amtlicher Wortlaut, Prüfungssimulation nur "prüfungsnah" | Bleibt als Grundlage in jedem Fall |
 
 Empfehlung: Option A anfragen und parallel Option C weiter ausbauen. Die App verkauft sich als Endkundenprodukt nur mit Bild- und Videofragen im Originalwortlaut dauerhaft; alle Wettbewerber in `11-wettbewerb-und-verbesserungen.md` werben mit dem amtlichen Katalog.
 

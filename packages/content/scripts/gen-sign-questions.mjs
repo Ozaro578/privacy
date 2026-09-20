@@ -8,7 +8,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "media", "signs.catalog.json"), "utf8"));
 const CAT_LABEL = { gefahrzeichen: "Gefahrzeichen", vorschriftzeichen: "Vorschriftzeichen", richtzeichen: "Richtzeichen", verkehrseinrichtungen: "Verkehrseinrichtung", zusatzzeichen: "Zusatzzeichen" };
 const BASE_DIFFICULTY = { gefahrzeichen: 0.3, vorschriftzeichen: 0.35, richtzeichen: 0.45, verkehrseinrichtungen: 0.5, zusatzzeichen: 0.55 };
-// Häufige Zeichen sind leichter, seltene schwerer
+// Häufige Zeichen sind leichter (Stufe 1 bis 2), seltene schwerer
 const COMMON = new Set(["101", "102", "103-10", "103-20", "108-10", "110-12", "112", "114", "117-10", "120", "123", "131", "133-10", "136-10", "138-10", "142-10", "151", "201-50", "205", "206", "208", "209-10", "209-20", "215", "220-20", "222-10", "224", "237", "239", "240", "241-30", "242-1", "244-1", "250", "251", "253", "254", "259", "260", "267", "270-1", "272", "274-30", "274-50", "274-1", "276", "277", "278-50", "282", "283", "286", "301", "306", "307", "308", "310", "311", "314", "325-1", "330-1", "331-1", "350-10", "720"]);
 
 function seeded(seedStr) { let h = 2166136261; for (const c of seedStr) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; }; }
@@ -27,7 +27,7 @@ for (const sign of current) {
   for (const d of pool) { if (distractors.length === 3) break; if (!distractors.some((x) => x.name === d.name)) distractors.push(d); }
   if (distractors.length < 2) continue;
   const answers = [{ text: sign.name, correct: true }, ...distractors.map((d) => ({ text: d.name, correct: false, explanation: `Das wäre Zeichen ${d.number}.` }))].sort(() => rnd() - 0.5);
-  const difficulty = Math.min(0.85, (BASE_DIFFICULTY[sign.category] ?? 0.4) + (COMMON.has(sign.id) ? 0 : 0.2) + (sign.number.includes("-") ? 0.05 : 0));
+  const difficulty = Math.max(0.15, Math.min(0.85, (BASE_DIFFICULTY[sign.category] ?? 0.4) + (COMMON.has(sign.id) ? -0.1 : 0.2) + (sign.number.includes("-") ? 0.05 : 0)));
   const points = sign.category === "gefahrzeichen" || sign.category === "vorschriftzeichen" ? 3 : 2;
   const code = `own-verkehrszeichen-z${sign.id.toLowerCase()}`;
   entries.push({ code, sign, answers, difficulty, points });

@@ -6,10 +6,10 @@ import type { QuestionState } from "./srs";
 export type Level = 1 | 2 | 3 | 4 | 5;
 export const LEVEL_LABEL: Record<Level, string> = { 1: "Einstieg", 2: "Grundlagen", 3: "Fortgeschritten", 4: "Prüfungsniveau", 5: "Profi" };
 
-/** Stufe einer Frage: 0..0.2 → 1, 0.2..0.4 → 2, 0.4..0.6 → 3, 0.6..0.8 → 4, ab 0.8 → 5; 5-Punkte-Fragen mindestens Stufe 3. */
+/** Stufe einer Frage: bis 0,3 → 1, bis 0,45 → 2, bis 0,6 → 3, bis 0,7 → 4, ab 0,7 → 5; 5-Punkte-Fragen mindestens Stufe 3. Schwellen so gewählt, dass jede Stufe ausreichend Themen- und Zeichenfragen hat. */
 export function questionLevel(q: Pick<QuestionMeta, "difficulty" | "points">): Level {
   const d = q.difficulty ?? 0.5;
-  let level: Level = d < 0.2 ? 1 : d < 0.4 ? 2 : d < 0.6 ? 3 : d < 0.8 ? 4 : 5;
+  let level: Level = d < 0.3 ? 1 : d < 0.45 ? 2 : d < 0.6 ? 3 : d < 0.7 ? 4 : 5;
   if (q.points >= 5 && level < 3) level = 3;
   return level;
 }

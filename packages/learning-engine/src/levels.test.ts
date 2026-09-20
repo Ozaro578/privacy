@@ -12,7 +12,8 @@ describe("Schwierigkeitsstufen", () => {
     expect(questionLevel(q("a", 0.1))).toBe(1);
     expect(questionLevel(q("b", 0.35))).toBe(2);
     expect(questionLevel(q("c", 0.5))).toBe(3);
-    expect(questionLevel(q("d", 0.7))).toBe(4);
+    expect(questionLevel(q("d", 0.65))).toBe(4);
+    expect(questionLevel(q("d2", 0.7))).toBe(5);
     expect(questionLevel(q("e", 0.9))).toBe(5);
     expect(questionLevel(q("f", 0.1, 5))).toBe(3);
   });
