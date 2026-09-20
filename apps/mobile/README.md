@@ -1,6 +1,6 @@
 # FahrPilot Mobile (Expo)
 
-Schüler-App für iOS und Android: Heute-Modus, Lernen (offline), Prüfungssimulation, Fahrstunden, Finanzen, Profil, QR-Check-in.
+Schüler-App für iOS und Android: Heute-Modus mit Tages-Challenge, Lernen (offline) mit Stufen-Modus, Zeichen-Trainer, Verkehrszeichenkatalog, Vorfahrt-Trainer, Vorlesen, Farbwelten, Prüfungssimulation, Fahrstunden, Finanzen, Profil, QR-Check-in. Selbstlernende ohne Fahrschule registrieren sich über die Web-App (`/registrieren`).
 
 ## Voraussetzungen
 
@@ -34,6 +34,8 @@ pnpm --filter @fahrpilot/mobile test
 - `src/lib/content.ts`: lädt den veröffentlichten Fragenpool (inklusive Bildpfad und Alt-Text) in SQLite.
 - `src/offline/`: Fragenauswahl, Bewertung und SM-2-Wiederholung lokal; identische Logik wie im Server-Paket `@fahrpilot/learning-engine`.
 - `src/lib/sync.ts`: Antworten werden in der Warteschlange gesammelt und per `POST /api/sync` mit Bearer-Token übertragen. Der Server ist die Wahrheit, Konflikte werden serverseitig aufgelöst.
+- `src/lib/appearance.tsx`: Farbwelt, Hell/Dunkel, Schriftgröße, Bewegung, Ton (lokal gecacht, serverseitig in `users.accessibility`).
+- `app/(tabs)/lernen/zeichen.tsx` und `vorfahrt.tsx`: Verkehrszeichenkatalog (408 Zeichen aus `@fahrpilot/content/signs`) und Vorfahrt-Trainer.
 - `src/components/question-media.tsx`: Bilder zu Fragen. Öffentliche Fragemedien kommen von `<API_URL>/media/questions/…`, mandantenspezifische Uploads über `/api/media` (signierte URL, Bearer-Auth).
 - Prüfungssimulationen laufen vollständig serverseitig (`/api/exam`), damit Regelversion und Bewertung nicht im Client liegen.
 
