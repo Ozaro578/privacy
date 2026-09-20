@@ -18,6 +18,7 @@ const MODES: Array<{ mode: string; title: string; text: string; countKey?: "dueC
   { mode: "random", title: "Zufallsfragen", text: "Bunt gemischt durch alle Themen" },
   { mode: "signs", title: "Zeichen-Trainer", text: "Verkehrszeichen erkennen und ihre Bedeutung kennen" },
 ];
+const TRAINERS = [{ href: "/lernen/vorfahrt", title: "Vorfahrt-Trainer", text: "Wer fährt zuerst? Reihenfolge antippen" }, { href: "/lernen/zeichen", title: "Verkehrszeichen", text: "Alle Zeichen mit Bedeutung und Suche" }, { href: "/praxis", title: "Prüferfragen", text: "Fragen aus der praktischen Prüfung üben" }];
 
 export default async function LearnPage() {
   const ctx = await getStudentContext();
@@ -56,6 +57,13 @@ export default async function LearnPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section aria-labelledby="trainer">
+        <h2 id="trainer" className="mb-2 text-base font-semibold">Trainer</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {TRAINERS.map((t) => <Link key={t.href} href={t.href} className="rounded-card bg-surface p-4 shadow-card hover:-translate-y-px"><p className="font-semibold">{t.title}</p><p className="mt-1 text-sm text-ink-700">{t.text}</p></Link>)}
+        </div>
       </section>
 
       <section aria-labelledby="modes">

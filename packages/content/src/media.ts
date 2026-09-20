@@ -1,6 +1,7 @@
 // Bildmedien der Übungsfragen: Verkehrszeichen (StVO, amtliche Werke) und Situationsgrafiken.
 // Die SVG-Dateien werden mit `node scripts/gen-media.mjs` erzeugt und liegen unter media/ (manifest.json).
 import { MEDIA_MANIFEST } from "./media.manifest.js";
+import { QUESTION_MEDIA_A } from "./media.extra.a.js";
 import { ZEICHEN_MEDIA } from "./questions/zeichen.generated.js";
 
 export type MediaKind = "sign" | "scene";
@@ -130,7 +131,9 @@ export const QUESTION_MEDIA: Readonly<Record<string, string>> = {
   "own-fahrzeugtechnik-004": "oeldruck",
 };
 
+export { QUESTION_MEDIA_A };
+
 export const mediaForQuestion = (code: string): MediaItem | undefined => {
-  const id = QUESTION_MEDIA[code] ?? ZEICHEN_MEDIA[code];
+  const id = QUESTION_MEDIA[code] ?? QUESTION_MEDIA_A[code] ?? ZEICHEN_MEDIA[code];
   return id ? byId.get(id) : undefined;
 };

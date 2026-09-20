@@ -3649,6 +3649,48 @@
     "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
   },
   {
+    "id": "vt-vorfahrtstrasse-sie-a",
+    "file": "scenes/vt-vorfahrtstrasse-sie-a.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto kommt von unten auf einer Vorfahrtstraße (Zeichen 306), ein rotes Auto A kommt von rechts und hat Zeichen 205.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-stop-sie-a-links",
+    "file": "scenes/vt-stop-sie-a-links.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto kommt von unten und hat ein Stoppschild, ein grünes Auto A kommt von links auf der Vorfahrtstraße.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-rvl-sie-links-abbiegen-a-rechts",
+    "file": "scenes/vt-rvl-sie-links-abbiegen-a-rechts.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit rechts vor links: Ihr blaues Auto von unten will links abbiegen, ein rotes Auto A kommt von rechts und fährt geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-rvl-drei-sie-links",
+    "file": "scenes/vt-rvl-drei-sie-links.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit rechts vor links: Ihr blaues Auto von links (fährt nach rechts), rotes Auto A von unten, grünes Auto B von rechts. Alle geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-gegenverkehr-beide-links",
+    "file": "scenes/vt-gegenverkehr-beide-links.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit Vorfahrtstraße von unten nach oben: Ihr blaues Auto von unten will links abbiegen, ein rotes Auto A kommt von oben und will rechts abbiegen, ein grünes Auto B von links wartet mit Zeichen 205.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-strassenbahn-rvl",
+    "file": "scenes/vt-strassenbahn-rvl.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit rechts vor links: Ihr blaues Auto kommt von unten, von links kommt eine Straßenbahn.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
     "id": "kreisverkehr-beschildert",
     "file": "scenes/kreisverkehr-beschildert.svg",
     "kind": "scene",

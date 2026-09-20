@@ -54,6 +54,7 @@ export default function Learn() {
           </Pressable>
         ))}
       </View>
+      <Button label="Vorfahrt-Trainer: Wer fährt zuerst?" variant="secondary" onPress={() => router.push("/(tabs)/lernen/vorfahrt")} />
       <Button label="Alle Verkehrszeichen mit Bedeutung" variant="secondary" onPress={openSigns} />
       {board.length > 0 && <Card title="Bestenliste der Woche">{board.map((r) => <View key={r.rank} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 4 }}><Txt bold={r.is_me}>{r.rank}. {r.alias}{r.is_me ? " (du)" : ""}</Txt><Txt bold={r.is_me}>{r.xp} XP</Txt></View>)}<Txt muted size={11}>Freiwillig, Teilnahme im Web-Profil unter Lernen einstellbar.</Txt></Card>}
       <Card title="Nach Themen">

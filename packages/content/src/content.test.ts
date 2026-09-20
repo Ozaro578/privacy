@@ -185,3 +185,20 @@ describe("Bildmedien", () => {
     }
   });
 });
+
+describe("Vorfahrt-Trainer", () => {
+  it("jede Situation hat ein vorhandenes Bild und eine vollständige Reihenfolge", async () => {
+    const { priorityScenarios } = await import("./vorfahrt-trainer.js");
+    const { mediaById } = await import("./media.js");
+    const ids = new Set<string>();
+    for (const sc of priorityScenarios) {
+      expect(ids.has(sc.id), sc.id).toBe(false); ids.add(sc.id);
+      expect(mediaById(sc.media), `${sc.id}: Bild ${sc.media}`).toBeDefined();
+      const ordered = sc.order.flat();
+      expect(new Set(ordered).size).toBe(sc.vehicles.length);
+      for (const v of sc.vehicles) expect(ordered, `${sc.id}: ${v.key}`).toContain(v.key);
+      expect(sc.explanation).not.toMatch(/[–—]/);
+    }
+    expect(priorityScenarios.length).toBeGreaterThanOrEqual(15);
+  });
+});

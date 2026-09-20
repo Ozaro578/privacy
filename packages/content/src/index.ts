@@ -11,7 +11,7 @@ import { chapters } from "./chapters.de.js";
 import { knowledgeEntries } from "./knowledge.de.js";
 import { practicalQuestions } from "./practical-questions.de.js";
 import { questions } from "./questions.de.js";
-import { MEDIA, QUESTION_MEDIA } from "./media.js";
+import { MEDIA, QUESTION_MEDIA, QUESTION_MEDIA_A } from "./media.js";
 import { TOPICS, TOPIC_BY_CODE } from "./topics.js";
 import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES, type Question, type TopicCode } from "./types.js";
 
@@ -113,7 +113,7 @@ export function validateContent(): string[] {
     if (!/^(signs|scenes)\/[A-Za-z0-9_.-]+\.svg$/.test(m.file)) problems.push(`Medium ${m.id}: ungültiger Dateipfad ${m.file}`);
     if (m.alt.trim().length < 10) problems.push(`Medium ${m.id}: Alternativtext fehlt oder zu kurz`);
   }
-  for (const [code, id] of Object.entries(QUESTION_MEDIA)) {
+  for (const [code, id] of [...Object.entries(QUESTION_MEDIA), ...Object.entries(QUESTION_MEDIA_A)]) {
     if (!codes.has(code)) problems.push(`Medienzuordnung ${code}: unbekannter Fragecode`);
     if (!mediaIds.has(id)) problems.push(`Medienzuordnung ${code}: unbekanntes Medium ${id}`);
   }
@@ -121,3 +121,4 @@ export function validateContent(): string[] {
   return problems;
 }
 export * from "./signs.js";
+export { priorityScenarios, type PriorityScenario, type PriorityVehicle } from "./vorfahrt-trainer.js";

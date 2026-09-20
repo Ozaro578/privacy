@@ -243,6 +243,20 @@ scene("vorfahrt-ampel-ausgefallen", "Kreuzung mit ausgefallener, dunkler Ampel u
 scene("vorfahrt-rechtsabbiegen-radweg", "Ihr blaues Auto will nach rechts abbiegen; auf dem Radweg rechts neben Ihnen fährt ein Radfahrer geradeaus weiter.", 600, 600,
   crossroad("NESW") + `<rect x="360" y="360" width="26" height="240" fill="#B91C1C" opacity="0.55"/><rect x="360" y="0" width="26" height="240" fill="#B91C1C" opacity="0.55"/>${caption(400, 560, "Radweg", 13)}` + car(330, 470, 0, CAR.you, "Sie", { blink: "R" }) + arrow("M330 430 V350 Q330 330 350 330 H440") + bike(373, 430, 0) + arrow("M373 400 V250", "#FACC15", 3) + legend([[CAR.you, "Sie (rechts abbiegen)"], ["#7C3AED", "Radfahrer geradeaus"]]));
 
+// Zusätzliche Vorfahrt-Szenen für den Vorfahrt-Trainer (Reihenfolge)
+scene("vt-vorfahrtstrasse-sie-a", "Kreuzung: Ihr blaues Auto kommt von unten auf einer Vorfahrtstraße (Zeichen 306), ein rotes Auto A kommt von rechts und hat Zeichen 205.", 600, 600,
+  crossroad("NESW") + signIn("306", 378, 400, 40) + signIn("205", 380, 210, 34) + car(330, 470, 0, CAR.you, "Sie") + arrow("M330 430 V330") + car(470, 270, -90, CAR.a, "A") + arrow("M430 270 H340") + legend([[CAR.you, "Sie (Vorfahrtstraße)"], [CAR.a, "A (Vorfahrt gewähren)"]]));
+scene("vt-stop-sie-a-links", "Kreuzung: Ihr blaues Auto kommt von unten und hat ein Stoppschild, ein grünes Auto A kommt von links auf der Vorfahrtstraße.", 600, 600,
+  crossroad("NESW") + signIn("206", 378, 400, 40) + signIn("306", 220, 210, 34) + car(330, 470, 0, CAR.you, "Sie") + arrow("M330 430 V340") + car(130, 330, 90, CAR.b, "A") + arrow("M170 330 H290") + legend([[CAR.you, "Sie (Stopp)"], [CAR.b, "A (Vorfahrtstraße)"]]));
+scene("vt-rvl-sie-links-abbiegen-a-rechts", "Kreuzung mit rechts vor links: Ihr blaues Auto von unten will links abbiegen, ein rotes Auto A kommt von rechts und fährt geradeaus.", 600, 600,
+  crossroad("NESW") + car(330, 470, 0, CAR.you, "Sie") + arrow("M330 430 V320 Q330 300 310 300 H230") + car(470, 270, -90, CAR.a, "A") + arrow("M430 270 H330") + legend([[CAR.you, "Sie (links)"], [CAR.a, "A von rechts"]]));
+scene("vt-rvl-drei-sie-links", "Kreuzung mit rechts vor links: Ihr blaues Auto von links (fährt nach rechts), rotes Auto A von unten, grünes Auto B von rechts. Alle geradeaus.", 600, 600,
+  crossroad("NESW") + car(130, 330, 90, CAR.you, "Sie") + arrow("M170 330 H260") + car(330, 470, 0, CAR.a, "A") + arrow("M330 430 V340") + car(470, 270, -90, CAR.b, "B") + arrow("M430 270 H340") + legend([[CAR.you, "Sie"], [CAR.a, "A von unten"], [CAR.b, "B von rechts"]]));
+scene("vt-gegenverkehr-beide-links", "Kreuzung mit Vorfahrtstraße von unten nach oben: Ihr blaues Auto von unten will links abbiegen, ein rotes Auto A kommt von oben und will rechts abbiegen, ein grünes Auto B von links wartet mit Zeichen 205.", 600, 600,
+  crossroad("NESW") + signIn("306", 378, 400, 36) + signIn("205", 220, 210, 32) + car(330, 470, 0, CAR.you, "Sie") + arrow("M330 430 V320 Q330 300 310 300 H230") + car(270, 130, 180, CAR.a, "A") + arrow("M270 170 V250 Q270 270 250 270 H180") + car(130, 330, 90, CAR.b, "B") + arrow("M170 330 H270") + legend([[CAR.you, "Sie (links, Vorfahrtstraße)"], [CAR.a, "A (rechts, Vorfahrtstraße)"], [CAR.b, "B (Vorfahrt gewähren)"]]));
+scene("vt-strassenbahn-rvl", "Kreuzung mit rechts vor links: Ihr blaues Auto kommt von unten, von links kommt eine Straßenbahn.", 600, 600,
+  crossroad("NESW") + `<path d="M0 320 H600 M0 340 H600" stroke="#9CA3AF" stroke-width="3"/>` + car(130, 330, 90, "#F59E0B", "TRAM", { length: 120, width: 34 }) + arrow("M195 330 H300") + car(330, 470, 0, CAR.you, "Sie") + arrow("M330 430 V350") + legend([[CAR.you, "Sie"], ["#F59E0B", "Straßenbahn von links"]]));
+
 // Kreisverkehr
 function roundabout(extra = "") {
   const r = 150; const road = 70;
