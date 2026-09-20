@@ -36,4 +36,4 @@ Schema in `packages/content/src/import-official.ts` (Zod), Beispiel in `packages
 
 - Mapper vom Lieferformat des Lizenzgebers in `fahrpilot-official-1` (Kapitelstruktur des Katalogs auf die 19 Themen abbilden; Vorschlag: Zuordnungstabelle Kapitelnummer zu Thema als JSON neben dem Mapper).
 - Darstellungsvorgaben des Lizenzgebers (Kennzeichnung, Nennung) im Frage-Header umsetzen, sobald der Vertrag sie nennt; der Platz dafür ist `question_versions.media_credit` und `source_note`.
-- Videofragen in der Prüfungssimulation: Das Video darf laut Prüfungspraxis mehrfach angesehen werden, die Antworten erscheinen erst nach dem Abspielen. Der Runner blendet die Antworten heute sofort ein; die Sperre bis zum ersten vollständigen Abspielen wird ergänzt, sobald die Vorgabe des Lizenzgebers vorliegt.
+- Videofragen: Wie in der Prüfung erscheinen die Antworten erst nach dem ersten vollständigen Abspielen, das Video kann beliebig oft wiederholt werden (Web und App, Lernsession und Prüfungssimulation). Sollte der Lizenzgeber eine Höchstzahl an Wiederholungen vorgeben, wird sie an derselben Stelle ergänzt.

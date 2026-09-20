@@ -418,5 +418,25 @@ do $$ begin
 end $$;
 select pg_temp.logout();
 
+-- 16) Schwierigkeits-Kalibrierung: erst ab Mindeststichprobe, Mischung aus redaktionellem Wert und Fehlerquote, Prüfungsantworten zählen nicht
+update public.theory_questions set difficulty = 0.40, authored_difficulty = 0.40 where id = 'b0000000-0000-0000-0000-000000000001';
+insert into public.student_question_attempts (tenant_id, student_id, question_id, question_version_id, client_attempt_id, is_correct, points)
+  select '10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000002', gen_random_uuid(), false, 5 from generate_series(1, 4);
+do $$ begin
+  if public.calibrate_question_difficulty(5, 0.5) <> 0 then raise exception 'Kalibrierung unter Mindeststichprobe'; end if;
+  if (select difficulty from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000001') <> 0.40 then raise exception 'Schwierigkeit ohne Stichprobe geändert'; end if;
+end $$;
+insert into public.student_question_attempts (tenant_id, student_id, question_id, question_version_id, client_attempt_id, is_correct, points)
+  select '10000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000002', gen_random_uuid(), true, 5 from generate_series(1, 2);
+do $$ declare d numeric; begin
+  -- 6 Antworten eines Schülers: Erstversuch (falsch) zählt doppelt: Fehlergewicht 2+1+1+1 = 5 von 7 → 0,714; Mischung 0,5·0,40 + 0,5·0,714 = 0,56
+  if public.calibrate_question_difficulty(5, 0.5) <> 1 then raise exception 'Kalibrierung nicht angewendet'; end if;
+  select difficulty into d from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000001';
+  if d <> 0.56 then raise exception 'Erwartet 0,56, erhalten %', d; end if;
+  if (select authored_difficulty from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000001') <> 0.40 then raise exception 'Redaktioneller Wert überschrieben'; end if;
+  if (select calibration_sample from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000001') <> 6 then raise exception 'Stichprobe nicht gespeichert'; end if;
+  if public.calibrate_question_difficulty(5, 0.5) <> 0 then raise exception 'Zweiter Lauf ändert erneut'; end if;
+end $$;
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

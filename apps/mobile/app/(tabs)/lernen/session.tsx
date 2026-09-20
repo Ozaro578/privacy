@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 import { applyLocalReview, engineStates, evaluateAnswer, selectLocalQuestions } from "@/offline/local-learning";
 import type { LocalQuestion, LocalQuestionState, LocalTopic } from "@/offline/types";
 import { Button, Card, Loading, Screen, Txt } from "@/components/ui";
-import { QuestionMedia } from "@/components/question-media";
+import { QuestionMedia, VIDEO_GATE_HINT, videoGateOpen } from "@/components/question-media";
 import { ReadAloud } from "@/components/read-aloud";
 
 export default function Session() {
@@ -22,6 +22,7 @@ export default function Session() {
   const [topics, setTopics] = useState<LocalTopic[]>([]);
   const [states, setStates] = useState<Map<string, LocalQuestionState>>(new Map());
   const [i, setI] = useState(0);
+  const [videoSeen, setVideoSeen] = useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [numeric, setNumeric] = useState("");
   const [confidence, setConfidence] = useState<1 | 2 | 3 | null>(null);
@@ -46,7 +47,8 @@ export default function Session() {
   if (questions.length === 0) return <Screen title="Keine Fragen"><Txt>Für diesen Modus gibt es aktuell keine Fragen.</Txt><Button label="Zurück" variant="secondary" onPress={() => router.back()} /></Screen>;
   const q = questions[i]!;
   const topicName = topics.find((x) => x.id === q.topic_id)?.name ?? "";
-  const canSubmit = q.numeric_answer !== null ? numeric.trim() !== "" : selected.length > 0;
+  const gateOpen = videoGateOpen(q.media_path, null, videoSeen);
+  const canSubmit = gateOpen && (q.numeric_answer !== null ? numeric.trim() !== "" : selected.length > 0);
 
   async function check() {
     const num = q.numeric_answer !== null ? Number(numeric.replace(",", ".")) : null;
@@ -66,7 +68,7 @@ export default function Session() {
       setDone({ ...stats.current });
       return;
     }
-    setI(i + 1); setSelected([]); setNumeric(""); setConfidence(null); setFeedback(null);
+    setI(i + 1); setSelected([]); setNumeric(""); setConfidence(null); setFeedback(null); setVideoSeen(false);
   }
   async function bookmark() {
     const prev = states.get(q.id);
@@ -84,10 +86,12 @@ export default function Session() {
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Txt muted>Frage {i + 1} von {questions.length}</Txt><Txt muted>{topicName} · {q.points} Punkte</Txt></View>
       <Card>
         {q.source === "own" && <Txt muted size={12}>Übungsfrage (kein amtlicher Prüfungsinhalt)</Txt>}
-        <QuestionMedia path={q.media_path} alt={q.media_alt} credit={q.media_credit} />
+        <QuestionMedia path={q.media_path} alt={q.media_alt} credit={q.media_credit} onEnded={() => setVideoSeen(true)} />
         <Txt bold size={18}>{q.text}</Txt>
-        <ReadAloud text={[q.text, ...q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`)].join(". ")} />
-        {q.numeric_answer !== null ? (
+        <ReadAloud text={[q.text, ...(gateOpen ? q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`) : [])].join(". ")} />
+        {!gateOpen ? (
+          <Txt muted size={14}>{VIDEO_GATE_HINT}</Txt>
+        ) : q.numeric_answer !== null ? (
           <View><TextInput accessibilityLabel="Antwort als Zahl" value={numeric} onChangeText={setNumeric} keyboardType="decimal-pad" editable={!fb} style={{ minHeight: 48, borderWidth: 1, borderColor: t.colors.border.default, borderRadius: 12, paddingHorizontal: 12, color: t.colors.text.primary, width: 160 }} />{fb && <Txt color={fb.correct ? t.colors.status.success.text : t.colors.status.danger.text}>{fb.correct ? "Richtig" : `Falsch. Richtige Antwort: ${q.numeric_answer}`}</Txt>}</View>
         ) : q.answers.map((a) => {
           const isSel = selected.includes(a.position);

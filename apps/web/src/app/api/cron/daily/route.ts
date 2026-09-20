@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 /**
  * Tägliche Jobs: Lern-Erinnerung für Schüler ohne Aktivität, Mahnstufen für überfällige Rechnungen,
  * Ablauf von Wartelisten-Angeboten, abgelaufene Prüfungssimulationen, Löschlauf nach Aufbewahrungsfristen und
- * Stichtags-Aktivierung lizenzierter Fragenfassungen.
+ * Stichtags-Aktivierung lizenzierter Fragenfassungen und Kalibrierung der Fragen-Schwierigkeit.
  */
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);
@@ -68,5 +68,7 @@ export async function GET(request: NextRequest) {
   const { data: endedSupport } = await admin.rpc("expire_support_sessions");
   // 5) Stichtage lizenzierter Fragenkataloge (1. April, 1. Oktober): fällige Fassungen aktivieren
   const { data: activatedVersions } = await admin.rpc("activate_due_question_versions");
-  return NextResponse.json({ activatedVersions: activatedVersions ?? 0, learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0, purgedDocuments, purgedRequests: purgedRequests ?? 0, endedSupportSessions: endedSupport ?? 0 });
+  // 6) Schwierigkeit aus echten Antwortdaten kalibrieren (ab 30 Antworten je Frage, Gewicht 0,5)
+  const { data: calibrated } = await admin.rpc("calibrate_question_difficulty", { p_min_sample: 30, p_weight: 0.5 });
+  return NextResponse.json({ activatedVersions: activatedVersions ?? 0, calibratedQuestions: calibrated ?? 0, learnReminders: rows.length, dunned, expiredOffers: expiredOffers ?? 0, abandonedSimulations: abandoned ?? 0, purgedDocuments, purgedRequests: purgedRequests ?? 0, endedSupportSessions: endedSupport ?? 0 });
 }

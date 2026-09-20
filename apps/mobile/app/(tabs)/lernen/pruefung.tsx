@@ -5,7 +5,7 @@ import { apiFetch } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme";
 import { Button, Card, Loading, Screen, Txt } from "@/components/ui";
-import { QuestionMedia } from "@/components/question-media";
+import { QuestionMedia, VIDEO_GATE_HINT, videoGateOpen } from "@/components/question-media";
 
 interface ExamQ { id: string; position: number; points: number; text: string; mediaPath: string | null; mediaAlt: string | null; mediaCredit: string | null; numeric: boolean; answers: Array<{ position: number; text: string }> }
 interface Started { id: string; timeLimitSeconds: number | null; maxErrorPoints: number; questionsTotal: number; questions: ExamQ[] }
@@ -18,6 +18,7 @@ export default function Exam() {
   const [error, setError] = useState<string | null>(null);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<Record<string, { selected: number[]; numeric: string; unsure: boolean; ms: number }>>({});
+  const [videoSeen, setVideoSeen] = useState<Record<string, true>>({});
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -67,9 +68,10 @@ export default function Exam() {
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }}>{exam.questions.map((x, k) => { const an = answers[x.id]; const d = an && (x.numeric ? an.numeric !== "" : an.selected.length > 0); return <Pressable key={x.id} accessibilityLabel={`Frage ${k + 1}`} onPress={() => setI(k)} style={{ width: 30, height: 30, borderRadius: 6, alignItems: "center", justifyContent: "center", backgroundColor: an?.unsure ? t.colors.status.warning.surface : d ? t.colors.status.success.surface : t.colors.bg.muted, borderWidth: k === i ? 2 : 0, borderColor: t.colors.action.primary }}><Txt size={11}>{k + 1}</Txt></Pressable>; })}</View>
       <Card>
         <Txt muted size={12}>{q.points} Punkte</Txt>
-        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} onEnded={() => setVideoSeen((s) => ({ ...s, [q.id]: true }))} />
         <Txt bold size={18}>{q.text}</Txt>
-        {q.numeric ? <TextInput accessibilityLabel="Antwort als Zahl" value={a.numeric} onChangeText={(v) => upd({ numeric: v })} keyboardType="decimal-pad" style={{ minHeight: 48, borderWidth: 1, borderColor: t.colors.border.default, borderRadius: 12, paddingHorizontal: 12, width: 160, color: t.colors.text.primary }} />
+        {!videoGateOpen(q.mediaPath, null, videoSeen[q.id] === true) ? <Txt muted size={14}>{VIDEO_GATE_HINT}</Txt>
+          : q.numeric ? <TextInput accessibilityLabel="Antwort als Zahl" value={a.numeric} onChangeText={(v) => upd({ numeric: v })} keyboardType="decimal-pad" style={{ minHeight: 48, borderWidth: 1, borderColor: t.colors.border.default, borderRadius: 12, paddingHorizontal: 12, width: 160, color: t.colors.text.primary }} />
           : q.answers.map((ans) => { const sel = a.selected.includes(ans.position); return <Pressable key={ans.position} accessibilityRole="checkbox" accessibilityState={{ checked: sel }} onPress={() => upd({ selected: sel ? a.selected.filter((x) => x !== ans.position) : [...a.selected, ans.position] })} style={{ minHeight: 52, borderWidth: 2, borderRadius: 12, padding: 12, borderColor: sel ? t.colors.action.primary : t.colors.border.default, backgroundColor: sel ? t.colors.accent.surface : t.colors.bg.surface }}><Txt>{sel ? "☑ " : "☐ "}{ans.text}</Txt></Pressable>; })}
         <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: a.unsure }} onPress={() => upd({ unsure: !a.unsure })} style={{ minHeight: 44, justifyContent: "center" }}><Txt muted>{a.unsure ? "☑" : "☐"} Unsicher, später prüfen</Txt></Pressable>
       </Card>

@@ -103,12 +103,14 @@ async function writeQuestion(sql: postgres.Sql, catalog: OfficialCatalog, q: Off
   if (existing) {
     questionId = existing.id;
     await sql`update public.theory_questions set topic_id = ${topicId}, material_kind = ${q.material_kind}, license_codes = ${sql.array(q.license_codes)}, points = ${q.points},
-      difficulty = ${q.difficulty ?? 0.5}, question_kind = ${q.kind}, status = 'published', tags = ${sql.array(q.tags)} where id = ${questionId}`;
+      authored_difficulty = ${q.difficulty ?? 0.5},
+      difficulty = case when calibration_sample = 0 or authored_difficulty is distinct from ${q.difficulty ?? 0.5}::numeric then ${q.difficulty ?? 0.5} else difficulty end,
+      question_kind = ${q.kind}, status = 'published', tags = ${sql.array(q.tags)} where id = ${questionId}`;
     // Bisherige Fassung endet am Vortag des Stichtags
     await sql`update public.question_versions set valid_until = (${catalog.valid_from}::date - 1) where question_id = ${questionId} and valid_until is null and valid_from < ${catalog.valid_from}::date`;
   } else {
-    const [row] = await sql<{ id: string }[]>`insert into public.theory_questions (tenant_id, external_ref, source, license_id_for_source, topic_id, material_kind, license_codes, points, difficulty, question_kind, status, tags)
-      values (null, ${q.external_ref}, ${SOURCE}, ${catalog.license_id}, ${topicId}, ${q.material_kind}, ${sql.array(q.license_codes)}, ${q.points}, ${q.difficulty ?? 0.5}, ${q.kind}, 'published', ${sql.array(q.tags)}) returning id`;
+    const [row] = await sql<{ id: string }[]>`insert into public.theory_questions (tenant_id, external_ref, source, license_id_for_source, topic_id, material_kind, license_codes, points, difficulty, authored_difficulty, question_kind, status, tags)
+      values (null, ${q.external_ref}, ${SOURCE}, ${catalog.license_id}, ${topicId}, ${q.material_kind}, ${sql.array(q.license_codes)}, ${q.points}, ${q.difficulty ?? 0.5}, ${q.difficulty ?? 0.5}, ${q.kind}, 'published', ${sql.array(q.tags)}) returning id`;
     questionId = row!.id;
   }
   const [{ next }] = await sql<{ next: number }[]>`select coalesce(max(version), 0) + 1 as next from public.question_versions where question_id = ${questionId}`;

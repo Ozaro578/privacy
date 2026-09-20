@@ -12,7 +12,14 @@ export function questionMediaKind(path: string, kind?: string | null): QuestionM
   return /\.(mp4|webm)(\?|$)/i.test(path) ? "video" : "image";
 }
 
-export function QuestionMedia({ path, alt, credit, kind, className = "" }: { path: string | null | undefined; alt: string | null | undefined; credit?: string | null | undefined; kind?: string | null | undefined; className?: string }) {
+/** Videofragen: Antworten erscheinen wie in der Prüfung erst nach dem ersten vollständigen Abspielen. */
+export function videoGateOpen(path: string | null | undefined, kind: string | null | undefined, seen: boolean): boolean {
+  return !path || questionMediaKind(path, kind) !== "video" || seen;
+}
+
+export const VIDEO_GATE_HINT = "Sieh dir das Video an. Die Antworten erscheinen nach dem Abspielen; du kannst es beliebig oft wiederholen.";
+
+export function QuestionMedia({ path, alt, credit, kind, onEnded, className = "" }: { path: string | null | undefined; alt: string | null | undefined; credit?: string | null | undefined; kind?: string | null | undefined; onEnded?: () => void; className?: string }) {
   if (!path) return null;
   const isVideo = questionMediaKind(path, kind) === "video";
   return (
@@ -20,7 +27,7 @@ export function QuestionMedia({ path, alt, credit, kind, className = "" }: { pat
       <div className="flex justify-center rounded-xl bg-ink-50 p-3">
         {isVideo ? (
           // Videofrage: Ablauf ohne Ton, Bedienelemente sichtbar, kein automatischer Start (Prüfungsablauf wird vom Runner gesteuert)
-          <video src={questionMediaUrl(path)} controls playsInline preload="metadata" aria-label={alt ?? "Video zur Frage"} className="max-h-80 w-auto max-w-full rounded-lg bg-black">
+          <video src={questionMediaUrl(path)} controls playsInline preload="metadata" onEnded={onEnded} aria-label={alt ?? "Video zur Frage"} className="max-h-80 w-auto max-w-full rounded-lg bg-black">
             <p>{alt ?? "Video zur Frage"}</p>
           </video>
         ) : (

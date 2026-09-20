@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitExamSimulation } from "@/lib/actions/exam";
 import { btn, Alert } from "@/components/ui";
-import { QuestionMedia } from "./question-media";
+import { QuestionMedia, VIDEO_GATE_HINT, videoGateOpen } from "./question-media";
 
 export interface ExamQuestionView { id: string; position: number; text: string; points: number; mediaPath: string | null; mediaAlt: string | null; mediaCredit: string | null; numeric: boolean; answers: Array<{ position: number; text: string }>; }
 interface Answer { selected: number[]; numeric: string; unsure: boolean; ms: number }
@@ -12,6 +12,7 @@ export function ExamRunner({ simulationId, questions, timeLimitSeconds, startedA
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
+  const [videoSeen, setVideoSeen] = useState<Record<string, true>>({});
   const [confirm, setConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -54,9 +55,11 @@ export function ExamRunner({ simulationId, questions, timeLimitSeconds, startedA
       </div>
       <div className="rounded-card bg-surface p-5 shadow-card">
         <p className="text-xs text-ink-500">{q.points} Punkte</p>
-        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} onEnded={() => setVideoSeen((s) => ({ ...s, [q.id]: true }))} />
         <p className="text-lg font-medium">{q.text}</p>
-        {q.numeric ? (
+        {!videoGateOpen(q.mediaPath, null, videoSeen[q.id] === true) ? (
+          <p className="mt-4 rounded-xl bg-ink-100 p-3 text-sm text-ink-700" role="status">{VIDEO_GATE_HINT}</p>
+        ) : q.numeric ? (
           <div className="mt-4"><label htmlFor="num" className="mb-1 block text-sm">Antwort (Zahl)</label><input id="num" inputMode="decimal" value={a.numeric} onChange={(e) => update({ numeric: e.target.value })} className="w-40 rounded-xl border border-ink-300 px-3 py-3 text-lg" /></div>
         ) : (
           <ul className="mt-4 space-y-2">{q.answers.map((ans) => { const sel = a.selected.includes(ans.position); return <li key={ans.position}><label className={`flex cursor-pointer items-start gap-3 rounded-xl border-2 p-3 ${sel ? "border-brand-500 bg-brand-50" : "border-ink-300"}`}><input type="checkbox" className="mt-1 h-5 w-5" checked={sel} onChange={() => update({ selected: sel ? a.selected.filter((p) => p !== ans.position) : [...a.selected, ans.position] })} /><span>{ans.text}</span></label></li>; })}</ul>

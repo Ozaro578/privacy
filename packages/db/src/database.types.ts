@@ -3211,6 +3211,9 @@ export type Database = {
           created_at: string;
           updated_at: string;
           tags: string[];
+          authored_difficulty: number | null;
+          calibration_sample: number;
+          calibrated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -3230,6 +3233,9 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           tags?: string[];
+          authored_difficulty?: number | null;
+          calibration_sample?: number;
+          calibrated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -3249,6 +3255,9 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           tags?: string[];
+          authored_difficulty?: number | null;
+          calibration_sample?: number;
+          calibrated_at?: string | null;
         };
         Relationships: [
           { foreignKeyName: "theory_questions_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
@@ -3600,6 +3609,7 @@ export type Database = {
       anonymize_student: { Args: { p_student_id: string; p_legal_hold_until?: string | null }; Returns: unknown };
       book_lesson: { Args: { p_lesson_id: string; p_student_license_id: string; p_client_request_id?: string | null }; Returns: Database["public"]["Tables"]["lessons"]["Row"] };
       bump_learning_session: { Args: { p_session_id: string; p_correct: boolean }; Returns: unknown };
+      calibrate_question_difficulty: { Args: { p_min_sample?: number | null; p_weight?: number | null }; Returns: number };
       cancel_lesson: { Args: { p_lesson_id: string; p_reason?: string | null; p_client_request_id?: string | null }; Returns: Database["public"]["Tables"]["lesson_bookings"]["Row"] };
       checkin_theory_class: { Args: { p_token: string; p_device_fingerprint?: string | null; p_geo_distance_m?: number | null }; Returns: Database["public"]["Tables"]["attendance"]["Row"] };
       confirm_lesson_booking: { Args: { p_lesson_id: string }; Returns: Database["public"]["Tables"]["lessons"]["Row"] };

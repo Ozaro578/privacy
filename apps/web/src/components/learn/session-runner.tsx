@@ -4,7 +4,7 @@ import Link from "next/link";
 import { recordAttempt, finishLearningSession, toggleBookmark, type StartedSession, type AttemptResult } from "@/lib/actions/learning";
 import { btn, Alert } from "@/components/ui";
 import { WhyButton } from "./why-button";
-import { QuestionMedia } from "./question-media";
+import { QuestionMedia, VIDEO_GATE_HINT, videoGateOpen } from "./question-media";
 import { Confetti, playSuccessTone } from "./celebration";
 import { ReadAloud } from "./read-aloud";
 
@@ -16,6 +16,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
   const [numeric, setNumeric] = useState("");
   const [confidence, setConfidence] = useState<1 | 2 | 3 | null>(null);
   const [phase, setPhase] = useState<Phase>("answer");
+  const [videoSeen, setVideoSeen] = useState(false);
   const [result, setResult] = useState<AttemptResult | null>(null);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, xp: 0, badges: [] as string[] });
   const [finish, setFinish] = useState<{ challengeCompleted: boolean; bonusXp: number } | null>(null);
@@ -30,7 +31,8 @@ export function SessionRunner({ session }: { session: StartedSession }) {
 
   useEffect(() => { startedAt.current = Date.now(); attemptId.current = crypto.randomUUID(); }, [index]);
 
-  const canSubmit = q.numeric ? numeric.trim() !== "" : selected.length > 0;
+  const gateOpen = videoGateOpen(q.mediaPath, null, videoSeen);
+  const canSubmit = gateOpen && (q.numeric ? numeric.trim() !== "" : selected.length > 0);
 
   function submit() {
     if (!canSubmit || pending) return;
@@ -52,7 +54,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
       start(async () => { const f = await finishLearningSession(session.sessionId); setFinish(f); setPhase("done"); if (f.challengeCompleted || stats.correct / total >= 0.8) playSuccessTone("finish"); });
       return;
     }
-    setIndex(index + 1); setSelected([]); setNumeric(""); setConfidence(null); setResult(null); setPhase("answer"); setError(null);
+    setIndex(index + 1); setSelected([]); setNumeric(""); setConfidence(null); setResult(null); setPhase("answer"); setError(null); setVideoSeen(false);
   }
 
   const progress = useMemo(() => Math.round(((index + (phase === "feedback" ? 1 : 0)) / total) * 100), [index, phase, total]);
@@ -88,9 +90,11 @@ export function SessionRunner({ session }: { session: StartedSession }) {
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
       <div className="rounded-card bg-surface p-5 shadow-card">
         <div className="mb-2 flex items-center justify-between gap-2">{q.source === "own" ? <p className="text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p> : <span />}<ReadAloud text={[q.text, ...q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`), ...(phase === "feedback" && result ? [result.correct ? "Richtig." : "Nicht richtig.", result.explanation ?? ""] : [])].join(". ")} /></div>
-        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
+        <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} onEnded={() => setVideoSeen(true)} />
         <p className="text-lg font-medium">{q.text}</p>
-        {q.numeric ? (
+        {!gateOpen ? (
+          <p className="mt-4 rounded-xl bg-ink-100 p-3 text-sm text-ink-700" role="status">{VIDEO_GATE_HINT}</p>
+        ) : q.numeric ? (
           <div className="mt-4">
             <label htmlFor="numeric" className="mb-1 block text-sm font-medium">Antwort (Zahl)</label>
             <input id="numeric" inputMode="decimal" value={numeric} onChange={(e) => setNumeric(e.target.value)} disabled={phase === "feedback"} className="w-40 rounded-xl border border-ink-300 px-3 py-3 text-lg" />

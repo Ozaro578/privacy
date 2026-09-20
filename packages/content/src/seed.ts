@@ -47,13 +47,16 @@ async function seedQuestions(sql: Sql, topicIds: Map<TopicCode, string>): Promis
       await sql`
         update public.theory_questions
         set topic_id = ${topicId}, material_kind = ${q.materialKind}, license_codes = ${sql.array(q.licenseCodes)}, points = ${q.points},
-            difficulty = ${q.difficulty}, question_kind = ${q.kind}, status = ${q.reviewStatus}, tags = ${sql.array(q.tags)}
+            authored_difficulty = ${q.difficulty},
+            -- kalibrierte Schwierigkeit nur überschreiben, wenn der redaktionelle Wert sich geändert hat oder noch keine Kalibrierung vorliegt
+            difficulty = case when calibration_sample = 0 or authored_difficulty is distinct from ${q.difficulty}::numeric then ${q.difficulty} else difficulty end,
+            question_kind = ${q.kind}, status = ${q.reviewStatus}, tags = ${sql.array(q.tags)}
         where id = ${questionId}`;
       updated += 1;
     } else {
       const [row] = await sql<{ id: string }[]>`
-        insert into public.theory_questions (tenant_id, external_ref, source, topic_id, material_kind, license_codes, points, difficulty, question_kind, status, tags)
-        values (null, ${q.code}, ${CONTENT_SOURCE}, ${topicId}, ${q.materialKind}, ${sql.array(q.licenseCodes)}, ${q.points}, ${q.difficulty}, ${q.kind}, ${q.reviewStatus}, ${sql.array(q.tags)})
+        insert into public.theory_questions (tenant_id, external_ref, source, topic_id, material_kind, license_codes, points, difficulty, authored_difficulty, question_kind, status, tags)
+        values (null, ${q.code}, ${CONTENT_SOURCE}, ${topicId}, ${q.materialKind}, ${sql.array(q.licenseCodes)}, ${q.points}, ${q.difficulty}, ${q.difficulty}, ${q.kind}, ${q.reviewStatus}, ${sql.array(q.tags)})
         returning id`;
       if (!row) throw new Error(`Frage ${q.code} konnte nicht angelegt werden`);
       questionId = row.id;
