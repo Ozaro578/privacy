@@ -72,7 +72,16 @@ npm run test:letter -- mein-brief.jpg tr  # eigene Datei, Türkisch
 
 Erwartung: Termin 24.09.2026 09:30, Frist 31.10.2026, Widerspruchsfrist als Regel (date null), 178,40 € zahlen, scam_risk niedrig.
 
-## Deploy auf Render.com (ein Klick)
+## Deploy auf Netlify (empfohlen, kostenlos)
+
+Netlify-Projekt **briefklar-l2bx** existiert bereits (Team-Konto). Verbinden in zwei Schritten:
+
+1. app.netlify.com → Projekt *briefklar-l2bx* → **Project configuration → Build & deploy → Link repository** → GitHub `ozaro578/privacy`, Branch `claude/bold-fermat-vb5mnt`. Die `netlify.toml` im Repo-Root regelt Build und Functions.
+2. **Environment variables** → `ANTHROPIC_API_KEY` eintragen (Scope: Functions). `ANTHROPIC_MODEL` und `ANTHROPIC_EFFORT` sind schon gesetzt.
+
+Technik: `netlify/functions/explain-background.mts` wertet den Brief im Hintergrund aus (bis 15 min, kein Timeout-Risiko), das Ergebnis wartet kurz in Netlify Blobs, `result.mts` liefert es einmalig aus und löscht es, `cleanup-scheduled.mts` räumt stündlich auf. Rate-Limit 20 Briefe / 15 min pro IP über Netlify.
+
+## Deploy auf Render.com (Alternative)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ozaro578/privacy)
 

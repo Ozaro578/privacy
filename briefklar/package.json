@@ -19,5 +19,10 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@netlify/blobs": "^11.1.0",
+    "@netlify/functions": "^6.0.0",
+    "netlify-cli": "^27.8.0"
   }
 }
