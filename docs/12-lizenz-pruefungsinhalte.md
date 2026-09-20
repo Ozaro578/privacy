@@ -35,9 +35,9 @@ Empfehlung: Option A anfragen und parallel Option C weiter ausbauen. Die App ver
 
 - Datenmodell: `theory_questions.source` kennt `own` und `official_licensed`, jede lizenzierte Frage trägt eine Lizenzkennung (`license_id_for_source`, Constraint in Migration 0027). `tenant_content_licenses` (Migration 0027) hält je Fahrschule Lizenzkennung, Lizenzgeber, Laufzeit, Plätze und Vertragsnummer; die RLS-Regel auf `theory_questions` blendet lizenzierte Fragen ohne heute gültige Lizenz des Mandanten aus (Versionen und Antworten hängen daran). Plattform-Admins hinterlegen und beenden Lizenzen unter `/plattform/fahrschulen`, Fahrschulen sehen ihren Stand unter Einstellungen. SQL-Test Gruppe 13 prüft Sichtbarkeit ohne, mit abgelaufener und mit gültiger Lizenz sowie die Mandantentrennung. Ohne Lizenz sehen Schüler nur eigene Übungsfragen mit dem Hinweis "Übungsfrage (kein amtlicher Prüfungsinhalt)".
 - Versionierung: `question_versions` mit `valid_from` und `valid_until` bildet die halbjährlichen Änderungsdienste ab; alte Versionen bleiben für laufende Schüler gültig, neue werden zum Stichtag aktiv.
-- Medien: `question_versions` speichert Pfad, Alt-Text und Quelle je Bild; Videos brauchen ein zusätzliches Feld `media_kind = video` und einen Player (Web: HTML5 video, Mobile: expo-video). Das ist der einzige größere Umbau, der mit der Lizenz kommt.
+- Medien: `question_versions` speichert Pfad, Art (`image` oder `video`), Alt-Text und Quelle; Web (HTML5-Video) und App (expo-video) spielen Videofragen ab, Auslieferung über signierte URLs aus dem privaten Bucket.
 - Prüfungssimulation: Die Regeln (30 Fragen, 10 Fehlerpunkte, zwei 5-Punkte-Fragen) liegen in `rule_versions` und gelten unverändert.
-- Import: Ein Importskript für die gelieferte Datenbank ist noch zu schreiben, sobald das Datenformat bekannt ist (Codes `off-<Fragenummer>`, Zuordnung Kapitel zu Themen, Punkte aus dem Katalog statt aus eigener Vergabe).
+- Import: fertig (`pnpm --filter @fahrpilot/content import-official`, Austauschformat, Versionierung mit Stichtagen, Medien-Upload, Audit), siehe `13-import-amtlicher-katalog.md`. Offen ist nur der Mapper vom Lieferformat des Lizenzgebers in das Austauschformat.
 
 ## 6. Vorlage für die Anfrage
 

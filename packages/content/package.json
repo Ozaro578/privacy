@@ -14,10 +14,13 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "seed": "tsx src/seed.ts",
-    "abnahme": "tsx scripts/gen-abnahme.ts"
+    "abnahme": "tsx scripts/gen-abnahme.ts",
+    "import-official": "tsx scripts/import-official.ts"
   },
   "dependencies": {
-    "postgres": "^3.4.5"
+    "@supabase/supabase-js": "^2.116.0",
+    "postgres": "^3.4.5",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

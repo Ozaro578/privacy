@@ -3596,6 +3596,7 @@ export type Database = {
     Views: {
     };
     Functions: {
+      activate_due_question_versions: { Args: {  }; Returns: number };
       anonymize_student: { Args: { p_student_id: string; p_legal_hold_until?: string | null }; Returns: unknown };
       book_lesson: { Args: { p_lesson_id: string; p_student_license_id: string; p_client_request_id?: string | null }; Returns: Database["public"]["Tables"]["lessons"]["Row"] };
       bump_learning_session: { Args: { p_session_id: string; p_correct: boolean }; Returns: unknown };

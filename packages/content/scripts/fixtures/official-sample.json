@@ -1,0 +1,55 @@
+{
+  "format": "fahrpilot-official-1",
+  "license_id": "BEISPIEL-LIZENZ",
+  "licensor": "Beispiel-Lizenzgeber (Testdaten, kein amtlicher Inhalt)",
+  "valid_from": "2026-10-01",
+  "locale": "de",
+  "legal_basis_date": "2026-09-01",
+  "source_note": "Beispiel-Lieferung zum Test der Import-Pipeline",
+  "questions": [
+    {
+      "external_ref": "TEST-1.0.01-001",
+      "topic": "vorfahrt",
+      "material_kind": "basic",
+      "points": 5,
+      "kind": "multiple_choice",
+      "difficulty": 0.4,
+      "text": "Sie nähern sich einer Kreuzung ohne Verkehrszeichen. Von rechts kommt ein Pkw. Wer fährt zuerst?",
+      "answers": [
+        { "text": "Der Pkw von rechts", "correct": true },
+        { "text": "Sie, weil Sie zuerst an der Kreuzung sind", "correct": false, "explanation": "Die Ankunftsreihenfolge spielt keine Rolle." }
+      ],
+      "explanation": "Ohne Verkehrszeichen gilt rechts vor links.",
+      "legal_reference": "§ 8 Abs. 1 StVO",
+      "tags": ["rechts_vor_links"],
+      "media": { "file": "test-kreuzung.svg", "kind": "image", "alt": "Kreuzung ohne Zeichen, Pkw von rechts" }
+    },
+    {
+      "external_ref": "TEST-1.0.02-002",
+      "topic": "gefahrenlehre",
+      "material_kind": "basic",
+      "points": 3,
+      "kind": "video",
+      "text": "Wie verhalten Sie sich in dieser Situation?",
+      "answers": [
+        { "text": "Ich bremse und lasse den Fußgänger die Straße überqueren", "correct": true },
+        { "text": "Ich hupe und fahre mit unveränderter Geschwindigkeit weiter", "correct": false, "explanation": "Fußgänger am Zebrastreifen haben Vorrang." },
+        { "text": "Ich beschleunige, um vor dem Fußgänger vorbei zu sein", "correct": false, "explanation": "Das gefährdet den Fußgänger." }
+      ],
+      "explanation": "Am Fußgängerüberweg müssen Sie Fußgängern das Überqueren ermöglichen.",
+      "legal_reference": "§ 26 StVO",
+      "media": { "file": "test-zebrastreifen.mp4", "kind": "video", "alt": "Fahrt auf einen Fußgängerüberweg zu, ein Fußgänger wartet am Rand" }
+    },
+    {
+      "external_ref": "TEST-1.0.03-003",
+      "topic": "fahrphysik",
+      "material_kind": "basic",
+      "points": 2,
+      "kind": "numeric",
+      "text": "Wie lang ist der Reaktionsweg bei 50 km/h nach der Faustformel?",
+      "numeric_answer": 15,
+      "tolerance": 0,
+      "explanation": "Reaktionsweg = (50 / 10) mal 3 = 15 m."
+    }
+  ]
+}

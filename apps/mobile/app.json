@@ -35,7 +35,8 @@
       "expo-sqlite",
       ["expo-notifications", { "color": "#2B66B0" }],
       ["expo-camera", { "cameraPermission": "FahrPilot nutzt die Kamera für den QR-Check-in im Theorieunterricht." }],
-      ["expo-image-picker", { "photosPermission": "FahrPilot greift auf Fotos zu, um Dokumente hochzuladen." }]
+      ["expo-image-picker", { "photosPermission": "FahrPilot greift auf Fotos zu, um Dokumente hochzuladen." }],
+      ["expo-video", { "supportsBackgroundPlayback": false, "supportsPictureInPicture": false }]
     ],
     "experiments": { "typedRoutes": false },
     "extra": {

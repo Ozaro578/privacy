@@ -390,5 +390,33 @@ do $$ begin
   exception when insufficient_privilege then null; end;
 end $$;
 
+-- 15) Stichtags-Aktivierung lizenzierter Fragen: heutige Fassung sichtbar, künftige Fassung wartet, ohne Fassung zurückgezogen
+insert into public.theory_questions (id, topic_id, material_kind, points, status, source, license_id_for_source) values
+  ('b0000000-0000-0000-0000-000000000021', (select id from public.topics where code = 'vorfahrt'), 'basic', 3, 'draft', 'official_licensed', 'ARGE-TEST-2026'),
+  ('b0000000-0000-0000-0000-000000000022', (select id from public.topics where code = 'vorfahrt'), 'basic', 3, 'draft', 'official_licensed', 'ARGE-TEST-2026'),
+  ('b0000000-0000-0000-0000-000000000023', (select id from public.topics where code = 'vorfahrt'), 'basic', 3, 'published', 'official_licensed', 'ARGE-TEST-2026');
+insert into public.question_versions (id, question_id, version, text, valid_from, valid_until, review_status) values
+  ('b0000000-0000-0000-0000-000000000031', 'b0000000-0000-0000-0000-000000000021', 1, 'Alt', current_date - 200, current_date - 1, 'published'),
+  ('b0000000-0000-0000-0000-000000000032', 'b0000000-0000-0000-0000-000000000021', 2, 'Neu', current_date, null, 'published'),
+  ('b0000000-0000-0000-0000-000000000033', 'b0000000-0000-0000-0000-000000000022', 1, 'Künftig', current_date + 10, null, 'published'),
+  ('b0000000-0000-0000-0000-000000000034', 'b0000000-0000-0000-0000-000000000023', 1, 'Abgelaufen', current_date - 200, current_date - 1, 'retired');
+update public.theory_questions set current_version_id = 'b0000000-0000-0000-0000-000000000031' where id = 'b0000000-0000-0000-0000-000000000021';
+update public.theory_questions set current_version_id = 'b0000000-0000-0000-0000-000000000034' where id = 'b0000000-0000-0000-0000-000000000023';
+do $$ declare n integer; begin
+  n := public.activate_due_question_versions();
+  if n <> 3 then raise exception 'Erwartet 3 Änderungen, erhalten %', n; end if;
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000021' and status = 'published' and current_version_id = 'b0000000-0000-0000-0000-000000000032') then raise exception 'Heutige Fassung nicht aktiviert'; end if;
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000022' and status = 'approved') then raise exception 'Künftige Fassung nicht als wartend markiert'; end if;
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000023' and status = 'retired') then raise exception 'Frage ohne gültige Fassung nicht zurückgezogen'; end if;
+  if public.activate_due_question_versions() <> 0 then raise exception 'Zweiter Lauf ändert erneut'; end if;
+end $$;
+-- Schüler mit Lizenz sieht die heutige, aber nicht die künftige oder zurückgezogene Fassung
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000021') then raise exception 'Aktivierte Frage unsichtbar'; end if;
+  if exists (select 1 from public.theory_questions where id in ('b0000000-0000-0000-0000-000000000022', 'b0000000-0000-0000-0000-000000000023')) then raise exception 'Wartende oder zurückgezogene Frage sichtbar'; end if;
+end $$;
+select pg_temp.logout();
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;
