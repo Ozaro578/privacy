@@ -31,12 +31,12 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 
 ## 3. Noch offen (Software)
 
-- Lasttests für Kalender und Simulation, E2E-Suiten über alle 21 Flows (aktuell Unit, SQL und einzelne E2E).
+- E2E: öffentliche Seiten, Vorschau-Lernsession und Farbwelten laufen in CI (Playwright); Flüsse mit Anmeldung brauchen ein Staging-Supabase. Lasttest-Skripte (k6) liegen unter tests/load und müssen gegen Staging ausgeführt werden.
 - Regelwerte für die Klassen außer B verifizieren und veröffentlichen.
 - Löschlauf: Dokumente mit abgelaufener Frist werden täglich entfernt; Fristen je Kategorie aus `retention_policies` müssen fachlich bestätigt werden (review_status).
 - Support-Zugriff mit Freigabe (support_access_grants) in der Oberfläche.
 - Externer Penetrationstest, Datenschutz-Folgenabschätzung, AVV-Dokumente.
-- Observability (Sentry, Alarme), Backup- und Wiederherstellungstest, Runbooks.
+- Observability: Fehler-Hook mit optionalem Webhook umgesetzt; Alarme und Wiederherstellungstest in Staging offen. Runbooks: docs/10-runbooks.md.
 - Pilotbetrieb mit einer Fahrschule inklusive Hypercare.
 
 ## 4. Grobe Restschätzung

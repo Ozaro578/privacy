@@ -36,6 +36,10 @@ Stripe-Webhook auf `NEXT_PUBLIC_APP_URL/api/webhooks/stripe` mit Events `payment
 EAS Build mit Profilen `development`, `preview`, `production`; Env `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`; Push über Expo Push Service (FCM/APNs-Zugangsdaten in EAS hinterlegen). Deep Link `fahrpilot://` und Universal Links auf `NEXT_PUBLIC_APP_URL`.
 
 ## Überwachung
+
+- Serverfehler werden über `apps/web/src/instrumentation.ts` strukturiert geloggt (JSON) und, wenn `ERROR_REPORT_WEBHOOK_URL` (optional `ERROR_REPORT_WEBHOOK_TOKEN`) gesetzt ist, an einen Sammler gesendet (Sentry-kompatibler Endpoint, Better Stack, eigener Webhook). Ohne Personendaten.
+- Lasttests: `tests/load/README.md` (k6), nur gegen Staging.
+- Runbooks für Vorfall, Rollback, Migration und Wiederherstellung: `docs/10-runbooks.md`.
 Sentry (Web und Mobile), Supabase-Logs, Alarm bei Cron-Fehlern (HTTP-Status der Cron-Routen), Kostenüberwachung der KI-Aufrufe über `coach_messages.input_tokens/output_tokens`.
 
 ## Datenschutz im Betrieb
