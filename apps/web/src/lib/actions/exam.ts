@@ -40,7 +40,13 @@ export async function createExamSimulation(): Promise<CreatedExamSimulation> {
   const pool = await loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, ctx.student.preferred_locale);
   const { data: recent } = await ctx.db.from("exam_simulations").select("question_ids").eq("student_id", ctx.student.id).order("started_at", { ascending: false }).limit(3);
   const recentlyUsed = new Set((recent ?? []).flatMap((r) => r.question_ids));
-  const questions = composeExam(rule.rules, pool.map((q) => ({ id: q.id, material_kind: q.material_kind, points: q.points, topic_id: q.topic_id })), { recentlyUsed });
+  // Zeichenfragen aus dem Katalog (400+) auf einen prüfungsnahen Anteil begrenzen, damit die Simulation nicht von Zeichen dominiert wird.
+  const signQuestions = pool.filter((q) => (q.tags ?? []).includes("zeichenkatalog"));
+  const others = pool.filter((q) => !(q.tags ?? []).includes("zeichenkatalog"));
+  const signCap = Math.max(10, Math.round(others.length * 0.15));
+  const sampledSigns = signQuestions.length > signCap ? signQuestions.map((q) => ({ q, r: Math.random() })).sort((a, b) => a.r - b.r).slice(0, signCap).map((x) => x.q) : signQuestions;
+  const examPool = [...others, ...sampledSigns];
+  const questions = composeExam(rule.rules, examPool.map((q) => ({ id: q.id, material_kind: q.material_kind, points: q.points, topic_id: q.topic_id })), { recentlyUsed });
   const clientSessionId = crypto.randomUUID();
   const admin = createSupabaseAdminClient();
   const { data: sim, error } = await admin.from("exam_simulations").insert({

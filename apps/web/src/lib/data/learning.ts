@@ -12,6 +12,7 @@ export interface QuestionWithVersion {
   question_kind: string;
   source: string;
   external_ref: string | null;
+  tags: string[];
   version: {
     id: string;
     text: string;
@@ -33,7 +34,7 @@ export interface QuestionWithVersion {
 export async function loadQuestionPool(db: Db, licenseCode: string, baseClass: string | null, locale = "de"): Promise<QuestionWithVersion[]> {
   const { data, error } = await db
     .from("theory_questions")
-    .select("id, topic_id, material_kind, points, difficulty, question_kind, source, external_ref, license_codes, current_version_id, question_versions!theory_questions_current_version_fk(id, text, media_path, media_kind, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, locale, question_answers(id, position, text, is_correct, explanation))")
+    .select("id, topic_id, material_kind, points, difficulty, question_kind, source, external_ref, license_codes, tags, current_version_id, question_versions!theory_questions_current_version_fk(id, text, media_path, media_kind, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, locale, question_answers(id, position, text, is_correct, explanation))")
     .eq("status", "published");
   if (error) throw new Error(error.message);
   const codes = [licenseCode, baseClass].filter(Boolean) as string[];
@@ -44,15 +45,15 @@ export async function loadQuestionPool(db: Db, licenseCode: string, baseClass: s
     const v = q.question_versions as unknown as (QuestionWithVersion["version"] & { locale: string; question_answers: QuestionWithVersion["version"]["answers"] }) | null;
     if (!v || v.locale !== locale) continue;
     out.push({
-      id: q.id, topic_id: q.topic_id, material_kind: q.material_kind as "basic" | "class_specific", points: q.points, difficulty: Number(q.difficulty), question_kind: q.question_kind, source: q.source, external_ref: q.external_ref,
+      id: q.id, topic_id: q.topic_id, material_kind: q.material_kind as "basic" | "class_specific", points: q.points, difficulty: Number(q.difficulty), question_kind: q.question_kind, source: q.source, external_ref: q.external_ref, tags: (q.tags ?? []) as string[],
       version: { ...v, answers: [...(v.question_answers ?? [])].sort((a, b) => a.position - b.position) },
     });
   }
   return out;
 }
 
-export function toMeta(q: QuestionWithVersion, tags: string[] = []): QuestionMeta {
-  return { id: q.id, topic_id: q.topic_id, points: q.points, difficulty: q.difficulty, tags };
+export function toMeta(q: QuestionWithVersion, tags?: string[]): QuestionMeta {
+  return { id: q.id, topic_id: q.topic_id, points: q.points, difficulty: q.difficulty, tags: tags ?? q.tags };
 }
 
 export function rowToState(r: Tables<"student_question_state">): QuestionState {
