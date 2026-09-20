@@ -11,6 +11,7 @@ import { applyLocalReview, engineStates, evaluateAnswer, selectLocalQuestions } 
 import type { LocalQuestion, LocalQuestionState, LocalTopic } from "@/offline/types";
 import { Button, Card, Loading, Screen, Txt } from "@/components/ui";
 import { QuestionMedia } from "@/components/question-media";
+import { ReadAloud } from "@/components/read-aloud";
 
 export default function Session() {
   const t = useTheme();
@@ -85,6 +86,7 @@ export default function Session() {
         {q.source === "own" && <Txt muted size={12}>Übungsfrage (kein amtlicher Prüfungsinhalt)</Txt>}
         <QuestionMedia path={q.media_path} alt={q.media_alt} credit={q.media_credit} />
         <Txt bold size={18}>{q.text}</Txt>
+        <ReadAloud text={[q.text, ...q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`)].join(". ")} />
         {q.numeric_answer !== null ? (
           <View><TextInput accessibilityLabel="Antwort als Zahl" value={numeric} onChangeText={setNumeric} keyboardType="decimal-pad" editable={!fb} style={{ minHeight: 48, borderWidth: 1, borderColor: t.colors.border.default, borderRadius: 12, paddingHorizontal: 12, color: t.colors.text.primary, width: 160 }} />{fb && <Txt color={fb.correct ? t.colors.status.success.text : t.colors.status.danger.text}>{fb.correct ? "Richtig" : `Falsch. Richtige Antwort: ${q.numeric_answer}`}</Txt>}</View>
         ) : q.answers.map((a) => {

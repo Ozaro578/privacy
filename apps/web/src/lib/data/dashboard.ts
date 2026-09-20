@@ -8,6 +8,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { loadTrainingStatus } from "./training";
 
 export interface DashboardData {
+  /** Serverzeit der Berechnung (ISO), für Tagesrechnungen ohne Date.now() in der Ansicht. */
+  now: string;
   overview: LearningOverview;
   readinessScore: number | null;
   readinessBand: string | null;
@@ -71,7 +73,7 @@ export async function loadDashboard(ctx: StudentContext): Promise<DashboardData>
   return {
     overview, readinessScore: readiness.score, readinessBand: readiness.band, readinessFactors: readiness.factors.map((f) => ({ key: f.key, label: f.label, detail: f.detail, score: f.score })),
     theoryPercent, practicalPercent: training.practicalPercent, nextLesson, nextTheoryClass, missingDocuments: (docs ?? []).map((d) => ({ id: d.id, title: d.title })), openInvoiceCents, unreadMessages: unread,
-    unreadNotifications: notifications ?? [], streak, todayGoal: goal ? { answered: goal.answered, target: goal.target_questions, achieved: goal.achieved, challengeDone: goal.challenge_done } : null, learnedToday, today: todayItems, training,
+    now: nowIso, unreadNotifications: notifications ?? [], streak, todayGoal: goal ? { answered: goal.answered, target: goal.target_questions, achieved: goal.achieved, challengeDone: goal.challenge_done } : null, learnedToday, today: todayItems, training,
     exams: { theoryAt: theoryExam?.scheduled_at ?? null, practicalAt: practicalExam?.scheduled_at ?? null, theoryStatus: license.theory_exam_status, practicalStatus: license.practical_exam_status },
     weaknessStatement: weakest ? `Persönliche Schwachstelle: ${weakest.name} (${Math.round(weakest.mastery * 100)} % Mastery)` : null,
   };

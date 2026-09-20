@@ -17,6 +17,7 @@ export default function PreviewPage() {
   if (process.env.NODE_ENV === "production" && process.env.PREVIEW_MODE !== "1") notFound();
   const in2d = new Date(nowMs() + 2 * 86_400_000 + 3 * 3_600_000).toISOString();
   const d: DashboardData = {
+    now: new Date(nowMs()).toISOString(),
     overview: { topics: [], totalQuestions: 202, answeredQuestions: 131, dueCount: 14, wrongCount: 9, bookmarkedCount: 6, unseenCount: 71, hardCount: 22, overallMastery: 0.71 },
     readinessScore: 71, readinessBand: "yellow_green", readinessFactors: [], theoryPercent: 78, practicalPercent: 62,
     nextLesson: { id: "1", start: in2d, end: in2d, instructor: "Max Mustermann", kind: "overland" }, nextTheoryClass: { id: "2", start: new Date(nowMs() + 4 * 86_400_000).toISOString(), title: "Vorfahrt" },

@@ -3,7 +3,7 @@ import type { DashboardData } from "@/lib/data/dashboard";
 import { Card, ProgressBar, ReadinessGauge, StatTile, Alert, btn, fmt } from "@/components/ui";
 import { TodayItemLink, todayHref } from "@/components/today-item-link";
 
-export interface TodayViewProps { firstName: string; licenseName: string; transmission: string; rulesNeedVerification: boolean; d: DashboardData }
+export interface TodayViewProps { firstName: string; licenseName: string; transmission: string; rulesNeedVerification: boolean; d: DashboardData; selfStudy?: boolean }
 
 function greeting(): string {
   const h = Number(new Date().toLocaleTimeString("de-DE", { timeZone: "Europe/Berlin", hour: "2-digit", hour12: false }));
@@ -11,8 +11,11 @@ function greeting(): string {
 }
 
 /** Darstellung der Heute-Seite, getrennt vom Datenzugriff (auch für die Vorschau nutzbar). */
-export function TodayView({ firstName, licenseName, transmission, rulesNeedVerification, d }: TodayViewProps) {
+export function TodayView({ firstName, licenseName, transmission, rulesNeedVerification, d, selfStudy = false }: TodayViewProps) {
   const first = d.today[0];
+  const daysToExam = d.exams.theoryAt ? Math.max(1, Math.ceil((new Date(d.exams.theoryAt).getTime() - new Date(d.now).getTime()) / 86_400_000)) : null;
+  const openQuestions = d.overview.unseenCount + d.overview.dueCount;
+  const perDay = daysToExam ? Math.max(5, Math.ceil(openQuestions / daysToExam)) : null;
   return (
     <div className="space-y-5">
       <header className="flex items-start justify-between gap-4">
@@ -58,12 +61,21 @@ export function TodayView({ firstName, licenseName, transmission, rulesNeedVerif
         </Card>
       )}
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {perDay !== null && daysToExam !== null && (
+        <Card className="border border-brand-100">
+          <p className="text-xs uppercase tracking-wide text-ink-500">Lernplan bis zur Theorieprüfung</p>
+          <p className="font-semibold">Noch {daysToExam} {daysToExam === 1 ? "Tag" : "Tage"}: etwa {perDay} Fragen pro Tag</p>
+          <p className="text-sm text-ink-700">{d.overview.unseenCount} neue Fragen und {d.overview.dueCount} fällige Wiederholungen offen. Der Plan passt sich täglich an.</p>
+          <Link href={`/lernen/session?mode=ladder&limit=${Math.min(50, perDay)}`} className={`${btn.secondary} mt-2`}>Heutige Portion lernen</Link>
+        </Card>
+      )}
+
+      {!selfStudy && <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile label="Nächste Fahrstunde" value={d.nextLesson ? `${fmt.weekday(d.nextLesson.start).slice(0, 2)} ${fmt.time(d.nextLesson.start)}` : "Keine"} hint={d.nextLesson ? `${fmt.date(d.nextLesson.start)} · ${d.nextLesson.instructor}` : "Jetzt buchen"} href="/fahren" />
         <StatTile label="Theorieunterricht" value={d.nextTheoryClass ? fmt.date(d.nextTheoryClass.start) : `${d.training.theory?.basic_attended ?? 0}/${d.training.theory?.basic_required ?? 12}`} hint={d.nextTheoryClass ? d.nextTheoryClass.title : "Grundstoff besucht"} href="/theorie" />
         <StatTile label="Offene Aufgaben" value={d.missingDocuments.length + (d.overview.dueCount > 0 ? 1 : 0)} hint={d.missingDocuments.length ? `${d.missingDocuments.length} Dokument(e) fehlen` : "Alles erledigt"} href="/profil" />
         <StatTile label="Offene Zahlungen" value={fmt.eur(d.openInvoiceCents)} hint={d.openInvoiceCents > 0 ? "Jetzt ansehen" : "Nichts offen"} href="/finanzen" />
-      </div>
+      </div>}
 
       <Card title="Heute" action={<span className="text-xs text-ink-500">automatisch priorisiert</span>}>
         {d.today.length === 0 ? <p className="text-sm text-ink-700">Für heute ist nichts offen. Wiederhole trotzdem ein paar Fragen, um deine Serie zu halten.</p> : (

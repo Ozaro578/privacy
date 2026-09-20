@@ -6,6 +6,7 @@ import { btn, Alert } from "@/components/ui";
 import { WhyButton } from "./why-button";
 import { QuestionMedia } from "./question-media";
 import { Confetti, playSuccessTone } from "./celebration";
+import { ReadAloud } from "./read-aloud";
 
 type Phase = "answer" | "feedback" | "done";
 
@@ -86,7 +87,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
       <div className="rounded-card bg-surface p-5 shadow-card">
-        {q.source === "own" && <p className="mb-2 text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p>}
+        <div className="mb-2 flex items-center justify-between gap-2">{q.source === "own" ? <p className="text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p> : <span />}<ReadAloud text={[q.text, ...q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`), ...(phase === "feedback" && result ? [result.correct ? "Richtig." : "Nicht richtig.", result.explanation ?? ""] : [])].join(". ")} /></div>
         <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <p className="text-lg font-medium">{q.text}</p>
         {q.numeric ? (
