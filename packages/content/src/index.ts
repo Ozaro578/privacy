@@ -40,8 +40,9 @@ export function validateContent(): string[] {
     if (codes.has(q.code)) problems.push(`${w}: Code doppelt`);
     codes.add(q.code);
     if (!TOPIC_SET.has(q.topic)) problems.push(`${w}: ungültiges Thema ${q.topic}`);
-    if (!/^own-[a-z_]+-\d{3}$/.test(q.code)) problems.push(`${w}: Code entspricht nicht own-<thema>-NNN`);
-    else if (q.code.slice(4, q.code.lastIndexOf("-")) !== q.topic) problems.push(`${w}: Code passt nicht zum Thema ${q.topic}`);
+    const codeMatch = /^own-([a-z_]+)-(\d{3}|z[a-z0-9._-]+)$/.exec(q.code);
+    if (!codeMatch) problems.push(`${w}: Code entspricht nicht own-<thema>-NNN oder own-<thema>-z<zeichen>`);
+    else if (codeMatch[1] !== q.topic) problems.push(`${w}: Code passt nicht zum Thema ${q.topic}`);
     if (q.materialKind !== TOPIC_BY_CODE[q.topic]?.materialKind) problems.push(`${w}: materialKind passt nicht zum Thema`);
     if (![2, 3, 4, 5].includes(q.points)) problems.push(`${w}: Punkte müssen 2..5 sein`);
     if (q.points === 5 && q.topic !== "vorfahrt" && !q.tags.includes("hohes_risiko")) problems.push(`${w}: 5 Punkte nur bei Vorfahrt oder Tag hohes_risiko`);

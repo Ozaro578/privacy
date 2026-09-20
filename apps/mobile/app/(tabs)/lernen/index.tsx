@@ -25,6 +25,7 @@ export default function Learn() {
   useFocusEffect(useCallback(() => { void load(); }, [load]));
   useEffect(() => { void load(); }, [load]);
   if (!ov) return <Screen title="Lernen"><Loading /></Screen>;
+  const openSigns = () => router.push("/(tabs)/lernen/zeichen");
   const start = (mode: string, topic?: string) => router.push({ pathname: "/(tabs)/lernen/session", params: { mode, topic: topic ?? "", limit: "15" } });
   return (
     <Screen title="Lernen">
@@ -40,6 +41,7 @@ export default function Learn() {
           </Pressable>
         ))}
       </View>
+      <Button label="Alle Verkehrszeichen mit Bedeutung" variant="secondary" onPress={openSigns} />
       <Card title="Nach Themen">
         {topics.map((tp) => { const tm = ov.topics.find((x) => x.topic_id === tp.id); return (
           <Pressable key={tp.id} accessibilityRole="button" onPress={() => start("topic", tp.id)} style={{ paddingVertical: 8 }}>

@@ -30,7 +30,7 @@ describe("Übungsfragen", () => {
     const codes = questions.map((q) => q.code);
     expect(new Set(codes).size).toBe(codes.length);
     for (const q of questions) {
-      expect(q.code).toMatch(/^own-[a-z_]+-\d{3}$/);
+      expect(q.code).toMatch(/^own-[a-z_]+-(\d{3}|z[a-z0-9._-]+)$/);
       expect(q.code.startsWith(`own-${q.topic}-`)).toBe(true);
     }
   });

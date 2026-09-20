@@ -23,6 +23,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@fahrpilot/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@fahrpilot/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -141,6 +144,9 @@ importers:
       '@fahrpilot/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@fahrpilot/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@fahrpilot/db':
         specifier: workspace:*
         version: link:../../packages/db

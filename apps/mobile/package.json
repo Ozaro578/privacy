@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fahrpilot/content": "workspace:*",
     "@fahrpilot/db": "workspace:*",
     "@fahrpilot/i18n": "workspace:*",
     "@fahrpilot/learning-engine": "workspace:*",

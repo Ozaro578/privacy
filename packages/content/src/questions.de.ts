@@ -24,6 +24,7 @@ import { unfallPanne } from "./questions/unfall_panne.js";
 import { verkehrsregelung } from "./questions/verkehrsregelung.js";
 import { verkehrszeichen } from "./questions/verkehrszeichen.js";
 import { vorfahrt } from "./questions/vorfahrt.js";
+import { zeichenGenerated } from "./questions/zeichen.generated.js";
 
 export const questions: readonly Question[] = [
   ...gefahrenlehre,
@@ -45,4 +46,5 @@ export const questions: readonly Question[] = [
   ...beleuchtung,
   ...befoerderung,
   ...fahrphysik,
+  ...zeichenGenerated,
 ];

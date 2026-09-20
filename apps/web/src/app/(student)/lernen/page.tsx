@@ -101,7 +101,7 @@ export default async function LearnPage() {
           </ul>
         </Card>
       </section>
-      <Link href="/lernen/statistik" className="block text-sm text-brand-700 underline">Lernstatistik und Verlauf</Link>
+      <div className="flex flex-wrap gap-4 text-sm"><Link href="/lernen/zeichen" className="text-brand-700 underline">Alle Verkehrszeichen mit Bedeutung</Link><Link href="/lernen/statistik" className="text-brand-700 underline">Lernstatistik und Verlauf</Link></div>
     </div>
   );
 }
