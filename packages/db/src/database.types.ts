@@ -2839,6 +2839,7 @@ export type Database = {
           row_version: number;
           created_at: string;
           updated_at: string;
+          leaderboard_opt_in: boolean;
         };
         Insert: {
           id?: string;
@@ -2864,6 +2865,7 @@ export type Database = {
           row_version?: number;
           created_at?: string;
           updated_at?: string;
+          leaderboard_opt_in?: boolean;
         };
         Update: {
           id?: string;
@@ -2889,6 +2891,7 @@ export type Database = {
           row_version?: number;
           created_at?: string;
           updated_at?: string;
+          leaderboard_opt_in?: boolean;
         };
         Relationships: [
           { foreignKeyName: "students_location_id_fkey"; columns: ["location_id"]; isOneToOne: false; referencedRelation: "locations"; referencedColumns: ["id"] },
@@ -3568,6 +3571,7 @@ export type Database = {
       special_drive_progress: { Args: { p_student_license_id: string }; Returns: Record<string, unknown>[] };
       start_support_session: { Args: { p_tenant_id: string }; Returns: string };
       switch_active_tenant: { Args: { p_tenant_id: string }; Returns: unknown };
+      tenant_leaderboard: { Args: { p_days?: number | null; p_limit?: number | null }; Returns: Record<string, unknown>[] };
       update_student_notes: { Args: { p_student_id: string; p_notes: string }; Returns: unknown };
     };
     Enums: {

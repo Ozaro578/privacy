@@ -192,3 +192,10 @@ export async function toggleBookmark(questionId: string): Promise<boolean> {
   if (error) throw new Error(error.message);
   return next;
 }
+
+/** Teilnahme an der freiwilligen Wochen-Bestenliste der Fahrschule ein- oder ausschalten. */
+export async function setLeaderboardOptIn(optIn: boolean): Promise<void> {
+  const ctx = await getStudentContext();
+  await ctx.db.from("students").update({ leaderboard_opt_in: optIn }).eq("id", ctx.student.id);
+  revalidatePath("/lernen");
+}

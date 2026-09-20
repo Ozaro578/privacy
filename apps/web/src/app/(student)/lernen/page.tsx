@@ -4,6 +4,7 @@ import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics } from 
 import { Card, ProgressBar, btn } from "@/components/ui";
 import { LEVEL_LABEL, currentLevel, levelProgress } from "@fahrpilot/learning-engine";
 import { toMeta } from "@/lib/data/learning";
+import { Leaderboard, type LeaderboardRow } from "@/components/learn/leaderboard";
 
 export const metadata = { title: "Lernen" };
 
@@ -21,7 +22,7 @@ const MODES: Array<{ mode: string; title: string; text: string; countKey?: "dueC
 export default async function LearnPage() {
   const ctx = await getStudentContext();
   const locale = ctx.student.preferred_locale;
-  const [pool, states, topics] = await Promise.all([loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale)]);
+  const [pool, states, topics, { data: board }, { data: me }] = await Promise.all([loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale), ctx.db.rpc("tenant_leaderboard", { p_days: 7, p_limit: 10 }), ctx.db.from("students").select("leaderboard_opt_in").eq("id", ctx.student.id).single()]);
   const ov = buildLearningOverview(pool, states, topics);
   const levels = levelProgress(pool.map((q) => toMeta(q)), states);
   const level = currentLevel(levels);
@@ -71,6 +72,8 @@ export default async function LearnPage() {
           })}
         </div>
       </section>
+
+      {!ctx.selfStudy && <Leaderboard rows={(board ?? []) as unknown as LeaderboardRow[]} optedIn={me?.leaderboard_opt_in ?? false} />}
 
       <section aria-labelledby="topics">
         <h2 id="topics" className="mb-2 text-base font-semibold">Nach Themen lernen</h2>

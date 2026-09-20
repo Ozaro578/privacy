@@ -1502,6 +1502,960 @@
     "alt": "Zeichen 299 Grenzmarkierung für Halt- oder Parkverbote: weiße Zickzacklinie am rechten Fahrbahnrand auf grauem Asphalt"
   },
   {
+    "id": "301",
+    "number": "301",
+    "name": "Vorfahrt",
+    "category": "richtzeichen",
+    "meaning": "Zeigt an, dass an der nächsten Kreuzung oder Einmündung Vorfahrt besteht. Das Zeichen gilt nur für diese eine Kreuzung; danach gilt wieder rechts vor links, sofern kein anderes Zeichen etwas anderes anordnet.",
+    "alt": "Zeichen 301 Vorfahrt: Dreieck mit rotem Rand und breitem schwarzem Pfeil nach oben, den ein dünner Querstrich kreuzt"
+  },
+  {
+    "id": "306",
+    "number": "306",
+    "name": "Vorfahrtstraße",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet eine Vorfahrtstraße: Wer auf ihr fährt, hat an allen folgenden Kreuzungen und Einmündungen Vorfahrt, bis Zeichen 307 sie aufhebt oder ein anderes Vorfahrtzeichen steht. Außerhalb geschlossener Ortschaften ist auf der Fahrbahn einer Vorfahrtstraße das Parken verboten.",
+    "alt": "Zeichen 306 Vorfahrtstraße: gelbes Quadrat auf der Spitze mit weißem Rand"
+  },
+  {
+    "id": "307",
+    "number": "307",
+    "name": "Ende der Vorfahrtstraße",
+    "category": "richtzeichen",
+    "meaning": "Hebt die Vorfahrtstraße auf. Ab der nächsten Kreuzung oder Einmündung gilt wieder rechts vor links, sofern nichts anderes angeordnet ist.",
+    "alt": "Zeichen 307 Ende der Vorfahrtstraße: gelbes Quadrat auf der Spitze mit schwarzem, weiß gestreiftem Schrägbalken"
+  },
+  {
+    "id": "308",
+    "number": "308",
+    "name": "Vorrang vor dem Gegenverkehr",
+    "category": "richtzeichen",
+    "meaning": "An der Engstelle hat man Vorrang vor dem Gegenverkehr, der warten muss (dort steht Zeichen 208). Trotzdem gilt Rücksicht: Wer schon in der Engstelle ist, darf sie zu Ende befahren.",
+    "alt": "Zeichen 308 Vorrang vor dem Gegenverkehr: blaues Quadrat mit weißem Pfeil nach oben und rotem Pfeil nach unten"
+  },
+  {
+    "id": "310",
+    "number": "310",
+    "name": "Ortstafel (Vorderseite)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet den Beginn einer geschlossenen Ortschaft. Ab hier gilt für Kraftfahrzeuge die Höchstgeschwindigkeit 50 km/h, soweit nicht anders angeordnet, sowie die innerörtlichen Regeln, etwa zum Parken gegenüber Grundstückseinfahrten, zur Beleuchtung geparkter Fahrzeuge und zum Verbot von Schall- und Leuchtzeichen als Überholankündigung.",
+    "alt": "Zeichen 310 Ortstafel Vorderseite: gelbes Schild mit schwarzem Rand und Ortsnamen"
+  },
+  {
+    "id": "311",
+    "number": "311",
+    "name": "Ortstafel (Rückseite)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet das Ende der geschlossenen Ortschaft; die Rückseite der Ortstafel nennt den nächsten Ort und die Entfernung. Ab hier gelten die außerörtlichen Höchstgeschwindigkeiten, für Pkw 100 km/h, sofern kein anderes Zeichen steht.",
+    "alt": "Zeichen 311 Ortstafel Rückseite: gelbes Schild mit rot durchgestrichenem Ortsnamen und Hinweis auf den nächsten Ort"
+  },
+  {
+    "id": "314",
+    "number": "314",
+    "name": "Parken",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet einen Parkplatz oder eine Parkfläche. Hier darf geparkt werden; Zusatzzeichen können die Berechtigten (etwa Bewohner, Schwerbehinderte), die Parkdauer (Parkscheibe, Parkschein) oder die Art der Aufstellung beschränken.",
+    "alt": "Zeichen 314 Parken: blaues Quadrat mit weißem P"
+  },
+  {
+    "id": "314-10",
+    "number": "314-10",
+    "name": "Parken (Anfang)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet einen Parkplatz oder eine Parkfläche. Hier darf geparkt werden; Zusatzzeichen können die Berechtigten (etwa Bewohner, Schwerbehinderte), die Parkdauer (Parkscheibe, Parkschein) oder die Art der Aufstellung beschränken. Der Pfeil zeigt an, wo die Parkfläche beginnt.",
+    "alt": "Zeichen 314-10 Parken Anfang: blaues Quadrat mit weißem P und weißem Pfeil nach rechts",
+    "note": "Pfeilrichtung nach Rechtsaufstellung (Anfang: Pfeil nach rechts, Ende: Pfeil nach links); bei Linksaufstellung amtlich spiegelbildlich."
+  },
+  {
+    "id": "314-20",
+    "number": "314-20",
+    "name": "Parken (Ende)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet einen Parkplatz oder eine Parkfläche. Hier darf geparkt werden; Zusatzzeichen können die Berechtigten (etwa Bewohner, Schwerbehinderte), die Parkdauer (Parkscheibe, Parkschein) oder die Art der Aufstellung beschränken. Der Pfeil zeigt an, wo die Parkfläche endet.",
+    "alt": "Zeichen 314-20 Parken Ende: blaues Quadrat mit weißem P und weißem Pfeil nach links",
+    "note": "Pfeilrichtung nach Rechtsaufstellung; bei Linksaufstellung amtlich spiegelbildlich."
+  },
+  {
+    "id": "314-30",
+    "number": "314-30",
+    "name": "Parken (Mitte)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet einen Parkplatz oder eine Parkfläche. Hier darf geparkt werden; Zusatzzeichen können die Berechtigten (etwa Bewohner, Schwerbehinderte), die Parkdauer (Parkscheibe, Parkschein) oder die Art der Aufstellung beschränken. Der Doppelpfeil zeigt an, dass die Parkfläche in beide Richtungen weitergeht.",
+    "alt": "Zeichen 314-30 Parken Mitte: blaues Quadrat mit weißem P und weißem Doppelpfeil"
+  },
+  {
+    "id": "314-1",
+    "number": "314.1",
+    "name": "Beginn einer Parkraumbewirtschaftungszone",
+    "category": "richtzeichen",
+    "meaning": "Beginn einer Zone, in der auf öffentlichen Parkflächen nur mit Parkschein oder Parkscheibe geparkt werden darf, wie es Zusatzzeichen oder das Zeichen selbst angeben. Die Regelung gilt im ganzen Gebiet bis Zeichen 314.2, ohne dass sie an jeder Straße wiederholt wird.",
+    "alt": "Zeichen 314.1 Beginn einer Parkraumbewirtschaftungszone: weißes Rechteck mit blauem P-Schild und der Aufschrift Zone",
+    "note": "Amtliches Bild enthält neben dem P-Symbol Angaben zur Parkregelung (Parkschein oder Parkscheibe); hier vereinfacht mit der Aufschrift Zone."
+  },
+  {
+    "id": "314-2",
+    "number": "314.2",
+    "name": "Ende einer Parkraumbewirtschaftungszone",
+    "category": "richtzeichen",
+    "meaning": "Hebt die Parkraumbewirtschaftungszone auf; ab hier gelten wieder die allgemeinen Parkregeln.",
+    "alt": "Zeichen 314.2 Ende einer Parkraumbewirtschaftungszone: weißes Rechteck mit grauem P-Schild, Aufschrift Zone und schwarzem Schrägstrich",
+    "note": "Wie 314.1 vereinfacht dargestellt."
+  },
+  {
+    "id": "315-50",
+    "number": "315-50",
+    "name": "Parken auf Gehwegen halb in Längsaufstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-50 Parken auf Gehwegen halb in Längsaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-51",
+    "number": "315-51",
+    "name": "Parken auf Gehwegen halb in Längsaufstellung rechts (Anfang)",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt den Anfang der Parkfläche an.",
+    "alt": "Zeichen 315-51 Parken auf Gehwegen halb in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-52",
+    "number": "315-52",
+    "name": "Parken auf Gehwegen halb in Längsaufstellung rechts (Ende)",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt das Ende der Parkfläche an.",
+    "alt": "Zeichen 315-52 Parken auf Gehwegen halb in Längsaufstellung rechts (Ende): blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-55",
+    "number": "315-55",
+    "name": "Parken auf Gehwegen ganz in Längsaufstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-55 Parken auf Gehwegen ganz in Längsaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-56",
+    "number": "315-56",
+    "name": "Parken auf Gehwegen ganz in Längsaufstellung rechts (Anfang)",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt den Anfang der Parkfläche an.",
+    "alt": "Zeichen 315-56 Parken auf Gehwegen ganz in Längsaufstellung rechts (Anfang): blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-57",
+    "number": "315-57",
+    "name": "Parken auf Gehwegen ganz in Längsaufstellung rechts (Ende)",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten. Der Pfeil zeigt das Ende der Parkfläche an.",
+    "alt": "Zeichen 315-57 Parken auf Gehwegen ganz in Längsaufstellung rechts (Ende): blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-60",
+    "number": "315-60",
+    "name": "Parken auf Gehwegen halb in Querstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Querstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-60 Parken auf Gehwegen halb in Querstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-65",
+    "number": "315-65",
+    "name": "Parken auf Gehwegen ganz in Querstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Querstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-65 Parken auf Gehwegen ganz in Querstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-70",
+    "number": "315-70",
+    "name": "Parken auf Gehwegen halb in Schrägaufstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Schrägaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-70 Parken auf Gehwegen halb in Schrägaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-75",
+    "number": "315-75",
+    "name": "Parken auf Gehwegen ganz in Schrägaufstellung rechts",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Schrägaufstellung auf der rechtsen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-75 Parken auf Gehwegen ganz in Schrägaufstellung rechts: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-80",
+    "number": "315-80",
+    "name": "Parken auf Gehwegen halb in Längsaufstellung links",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit zwei Rädern auf dem Gehweg, in Längsaufstellung auf der linksen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-80 Parken auf Gehwegen halb in Längsaufstellung links: blaues Schild mit weißem P, darunter Gehwegkante und Auto halb auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "315-85",
+    "number": "315-85",
+    "name": "Parken auf Gehwegen ganz in Längsaufstellung links",
+    "category": "richtzeichen",
+    "meaning": "Erlaubt das Parken auf dem Gehweg, aber nur in der dargestellten Weise: mit dem ganzen Fahrzeug auf dem Gehweg, in Längsaufstellung auf der linksen Straßenseite. Das gilt nur für Fahrzeuge bis 2,8 t zulässiger Gesamtmasse; für Fußgänger muss genug Platz bleiben. Ohne dieses Zeichen ist das Parken auf Gehwegen verboten.",
+    "alt": "Zeichen 315-85 Parken auf Gehwegen ganz in Längsaufstellung links: blaues Schild mit weißem P, darunter Gehwegkante und Auto ganz auf dem Gehweg",
+    "note": "Zuordnung der Nummern 315-50 bis -85 zu halb/ganz, längs/quer/schräg und rechts/links nach Verkehrszeichenkatalog angenähert; Pfeile für Anfang/Ende hier nicht gezeichnet, bitte prüfen."
+  },
+  {
+    "id": "316",
+    "number": "316",
+    "name": "Parken und Reisen",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Parkplatz mit Anschluss an öffentliche Verkehrsmittel (Park and Ride): Hier kann das Auto abgestellt und die Fahrt mit Bahn oder Bus fortgesetzt werden.",
+    "alt": "Zeichen 316 Parken und Reisen: blaues Quadrat mit weißem P+R und Zug",
+    "note": "Anordnung von Schrift und Zugsymbol dem Katalogbild angenähert."
+  },
+  {
+    "id": "317",
+    "number": "317",
+    "name": "Wandererparkplatz",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Parkplatz, der als Ausgangspunkt für Wanderungen dient.",
+    "alt": "Zeichen 317 Wandererparkplatz: blaues Quadrat mit weißem P und Wanderer mit Stock und Rucksack"
+  },
+  {
+    "id": "318",
+    "number": "318",
+    "name": "Parkhaus, Tiefgarage",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf ein Parkhaus oder eine Tiefgarage.",
+    "alt": "Zeichen 318 Parkhaus: blaues Quadrat mit weißem Dachumriss über einem weißen P"
+  },
+  {
+    "id": "325-1",
+    "number": "325.1",
+    "name": "Beginn eines verkehrsberuhigten Bereichs",
+    "category": "richtzeichen",
+    "meaning": "Beginn eines verkehrsberuhigten Bereichs: Fußgänger dürfen die Straße in ganzer Breite benutzen, Kinderspiele sind überall erlaubt. Fahrzeuge müssen Schrittgeschwindigkeit fahren und dürfen Fußgänger weder gefährden noch behindern, nötigenfalls warten; Parken ist nur auf gekennzeichneten Flächen erlaubt. Wer den Bereich verlässt, muss sich wie beim Ausfahren aus einem Grundstück verhalten und den Verkehr auf der Straße durchfahren lassen.",
+    "alt": "Zeichen 325.1 Beginn eines verkehrsberuhigten Bereichs: blaues Schild mit weißem Haus, Auto, Erwachsenem, Kind mit Ball und Fahrbahnlinie"
+  },
+  {
+    "id": "325-2",
+    "number": "325.2",
+    "name": "Ende eines verkehrsberuhigten Bereichs",
+    "category": "richtzeichen",
+    "meaning": "Hebt den verkehrsberuhigten Bereich auf. Wer ausfährt, muss den Verkehr auf der Straße durchfahren lassen und darf niemanden gefährden; ab hier gelten wieder die allgemeinen Regeln.",
+    "alt": "Zeichen 325.2 Ende eines verkehrsberuhigten Bereichs: wie 325.1, mit rotem Schrägbalken"
+  },
+  {
+    "id": "327",
+    "number": "327",
+    "name": "Tunnel",
+    "category": "richtzeichen",
+    "meaning": "Weist auf einen Tunnel hin. Im Tunnel ist auch bei guter Beleuchtung mit Abblendlicht zu fahren, Wenden und Rückwärtsfahren sind verboten; Halten nur in Notfällen. Bei einem Tunnel über 1 km Länge kann das Verbot des Umkehrens und weitere Regeln durch Zusatzzeichen angeordnet sein.",
+    "alt": "Zeichen 327 Tunnel: blaues Quadrat mit weißem Tunnelportal und dunkler Einfahrt"
+  },
+  {
+    "id": "328",
+    "number": "328",
+    "name": "Nothalte- und Pannenbucht",
+    "category": "richtzeichen",
+    "meaning": "Weist auf eine Bucht am Fahrbahnrand hin, in der nur im Notfall oder bei einer Panne gehalten werden darf; Parken ist dort verboten. Oft steht in der Bucht eine Notrufsäule.",
+    "alt": "Zeichen 328 Nothalte- und Pannenbucht: blaues Quadrat mit weißer Fahrbahnrandlinie, die eine Bucht bildet, darin ein Telefonhörer",
+    "note": "Amtliches Bild zeigt die Bucht schematisch; das Telefonsymbol in der Bucht ist angenähert."
+  },
+  {
+    "id": "330-1",
+    "number": "330.1",
+    "name": "Autobahn",
+    "category": "richtzeichen",
+    "meaning": "Beginn der Autobahn. Sie darf nur mit Kraftfahrzeugen benutzt werden, deren bauartbedingte Höchstgeschwindigkeit über 60 km/h liegt. Wenden, Rückwärtsfahren, Halten und Parken sind verboten, Ein- und Ausfahren nur an Anschlussstellen. Für Pkw gilt die Richtgeschwindigkeit 130 km/h; Lkw über 3,5 t, Busse und Pkw mit Anhänger dürfen höchstens 80 km/h fahren (Gespanne mit Zulassung 100 km/h).",
+    "alt": "Zeichen 330.1 Autobahn: blaues Quadrat mit weißer Brücke über zwei Fahrbahnen"
+  },
+  {
+    "id": "330-2",
+    "number": "330.2",
+    "name": "Ende der Autobahn",
+    "category": "richtzeichen",
+    "meaning": "Hebt die Autobahn auf: Ab hier gelten die Regeln der jeweils folgenden Straße, insbesondere die dortigen Höchstgeschwindigkeiten und das Vorfahrtrecht anderer Verkehrsteilnehmer.",
+    "alt": "Zeichen 330.2 Ende der Autobahn: blaues Quadrat mit weißem Autobahnsymbol und rotem Schrägbalken"
+  },
+  {
+    "id": "331-1",
+    "number": "331.1",
+    "name": "Kraftfahrstraße",
+    "category": "richtzeichen",
+    "meaning": "Beginn der Kraftfahrstraße: nur für Kraftfahrzeuge mit bauartbedingter Höchstgeschwindigkeit über 60 km/h. Ein- und Ausfahren nur an Kreuzungen und Einmündungen; Wenden, Rückwärtsfahren, Halten und Parken (auch auf dem Seitenstreifen) sind verboten. Außerorts gilt für Pkw 100 km/h; nur bei getrennten Richtungsfahrbahnen oder mindestens zwei Fahrstreifen je Richtung gilt die Richtgeschwindigkeit 130 km/h.",
+    "alt": "Zeichen 331.1 Kraftfahrstraße: blaues Quadrat mit weißem Auto von vorn"
+  },
+  {
+    "id": "331-2",
+    "number": "331.2",
+    "name": "Ende der Kraftfahrstraße",
+    "category": "richtzeichen",
+    "meaning": "Hebt die Kraftfahrstraße auf; ab hier gelten wieder die Regeln der Landstraße oder der Ortschaft, und alle Verkehrsteilnehmer dürfen die Straße benutzen.",
+    "alt": "Zeichen 331.2 Ende der Kraftfahrstraße: blaues Quadrat mit weißem Auto und rotem Schrägbalken"
+  },
+  {
+    "id": "332",
+    "number": "332",
+    "name": "Ausfahrttafel (Autobahn)",
+    "category": "richtzeichen",
+    "meaning": "Steht am Beginn des Ausfahrtkeils einer Autobahnausfahrt und nennt die über die Ausfahrt erreichbaren Ziele; der Pfeil zeigt schräg in Richtung der Ausfahrt.",
+    "alt": "Zeichen 332 Ausfahrttafel Autobahn: blaues Rechteck mit weißen Zielnamen und schräg nach rechts oben zeigendem Pfeil"
+  },
+  {
+    "id": "332-1",
+    "number": "332.1",
+    "name": "Ausfahrttafel (Kraftfahrstraße)",
+    "category": "richtzeichen",
+    "meaning": "Wie Zeichen 332, aber auf Kraftfahrstraßen und anderen Straßen außerhalb der Autobahn in gelber Farbe: nennt am Ausfahrtkeil die Ziele der Ausfahrt.",
+    "alt": "Zeichen 332.1 Ausfahrttafel Kraftfahrstraße: gelbes Rechteck mit schwarzen Zielnamen und schrägem Pfeil"
+  },
+  {
+    "id": "333",
+    "number": "333",
+    "name": "Ausfahrt (Autobahn)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet die Ausfahrt von der Autobahn; das Zeichen steht am Beginn des Ausfahrtkeils. Wer ausfahren will, ordnet sich rechtzeitig auf dem Verzögerungsstreifen ein und verringert erst dort die Geschwindigkeit.",
+    "alt": "Zeichen 333 Ausfahrt Autobahn: blaues Rechteck mit weißer Aufschrift Ausfahrt und schräg nach rechts oben zeigendem Pfeil"
+  },
+  {
+    "id": "333-1",
+    "number": "333.1",
+    "name": "Ausfahrt (Kraftfahrstraße)",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet die Ausfahrt von einer Kraftfahrstraße oder anderen Straße außerhalb der Autobahn; gelbe Ausführung von Zeichen 333.",
+    "alt": "Zeichen 333.1 Ausfahrt Kraftfahrstraße: gelbes Rechteck mit schwarzer Aufschrift Ausfahrt und schrägem Pfeil"
+  },
+  {
+    "id": "340",
+    "number": "340",
+    "name": "Leitlinie",
+    "category": "richtzeichen",
+    "meaning": "Unterbrochene Linie, die Fahrstreifen voneinander trennt oder den Fahrbahnrand markiert. Sie darf überfahren werden, wenn der Verkehr dadurch nicht gefährdet wird, etwa beim Überholen oder Fahrstreifenwechsel. Als Schutzstreifen für den Radverkehr darf sie nur bei Bedarf und ohne Gefährdung der Radfahrer überfahren werden.",
+    "alt": "Zeichen 340 Leitlinie: unterbrochene weiße Linie auf grauer Fahrbahn"
+  },
+  {
+    "id": "341",
+    "number": "341",
+    "name": "Wartelinie",
+    "category": "richtzeichen",
+    "meaning": "Unterbrochene Linie aus kurzen breiten Strichen, die die Stelle empfiehlt, an der beim Vorfahrtgewähren gewartet werden soll. Sie ist keine Haltlinie: Anhalten muss nur, wer wegen des Vorfahrtverkehrs warten muss.",
+    "alt": "Zeichen 341 Wartelinie: Reihe kurzer breiter weißer Striche quer auf grauer Fahrbahn"
+  },
+  {
+    "id": "342",
+    "number": "342",
+    "name": "Wartelinie in Dreiecksform (Haifischzähne)",
+    "category": "richtzeichen",
+    "meaning": "Reihe weißer Dreiecke quer zur Fahrbahn, die anzeigt, dass hier Vorfahrt zu gewähren ist, zum Beispiel an Kreisverkehren, Fahrradstraßen oder Radschnellwegen. Die Spitzen zeigen zum Wartepflichtigen; die Markierung ersetzt kein Zeichen 205, unterstreicht aber die Wartepflicht.",
+    "alt": "Zeichen 342 Haifischzähne: Reihe weißer Dreiecke quer auf grauer Fahrbahn, Spitzen nach unten"
+  },
+  {
+    "id": "350-10",
+    "number": "350-10",
+    "name": "Fußgängerüberweg (Aufstellung rechts)",
+    "category": "richtzeichen",
+    "meaning": "Weist auf einen Fußgängerüberweg (Zebrastreifen) hin. Fußgänger und Rollstuhlfahrer, die den Überweg erkennbar benutzen wollen, haben Vorrang; Fahrzeuge müssen mit mäßiger Geschwindigkeit heranfahren und nötigenfalls warten. Auf dem Überweg darf nicht überholt werden; Halten auf dem Überweg und bis zu 5 m davor ist verboten.",
+    "alt": "Zeichen 350-10 Fußgängerüberweg: blaues Quadrat mit weißem Dreieck, darin schwarze Person auf Zebrastreifen",
+    "note": "Blickrichtung der Person je nach Aufstellungsseite; hier für Aufstellung rechts."
+  },
+  {
+    "id": "350-20",
+    "number": "350-20",
+    "name": "Fußgängerüberweg (Aufstellung links)",
+    "category": "richtzeichen",
+    "meaning": "Weist auf einen Fußgängerüberweg (Zebrastreifen) hin. Fußgänger und Rollstuhlfahrer, die den Überweg erkennbar benutzen wollen, haben Vorrang; Fahrzeuge müssen mit mäßiger Geschwindigkeit heranfahren und nötigenfalls warten. Auf dem Überweg darf nicht überholt werden; Halten auf dem Überweg und bis zu 5 m davor ist verboten.",
+    "alt": "Zeichen 350-20 Fußgängerüberweg: wie 350-10, Person spiegelbildlich",
+    "note": "Spiegelbildliche Variante für Aufstellung links."
+  },
+  {
+    "id": "353",
+    "number": "353",
+    "name": "Einbahnstraße",
+    "category": "richtzeichen",
+    "meaning": "Zeigt an, dass die Straße nur in Pfeilrichtung befahren werden darf; das Zeichen wird an Kreuzungen und Einmündungen in Fahrtrichtung aufgestellt. Entgegen der Fahrtrichtung darf nur der Radverkehr fahren, wenn ein Zusatzzeichen es erlaubt (an der Gegenseite mit Zeichen 267 angeordnet).",
+    "alt": "Zeichen 353 Einbahnstraße: blaues Quadrat mit weißem Pfeil nach oben"
+  },
+  {
+    "id": "354",
+    "number": "354",
+    "name": "Wasserschutzgebiet",
+    "category": "richtzeichen",
+    "meaning": "Weist auf ein Wasserschutzgebiet hin: besonders vorsichtig fahren, damit keine wassergefährdenden Stoffe austreten. Bei einem Unfall mit auslaufendem Kraftstoff oder Öl sofort Polizei oder Feuerwehr verständigen.",
+    "alt": "Zeichen 354 Wasserschutzgebiet: blaues Quadrat mit weißem Tropfen über Wellenlinien",
+    "note": "Amtliches Sinnbild (Wasserfläche mit Symbol) nur angenähert."
+  },
+  {
+    "id": "355",
+    "number": "355",
+    "name": "Fußgängerunterführung",
+    "category": "richtzeichen",
+    "meaning": "Weist Fußgänger auf eine Unterführung (oder Überführung) hin, über die die Straße sicher gequert werden kann.",
+    "alt": "Zeichen 355 Fußgängerunterführung: blaues Quadrat mit weißer Treppe und Person, die hinabgeht"
+  },
+  {
+    "id": "356",
+    "number": "356",
+    "name": "Verkehrshelfer",
+    "category": "richtzeichen",
+    "meaning": "Weist auf Verkehrshelfer (Schülerlotsen) hin, die Kindern das Überqueren der Straße sichern. Ihren Zeichen ist zu folgen; Kraftfahrer müssen besonders aufmerksam und bremsbereit fahren.",
+    "alt": "Zeichen 356 Verkehrshelfer: blaues Quadrat mit weißer Person, die eine Winkerkelle hält"
+  },
+  {
+    "id": "357",
+    "number": "357",
+    "name": "Sackgasse",
+    "category": "richtzeichen",
+    "meaning": "Die Straße endet ohne Durchfahrt für Fahrzeuge. Es kann trotzdem eingefahren werden, etwa zu Grundstücken; am Ende muss gewendet werden.",
+    "alt": "Zeichen 357 Sackgasse: blaues Quadrat mit weißem senkrechtem Balken, der oben an einem roten Querbalken endet"
+  },
+  {
+    "id": "357-50",
+    "number": "357-50",
+    "name": "Durchlässige Sackgasse für Fußgänger und Radverkehr",
+    "category": "richtzeichen",
+    "meaning": "Die Straße ist für Fahrzeuge eine Sackgasse, Fußgänger und Radfahrer kommen aber am Ende weiter, etwa über einen Weg oder eine Unterführung.",
+    "alt": "Zeichen 357-50 Durchlässige Sackgasse: Sackgassensymbol mit kleiner Person und Fahrrad rechts oben",
+    "note": "Anordnung der Piktogramme dem Katalogbild angenähert."
+  },
+  {
+    "id": "357-51",
+    "number": "357-51",
+    "name": "Durchlässige Sackgasse für Fußgänger",
+    "category": "richtzeichen",
+    "meaning": "Sackgasse für Fahrzeuge; für Fußgänger gibt es am Ende einen Durchgang.",
+    "alt": "Zeichen 357-51 Durchlässige Sackgasse für Fußgänger: Sackgassensymbol mit kleiner Person rechts oben",
+    "note": "Anordnung der Piktogramme dem Katalogbild angenähert."
+  },
+  {
+    "id": "357-52",
+    "number": "357-52",
+    "name": "Durchlässige Sackgasse für Radverkehr",
+    "category": "richtzeichen",
+    "meaning": "Sackgasse für Kraftfahrzeuge; Radfahrer kommen am Ende weiter.",
+    "alt": "Zeichen 357-52 Durchlässige Sackgasse für Radverkehr: Sackgassensymbol mit kleinem Fahrrad rechts oben",
+    "note": "Anordnung der Piktogramme dem Katalogbild angenähert."
+  },
+  {
+    "id": "358",
+    "number": "358",
+    "name": "Erste Hilfe",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Erste-Hilfe-Stelle oder Rettungsstation.",
+    "alt": "Zeichen 358 Erste Hilfe: blaues Quadrat mit weißem Quadrat und rotem Kreuz"
+  },
+  {
+    "id": "359",
+    "number": "359",
+    "name": "Pannenhilfe",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Stelle, an der bei Pannen geholfen wird (Werkstatt, Pannenhilfe).",
+    "alt": "Zeichen 359 Pannenhilfe: blaues Quadrat mit weißem Schraubenschlüssel"
+  },
+  {
+    "id": "360",
+    "number": "360",
+    "name": "Fernsprecher",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf ein öffentliches Telefon.",
+    "alt": "Zeichen 360 Fernsprecher: blaues Quadrat mit weißem Telefonhörer"
+  },
+  {
+    "id": "361",
+    "number": "361",
+    "name": "Tankstelle",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Tankstelle.",
+    "alt": "Zeichen 361 Tankstelle: blaues Quadrat mit weißer Zapfsäule"
+  },
+  {
+    "id": "363",
+    "number": "363",
+    "name": "Polizei",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Polizeidienststelle.",
+    "alt": "Zeichen 363 Polizei: blaues Quadrat mit weißer Aufschrift Polizei"
+  },
+  {
+    "id": "365-51",
+    "number": "365-51",
+    "name": "Notrufsäule",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Notrufsäule, über die Polizei oder Pannenhilfe gerufen werden kann; auf Autobahnen zeigen schwarze Pfeile auf den Leitpfosten den Weg zur nächsten Säule.",
+    "alt": "Zeichen 365-51 Notrufsäule: blaues Quadrat mit weißem Notrufsäule mit der Aufschrift SOS",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-52",
+    "number": "365-52",
+    "name": "Gaststätte",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Gaststätte.",
+    "alt": "Zeichen 365-52 Gaststätte: blaues Quadrat mit weißem Messer und Gabel",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-53",
+    "number": "365-53",
+    "name": "Hotel oder Motel",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Übernachtungsmöglichkeit (Hotel, Motel).",
+    "alt": "Zeichen 365-53 Hotel oder Motel: blaues Quadrat mit weißem Bett",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-54",
+    "number": "365-54",
+    "name": "Toilette",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine öffentliche Toilette.",
+    "alt": "Zeichen 365-54 Toilette: blaues Quadrat mit weißem Aufschrift WC",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-55",
+    "number": "365-55",
+    "name": "Kiosk",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Kiosk oder Verkaufsstand.",
+    "alt": "Zeichen 365-55 Kiosk: blaues Quadrat mit weißem Kioskgebäude mit Fenster",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-57",
+    "number": "365-57",
+    "name": "Zeltplatz",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Zeltplatz.",
+    "alt": "Zeichen 365-57 Zeltplatz: blaues Quadrat mit weißem Zelt",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-58",
+    "number": "365-58",
+    "name": "Wohnwagenplatz",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Stellplatz für Wohnwagen und Wohnmobile.",
+    "alt": "Zeichen 365-58 Wohnwagenplatz: blaues Quadrat mit weißem Wohnwagen",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-60",
+    "number": "365-60",
+    "name": "Informationsstelle",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Informationsstelle, etwa für Touristen.",
+    "alt": "Zeichen 365-60 Informationsstelle: blaues Quadrat mit weißem Buchstaben i",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-61",
+    "number": "365-61",
+    "name": "Autofähre",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Fähre, die Fahrzeuge übersetzt.",
+    "alt": "Zeichen 365-61 Autofähre: blaues Quadrat mit weißem Fähre mit Auto",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-62",
+    "number": "365-62",
+    "name": "Gottesdienst",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Kirche oder Gottesdienststätte.",
+    "alt": "Zeichen 365-62 Gottesdienst: blaues Quadrat mit weißem Kreuz",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-63",
+    "number": "365-63",
+    "name": "Flughafen",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Flughafen.",
+    "alt": "Zeichen 365-63 Flughafen: blaues Quadrat mit weißem Flugzeug",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-64",
+    "number": "365-64",
+    "name": "Bahnhof",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Bahnhof.",
+    "alt": "Zeichen 365-64 Bahnhof: blaues Quadrat mit weißem Zug von vorn",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-65",
+    "number": "365-65",
+    "name": "Ladestation für Elektrofahrzeuge",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Ladestation für Elektrofahrzeuge.",
+    "alt": "Zeichen 365-65 Ladestation für Elektrofahrzeuge: blaues Quadrat mit weißem Stecker mit Blitz",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "365-66",
+    "number": "365-66",
+    "name": "Spielplatz",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf einen Spielplatz, etwa an Rastanlagen.",
+    "alt": "Zeichen 365-66 Spielplatz: blaues Quadrat mit weißem Rutsche mit Kind",
+    "note": "Nummer der Sinnbildvariante (365-5x/-6x) nach Verkehrszeichenkatalog nicht sicher; Bedeutung und Bild bitte prüfen."
+  },
+  {
+    "id": "375",
+    "number": "375",
+    "name": "Autohof",
+    "category": "richtzeichen",
+    "meaning": "Kündigt an der Autobahn einen Autohof an: eine Raststätte mit Tankstelle, Gaststätte und Übernachtung, die außerhalb der Autobahn über die nächste Ausfahrt erreichbar ist.",
+    "alt": "Zeichen 375 Autohof: blaues Rechteck mit weißer Aufschrift Autohof und Sinnbildern für Tankstelle, Gaststätte und Übernachtung",
+    "note": "Aufteilung von Schrift und Sinnbildern dem Katalogbild angenähert."
+  },
+  {
+    "id": "376",
+    "number": "376",
+    "name": "Autohof (Wegweiser)",
+    "category": "richtzeichen",
+    "meaning": "Weist an der Ausfahrt und danach den Weg zum Autohof; die Entfernung wird angegeben.",
+    "alt": "Zeichen 376 Autohof Wegweiser: blaues Rechteck mit weißer Aufschrift Autohof, Entfernung und Pfeil",
+    "note": "Gestaltung als Wegweiser mit Pfeil dem Katalogbild angenähert."
+  },
+  {
+    "id": "380",
+    "number": "380",
+    "name": "Richtgeschwindigkeit",
+    "category": "richtzeichen",
+    "meaning": "Empfiehlt, auch bei günstigen Bedingungen nicht schneller als 130 km/h zu fahren; ein Überschreiten ist keine Ordnungswidrigkeit, kann aber bei einem Unfall die Haftung erhöhen. Das Zeichen ist seit 2009 nicht mehr in der StVO enthalten, die Richtgeschwindigkeit auf Autobahnen gilt weiter nach der Autobahn-Richtgeschwindigkeits-Verordnung.",
+    "alt": "Zeichen 380 Richtgeschwindigkeit: blaues Quadrat mit weißer 130",
+    "note": "Nicht mehr in der StVO seit 2009, im Verkehrszeichenkatalog weiter geführt; alte Schilder können noch stehen."
+  },
+  {
+    "id": "381",
+    "number": "381",
+    "name": "Ende der Richtgeschwindigkeit",
+    "category": "richtzeichen",
+    "meaning": "Hebt die Richtgeschwindigkeit nach Zeichen 380 auf. Empfiehlt, auch bei günstigen Bedingungen nicht schneller als 130 km/h zu fahren; ein Überschreiten ist keine Ordnungswidrigkeit, kann aber bei einem Unfall die Haftung erhöhen. Das Zeichen ist seit 2009 nicht mehr in der StVO enthalten, die Richtgeschwindigkeit auf Autobahnen gilt weiter nach der Autobahn-Richtgeschwindigkeits-Verordnung.",
+    "alt": "Zeichen 381 Ende der Richtgeschwindigkeit: blaues Quadrat mit weißer 130 und rotem Schrägbalken",
+    "note": "Nicht mehr in der StVO seit 2009; Farbe des Aufhebungsbalkens (rot) nach Katalogbild angenähert."
+  },
+  {
+    "id": "385",
+    "number": "385",
+    "name": "Ortshinweistafel",
+    "category": "richtzeichen",
+    "meaning": "Weist auf einen Ort oder Ortsteil hin, ohne dass dort eine geschlossene Ortschaft beginnt. Anders als die Ortstafel (310) löst sie keine innerörtlichen Regeln aus; es bleibt bei der außerörtlichen Geschwindigkeit, sofern kein anderes Zeichen steht.",
+    "alt": "Zeichen 385 Ortshinweistafel: grünes Schild mit weißem Ortsnamen",
+    "note": "Farbe (grün mit weißer Schrift) nach aktuellem Katalog; ältere Ausführungen gelb."
+  },
+  {
+    "id": "386-1",
+    "number": "386.1",
+    "name": "Touristischer Hinweis",
+    "category": "richtzeichen",
+    "meaning": "Weist auf touristisch bedeutsame Ziele hin, etwa Sehenswürdigkeiten oder Erholungsgebiete; nur Hinweis, kein Gebot.",
+    "alt": "Zeichen 386.1 Touristischer Hinweis: braunes Schild mit weißer Schrift, Sinnbild und Pfeil",
+    "note": "Gestaltung mit Sinnbild und Pfeil dem Katalogbild angenähert."
+  },
+  {
+    "id": "386-2",
+    "number": "386.2",
+    "name": "Touristische Unterrichtungstafel",
+    "category": "richtzeichen",
+    "meaning": "Große braune Tafel an Autobahnen, die auf Sehenswürdigkeiten oder Landschaften in der Nähe aufmerksam macht; sie hat keine Bedeutung für die Wegweisung und kein Gebot.",
+    "alt": "Zeichen 386.2 Touristische Unterrichtungstafel: großes braunes Schild mit weißer Zeichnung einer Burg und Namen",
+    "note": "Bildmotiv frei gewählt."
+  },
+  {
+    "id": "386-3",
+    "number": "386.3",
+    "name": "Touristische Route",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet eine touristische Route (etwa eine Ferienstraße) mit Namen und Sinnbild; nur Hinweis.",
+    "alt": "Zeichen 386.3 Touristische Route: braunes Schild mit weißem Routennamen und Sinnbild",
+    "note": "Sinnbild der Route frei gewählt."
+  },
+  {
+    "id": "390",
+    "number": "390",
+    "name": "Mautpflicht nach dem Bundesfernstraßenmautgesetz",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet den Beginn einer Strecke, auf der für Lkw ab 7,5 t zulässiger Gesamtmasse die Lkw-Maut nach dem Bundesfernstraßenmautgesetz zu entrichten ist.",
+    "alt": "Zeichen 390 Mautpflicht: blaues Rechteck mit weißem Lkw und der Aufschrift Maut",
+    "note": "Gestaltung (Farbe, Lkw-Sinnbild) dem Katalogbild angenähert."
+  },
+  {
+    "id": "391",
+    "number": "391",
+    "name": "Mautpflichtige Strecke",
+    "category": "richtzeichen",
+    "meaning": "Weist darauf hin, dass für die Benutzung der Strecke, etwa eines Tunnels oder einer Brücke, eine Maut zu zahlen ist.",
+    "alt": "Zeichen 391 Mautpflichtige Strecke: weißes Rechteck mit schwarzer Aufschrift Maut und Schrankensymbol",
+    "note": "Gestaltung dem Katalogbild angenähert."
+  },
+  {
+    "id": "392",
+    "number": "392",
+    "name": "Zollstelle",
+    "category": "richtzeichen",
+    "meaning": "Hinweis auf eine Zollstelle. Wer sie passiert, muss anhalten, wenn Zollbeamte es verlangen (vgl. Zeichen 210 Zoll).",
+    "alt": "Zeichen 392 Zollstelle: weißes Rechteck mit schwarzer Aufschrift Zoll und roter Aufschrift Douane",
+    "note": "Schriftfarben dem Katalogbild angenähert."
+  },
+  {
+    "id": "393",
+    "number": "393",
+    "name": "Informationstafel an Grenzübergangsstellen",
+    "category": "richtzeichen",
+    "meaning": "Nennt Einreisenden die allgemeinen Höchstgeschwindigkeiten in Deutschland: 50 km/h innerhalb geschlossener Ortschaften, 100 km/h außerhalb und die Richtgeschwindigkeit 130 km/h auf Autobahnen.",
+    "alt": "Zeichen 393 Informationstafel an Grenzübergangsstellen: blaue Tafel mit drei Zeilen: Ortssilhouette und 50, Landstraße und 100, Autobahnsymbol und 130"
+  },
+  {
+    "id": "394",
+    "number": "394",
+    "name": "Laternenring",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet Laternen, die nicht die ganze Nacht brennen. Wer im Bereich einer solchen Laterne parkt, muss das Fahrzeug bei Dunkelheit selbst beleuchten (Parkleuchte oder Standlicht), wenn es sonst nicht ausreichend zu erkennen ist.",
+    "alt": "Zeichen 394 Laternenring: Laternenmast mit rotem Ring",
+    "note": "Amtlich ein farbiger Ring am Laternenmast; Farbe hier rot nach Katalogbild angenähert."
+  },
+  {
+    "id": "401",
+    "number": "401",
+    "name": "Nummernschild für Bundesstraßen",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet die Nummer einer Bundesstraße: gelbes Schild mit schwarzer Zahl. Es steht auf Wegweisern und entlang der Strecke.",
+    "alt": "Zeichen 401 Bundesstraßennummer: gelbes Rechteck mit schwarzem Rand und schwarzer Zahl"
+  },
+  {
+    "id": "405",
+    "number": "405",
+    "name": "Nummernschild für Autobahnen",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet die Nummer einer Autobahn: blaues Schild mit weißer Zahl und weißem Rand.",
+    "alt": "Zeichen 405 Autobahnnummer: blaues Rechteck mit weißem Rand und weißer Zahl"
+  },
+  {
+    "id": "406",
+    "number": "406",
+    "name": "Knotenpunkte der Autobahnen",
+    "category": "richtzeichen",
+    "meaning": "Nummer eines Knotenpunkts der Autobahn: Anschlussstellen erhalten ein weißes Schild mit schwarzer Zahl, Autobahnkreuze und -dreiecke ein schwarzes Schild mit weißer Zahl. Die Nummern helfen bei Ortsangaben und Verkehrsmeldungen.",
+    "alt": "Zeichen 406 Knotenpunkte der Autobahnen: weißes Rechteck mit schwarzem Rand und schwarzer Nummer",
+    "note": "Gezeichnet ist die Variante für Anschlussstellen (weiß); Kreuze und Dreiecke schwarz."
+  },
+  {
+    "id": "410",
+    "number": "410",
+    "name": "Nummernschild für Europastraßen",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet die Nummer einer Europastraße: grünes Schild mit weißer Schrift.",
+    "alt": "Zeichen 410 Europastraßennummer: grünes Rechteck mit weißem E und Zahl"
+  },
+  {
+    "id": "415",
+    "number": "415",
+    "name": "Wegweiser auf Bundesstraßen",
+    "category": "richtzeichen",
+    "meaning": "Pfeilförmiger gelber Wegweiser an Kreuzungen und Einmündungen von Bundesstraßen: nennt Ziel, Entfernung in km und die Nummer der Bundesstraße.",
+    "alt": "Zeichen 415 Wegweiser auf Bundesstraßen: gelber Pfeilwegweiser mit schwarzer Schrift und Bundesstraßenschild"
+  },
+  {
+    "id": "418",
+    "number": "418",
+    "name": "Wegweiser auf sonstigen Straßen",
+    "category": "richtzeichen",
+    "meaning": "Gelber Pfeilwegweiser außerhalb von Bundesstraßen (Landes-, Kreis- und Gemeindestraßen) mit Ziel und Entfernung.",
+    "alt": "Zeichen 418 Wegweiser auf sonstigen Straßen: gelber Pfeilwegweiser mit schwarzer Schrift ohne Straßennummer",
+    "note": "Unterscheidung von 418 und 419 (mit oder ohne Fernziel, außerorts oder innerorts) nach Katalog bitte prüfen."
+  },
+  {
+    "id": "419",
+    "number": "419",
+    "name": "Wegweiser zu innerörtlichen Zielen",
+    "category": "richtzeichen",
+    "meaning": "Weißer Pfeilwegweiser mit schwarzer Schrift für Ziele innerhalb der Ortschaft, etwa Stadtteile oder Einrichtungen.",
+    "alt": "Zeichen 419 Wegweiser innerorts: weißer Pfeilwegweiser mit schwarzer Schrift",
+    "note": "Zuordnung der Nummer 419 zur weißen innerörtlichen Ausführung nach Katalog bitte prüfen."
+  },
+  {
+    "id": "430",
+    "number": "430",
+    "name": "Pfeilwegweiser zur Autobahn",
+    "category": "richtzeichen",
+    "meaning": "Blauer Pfeilwegweiser mit Autobahnsymbol und Autobahnnummer: weist den Weg zur nächsten Anschlussstelle.",
+    "alt": "Zeichen 430 Pfeilwegweiser zur Autobahn: blauer Pfeilwegweiser mit weißem Autobahnsymbol, Nummer und Ziel"
+  },
+  {
+    "id": "432",
+    "number": "432",
+    "name": "Pfeilwegweiser zu innerörtlichen Zielen",
+    "category": "richtzeichen",
+    "meaning": "Weißer Pfeilwegweiser mit schwarzer Schrift zu innerörtlichen Zielen und Einrichtungen mit erheblicher Verkehrsbedeutung, etwa Bahnhof, Krankenhaus, Messe oder Stadtteile.",
+    "alt": "Zeichen 432 Pfeilwegweiser zu innerörtlichen Zielen: weißer Pfeilwegweiser mit schwarzer Aufschrift Bahnhof"
+  },
+  {
+    "id": "434",
+    "number": "434",
+    "name": "Wegweisertafel",
+    "category": "richtzeichen",
+    "meaning": "Rechteckige Tafel an Kreuzungen, die mehrere Ziele mit Pfeilen und Entfernungen in einer Übersicht nennt.",
+    "alt": "Zeichen 434 Wegweisertafel: gelbes Rechteck mit mehreren Zielen, Pfeilen und Entfernungen"
+  },
+  {
+    "id": "437",
+    "number": "437",
+    "name": "Straßennamensschild",
+    "category": "richtzeichen",
+    "meaning": "Nennt den Namen der Straße; keine Verkehrsregelung. Die Gestaltung legen die Gemeinden fest.",
+    "alt": "Zeichen 437 Straßennamensschild: weißes Rechteck mit schwarzer Aufschrift Musterstraße"
+  },
+  {
+    "id": "438",
+    "number": "438",
+    "name": "Vorwegweiser",
+    "category": "richtzeichen",
+    "meaning": "Gelbe Tafel vor Kreuzungen und Einmündungen, die den Straßenverlauf schematisch zeigt und die Ziele der einzelnen Richtungen mit Straßennummern nennt, damit rechtzeitig eingeordnet werden kann.",
+    "alt": "Zeichen 438 Vorwegweiser: gelbes Rechteck mit schematischem Straßenverlauf, Zielen und Bundesstraßenschildern"
+  },
+  {
+    "id": "440",
+    "number": "440",
+    "name": "Vorwegweiser zur Autobahn",
+    "category": "richtzeichen",
+    "meaning": "Gelbe Vorwegweisertafel mit blauem Feld: zeigt an, in welcher Richtung die Autobahn (mit Nummer) erreicht wird.",
+    "alt": "Zeichen 440 Vorwegweiser zur Autobahn: gelbes Rechteck mit blauem Feld, Autobahnsymbol, Nummer und Pfeil"
+  },
+  {
+    "id": "441",
+    "number": "441",
+    "name": "Tabellenwegweiser",
+    "category": "richtzeichen",
+    "meaning": "Vorwegweiser in Tabellenform: Für jede Richtung eine Zeile mit Pfeil, Zielen und Straßennummern.",
+    "alt": "Zeichen 441 Tabellenwegweiser: gelbes Rechteck mit drei Zeilen, je mit Pfeil, Ziel und Straßenschild"
+  },
+  {
+    "id": "442",
+    "number": "442",
+    "name": "Vorwegweiser mit Fahrstreifenzuordnung",
+    "category": "richtzeichen",
+    "meaning": "Vorwegweiser, der über den Fahrstreifen Pfeile zeigt: Er ordnet jedem Fahrstreifen die Ziele zu, damit rechtzeitig eingeordnet werden kann.",
+    "alt": "Zeichen 442 Vorwegweiser mit Fahrstreifenzuordnung: gelbes Rechteck mit Zielen und Pfeilen für jeden Fahrstreifen",
+    "note": "Bezeichnung und Bild (Fahrstreifenzuordnung) nach Katalog bitte prüfen."
+  },
+  {
+    "id": "448",
+    "number": "448",
+    "name": "Ankündigungstafel",
+    "category": "richtzeichen",
+    "meaning": "Kündigt auf der Autobahn die nächste Ausfahrt mit ihren Zielen und der Entfernung (etwa 1000 m) an.",
+    "alt": "Zeichen 448 Ankündigungstafel: blaue Tafel mit weißen Zielnamen, Ausfahrtsymbol und Entfernungsangabe"
+  },
+  {
+    "id": "448-1",
+    "number": "448.1",
+    "name": "Ankündigungstafel (Autobahnkreuz oder -dreieck)",
+    "category": "richtzeichen",
+    "meaning": "Kündigt ein Autobahnkreuz oder Autobahndreieck mit den Nummern der kreuzenden Autobahnen und der Entfernung an.",
+    "alt": "Zeichen 448.1 Ankündigungstafel für Autobahnkreuz: blaue Tafel mit Namen des Kreuzes, Autobahnnummern und Entfernung"
+  },
+  {
+    "id": "449",
+    "number": "449",
+    "name": "Vorwegweiser auf Autobahnen",
+    "category": "richtzeichen",
+    "meaning": "Steht etwa 500 m vor der Ausfahrt und zeigt die Ziele der Autobahn geradeaus sowie die Ziele der Ausfahrt mit schrägem Pfeil.",
+    "alt": "Zeichen 449 Vorwegweiser auf Autobahnen: blaue Tafel mit Pfeil geradeaus und Zielen sowie schrägem Pfeil und Ausfahrtzielen"
+  },
+  {
+    "id": "450",
+    "number": "450",
+    "name": "Ankündigungsbake",
+    "category": "richtzeichen",
+    "meaning": "Blaue Baken mit drei, zwei und einem weißen Schrägstreifen stehen 300, 200 und 100 m vor der Ausfahrt oder dem Beginn des Verzögerungsstreifens; sie helfen, das Ausfahren rechtzeitig vorzubereiten.",
+    "alt": "Zeichen 450 Ankündigungsbake: hohes blaues Rechteck mit drei weißen Schrägstreifen",
+    "note": "Gezeichnet ist die dreistreifige Bake (300 m); Varianten mit zwei und einem Streifen für 200 und 100 m."
+  },
+  {
+    "id": "453",
+    "number": "453",
+    "name": "Entfernungstafel",
+    "category": "richtzeichen",
+    "meaning": "Steht auf der Autobahn hinter Anschlussstellen und nennt die Entfernungen zu den nächsten Zielen in Kilometern.",
+    "alt": "Zeichen 453 Entfernungstafel: blaue Tafel mit Zielnamen und Kilometerangaben"
+  },
+  {
+    "id": "454",
+    "number": "454",
+    "name": "Umleitungswegweiser",
+    "category": "richtzeichen",
+    "meaning": "Gelber Pfeilwegweiser mit U-Symbol und Ziel, der den Umleitungsweg an Kreuzungen weist.",
+    "alt": "Zeichen 454 Umleitungswegweiser: gelber Pfeilwegweiser mit schwarzem U und Zielnamen"
+  },
+  {
+    "id": "455-1",
+    "number": "455.1",
+    "name": "Ankündigung oder Fortsetzung der Umleitung",
+    "category": "richtzeichen",
+    "meaning": "Gelbe Tafel mit der Aufschrift Umleitung und Pfeil: kündigt die Umleitung an oder zeigt, dass sie in Pfeilrichtung weiterführt.",
+    "alt": "Zeichen 455.1 Ankündigung oder Fortsetzung der Umleitung: gelbes Rechteck mit schwarzer Aufschrift Umleitung und Pfeil"
+  },
+  {
+    "id": "457-1",
+    "number": "457.1",
+    "name": "Umleitungspfeil",
+    "category": "richtzeichen",
+    "meaning": "Gelber Pfeil mit U-Symbol, der entlang der Umleitungsstrecke den Weg weist, bis die ursprüngliche Straße wieder erreicht ist.",
+    "alt": "Zeichen 457.1 Umleitungspfeil: gelber Pfeilwegweiser mit schwarzem U"
+  },
+  {
+    "id": "457-2",
+    "number": "457.2",
+    "name": "Ende der Umleitung",
+    "category": "richtzeichen",
+    "meaning": "Zeigt das Ende der Umleitungsstrecke an; ab hier gilt wieder die reguläre Wegweisung.",
+    "alt": "Zeichen 457.2 Ende der Umleitung: gelbes Rechteck mit schwarzem U und Aufschrift Ende",
+    "note": "Bezeichnung und Gestaltung nach Katalog bitte prüfen."
+  },
+  {
+    "id": "458",
+    "number": "458",
+    "name": "Planskizze",
+    "category": "richtzeichen",
+    "meaning": "Gelbe Tafel, die den gesperrten Streckenabschnitt und den Verlauf der Umleitung schematisch darstellt.",
+    "alt": "Zeichen 458 Planskizze: gelbes Rechteck mit schematischem Straßennetz, gesperrter Strecke und Umleitungsweg"
+  },
+  {
+    "id": "460",
+    "number": "460",
+    "name": "Bedarfsumleitung",
+    "category": "richtzeichen",
+    "meaning": "Kennzeichnet mit U und Nummer eine vorbereitete Umleitungsstrecke für die Autobahn. Bei einer Sperrung wird der Verkehr über diese Bedarfsumleitung zur nächsten Anschlussstelle geführt; sonst hat das Zeichen keine Bedeutung.",
+    "alt": "Zeichen 460 Bedarfsumleitung: blaues Rechteck mit weißem U, Nummer und Pfeil",
+    "note": "Farbgebung (blau mit weißer Schrift) und Pfeil dem Katalogbild angenähert."
+  },
+  {
+    "id": "466",
+    "number": "466",
+    "name": "Streckenempfehlung",
+    "category": "richtzeichen",
+    "meaning": "Empfiehlt bei Stau oder Sperrung eine Ausweichstrecke über die angegebene Bedarfsumleitung; keine Pflicht, sondern ein Hinweis.",
+    "alt": "Zeichen 466 Streckenempfehlung: blaue Tafel mit Zielname und Empfehlung über U-Nummer",
+    "note": "Bezeichnung und Bild nach Katalog bitte prüfen; Zeichen 459 wurde nicht aufgenommen."
+  },
+  {
+    "id": "720",
+    "number": "720",
+    "name": "Grünpfeilschild",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Erlaubt das Rechtsabbiegen bei rotem Licht, aber nur nach vollständigem Anhalten an der Haltlinie und wenn dabei niemand behindert oder gefährdet wird; besonders auf Fußgänger und Radfahrer der freigegebenen Richtung achten. Wer sich unsicher ist, darf warten; die Ausnahme gilt nur für die Fahrtrichtung rechts.",
+    "alt": "Zeichen 720 Grünpfeilschild: schwarzes Quadrat mit grünem Pfeil nach rechts"
+  },
+  {
     "id": "600",
     "number": "600",
     "name": "Absperrschranke",
