@@ -291,5 +291,67 @@ do $$ begin
   if exists (select 1 from public.users where id = '00000000-0000-0000-0000-000000000007' and active_tenant_id is not null) then raise exception 'Aktiver Mandant nach Widerruf gesetzt'; end if;
 end $$;
 
+-- 13) Inhaltslizenzen: lizenzierte Fragen nur mit gültiger Lizenz des Mandanten sichtbar, eigene Fragen immer
+insert into public.theory_questions (id, topic_id, material_kind, points, status, source, license_id_for_source) values
+  ('b0000000-0000-0000-0000-000000000011', (select id from public.topics where code = 'vorfahrt'), 'basic', 3, 'published', 'official_licensed', 'ARGE-TEST-2026');
+insert into public.question_versions (id, question_id, version, text, explanation, review_status) values ('b0000000-0000-0000-0000-000000000012', 'b0000000-0000-0000-0000-000000000011', 1, 'Lizenzierte Testfrage', 'Erklärung', 'published');
+update public.theory_questions set current_version_id = 'b0000000-0000-0000-0000-000000000012' where id = 'b0000000-0000-0000-0000-000000000011';
+do $$ begin
+  begin
+    insert into public.theory_questions (topic_id, material_kind, points, status, source) values ((select id from public.topics where code = 'vorfahrt'), 'basic', 3, 'draft', 'official_licensed');
+    raise exception 'Lizenzierte Frage ohne Lizenzkennung angelegt';
+  exception when check_violation then null; end;
+end $$;
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  if exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000011') then raise exception 'Lizenzierte Frage ohne Lizenz sichtbar'; end if;
+  if exists (select 1 from public.question_versions where id = 'b0000000-0000-0000-0000-000000000012') then raise exception 'Version der lizenzierten Frage ohne Lizenz sichtbar'; end if;
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000001') then raise exception 'Eigene Frage nicht mehr sichtbar'; end if;
+  begin
+    insert into public.tenant_content_licenses (tenant_id, license_id, licensor) values ('10000000-0000-0000-0000-000000000001', 'ARGE-TEST-2026', 'Test');
+    raise exception 'Schüler konnte Lizenz anlegen';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+-- Plattform-Admin vergibt die Lizenz, abgelaufene Lizenz zählt nicht
+select pg_temp.login('00000000-0000-0000-0000-000000000007', null, null, true);
+insert into public.tenant_content_licenses (tenant_id, license_id, licensor, valid_from, valid_until) values
+  ('10000000-0000-0000-0000-000000000001', 'ARGE-TEST-2026', 'TÜV | DEKRA arge tp 21', current_date - 400, current_date - 30);
+do $$ begin
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000011') then raise exception 'Plattform-Admin sieht lizenzierte Frage nicht'; end if;
+end $$;
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  if exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000011') then raise exception 'Abgelaufene Lizenz schaltet Frage frei'; end if;
+end $$;
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000007', null, null, true);
+insert into public.tenant_content_licenses (tenant_id, license_id, licensor, valid_from, valid_until) values
+  ('10000000-0000-0000-0000-000000000001', 'ARGE-TEST-2026', 'TÜV | DEKRA arge tp 21', current_date, current_date + 365);
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  if not exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000011') then raise exception 'Lizenzierte Frage trotz Lizenz unsichtbar'; end if;
+  if not exists (select 1 from public.question_versions where id = 'b0000000-0000-0000-0000-000000000012') then raise exception 'Version trotz Lizenz unsichtbar'; end if;
+  if exists (select 1 from public.tenant_content_licenses) then raise exception 'Schüler sieht Lizenztabelle'; end if;
+end $$;
+select pg_temp.logout();
+-- Anderer Mandant ohne Lizenz sieht die Frage nicht; Büro des lizenzierten Mandanten sieht die Lizenz
+select pg_temp.login('00000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000002', 'student');
+do $$ begin
+  if exists (select 1 from public.theory_questions where id = 'b0000000-0000-0000-0000-000000000011') then raise exception 'Fremder Mandant sieht lizenzierte Frage'; end if;
+end $$;
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'admin');
+do $$ begin
+  if (select count(*) from public.tenant_content_licenses) <> 2 then raise exception 'Fahrschule sieht ihre Lizenzen nicht'; end if;
+  begin
+    delete from public.tenant_content_licenses;
+    if (select count(*) from public.tenant_content_licenses) <> 2 then raise exception 'Fahrschule konnte Lizenz löschen'; end if;
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

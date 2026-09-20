@@ -103,6 +103,42 @@ export async function createTenant(_prev: ActionResult | null, formData: FormDat
   return { ok: true, message: "Fahrschule angelegt, Inhaber eingeladen." };
 }
 
+const LicenseSchema = z.object({
+  tenant_id: z.string().uuid(),
+  license_id: z.string().trim().min(2).max(80),
+  licensor: z.string().trim().min(2).max(120),
+  valid_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  valid_until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().default(null),
+  seats: z.coerce.number().int().positive().nullable().default(null),
+  contract_reference: z.string().trim().max(120).nullable().default(null),
+});
+
+/** Inhaltslizenz (amtlicher Fragenkatalog) für eine Fahrschule hinterlegen. Schaltet Fragen mit passender Lizenzkennung frei. */
+export async function setContentLicense(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const session = await requirePlatformAdmin();
+  const parsed = LicenseSchema.safeParse({ ...Object.fromEntries(formData.entries()), valid_until: formData.get("valid_until") || null, seats: formData.get("seats") || null, contract_reference: formData.get("contract_reference") || null });
+  if (!parsed.success) return { ok: false, message: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join(", ") };
+  if (parsed.data.valid_until && parsed.data.valid_until < parsed.data.valid_from) return { ok: false, message: "Ende liegt vor dem Beginn." };
+  const db = await createSupabaseServerClient();
+  const { error } = await db.from("tenant_content_licenses").insert({ ...parsed.data, created_by: session.userId });
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/plattform/fahrschulen");
+  return { ok: true, message: "Lizenz hinterlegt." };
+}
+
+/** Beendet eine Inhaltslizenz zum heutigen Tag (kein Löschen, damit das Protokoll vollständig bleibt). */
+export async function endContentLicense(id: string): Promise<ActionResult> {
+  await requirePlatformAdmin();
+  const db = await createSupabaseServerClient();
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: lic } = await db.from("tenant_content_licenses").select("valid_from").eq("id", id).maybeSingle();
+  if (!lic) return { ok: false, message: "Lizenz nicht gefunden." };
+  const { error } = await db.from("tenant_content_licenses").update({ valid_until: lic.valid_from > today ? lic.valid_from : today }).eq("id", id);
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/plattform/fahrschulen");
+  return { ok: true, message: "Lizenz beendet." };
+}
+
 /** Startet eine Support-Sitzung in einer Fahrschule (nur mit aktiver Freigabe der Fahrschule) und wechselt in deren Verwaltung. */
 export async function startSupportSession(tenantId: string): Promise<void> {
   await requirePlatformAdmin();

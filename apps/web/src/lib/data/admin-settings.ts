@@ -17,15 +17,18 @@ export const ROLE_MATRIX: Array<{ role: string; label: string; scope: string; ri
 export async function getSettings() {
   await requireAdmin();
   const ctx = await getOfficeContext();
-  const [{ data: locations }, { data: policies }, { count: memberCount }, { data: grants }] = await Promise.all([
+  const [{ data: locations }, { data: policies }, { count: memberCount }, { data: grants }, { data: licenses }] = await Promise.all([
     ctx.db.from("locations").select("*").order("is_primary", { ascending: false }).order("name"),
     ctx.db.from("cancellation_policies").select("*").order("valid_from", { ascending: false }),
     ctx.db.from("tenant_memberships").select("user_id", { count: "exact", head: true }).eq("status", "active"),
     ctx.db.from("support_access_grants").select("id, reason, expires_at, revoked_at, created_at, granted_by").order("created_at", { ascending: false }).limit(20),
+    ctx.db.from("tenant_content_licenses").select("id, license_id, licensor, valid_from, valid_until, seats, contract_reference").order("valid_from", { ascending: false }),
   ]);
   const nowMs = Date.now();
   const supportGrants = (grants ?? []).map((g) => ({ ...g, active: g.revoked_at === null && new Date(g.expires_at).getTime() > nowMs }));
+  const today = new Date(nowMs).toISOString().slice(0, 10);
+  const contentLicenses = (licenses ?? []).map((l) => ({ ...l, active: l.valid_from <= today && (l.valid_until === null || l.valid_until >= today) }));
   const registrationUrl = `${publicEnv.appUrl().replace(/\/$/, "")}/anmeldung/${ctx.school.slug}`;
   const qrSvg = await QRCode.toString(registrationUrl, { type: "svg", margin: 1, width: 220, errorCorrectionLevel: "M" });
-  return { ctx, settings: schoolSettings(ctx.school.settings), locations: locations ?? [], policies: policies ?? [], memberCount: memberCount ?? 0, registrationUrl, qrSvg, supportGrants };
+  return { ctx, settings: schoolSettings(ctx.school.settings), locations: locations ?? [], policies: policies ?? [], memberCount: memberCount ?? 0, registrationUrl, qrSvg, supportGrants, contentLicenses };
 }

@@ -2936,6 +2936,57 @@ export type Database = {
           { foreignKeyName: "support_access_grants_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "driving_schools"; referencedColumns: ["id"] }
         ];
       };
+      tenant_content_licenses: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          source: Database["app"]["Enums"]["content_source"];
+          license_id: string;
+          licensor: string;
+          valid_from: string;
+          valid_until: string | null;
+          seats: number | null;
+          contract_reference: string | null;
+          note: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          source?: Database["app"]["Enums"]["content_source"];
+          license_id: string;
+          licensor: string;
+          valid_from?: string;
+          valid_until?: string | null;
+          seats?: number | null;
+          contract_reference?: string | null;
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          tenant_id?: string;
+          source?: Database["app"]["Enums"]["content_source"];
+          license_id?: string;
+          licensor?: string;
+          valid_from?: string;
+          valid_until?: string | null;
+          seats?: number | null;
+          contract_reference?: string | null;
+          note?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          { foreignKeyName: "tenant_content_licenses_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] },
+          { foreignKeyName: "tenant_content_licenses_tenant_id_fkey"; columns: ["tenant_id"]; isOneToOne: false; referencedRelation: "driving_schools"; referencedColumns: ["id"] }
+        ];
+      };
       tenant_memberships: {
         Row: {
           id: string;

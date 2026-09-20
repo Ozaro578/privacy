@@ -152,6 +152,19 @@ export default async function SettingsPage() {
         </details>
       </Card>
 
+      <Card title="Inhaltslizenzen">
+        <p className="mb-3 text-sm text-ink-700">Eigene Übungsfragen sind immer verfügbar. Fragen aus einem lizenzierten amtlichen Katalog sehen Ihre Schüler nur, solange eine Lizenz für Ihre Fahrschule gültig ist. Lizenzen vergibt die Plattform nach Vertragsabschluss mit dem Lizenzgeber.</p>
+        {d.contentLicenses.length === 0 ? <p className="text-sm text-ink-500">Keine Lizenz hinterlegt. Ihre Schüler lernen mit eigenen Übungsfragen (kein amtlicher Prüfungsinhalt).</p> : (
+          <ul className="divide-y divide-ink-100 text-sm">
+            {d.contentLicenses.map((l) => (
+              <li key={l.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                <span><Pill tone={l.active ? "success" : "neutral"}>{l.active ? "gültig" : l.valid_from > new Date().toISOString().slice(0, 10) ? "ab " + fmt.date(l.valid_from) : "abgelaufen"}</Pill> <span className="ml-2">{l.licensor}</span><span className="block text-xs text-ink-500">Lizenz {l.license_id}{l.contract_reference ? ` · Vertrag ${l.contract_reference}` : ""} · gültig {fmt.date(l.valid_from)} bis {l.valid_until ? fmt.date(l.valid_until) : "unbefristet"}{l.seats ? ` · bis ${l.seats} Schüler` : ""}</span></span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
       <Card title="Support-Zugriff der Plattform">
         <p className="mb-3 text-sm text-ink-700">Der Plattform-Support kann Ihre Daten nur einsehen, wenn Sie es hier ausdrücklich und befristet freigeben. Jede Freigabe und jede Support-Sitzung steht im Änderungsprotokoll. Sie können jederzeit widerrufen.</p>
         {d.supportGrants.length === 0 ? <p className="text-sm text-ink-500">Keine Freigaben.</p> : (
