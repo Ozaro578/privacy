@@ -87,7 +87,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
         <span>Frage {index + 1} von {total}</span>
         <span>{q.topicName} · {q.points} {q.points === 1 ? "Punkt" : "Punkte"}</span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-label="Fortschritt der Lernsession" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
       <div className="rounded-card bg-surface p-5 shadow-card">
         <div className="mb-2 flex items-center justify-between gap-2">{q.source === "own" ? <p className="text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p> : <span />}<ReadAloud text={[q.text, ...q.answers.map((a, i) => `Antwort ${i + 1}: ${a.text}`), ...(phase === "feedback" && result ? [result.correct ? "Richtig." : "Nicht richtig.", result.explanation ?? ""] : [])].join(". ")} /></div>
         <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} onEnded={() => setVideoSeen(true)} />
@@ -101,7 +101,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
             {result && <p className={`mt-2 text-sm ${result.correct ? "text-success-500" : "text-danger-500"}`}>{result.correct ? "Richtig" : `Falsch. Richtige Antwort: ${result.numericAnswer}`}</p>}
           </div>
         ) : (
-          <ul className="mt-4 space-y-2" role="group" aria-label="Antworten (Mehrfachauswahl möglich)">
+          <ul className="mt-4 space-y-2" aria-label="Antworten (Mehrfachauswahl möglich)">
             {q.answers.map((a) => {
               const isSel = selected.includes(a.position);
               const isCorrect = result?.correctPositions.includes(a.position);

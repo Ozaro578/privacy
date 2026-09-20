@@ -50,12 +50,12 @@ export function ReadinessGauge({ score, size = 148 }: { score: number | null; si
   return (
     <div className="flex flex-col items-center" role="img" aria-label={score === null ? "Prüfungsreife noch nicht berechnet" : `Prüfungsreife ${v} Prozent, ${bandLabel(v)}`}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#f5f5f4" strokeWidth={12} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" style={{ stroke: "var(--fp-ink-100)" }} strokeWidth={12} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={stroke} strokeWidth={12} strokeLinecap="round" strokeDasharray={`${(c * v) / 100} ${c}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
         <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" className="fill-ink-900" style={{ fontSize: size / 4.2, fontWeight: 700 }}>{score === null ? "–".replace("–", "?") : `${v}`}</text>
         {score !== null && <text x="50%" y="66%" textAnchor="middle" className="fill-ink-500" style={{ fontSize: size / 11 }}>%</text>}
       </svg>
-      <p className="mt-1 text-sm font-medium" style={{ color: stroke }}>{score === null ? "Noch keine Daten" : bandLabel(v)}</p>
+      <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-ink-700"><span aria-hidden="true" className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: stroke }} />{score === null ? "Noch keine Daten" : bandLabel(v)}</p>
     </div>
   );
 }
