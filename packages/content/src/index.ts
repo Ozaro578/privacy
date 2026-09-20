@@ -11,7 +11,7 @@ import { chapters } from "./chapters.de";
 import { knowledgeEntries } from "./knowledge.de";
 import { practicalQuestions } from "./practical-questions.de";
 import { questions } from "./questions.de";
-import { MEDIA, QUESTION_MEDIA, QUESTION_MEDIA_A } from "./media";
+import { MEDIA, QUESTION_MEDIA, QUESTION_MEDIA_A, QUESTION_MEDIA_B } from "./media";
 import { TOPICS, TOPIC_BY_CODE } from "./topics";
 import { LEGAL_BASIS_DATE, PRACTICAL_CATEGORIES, TOPIC_CODES, type Question, type TopicCode } from "./types";
 
@@ -113,7 +113,7 @@ export function validateContent(): string[] {
     if (!/^(signs|scenes)\/[A-Za-z0-9_.-]+\.svg$/.test(m.file)) problems.push(`Medium ${m.id}: ungültiger Dateipfad ${m.file}`);
     if (m.alt.trim().length < 10) problems.push(`Medium ${m.id}: Alternativtext fehlt oder zu kurz`);
   }
-  for (const [code, id] of [...Object.entries(QUESTION_MEDIA), ...Object.entries(QUESTION_MEDIA_A)]) {
+  for (const [code, id] of [...Object.entries(QUESTION_MEDIA), ...Object.entries(QUESTION_MEDIA_A), ...Object.entries(QUESTION_MEDIA_B)]) {
     if (!codes.has(code)) problems.push(`Medienzuordnung ${code}: unbekannter Fragecode`);
     if (!mediaIds.has(id)) problems.push(`Medienzuordnung ${code}: unbekanntes Medium ${id}`);
   }

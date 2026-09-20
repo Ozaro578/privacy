@@ -2,6 +2,7 @@
 // Die SVG-Dateien werden mit `node scripts/gen-media.mjs` erzeugt und liegen unter media/ (manifest.json).
 import { MEDIA_MANIFEST } from "./media.manifest";
 import { QUESTION_MEDIA_A } from "./media.extra.a";
+import { QUESTION_MEDIA_B } from "./media.extra.b";
 import { ZEICHEN_MEDIA } from "./questions/zeichen.generated";
 
 export type MediaKind = "sign" | "scene";
@@ -131,9 +132,9 @@ export const QUESTION_MEDIA: Readonly<Record<string, string>> = {
   "own-fahrzeugtechnik-004": "oeldruck",
 };
 
-export { QUESTION_MEDIA_A };
+export { QUESTION_MEDIA_A, QUESTION_MEDIA_B };
 
 export const mediaForQuestion = (code: string): MediaItem | undefined => {
-  const id = QUESTION_MEDIA[code] ?? QUESTION_MEDIA_A[code] ?? ZEICHEN_MEDIA[code];
+  const id = QUESTION_MEDIA[code] ?? QUESTION_MEDIA_A[code] ?? QUESTION_MEDIA_B[code] ?? ZEICHEN_MEDIA[code];
   return id ? byId.get(id) : undefined;
 };
