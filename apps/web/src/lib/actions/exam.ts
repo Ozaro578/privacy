@@ -7,7 +7,7 @@ import { composeExam, scoreExam, type AnsweredQuestion } from "@fahrpilot/rules-
 import { analyzeErrors, XP_TABLE } from "@fahrpilot/learning-engine";
 import { getStudentContext } from "@/lib/data/student";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
-import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, toMeta } from "@/lib/data/learning";
+import { buildLearningOverview, loadQuestionMetaPool, loadQuestionsById, loadStates, loadTopics, toMeta } from "@/lib/data/learning";
 import { computeAndStoreReadiness } from "@/lib/data/readiness";
 import { loadTrainingStatus } from "@/lib/data/training";
 
@@ -37,7 +37,7 @@ export async function createExamSimulation(): Promise<CreatedExamSimulation> {
   const ctx = await getStudentContext();
   const rule = ctx.rules.examTheory;
   if (!rule) throw new Error("Für diese Klasse ist noch keine Prüfungsregel hinterlegt.");
-  const pool = await loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, ctx.student.preferred_locale);
+  const pool = await loadQuestionMetaPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, ctx.student.preferred_locale);
   const { data: recent } = await ctx.db.from("exam_simulations").select("question_ids").eq("student_id", ctx.student.id).order("started_at", { ascending: false }).limit(3);
   const recentlyUsed = new Set((recent ?? []).flatMap((r) => r.question_ids));
   // Zeichenfragen aus dem Katalog (400+) auf einen prüfungsnahen Anteil begrenzen, damit die Simulation nicht von Zeichen dominiert wird.
@@ -54,7 +54,8 @@ export async function createExamSimulation(): Promise<CreatedExamSimulation> {
     rule_snapshot: rule.rules as unknown as Json, client_session_id: clientSessionId, time_limit_seconds: rule.rules.time_limit_seconds, question_ids: questions.map((q) => q.id),
   }).select("id").single();
   if (error || !sim) throw new Error("Simulation konnte nicht gestartet werden");
-  const byId = new Map(pool.map((q) => [q.id, q]));
+  const byId = await loadQuestionsById(ctx.db, questions.map((q) => q.id), ctx.student.preferred_locale);
+  if (byId.size !== questions.length) throw new Error("Prüfungsfragen konnten nicht vollständig geladen werden.");
   await admin.from("exam_results").insert(questions.map((q, i) => ({ exam_simulation_id: sim.id, question_id: q.id, question_version_id: byId.get(q.id)!.version.id, position: i + 1, points: q.points })));
   return {
     id: sim.id, clientSessionId, timeLimitSeconds: rule.rules.time_limit_seconds, maxErrorPoints: rule.rules.max_error_points, questionsTotal: rule.rules.questions_total,
@@ -111,7 +112,7 @@ export async function submitExamSimulation(raw: z.input<typeof SubmitSchema>): P
   await admin.from("student_question_attempts").insert(attemptRows);
   // Analyse: Fehlercluster aus den letzten Versuchen inkl. dieser Prüfung
   const locale = ctx.student.preferred_locale;
-  const [pool, topics] = await Promise.all([loadQuestionPool(db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadTopics(db, locale)]);
+  const [pool, topics] = await Promise.all([loadQuestionMetaPool(db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadTopics(db, locale)]);
   const { data: recentAttempts } = await db.from("student_question_attempts").select("question_id, is_correct, answered_at, confidence, response_ms").eq("student_id", ctx.student.id).order("answered_at", { ascending: false }).limit(300);
   const analysis = analyzeErrors((recentAttempts ?? []).map((a) => ({ question_id: a.question_id, is_correct: a.is_correct, answered_at: a.answered_at, confidence: a.confidence, response_ms: a.response_ms })), new Map(pool.map((q) => [q.id, toMeta(q)])), topics.map((t) => ({ id: t.id, name: t.name })));
   await admin.from("exam_simulations").update({

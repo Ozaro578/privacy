@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getStudentContext } from "@/lib/data/student";
-import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics } from "@/lib/data/learning";
+import { buildLearningOverview, loadQuestionMetaPool, loadStates, loadTopics } from "@/lib/data/learning";
 import { Card, ProgressBar, btn } from "@/components/ui";
 import { LEVEL_LABEL, currentLevel, levelProgress } from "@fahrpilot/learning-engine";
 import { toMeta } from "@/lib/data/learning";
@@ -23,7 +23,7 @@ const TRAINERS = [{ href: "/lernen/vorfahrt", title: "Vorfahrt-Trainer", text: "
 export default async function LearnPage() {
   const ctx = await getStudentContext();
   const locale = ctx.student.preferred_locale;
-  const [pool, states, topics, { data: board }, { data: me }] = await Promise.all([loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale), ctx.db.rpc("tenant_leaderboard", { p_days: 7, p_limit: 10 }), ctx.db.from("students").select("leaderboard_opt_in").eq("id", ctx.student.id).single()]);
+  const [pool, states, topics, { data: board }, { data: me }] = await Promise.all([loadQuestionMetaPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale), ctx.db.rpc("tenant_leaderboard", { p_days: 7, p_limit: 10 }), ctx.db.from("students").select("leaderboard_opt_in").eq("id", ctx.student.id).single()]);
   const ov = buildLearningOverview(pool, states, topics);
   const levels = levelProgress(pool.map((q) => toMeta(q)), states);
   const level = currentLevel(levels);

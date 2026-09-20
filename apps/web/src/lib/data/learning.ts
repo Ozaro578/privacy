@@ -30,29 +30,89 @@ export interface QuestionWithVersion {
   };
 }
 
-/** Veröffentlichte Fragen für eine Klasse (global + Tenant) mit aktueller Version und Antworten. Für Prüfungen und Lernsessions. */
-export async function loadQuestionPool(db: Db, licenseCode: string, baseClass: string | null, locale = "de"): Promise<QuestionWithVersion[]> {
-  const { data, error } = await db
+/** Supabase liefert je Anfrage höchstens 1.000 Zeilen; größere Mengen werden seitenweise geholt. */
+const PAGE = 1000;
+async function fetchAll<T>(query: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>): Promise<T[]> {
+  const out: T[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await query(from, from + PAGE - 1);
+    if (error) throw new Error(error.message);
+    out.push(...(data ?? []));
+    if (!data || data.length < PAGE) return out;
+  }
+}
+
+/** Metadaten einer veröffentlichten Frage: reicht für Auswahl, Mastery, Stufen und Prüfungszusammenstellung. */
+export interface QuestionMetaRow {
+  id: string;
+  topic_id: string;
+  material_kind: "basic" | "class_specific";
+  points: number;
+  difficulty: number;
+  question_kind: string;
+  source: string;
+  external_ref: string | null;
+  tags: string[];
+  version_id: string;
+}
+
+const matchesClass = (licenseCodes: string[] | null, codes: string[]) => { const lc = licenseCodes ?? []; return lc.length === 0 || lc.some((c) => codes.includes(c)); };
+
+/** Leichter Fragenpool (ohne Texte und Antworten) für eine Klasse. Ein Bruchteil der Datenmenge des vollen Pools. */
+export async function loadQuestionMetaPool(db: Db, licenseCode: string, baseClass: string | null, locale = "de"): Promise<QuestionMetaRow[]> {
+  const rows = await fetchAll((from, to) => db
     .from("theory_questions")
-    .select("id, topic_id, material_kind, points, difficulty, question_kind, source, external_ref, license_codes, tags, current_version_id, question_versions!theory_questions_current_version_fk(id, text, media_path, media_kind, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, locale, question_answers(id, position, text, is_correct, explanation))")
-    .eq("status", "published");
-  if (error) throw new Error(error.message);
+    .select("id, topic_id, material_kind, points, difficulty, question_kind, source, external_ref, license_codes, tags, current_version_id, question_versions!theory_questions_current_version_fk(id, locale)")
+    .eq("status", "published").order("id").range(from, to));
   const codes = [licenseCode, baseClass].filter(Boolean) as string[];
-  const out: QuestionWithVersion[] = [];
-  for (const q of data ?? []) {
-    const lc = (q.license_codes ?? []) as string[];
-    if (lc.length > 0 && !lc.some((c) => codes.includes(c))) continue;
-    const v = q.question_versions as unknown as (QuestionWithVersion["version"] & { locale: string; question_answers: QuestionWithVersion["version"]["answers"] }) | null;
+  const out: QuestionMetaRow[] = [];
+  for (const q of rows) {
+    if (!matchesClass(q.license_codes as string[] | null, codes)) continue;
+    const v = q.question_versions as unknown as { id: string; locale: string } | null;
     if (!v || v.locale !== locale) continue;
-    out.push({
-      id: q.id, topic_id: q.topic_id, material_kind: q.material_kind as "basic" | "class_specific", points: q.points, difficulty: Number(q.difficulty), question_kind: q.question_kind, source: q.source, external_ref: q.external_ref, tags: (q.tags ?? []) as string[],
-      version: { ...v, answers: [...(v.question_answers ?? [])].sort((a, b) => a.position - b.position) },
-    });
+    out.push({ id: q.id, topic_id: q.topic_id, material_kind: q.material_kind as "basic" | "class_specific", points: q.points, difficulty: Number(q.difficulty), question_kind: q.question_kind, source: q.source, external_ref: q.external_ref, tags: (q.tags ?? []) as string[], version_id: v.id });
   }
   return out;
 }
 
-export function toMeta(q: QuestionWithVersion, tags?: string[]): QuestionMeta {
+const FULL_SELECT = "id, topic_id, material_kind, points, difficulty, question_kind, source, external_ref, license_codes, tags, current_version_id, question_versions!theory_questions_current_version_fk(id, text, media_path, media_kind, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, locale, question_answers(id, position, text, is_correct, explanation))";
+
+type FullRow = { id: string; topic_id: string; material_kind: string; points: number; difficulty: number | string; question_kind: string; source: string; external_ref: string | null; license_codes: string[] | null; tags: string[] | null; question_versions: unknown };
+
+function toFull(q: FullRow, locale: string): QuestionWithVersion | null {
+  const v = q.question_versions as (QuestionWithVersion["version"] & { locale: string; question_answers: QuestionWithVersion["version"]["answers"] }) | null;
+  if (!v || v.locale !== locale) return null;
+  return {
+    id: q.id, topic_id: q.topic_id, material_kind: q.material_kind as "basic" | "class_specific", points: q.points, difficulty: Number(q.difficulty), question_kind: q.question_kind, source: q.source, external_ref: q.external_ref, tags: (q.tags ?? []) as string[],
+    version: { ...v, answers: [...(v.question_answers ?? [])].sort((a, b) => a.position - b.position) },
+  };
+}
+
+/** Vollständige Fragen (Text, Medien, Antworten) für ausgewählte IDs, z. B. die 10 bis 30 Fragen einer Session oder Prüfung. */
+export async function loadQuestionsById(db: Db, ids: string[], locale = "de"): Promise<Map<string, QuestionWithVersion>> {
+  const map = new Map<string, QuestionWithVersion>();
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data, error } = await db.from("theory_questions").select(FULL_SELECT).in("id", ids.slice(i, i + 100));
+    if (error) throw new Error(error.message);
+    for (const q of data ?? []) { const full = toFull(q as unknown as FullRow, locale); if (full) map.set(full.id, full); }
+  }
+  return map;
+}
+
+/** Veröffentlichte Fragen für eine Klasse mit aktueller Version und Antworten. Nur dort einsetzen, wo wirklich alle Texte gebraucht werden. */
+export async function loadQuestionPool(db: Db, licenseCode: string, baseClass: string | null, locale = "de"): Promise<QuestionWithVersion[]> {
+  const rows = await fetchAll((from, to) => db.from("theory_questions").select(FULL_SELECT).eq("status", "published").order("id").range(from, to));
+  const codes = [licenseCode, baseClass].filter(Boolean) as string[];
+  const out: QuestionWithVersion[] = [];
+  for (const q of rows) {
+    if (!matchesClass(q.license_codes as string[] | null, codes)) continue;
+    const full = toFull(q as unknown as FullRow, locale);
+    if (full) out.push(full);
+  }
+  return out;
+}
+
+export function toMeta(q: Pick<QuestionMetaRow, "id" | "topic_id" | "points" | "difficulty" | "tags">, tags?: string[]): QuestionMeta {
   return { id: q.id, topic_id: q.topic_id, points: q.points, difficulty: q.difficulty, tags: tags ?? q.tags };
 }
 
@@ -64,9 +124,9 @@ export function rowToState(r: Tables<"student_question_state">): QuestionState {
 }
 
 export async function loadStates(db: Db, studentId: string): Promise<Map<string, QuestionState & { bookmarked: boolean; row_version: number }>> {
-  const { data } = await db.from("student_question_state").select("*").eq("student_id", studentId);
+  const data = await fetchAll((from, to) => db.from("student_question_state").select("*").eq("student_id", studentId).order("question_id").range(from, to));
   const map = new Map<string, QuestionState & { bookmarked: boolean; row_version: number }>();
-  for (const r of data ?? []) map.set(r.question_id, { ...rowToState(r), bookmarked: r.bookmarked, row_version: r.row_version });
+  for (const r of data) map.set(r.question_id, { ...rowToState(r), bookmarked: r.bookmarked, row_version: r.row_version });
   return map;
 }
 
@@ -90,7 +150,7 @@ export interface LearningOverview {
 }
 
 /** Lernstand für Übersicht und Dashboard. */
-export function buildLearningOverview(pool: QuestionWithVersion[], states: Map<string, QuestionState & { bookmarked: boolean }>, topics: TopicRow[]): LearningOverview {
+export function buildLearningOverview(pool: Array<Pick<QuestionMetaRow, "id" | "topic_id" | "points" | "difficulty" | "tags">>, states: Map<string, QuestionState & { bookmarked: boolean }>, topics: TopicRow[]): LearningOverview {
   const meta = pool.map((q) => toMeta(q));
   const tm = topicMastery(meta, states as Map<string, QuestionState>);
   const now = Date.now();

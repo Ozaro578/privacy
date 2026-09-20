@@ -5,7 +5,7 @@ import { initialQuestionState, reviewQuestion, selectQuestions, updateStreak, XP
 import { isAnswerCorrect } from "@fahrpilot/rules-engine";
 import { getStudentContext } from "@/lib/data/student";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
-import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, toMeta, type QuestionWithVersion } from "@/lib/data/learning";
+import { buildLearningOverview, loadQuestionMetaPool, loadQuestionsById, loadStates, loadTopics, toMeta, type QuestionWithVersion } from "@/lib/data/learning";
 
 const ModeSchema = z.enum(["topic", "question_list", "exam", "random", "hard", "wrong", "bookmarked", "unseen", "review", "weakness", "daily_goal", "generated", "ladder", "signs"]);
 
@@ -37,7 +37,7 @@ export async function startLearningSession(input: { mode: LearningMode; topicId?
   const limit = Math.min(Math.max(input.limit ?? 10, 1), 50);
   const ctx = await getStudentContext();
   const locale = ctx.student.preferred_locale;
-  const [pool, states, topics] = await Promise.all([loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale)]);
+  const [pool, states, topics] = await Promise.all([loadQuestionMetaPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale)]);
   const overview = buildLearningOverview(pool, states, topics);
   const bookmarked = new Set([...states.entries()].filter(([, s]) => s.bookmarked).map(([id]) => id));
   const selected = selectQuestions(pool.map((q) => toMeta(q)), states, { mode, limit, topicMastery: overview.topics, bookmarked, ...(input.topicId ? { topicId: input.topicId } : {}) });
@@ -46,11 +46,11 @@ export async function startLearningSession(input: { mode: LearningMode; topicId?
   const admin = createSupabaseAdminClient();
   const { data: session, error } = await admin.from("learning_sessions").upsert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, student_license_id: ctx.license.id, mode, topic_id: input.topicId ?? null, client_session_id: clientSessionId, device: "web", is_challenge: input.challenge === true }, { onConflict: "student_id,client_session_id" }).select("id").single();
   if (error || !session) throw new Error("Session konnte nicht gestartet werden");
-  const byId = new Map(pool.map((q) => [q.id, q]));
+  const byId = await loadQuestionsById(ctx.db, selected.map((m) => m.id), locale);
   const topicName = (id: string) => topics.find((t) => t.id === id)?.name ?? "";
   return {
     sessionId: session.id, clientSessionId, mode, challenge: input.challenge === true,
-    questions: selected.map((m) => byId.get(m.id)!).map((q) => ({
+    questions: selected.map((m) => byId.get(m.id)).filter((q): q is QuestionWithVersion => q !== undefined).map((q) => ({
       id: q.id, topicName: topicName(q.topic_id), points: q.points, kind: q.question_kind, source: q.source, text: q.version.text, mediaPath: q.version.media_path, mediaAlt: q.version.media_alt, mediaCredit: q.version.media_credit,
       answers: q.version.answers.map((a) => ({ position: a.position, text: a.text })), numeric: q.version.numeric_answer !== null,
     })),
@@ -141,7 +141,7 @@ export async function recordAttempt(raw: z.input<typeof AttemptSchema>): Promise
       newBadges.push(...earned);
     }
     // Themen-Mastery aktualisieren (nur das betroffene Thema)
-    const [pool, states] = await Promise.all([loadQuestionPool(db, ctx.license.license_code, ctx.licenseInfo.base_class, ctx.student.preferred_locale), loadStates(db, ctx.student.id)]);
+    const [pool, states] = await Promise.all([loadQuestionMetaPool(db, ctx.license.license_code, ctx.licenseInfo.base_class, ctx.student.preferred_locale), loadStates(db, ctx.student.id)]);
     const topics = await loadTopics(db, ctx.student.preferred_locale);
     const ov = buildLearningOverview(pool, states, topics);
     const t = ov.topics.find((x) => x.id === q.topic_id);

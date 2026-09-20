@@ -19,14 +19,25 @@ export async function loadProfile(userId: string, tenantId: string): Promise<Stu
 
 /** Lädt Fragenpool, Themen und Zustände vom Server in SQLite (Offline-Bundle). */
 export async function refreshContent(profile: StudentProfile): Promise<{ questions: number; topics: number }> {
-  const [{ data: qs }, { data: ts }, { data: states }] = await Promise.all([
-    supabase.from("theory_questions").select("id, topic_id, material_kind, points, difficulty, question_kind, source, license_codes, tags, updated_at, question_versions!theory_questions_current_version_fk(id, locale, text, media_path, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, question_answers(position, text, is_correct, explanation))").eq("status", "published"),
+  // Supabase liefert je Anfrage höchstens 1.000 Zeilen; Fragen und Zustände werden seitenweise geholt.
+  const PAGE = 1000;
+  async function all<T>(query: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>): Promise<T[]> {
+    const out: T[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await query(from, from + PAGE - 1);
+      if (error) throw new Error(error.message);
+      out.push(...(data ?? []));
+      if (!data || data.length < PAGE) return out;
+    }
+  }
+  const [qs, { data: ts }, states] = await Promise.all([
+    all((from, to) => supabase.from("theory_questions").select("id, topic_id, material_kind, points, difficulty, question_kind, source, license_codes, tags, updated_at, question_versions!theory_questions_current_version_fk(id, locale, text, media_path, media_alt, media_credit, explanation, mnemonic, legal_reference, legal_basis_date, numeric_answer, numeric_tolerance, question_answers(position, text, is_correct, explanation))").eq("status", "published").order("id").range(from, to)),
     supabase.from("topics").select("id, code, name_i18n, material_kind, practical_skill_code, sort_order").eq("active", true),
-    supabase.from("student_question_state").select("*").eq("student_id", profile.studentId),
+    all((from, to) => supabase.from("student_question_state").select("*").eq("student_id", profile.studentId).order("question_id").range(from, to)),
   ]);
   const codes = [profile.licenseCode, profile.baseClass].filter(Boolean) as string[];
   const questions: LocalQuestion[] = [];
-  for (const q of qs ?? []) {
+  for (const q of qs) {
     const v = q.question_versions as unknown as { id: string; locale: string; text: string; media_path: string | null; media_alt: string | null; media_credit: string | null; explanation: string | null; mnemonic: string | null; legal_reference: string | null; legal_basis_date: string | null; numeric_answer: number | null; numeric_tolerance: number | null; question_answers: Array<{ position: number; text: string; is_correct: boolean; explanation: string | null }> } | null;
     if (!v || v.locale !== "de") continue;
     const lc = (q.license_codes ?? []) as string[];
@@ -37,7 +48,7 @@ export async function refreshContent(profile: StudentProfile): Promise<{ questio
   await saveQuestions(questions, topics);
   const local = await stateStore.loadAll();
   const merged: LocalQuestionState[] = [];
-  for (const r of states ?? []) {
+  for (const r of states) {
     const l = local.get(r.question_id);
     if (l?.dirty) continue; // lokale unbestätigte Antworten bleiben bis zum Sync
     merged.push({ question_id: r.question_id, attempts: r.attempts, correct: r.correct, consecutive_correct: r.consecutive_correct, last_correct: r.last_correct, last_answered_at: r.last_answered_at, last_confidence: r.last_confidence, avg_response_ms: r.avg_response_ms, ease: Number(r.ease), interval_days: Number(r.interval_days), due_at: r.due_at, mastery: Number(r.mastery), bookmarked: r.bookmarked, row_version: r.row_version, dirty: false });

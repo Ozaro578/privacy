@@ -2,7 +2,7 @@ import "server-only";
 import { planToday, type TodayItem } from "@fahrpilot/learning-engine";
 import { parseRange } from "@/components/ui";
 import type { StudentContext } from "./student";
-import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, type LearningOverview } from "./learning";
+import { buildLearningOverview, loadQuestionMetaPool, loadStates, loadTopics, type LearningOverview } from "./learning";
 import { computeAndStoreReadiness } from "./readiness";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { loadTrainingStatus } from "./training";
@@ -37,7 +37,7 @@ export async function loadDashboard(ctx: StudentContext): Promise<DashboardData>
   const nowIso = new Date().toISOString();
   const today = new Date().toLocaleDateString("en-CA", { timeZone: ctx.school.timezone });
   const [pool, states, topics, training, { data: nextLessonRows }, { data: nextClassRows }, { data: docs }, { data: invoices }, { data: notifications }, { data: streak }, { data: goal }, { data: theoryExam }, { data: practicalExam }, { data: recentRatings }, { data: unreadMsgRows }] = await Promise.all([
-    loadQuestionPool(db, license.license_code, ctx.licenseInfo.base_class, locale), loadStates(db, student.id), loadTopics(db, locale), loadTrainingStatus(ctx),
+    loadQuestionMetaPool(db, license.license_code, ctx.licenseInfo.base_class, locale), loadStates(db, student.id), loadTopics(db, locale), loadTrainingStatus(ctx),
     db.from("lessons").select("id, period, kind, instructors(display_name)").eq("student_id", student.id).in("status", ["booked", "confirmed"]).gte("period", `[${nowIso},)`).order("period").limit(1),
     db.from("theory_classes").select("id, period, title, attendance!inner(status)").eq("attendance.student_id", student.id).gte("period", `[${nowIso},)`).order("period").limit(1),
     db.from("documents").select("id, title, status, requirement_code").eq("student_id", student.id).in("status", ["missing", "rejected"]),
