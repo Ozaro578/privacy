@@ -144,7 +144,7 @@ export const fahrphysik: readonly Question[] = [
     code: "own-fahrphysik-022", topic: "fahrphysik", points: 3, difficulty: 0.65, tags: ["aquaplaning", "naesse", "reifen", "profiltiefe"],
     text: "Welche Faktoren erhöhen die Gefahr von Aquaplaning?",
     answers: [t("Tiefes Wasser in Spurrillen, hohe Geschwindigkeit und geringe Profiltiefe"), t("Breite Reifen und zu niedriger Reifendruck"), f("Schmale Reifen mit tiefem Profil", "Schmale Reifen mit gutem Profil verdrängen das Wasser besser und schwimmen später auf."), f("Aquaplaning tritt erst über 130 km/h auf", "Je nach Wassertiefe und Reifen kann Aquaplaning schon deutlich unter 80 km/h auftreten.")],
-    explanation: "Aquaplaning entsteht, wenn der Reifen das Wasser nicht mehr schnell genug verdrängen kann und auf einem Wasserkeil aufschwimmt. Begünstigt wird das durch hohe Wasserstände, hohe Geschwindigkeit, wenig Profil, breite Reifen und zu geringen Luftdruck. Schon ab etwa 3 mm Profiltiefe nimmt die Wasserverdrängung spürbar ab.",
+    explanation: "Aquaplaning entsteht, wenn der Reifen das Wasser nicht mehr schnell genug verdrängen kann und auf einem Wasserkeil aufschwimmt. Begünstigt wird das durch hohe Wasserstände, hohe Geschwindigkeit, wenig Profil, breite Reifen und zu geringen Luftdruck. Unter etwa 3 mm Profiltiefe nimmt die Wasserverdrängung spürbar ab.",
     legalReference: "§ 3 Abs. 1 StVO; § 36 StVZO",
   }),
   q({

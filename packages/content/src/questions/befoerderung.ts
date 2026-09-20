@@ -209,8 +209,8 @@ export const befoerderung: readonly Question[] = [
   q({
     code: "own-befoerderung-030", topic: "befoerderung", points: 3, difficulty: 0.6, tags: ["gurt", "gurtpflicht", "ausnahmen"],
     text: "In welchen Fällen besteht keine Gurtpflicht?",
-    answers: [t("Beim Rückwärtsfahren und bei Fahrten mit Schrittgeschwindigkeit, etwa auf Parkplätzen"), t("Für Personen, die eine ärztliche Bescheinigung über eine Befreiung von der Gurtpflicht besitzen"), f("Für Taxifahrer während der Beförderung von Fahrgästen", "Diese frühere Ausnahme gilt nicht mehr; auch Taxifahrer müssen sich anschnallen."), f("Auf den Rücksitzen bei Fahrten innerorts unter 30 km/h", "Die Gurtpflicht gilt auf allen Sitzplätzen mit Gurt unabhängig von der Geschwindigkeit.")],
-    explanation: "Die Gurtpflicht gilt grundsätzlich für alle Insassen. Ausnahmen bestehen unter anderem bei Fahrten mit Schrittgeschwindigkeit wie Rückwärtsfahren und Rangieren auf Parkplätzen sowie im Haus-zu-Haus-Lieferverkehr. Wer aus gesundheitlichen Gründen keinen Gurt tragen kann, braucht eine ärztliche Bescheinigung und muss sie mitführen.",
+    answers: [t("Beim Rückwärtsfahren und bei Fahrten mit Schrittgeschwindigkeit, etwa auf Parkplätzen"), t("Für Personen, die aus gesundheitlichen Gründen eine Ausnahmegenehmigung von der Gurtpflicht besitzen; die Bescheinigung ist mitzuführen"), f("Für Taxifahrer während der Beförderung von Fahrgästen", "Diese frühere Ausnahme gilt nicht mehr; auch Taxifahrer müssen sich anschnallen."), f("Auf den Rücksitzen bei Fahrten innerorts unter 30 km/h", "Die Gurtpflicht gilt auf allen Sitzplätzen mit Gurt unabhängig von der Geschwindigkeit.")],
+    explanation: "Die Gurtpflicht gilt grundsätzlich für alle Insassen. Ausnahmen bestehen unter anderem bei Fahrten mit Schrittgeschwindigkeit wie Rückwärtsfahren und Rangieren auf Parkplätzen sowie im Haus-zu-Haus-Lieferverkehr. Wer aus gesundheitlichen Gründen keinen Gurt tragen kann, braucht eine Ausnahmegenehmigung der Straßenverkehrsbehörde auf Grundlage einer ärztlichen Bescheinigung und muss die Bescheinigung mitführen.",
     legalReference: "§ 21a Abs. 1 StVO; § 46 Abs. 1 Nr. 5b StVO",
   }),
   q({

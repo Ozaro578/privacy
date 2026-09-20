@@ -49,7 +49,6 @@ export const QUESTION_MEDIA_B: Readonly<Record<string, string>> = {
   // Beförderung
   "own-befoerderung-023": "253",
   "own-befoerderung-024": "1010-59",
-  "own-befoerderung-025": "265",
   // Fahrphysik
   "own-fahrphysik-011": "anhalteweg-schema",
   "own-fahrphysik-012": "anhalteweg-schema",
