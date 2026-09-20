@@ -90,7 +90,7 @@ export default async function SettingsPage() {
 
       <Card title="Anmeldelink und QR-Code">
         <div className="flex flex-wrap items-start gap-6">
-          <div className="rounded-xl border border-ink-100 bg-white p-2" role="img" aria-label={`QR-Code für den Anmeldelink ${d.registrationUrl}`} dangerouslySetInnerHTML={{ __html: d.qrSvg }} />
+          <div className="rounded-xl border border-ink-100 bg-surface p-2" role="img" aria-label={`QR-Code für den Anmeldelink ${d.registrationUrl}`} dangerouslySetInnerHTML={{ __html: d.qrSvg }} />
           <div className="min-w-0 flex-1 text-sm">
             <p className="text-ink-700">Schüler melden sich über diesen Link digital an. Der QR-Code eignet sich für Aushang, Flyer und Webseite.</p>
             <p className="mt-2 break-all font-mono text-xs"><a href={d.registrationUrl} target="_blank" rel="noreferrer" className="text-brand-700 underline">{d.registrationUrl}</a></p>

@@ -119,3 +119,4 @@ export function validateContent(): string[] {
 
   return problems;
 }
+export * from "./signs.js";

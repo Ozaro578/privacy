@@ -25,7 +25,7 @@ export function QrPanel({ classId, initial, active }: { classId: string; initial
   }, [active, refresh]);
   if (!active) return <p className="text-sm text-ink-700">Der Unterricht ist beendet. Es werden keine neuen Codes erzeugt.</p>;
   return (
-    <div className={big ? "fixed inset-0 z-50 flex flex-col items-center justify-center bg-white p-6" : "flex flex-col items-center"}>
+    <div className={big ? "fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface p-6" : "flex flex-col items-center"}>
       {code ? (
         <div className={`${big ? "w-[min(80vh,90vw)]" : "w-full max-w-sm"}`} aria-label="QR-Code für den Check-in" role="img" dangerouslySetInnerHTML={{ __html: code.svg }} />
       ) : <p className="text-sm text-danger-500" role="alert">{error ?? "Code wird erzeugt …"}</p>}

@@ -15,7 +15,7 @@ export function todayHref(item: TodayItem): string {
 export function TodayItemLink({ item, index }: { item: TodayItem; index: number }) {
   const icon = { review: "↻", weakness: "◆", coupling: "⇄", lesson: "⌖", theory_class: "▤", document: "▣", exam: "★", invoice: "€", goal: "◎", streak: "▲", message: "✉" }[item.kind];
   return (
-    <Link href={todayHref(item)} className="flex items-center gap-3 rounded-xl border border-ink-100 bg-white p-3 hover:border-brand-300">
+    <Link href={todayHref(item)} className="flex items-center gap-3 rounded-xl border border-ink-100 bg-surface p-3 hover:border-brand-300">
       <span aria-hidden className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700">{icon}</span>
       <span className="min-w-0 flex-1">
         <span className="block font-medium"><span className="text-ink-500">{index}. </span>{item.title}</span>

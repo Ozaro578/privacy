@@ -4,6 +4,8 @@ import { Card, Pill, fmt } from "@/components/ui";
 import { logoutAction } from "@/lib/actions/auth";
 import { DocumentUpload } from "@/components/profile/document-upload";
 import { NotificationSettings, PrivacyActions, LocaleSelect } from "@/components/profile/settings";
+import { AppearanceSettings } from "@/components/profile/appearance";
+import { getAppearance } from "@/lib/appearance";
 
 export const metadata = { title: "Profil" };
 
@@ -12,6 +14,7 @@ const EXAM_STATUS: Record<string, string> = { not_ready: "nicht bereit", awaitin
 
 export default async function ProfilePage() {
   const ctx = await getStudentContext();
+  const appearance = await getAppearance();
   const [{ data: docs }, { data: prefs }, { data: streak }, { data: contract }, { data: instructor }] = await Promise.all([
     ctx.db.from("documents").select("id, title, kind, status, requirement_code, rejection_reason, verified_at, expires_at").eq("student_id", ctx.student.id).order("status"),
     ctx.db.from("notification_preferences").select("notification_type, push, email, in_app").eq("user_id", ctx.userId),
@@ -46,6 +49,7 @@ export default async function ProfilePage() {
           ); })}</ul>
         </Card>
       </div>
+      <Card title="Darstellung"><AppearanceSettings initial={appearance} /></Card>
       <Card title="Benachrichtigungen"><NotificationSettings prefs={prefs ?? []} /></Card>
       <Card title="Einstellungen">
         <div className="space-y-3"><LocaleSelect current={ctx.student.preferred_locale} /><p className="text-xs text-ink-500">Übersetzte Lerninhalte sind Lernhilfen. Welche Sprachen in der amtlichen Prüfung zugelassen sind, entscheidet die Prüforganisation.</p></div>

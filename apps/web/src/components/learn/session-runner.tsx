@@ -56,7 +56,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
     return (
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">Session abgeschlossen</h1>
-        <div className="rounded-card bg-white p-5 shadow-card">
+        <div className="rounded-card bg-surface p-5 shadow-card">
           <p className="text-4xl font-bold tabular-nums">{pct} %</p>
           <p className="text-ink-700">{stats.correct} richtig, {stats.wrong} falsch · +{stats.xp} XP</p>
           {stats.badges.length > 0 && <p className="mt-2 rounded-lg bg-accent-400/30 p-2 text-sm">Neues Abzeichen: {stats.badges.join(", ")}</p>}
@@ -77,7 +77,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
         <span>{q.topicName} · {q.points} {q.points === 1 ? "Punkt" : "Punkte"}</span>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-brand-500" style={{ width: `${progress}%` }} /></div>
-      <div className="rounded-card bg-white p-5 shadow-card">
+      <div className="rounded-card bg-surface p-5 shadow-card">
         {q.source === "own" && <p className="mb-2 text-xs text-ink-500">Übungsfrage (kein amtlicher Prüfungsinhalt)</p>}
         <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <p className="text-lg font-medium">{q.text}</p>
@@ -92,7 +92,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
             {q.answers.map((a) => {
               const isSel = selected.includes(a.position);
               const isCorrect = result?.correctPositions.includes(a.position);
-              let cls = "border-ink-300 bg-white";
+              let cls = "border-ink-300 bg-surface";
               if (phase === "feedback") cls = isCorrect ? "border-success-500 bg-success-100" : isSel ? "border-danger-500 bg-danger-100" : "border-ink-100 opacity-70";
               else if (isSel) cls = "border-brand-500 bg-brand-50";
               const expl = result?.answerExplanations.find((x) => x.position === a.position)?.explanation;

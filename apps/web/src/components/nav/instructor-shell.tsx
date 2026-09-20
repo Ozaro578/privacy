@@ -32,7 +32,7 @@ export function InstructorShell({ children, schoolName, instructorName, current 
         </div>
       </nav>
       <main className="flex-1 px-4 pb-24 pt-4 md:px-8 md:pb-8">{children}</main>
-      <nav aria-label="Hauptnavigation" className="fixed inset-x-0 bottom-0 z-20 flex border-t border-ink-100 bg-white/95 backdrop-blur md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <nav aria-label="Hauptnavigation" className="fixed inset-x-0 bottom-0 z-20 flex border-t border-ink-100 bg-surface/95 backdrop-blur md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         {TABS.map((t) => (
           <Link key={t.href} href={t.href} aria-current={isActive(current, t) ? "page" : undefined} className={`flex min-h-14 flex-1 flex-col items-center justify-center text-xs ${isActive(current, t) ? "font-semibold text-brand-700" : "text-ink-500"}`}>
             <span aria-hidden className="text-lg leading-none">{t.icon}</span>

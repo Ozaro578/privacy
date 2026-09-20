@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/sync-media.mjs",
+    "predev": "node scripts/sync-media.mjs && node scripts/build-palettes.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/sync-media.mjs",
+    "prebuild": "node scripts/sync-media.mjs && node scripts/build-palettes.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

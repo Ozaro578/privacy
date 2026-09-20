@@ -20,7 +20,7 @@ export default async function TheoryPage({ searchParams }: { searchParams: Promi
         <div className="flex gap-2"><Link href={`/verwaltung/theorie?klasse=${licenseCode}`} className={scope === "upcoming" ? btn.primary : btn.ghost}>Kommende</Link><Link href={`/verwaltung/theorie?klasse=${licenseCode}&bereich=past`} className={scope === "past" ? btn.primary : btn.ghost}>Vergangene</Link></div>
       </header>
       {d.classes.length === 0 ? <EmptyState title={scope === "upcoming" ? "Kein Unterricht geplant" : "Keine vergangenen Termine"} text="Lege unten einen Termin oder eine Serie an." /> : (
-        <div className="overflow-x-auto rounded-card bg-white shadow-card">
+        <div className="overflow-x-auto rounded-card bg-surface shadow-card">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-ink-500"><tr><th className="p-3">Termin</th><th className="p-3">Einheit</th><th className="p-3">Fahrlehrer</th><th className="p-3">Ort</th><th className="p-3">Teilnehmer</th><th className="p-3">Status</th></tr></thead>
             <tbody className="divide-y divide-ink-100">

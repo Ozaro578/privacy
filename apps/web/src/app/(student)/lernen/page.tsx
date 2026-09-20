@@ -39,7 +39,7 @@ export default async function LearnPage() {
           {MODES.map((m) => {
             const count = m.countKey ? ov[m.countKey] : null;
             return (
-              <Link key={m.mode} href={`/lernen/session?mode=${m.mode}&limit=15`} className="rounded-card bg-white p-4 shadow-card hover:-translate-y-px">
+              <Link key={m.mode} href={`/lernen/session?mode=${m.mode}&limit=15`} className="rounded-card bg-surface p-4 shadow-card hover:-translate-y-px">
                 <div className="flex items-center justify-between"><p className="font-semibold">{m.title}</p>{count !== null && <span className="rounded-full bg-ink-100 px-2 py-0.5 text-xs font-medium tabular-nums">{count}</span>}</div>
                 <p className="mt-1 text-sm text-ink-700">{m.text}</p>
               </Link>

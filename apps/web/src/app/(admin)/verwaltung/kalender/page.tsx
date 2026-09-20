@@ -59,7 +59,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
             const items = d.byDay.get(day) ?? [];
             const inMonth = day.slice(0, 7) === date.slice(0, 7);
             return (
-              <div key={day} className={`min-h-24 rounded-lg border p-1 ${inMonth ? "border-ink-100 bg-white" : "border-transparent bg-ink-50 text-ink-500"} ${day === today ? "ring-2 ring-brand-500" : ""}`}>
+              <div key={day} className={`min-h-24 rounded-lg border p-1 ${inMonth ? "border-ink-100 bg-surface" : "border-transparent bg-ink-50 text-ink-500"} ${day === today ? "ring-2 ring-brand-500" : ""}`}>
                 <Link href={qs({ view: "day", date: day })} className="block font-medium hover:underline">{Number(day.slice(8, 10))}</Link>
                 <div className="mt-1 space-y-0.5">{items.slice(0, 3).map((it) => <CalendarItem key={it.id} item={it} compact backHref={self} />)}{items.length > 3 && <Link href={qs({ view: "day", date: day })} className="block text-brand-700">+{items.length - 3} weitere</Link>}</div>
               </div>

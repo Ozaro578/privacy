@@ -42,3 +42,4 @@ next-env.d.ts
 
 # Fragemedien (werden aus packages/content/media kopiert)
 /public/media/questions
+/src/app/palettes.css

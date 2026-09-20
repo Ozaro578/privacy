@@ -14,7 +14,7 @@ export function WhyButton({ questionId, selected }: { questionId: string; select
   return (
     <div className="w-full">
       {!data ? <button type="button" onClick={() => load()} disabled={pending} className={btn.secondary}>{pending ? "Erkläre …" : "Warum?"}</button> : (
-        <div className="mt-2 rounded-xl border border-ink-100 bg-white p-3 text-sm">
+        <div className="mt-2 rounded-xl border border-ink-100 bg-surface p-3 text-sm">
           <div className="mb-2 flex flex-wrap gap-1">
             {(["simple", "detailed", "example", "mnemonic"] as const).map((s) => <button key={s} type="button" onClick={() => { setStyle(s); load(s); }} className={`rounded-full px-2.5 py-1 text-xs ${style === s ? "bg-brand-500 text-white" : "bg-ink-100"}`}>{{ simple: "Einfach", detailed: "Ausführlich", example: "Mit Beispiel", mnemonic: "Merksatz" }[s]}</button>)}
           </div>

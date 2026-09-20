@@ -5,7 +5,7 @@ import { SlotForm, SlotActions, AbsenceForm, AvailabilityForm } from "@/componen
 
 export const metadata = { title: "Kalender" };
 
-const TONE: Record<string, string> = { open: "border-ink-300 bg-white", booked: "border-warn-500/50 bg-warn-100", confirmed: "border-brand-200 bg-brand-50", completed: "border-success-500/30 bg-success-100", no_show: "border-danger-500/40 bg-danger-100", absence: "border-ink-300 bg-ink-100", planned: "border-accent-400/50 bg-accent-400/20", running: "border-accent-400/50 bg-accent-400/20" };
+const TONE: Record<string, string> = { open: "border-ink-300 bg-surface", booked: "border-warn-500/50 bg-warn-100", confirmed: "border-brand-200 bg-brand-50", completed: "border-success-500/30 bg-success-100", no_show: "border-danger-500/40 bg-danger-100", absence: "border-ink-300 bg-ink-100", planned: "border-accent-400/50 bg-accent-400/20", running: "border-accent-400/50 bg-accent-400/20" };
 
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ woche?: string }> }) {
   const { woche } = await searchParams;
@@ -33,11 +33,11 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
       <div className="grid gap-2 md:grid-cols-7">{days.map((d) => {
         const items = week.entries.filter((e) => e.dayKey === d);
         return (
-          <section key={d} className={`rounded-card bg-white p-2 shadow-card ${d === today ? "ring-2 ring-brand-500" : ""}`} aria-label={label(d)}>
+          <section key={d} className={`rounded-card bg-surface p-2 shadow-card ${d === today ? "ring-2 ring-brand-500" : ""}`} aria-label={label(d)}>
             <h2 className="mb-2 text-sm font-semibold">{label(d)}</h2>
             {items.length === 0 ? <p className="text-xs text-ink-500">Keine Termine</p> : (
               <ul className="space-y-1">{items.map((e) => (
-                <li key={`${e.kind}-${e.id}`} className={`rounded-lg border p-2 text-xs ${TONE[e.status] ?? "border-ink-300 bg-white"}`}>
+                <li key={`${e.kind}-${e.id}`} className={`rounded-lg border p-2 text-xs ${TONE[e.status] ?? "border-ink-300 bg-surface"}`}>
                   <p className="font-semibold tabular-nums">{fmt.time(e.start)} bis {fmt.time(e.end)}</p>
                   <p>{e.kind === "theory" ? <Link href={`/lehrer/unterricht/${e.id}`} className="text-brand-700 underline">{e.title}</Link> : e.title}</p>
                   {e.subtitle && <p className="text-ink-700">{e.subtitle}</p>}

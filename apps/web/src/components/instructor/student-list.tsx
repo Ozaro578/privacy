@@ -44,7 +44,7 @@ export function StudentList({ students, showInstructor }: { students: StudentRow
       {filtered.length === 0 ? <p className="rounded-card border border-dashed border-ink-300 p-6 text-center text-sm text-ink-700">Keine Schüler gefunden.</p> : (
         <ul className="grid gap-3 md:grid-cols-2">{filtered.map((s) => (
           <li key={s.licenseId}>
-            <Link href={`/lehrer/schueler/${s.licenseId}`} className="block rounded-card bg-white p-4 shadow-card hover:-translate-y-px">
+            <Link href={`/lehrer/schueler/${s.licenseId}`} className="block rounded-card bg-surface p-4 shadow-card hover:-translate-y-px">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="font-semibold">{s.name}</p>

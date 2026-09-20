@@ -73,7 +73,7 @@ export default async function DrivingPage() {
               {l.evaluation && (
                 <div className="mt-2 rounded-lg bg-ink-100 p-3 text-sm">
                   {l.evaluation.contents.length > 0 && <p>Inhalte: {l.evaluation.contents.map(skillName).join(", ")}</p>}
-                  {l.evaluation.ratings.length > 0 && <ul className="mt-1 flex flex-wrap gap-2">{l.evaluation.ratings.map((r) => <li key={r.skill_code} className="rounded-full bg-white px-2 py-0.5">{skillName(r.skill_code)} {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</li>)}</ul>}
+                  {l.evaluation.ratings.length > 0 && <ul className="mt-1 flex flex-wrap gap-2">{l.evaluation.ratings.map((r) => <li key={r.skill_code} className="rounded-full bg-surface px-2 py-0.5">{skillName(r.skill_code)} {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</li>)}</ul>}
                   {l.evaluation.comment && <p className="mt-1">Feedback: {l.evaluation.comment}</p>}
                   {l.evaluation.next_goals.length > 0 && <p className="mt-1">Nächste Ziele: {l.evaluation.next_goals.join(", ")}</p>}
                 </div>

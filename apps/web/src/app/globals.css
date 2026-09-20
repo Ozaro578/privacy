@@ -1,38 +1,41 @@
 @import "tailwindcss";
 @import "@fahrpilot/ui/theme.css";
 
-@theme {
-  --color-brand-50: #eef4fb;
-  --color-brand-100: #d6e4f5;
-  --color-brand-200: #a9c6ea;
-  --color-brand-300: #6f9fd9;
-  --color-brand-500: #1d4ed8;
-  --color-brand-600: #1a43b8;
-  --color-brand-700: #163890;
-  --color-brand-900: #0f2452;
-  --color-accent-400: #f6c700;
-  --color-accent-500: #e0b400;
+@import "./palettes.css";
+
+@theme inline {
+  --color-brand-50: var(--fp-brand-50);
+  --color-brand-100: var(--fp-brand-100);
+  --color-brand-200: var(--fp-brand-200);
+  --color-brand-300: var(--fp-brand-300);
+  --color-brand-500: var(--fp-brand-500);
+  --color-brand-600: var(--fp-brand-600);
+  --color-brand-700: var(--fp-brand-700);
+  --color-brand-900: var(--fp-brand-900);
+  --color-accent-400: var(--fp-accent-400);
+  --color-accent-500: var(--fp-accent-500);
+  --color-accent-text: var(--fp-accent-text);
   --color-success-500: #1f9d55;
-  --color-success-100: #dcf5e6;
+  --color-success-100: var(--fp-success-100);
   --color-warn-500: #e8850c;
-  --color-warn-100: #fdebd3;
+  --color-warn-100: var(--fp-warn-100);
   --color-danger-500: #c1121f;
-  --color-danger-100: #fbe0e3;
-  --color-ink-900: #1c1917;
-  --color-ink-700: #44403c;
-  --color-ink-500: #78716c;
-  --color-ink-300: #d6d3d1;
-  --color-ink-100: #f5f5f4;
-  --color-paper: #fbfaf8;
+  --color-danger-100: var(--fp-danger-100);
+  --color-ink-900: var(--fp-ink-900);
+  --color-ink-700: var(--fp-ink-700);
+  --color-ink-500: var(--fp-ink-500);
+  --color-ink-300: var(--fp-ink-300);
+  --color-ink-100: var(--fp-ink-100);
+  --color-paper: var(--fp-paper);
+  --color-surface: var(--fp-surface);
   --color-band-red: #c1121f;
   --color-band-orange: #e8850c;
   --color-band-yellowgreen: #8bb821;
   --color-band-green: #1f9d55;
   --radius-card: 16px;
-  --shadow-card: 0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 24px rgba(28, 25, 23, 0.06);
+  --shadow-card: var(--fp-shadow);
 }
 
-:root { color-scheme: light; }
 html { background: var(--color-paper); color: var(--color-ink-900); }
 body { min-height: 100dvh; font-feature-settings: "tnum"; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

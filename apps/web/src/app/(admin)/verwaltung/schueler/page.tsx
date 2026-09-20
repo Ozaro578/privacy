@@ -54,7 +54,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
       {d.rows.length === 0 ? (
         <EmptyState title="Keine Schüler gefunden" text="Passe die Filter an oder lege einen neuen Schüler an." action={<Link href="/verwaltung/schueler/neu" className={btn.primary}>Schüler anlegen</Link>} />
       ) : (
-        <div className="overflow-x-auto rounded-card bg-white shadow-card">
+        <div className="overflow-x-auto rounded-card bg-surface shadow-card">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-ink-500">
               <tr><th className="p-3">Name</th><th className="p-3">Status</th><th className="p-3">Ausbildung</th><th className="p-3">Fahrlehrer</th><th className="p-3">Prüfungen</th><th className="p-3 text-right">Offen</th></tr>

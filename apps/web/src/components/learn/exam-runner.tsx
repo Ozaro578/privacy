@@ -52,7 +52,7 @@ export function ExamRunner({ simulationId, questions, timeLimitSeconds, startedA
       <div className="flex flex-wrap gap-1" role="navigation" aria-label="Fragenübersicht">
         {questions.map((x, i) => { const an = answers[x.id]; const done = an && (x.numeric ? an.numeric !== "" : an.selected.length > 0); return <button key={x.id} type="button" onClick={() => setIndex(i)} aria-current={i === index ? "true" : undefined} className={`h-8 w-8 rounded-md text-xs ${i === index ? "ring-2 ring-brand-500" : ""} ${an?.unsure ? "bg-warn-100" : done ? "bg-success-100" : "bg-ink-100"}`}>{i + 1}</button>; })}
       </div>
-      <div className="rounded-card bg-white p-5 shadow-card">
+      <div className="rounded-card bg-surface p-5 shadow-card">
         <p className="text-xs text-ink-500">{q.points} Punkte</p>
         <QuestionMedia path={q.mediaPath} alt={q.mediaAlt} credit={q.mediaCredit} />
         <p className="text-lg font-medium">{q.text}</p>

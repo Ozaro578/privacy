@@ -21,7 +21,7 @@ export function PracticalTrainer({ questions }: { questions: CheckQuestion[] }) 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-1">{["all", ...Object.keys(CAT)].map((c) => <button key={c} type="button" onClick={() => { setFilter(c); setI(0); setResult(null); setReveal(false); }} className={`rounded-full px-3 py-1 text-sm ${filter === c ? "bg-brand-500 text-white" : "bg-ink-100"}`}>{c === "all" ? "Alle" : CAT[c]}</button>)}</div>
-      <div className="rounded-card bg-white p-5 shadow-card">
+      <div className="rounded-card bg-surface p-5 shadow-card">
         <p className="text-xs text-ink-500">{CAT[q.category] ?? q.category} · Frage {(i % list.length) + 1} von {list.length}</p>
         <p className="mt-1 text-lg font-medium">{q.question}</p>
         <label htmlFor="answer" className="mt-4 mb-1 block text-sm">Deine Antwort (so, wie du sie dem Prüfer sagen würdest)</label>

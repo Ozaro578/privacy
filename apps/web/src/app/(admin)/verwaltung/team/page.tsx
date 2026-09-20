@@ -16,7 +16,7 @@ export default async function TeamPage() {
         <p className="text-sm text-ink-700">{d.members.length} Mitarbeitende. {d.ctx.isAdmin ? "Einladen und Rollen setzen ist für Admin und Inhaber möglich." : "Rollen und Einladungen verwaltet der Admin."}</p>
       </header>
       {d.members.length === 0 ? <EmptyState title="Noch keine Mitarbeitenden" text="Lade Fahrlehrer und Büro-Mitarbeitende per E-Mail ein." /> : (
-        <div className="overflow-x-auto rounded-card bg-white shadow-card">
+        <div className="overflow-x-auto rounded-card bg-surface shadow-card">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-ink-500"><tr><th className="p-3">Name</th><th className="p-3">Rolle</th><th className="p-3">Status</th><th className="p-3">Fahrlehrerprofil</th><th className="p-3">Standort</th></tr></thead>
             <tbody className="divide-y divide-ink-100">

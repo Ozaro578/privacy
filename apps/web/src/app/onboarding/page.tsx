@@ -18,7 +18,7 @@ export default async function Onboarding() {
           {active.map((m) => (
             <li key={m.tenant_id}>
               <form action={switchTenantAction.bind(null, m.tenant_id)}>
-                <button className="w-full rounded-card border border-ink-300 bg-white p-4 text-left hover:border-brand-500">
+                <button className="w-full rounded-card border border-ink-300 bg-surface p-4 text-left hover:border-brand-500">
                   <span className="font-medium">{(m.driving_schools as unknown as { name: string } | null)?.name}</span>
                   <span className="ml-2 text-sm text-ink-500">{m.role}</span>
                 </button>

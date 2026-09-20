@@ -20,7 +20,7 @@ export function CalendarItem({ item, compact = false, backHref }: { item: Calend
   }
   const past = new Date(item.end).getTime() < nowMs();
   return (
-    <div className="rounded-lg border-l-4 bg-white px-2 py-1 text-xs shadow-sm" style={{ borderLeftColor: item.color ?? "#94a3b8" }}>
+    <div className="rounded-lg border-l-4 bg-surface px-2 py-1 text-xs shadow-sm" style={{ borderLeftColor: item.color ?? "#94a3b8" }}>
       <div className="flex flex-wrap items-center gap-1">
         <span className="font-medium tabular-nums">{fmt.time(item.start)}{!compact && ` bis ${fmt.time(item.end)}`}</span>
         <Pill tone={TONE[item.status] ?? "neutral"}>{LESSON_STATUS_LABEL[item.status] ?? item.status}</Pill>

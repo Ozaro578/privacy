@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 export function Card({ children, className = "", title, action }: { children: ReactNode; className?: string; title?: string; action?: ReactNode }) {
   return (
-    <section className={`rounded-card bg-white p-5 shadow-card ${className}`}>
+    <section className={`rounded-card bg-surface p-5 shadow-card ${className}`}>
       {(title || action) && (
         <header className="mb-3 flex items-center justify-between gap-3">
           {title && <h2 className="text-base font-semibold text-ink-900">{title}</h2>}
@@ -62,7 +62,7 @@ export function ReadinessGauge({ score, size = 148 }: { score: number | null; si
 
 export function StatTile({ label, value, hint, href }: { label: string; value: ReactNode; hint?: string; href?: string }) {
   const inner = (
-    <div className="rounded-card bg-white p-4 shadow-card">
+    <div className="rounded-card bg-surface p-4 shadow-card">
       <p className="text-xs uppercase tracking-wide text-ink-500">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
       {hint && <p className="mt-1 text-sm text-ink-700">{hint}</p>}
@@ -98,7 +98,7 @@ export function Pill({ children, tone = "neutral" }: { children: ReactNode; tone
 
 export const btn = {
   primary: "inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 font-medium text-white hover:bg-brand-600 active:scale-[0.98] disabled:opacity-50",
-  secondary: "inline-flex min-h-11 items-center justify-center rounded-full border border-ink-300 bg-white px-5 font-medium text-ink-900 hover:border-brand-500 active:scale-[0.98] disabled:opacity-50",
+  secondary: "inline-flex min-h-11 items-center justify-center rounded-full border border-ink-300 bg-surface px-5 font-medium text-ink-900 hover:border-brand-500 active:scale-[0.98] disabled:opacity-50",
   ghost: "inline-flex min-h-11 items-center justify-center rounded-full px-4 font-medium text-brand-700 hover:bg-brand-50 active:scale-[0.98] disabled:opacity-50",
   danger: "inline-flex min-h-11 items-center justify-center rounded-full bg-danger-500 px-5 font-medium text-white hover:opacity-90 active:scale-[0.98] disabled:opacity-50",
 };

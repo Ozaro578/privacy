@@ -48,3 +48,23 @@ export async function updateLocale(locale: "de" | "en" | "tr" | "ar"): Promise<v
   await db.from("students").update({ preferred_locale: locale }).eq("user_id", session.userId);
   revalidatePath("/", "layout");
 }
+
+const AppearanceSchema = z.object({
+  palette: z.enum(["klar", "sonne", "wald", "beere", "meer", "graphit"]),
+  theme: z.enum(["system", "light", "dark"]),
+  fontSize: z.enum(["md", "lg", "xl"]),
+  motion: z.enum(["system", "reduced"]),
+  sound: z.boolean(),
+});
+
+/** Speichert Farbwelt, Hell/Dunkel, Schriftgröße, Bewegung und Ton des Nutzers (users.accessibility). */
+export async function saveAppearance(raw: z.input<typeof AppearanceSchema>): Promise<ActionResult> {
+  const session = await requireSession();
+  const p = AppearanceSchema.safeParse(raw);
+  if (!p.success) return { ok: false, message: "Ungültige Einstellung" };
+  const db = await createSupabaseServerClient();
+  const { error } = await db.from("users").update({ accessibility: p.data }).eq("id", session.userId);
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/", "layout");
+  return { ok: true, message: "Darstellung gespeichert." };
+}

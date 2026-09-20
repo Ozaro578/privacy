@@ -23,7 +23,7 @@ export default async function BookingPage({ searchParams }: { searchParams: Prom
     <div className="space-y-5">
       <header><Link href="/fahren" className="text-sm text-brand-700 underline">‹ Fahren</Link><h1 className="text-2xl font-bold">Fahrstunde buchen</h1><p className="text-sm text-ink-700">Nur passende Termine: {ctx.licenseInfo.code}, {ctx.license.transmission === "automatic" ? "Automatik" : "Schaltung"}, Fahrlehrer mit passender Erlaubnis und Verfügbarkeit.</p></header>
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <div className="flex rounded-full bg-ink-100 p-1">{(["tag", "woche", "monat"] as const).map((v) => <Link key={v} href={link({ ansicht: v, woche: 0 })} className={`rounded-full px-3 py-1 ${view === v ? "bg-white font-semibold shadow-sm" : ""}`}>{{ tag: "Tag", woche: "Woche", monat: "Monat" }[v]}</Link>)}</div>
+        <div className="flex rounded-full bg-ink-100 p-1">{(["tag", "woche", "monat"] as const).map((v) => <Link key={v} href={link({ ansicht: v, woche: 0 })} className={`rounded-full px-3 py-1 ${view === v ? "bg-surface font-semibold shadow-sm" : ""}`}>{{ tag: "Tag", woche: "Woche", monat: "Monat" }[v]}</Link>)}</div>
         <Link href={link({ woche: weekOffset - 1 })} className={btn.ghost} aria-label="Zurück">‹</Link>
         <span className="font-medium">{fmt.date(from.toISOString())} bis {fmt.date(new Date(to.getTime() - 1).toISOString())}</span>
         <Link href={link({ woche: weekOffset + 1 })} className={btn.ghost} aria-label="Weiter">›</Link>

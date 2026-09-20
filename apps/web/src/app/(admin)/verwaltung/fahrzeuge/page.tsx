@@ -21,7 +21,7 @@ export default async function VehiclesPage() {
         </Card>
       )}
       {d.vehicles.length === 0 ? <EmptyState title="Noch keine Fahrzeuge" text="Lege das erste Fahrzeug mit Kennzeichen, Getriebe und Fristen an." /> : (
-        <div className="overflow-x-auto rounded-card bg-white shadow-card">
+        <div className="overflow-x-auto rounded-card bg-surface shadow-card">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wide text-ink-500"><tr><th className="p-3">Kennzeichen</th><th className="p-3">Fahrzeug</th><th className="p-3">Getriebe</th><th className="p-3">Klassen</th><th className="p-3">HU</th><th className="p-3">Wartung</th><th className="p-3">Status</th></tr></thead>
             <tbody className="divide-y divide-ink-100">

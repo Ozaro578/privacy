@@ -27,7 +27,7 @@ export function CoachChat({ topicId, initialPrompt }: { topicId?: string; initia
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-1">{(["simple", "detailed", "example", "mnemonic"] as const).map((s) => <button key={s} type="button" onClick={() => setStyle(s)} className={`rounded-full px-3 py-1 text-xs ${style === s ? "bg-brand-500 text-white" : "bg-ink-100"}`}>{{ simple: "Einfach", detailed: "Ausführlich", example: "Mit Beispiel", mnemonic: "Merksatz" }[s]}</button>)}</div>
-      <div className="min-h-40 space-y-3 rounded-card bg-white p-4 shadow-card" aria-live="polite">
+      <div className="min-h-40 space-y-3 rounded-card bg-surface p-4 shadow-card" aria-live="polite">
         {messages.length === 0 && <div><p className="text-sm text-ink-700">Frag mich alles rund um Theorie und Praxis. Ich antworte nur mit geprüften Quellen und sage dir, wenn ich etwas nicht sicher weiß.</p><ul className="mt-3 flex flex-wrap gap-2">{SUGGESTIONS.map((s) => <li key={s}><button type="button" onClick={() => send(s)} className="rounded-full border border-ink-300 px-3 py-1 text-sm hover:border-brand-500">{s}</button></li>)}</ul></div>}
         {messages.map((m, i) => (
           <div key={i} className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm ${m.role === "user" ? "ml-auto bg-brand-500 text-white" : "bg-ink-100"}`}>
