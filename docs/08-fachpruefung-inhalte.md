@@ -277,3 +277,7 @@ Fahrzeugtechnik: 205 mm, 16 Zoll, Geschwindigkeitsindex T 190, H 210, V 240, W 2
 Beleuchtung: Nebelschlussleuchte 50 m und 50 km/h, Lichtautomatik, Fernlichtassistent, defekter Scheinwerfer, Parkleuchte innerorts, Nebelscheinwerfer nur bei erheblicher Sichtbehinderung, Abblendpflichten § 17 Abs. 2, Warnblinklicht, Lichtfarben, Lichthupe innerorts nur als Warnung, Dämmerung, Nachtsicht, Zug außerorts, Bremsleuchten, Krafträder am Tag, Fernlicht innerorts auf unbeleuchteter Straße, Blaulicht und gelbes Blinklicht, Leuchtweite, Tunnel Zeichen 327, Kontrollleuchte gelb, Ersatzlampen nicht vorgeschrieben, Sichtweite mit Abblendlicht, Rückfahrscheinwerfer.
 
 Testergebnis: `pnpm test` und `pnpm typecheck` im Paket content grün. Nicht committet.
+
+## Abnahme durch die Fahrlehrerin (ab 20. September 2026)
+
+Die offenen Punkte dieser Datei (10 Fragen mit Verifikationskennzeichnung, 1 Wissenseintrag, 1 Vorfahrt-Situation, 25 korrigierte Fragen zur Bestätigung, 11 Grundsatzfragen) sind als Prüfseite aufbereitet: `pnpm --filter @fahrpilot/content abnahme` erzeugt `packages/content/review/abnahme.html`. Die Seite läuft ohne Server, jede Bewertung (Richtig so, Ändern, Unsicher) mit Kommentar wird im Browser gespeichert und lässt sich als Text kopieren. Rückmeldungen werden in die Inhalte eingearbeitet; nach Freigabe wird `reviewStatus` der betroffenen Elemente auf `published` gesetzt und der Seed erneut ausgeführt.

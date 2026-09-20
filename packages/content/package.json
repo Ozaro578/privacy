@@ -13,7 +13,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "abnahme": "tsx scripts/gen-abnahme.ts"
   },
   "dependencies": {
     "postgres": "^3.4.5"
