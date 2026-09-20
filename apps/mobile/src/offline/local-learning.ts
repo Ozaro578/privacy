@@ -95,7 +95,8 @@ export function localOverview(pool: LocalQuestion[], states: Map<string, LocalQu
     if (new Date(s.due_at).getTime() <= now.getTime()) due++;
     if (s.last_correct === false) wrong++;
   }
-  const w = topics.reduce((s, t) => s + t.question_count, 0);
-  const overall = w ? topics.reduce((s, t) => s + t.mastery * t.question_count, 0) / w : 0;
+  const weight = (t: { question_count: number }) => Math.min(40, t.question_count); // Deckel wie im Web, damit der Zeichenkatalog nicht dominiert
+  const w = topics.reduce((s, t) => s + weight(t), 0);
+  const overall = w ? topics.reduce((s, t) => s + t.mastery * weight(t), 0) / w : 0;
   return { total: pool.length, answered, due, wrong, bookmarked, unseen: pool.length - answered, hard, overallMastery: Math.round(overall * 1000) / 1000, topics };
 }

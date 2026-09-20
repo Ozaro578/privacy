@@ -105,7 +105,9 @@ export function buildLearningOverview(pool: QuestionWithVersion[], states: Map<s
     if (s.last_correct === false) wrong++;
   }
   const withTopics = topics.filter((t) => tm.some((m) => m.topic_id === t.id)).map((t) => ({ ...t, ...tm.find((m) => m.topic_id === t.id)! }));
-  const totalWeight = withTopics.reduce((s, t) => s + t.question_count, 0);
-  const overall = totalWeight ? withTopics.reduce((s, t) => s + t.mastery * t.question_count, 0) / totalWeight : 0;
+  // Gewicht je Thema auf 40 Fragen gedeckelt, damit der große Zeichenkatalog die Gesamt-Mastery nicht dominiert.
+  const weight = (t: { question_count: number }) => Math.min(40, t.question_count);
+  const totalWeight = withTopics.reduce((s, t) => s + weight(t), 0);
+  const overall = totalWeight ? withTopics.reduce((s, t) => s + t.mastery * weight(t), 0) / totalWeight : 0;
   return { topics: withTopics, totalQuestions: pool.length, answeredQuestions: answered, dueCount: due, wrongCount: wrong, bookmarkedCount: bookmarked, unseenCount: pool.length - answered, hardCount: hard, overallMastery: Math.round(overall * 1000) / 1000 };
 }
