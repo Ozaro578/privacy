@@ -2,7 +2,7 @@ import { useState } from "react";
 import { KeyboardAvoidingView, Platform, TextInput } from "react-native";
 import { Redirect } from "expo-router";
 import * as Linking from "expo-linking";
-import { supabase } from "@/lib/supabase";
+import { API_URL, supabase } from "@/lib/supabase";
 import { useSession } from "@/lib/session";
 import { useTheme } from "@/lib/theme";
 import { Button, Card, Screen, Txt } from "@/components/ui";
@@ -42,6 +42,7 @@ export default function Login() {
           <Button label="Anmeldelink per E-Mail" variant="ghost" onPress={() => void magic()} disabled={!email || busy} />
         </Card>
         <Txt muted size={12} center>Neu hier? Deine Fahrschule schickt dir einen Anmeldelink.</Txt>
+        <Button label="Ohne Fahrschule lernen: Konto erstellen" variant="ghost" onPress={() => void Linking.openURL(`${API_URL}/registrieren`)} />
       </Screen>
     </KeyboardAvoidingView>
   );

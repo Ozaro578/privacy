@@ -18,6 +18,8 @@ export function SessionRunner({ session }: { session: StartedSession }) {
   const [result, setResult] = useState<AttemptResult | null>(null);
   const [stats, setStats] = useState({ correct: 0, wrong: 0, xp: 0, badges: [] as string[] });
   const [finish, setFinish] = useState<{ challengeCompleted: boolean; bonusXp: number } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { rootRef.current?.setAttribute("data-ready", "true"); }, []);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const startedAt = useRef(0);
@@ -77,7 +79,7 @@ export function SessionRunner({ session }: { session: StartedSession }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={rootRef}>
       <div className="flex items-center justify-between text-sm text-ink-700">
         <span>Frage {index + 1} von {total}</span>
         <span>{q.topicName} · {q.points} {q.points === 1 ? "Punkt" : "Punkte"}</span>

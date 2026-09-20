@@ -32,6 +32,10 @@ jobs:
           sudo apt-get install -y -q postgresql-client
           bash supabase/test/reset-local.sh
           psql -d fahrpilot_test -v ON_ERROR_STOP=1 -q -f supabase/test/01_rls_and_rpc_test.sql | grep BESTANDEN
+      - name: E2E (Playwright, öffentliche Seiten und Vorschau)
+        run: |
+          pnpm --filter @fahrpilot/web exec playwright install --with-deps chromium
+          CI=1 pnpm --filter @fahrpilot/web test:e2e
       - name: Web-Build
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
