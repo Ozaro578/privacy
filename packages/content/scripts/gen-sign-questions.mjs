@@ -16,9 +16,11 @@ const esc = (s) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, 
 const baseNumber = (n) => String(n).split("-")[0].split(".")[0];
 
 const entries = [];
-for (const sign of catalog) {
+const HISTORIC = /bis 2009|nicht mehr in der StVO|nicht mehr Bestandteil|historisch/i;
+const current = catalog.filter((s) => !(s.note && HISTORIC.test(s.note)));
+for (const sign of current) {
   const rnd = seeded(sign.id);
-  const same = catalog.filter((s) => s.category === sign.category && baseNumber(s.number) !== baseNumber(sign.number) && s.name !== sign.name);
+  const same = current.filter((s) => s.category === sign.category && baseNumber(s.number) !== baseNumber(sign.number) && s.name !== sign.name);
   // Ablenker: unterschiedliche Namen, deterministisch gemischt
   const pool = [...same].sort(() => rnd() - 0.5);
   const distractors = [];

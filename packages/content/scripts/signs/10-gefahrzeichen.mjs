@@ -15,7 +15,7 @@ const PICT = {
   // 103 Kurve links: dicker Strich von unten, oben nach links abknickend
   curveLeft: stroke("M58 92 V52 Q58 34 40 34 H24", 13, "butt"),
   // 105 Doppelkurve zunächst links: S-förmiger Strich
-  doubleCurveLeft: stroke("M56 94 V78 Q56 66 44 66 H40 Q32 66 32 58 V50 Q32 40 42 40 H64", 12, "butt"),
+  doubleCurveLeft: stroke("M58 96 V82 C58 64 34 72 34 54 C34 40 48 40 66 40", 12, "butt"),
   // 108 Gefälle: schwarzer Keil links, Prozentzahl rechts oben
   slopeDown: (pct) => `${fill("M12 92 V50 L90 92 Z")}${text(66, 62, 19, `${pct} %`)}`,
   // 110 Steigung: Keil rechts, Prozentzahl links oben
@@ -33,9 +33,9 @@ const PICT = {
   // 117 Seitenwind von rechts: Windsack weht nach links (Mast rechts)
   windFromRight: mirror(P.windsock),
   // 120 Verengte Fahrbahn: beide Ränder rücken zusammen
-  narrowBoth: `${fill("M22 92 V64 L38 46 V20 H46 V50 L30 68 V92 Z")}${fill("M78 92 V64 L62 46 V20 H54 V50 L70 68 V92 Z")}`,
+  narrowBoth: `${fill("M20 92 V64 L36 46 V20 H46 V50 L30 68 V92 Z")}${fill("M80 92 V64 L64 46 V20 H54 V50 L70 68 V92 Z")}`,
   // 121 Einseitig verengte Fahrbahn (rechts): linker Rand gerade, rechter rückt ein
-  narrowRight: `${fill("M26 92 V20 H34 V92 Z")}${fill("M78 92 V64 L62 46 V20 H54 V50 L70 68 V92 Z")}`,
+  narrowRight: `${fill("M24 92 V20 H34 V92 Z")}${fill("M80 92 V64 L64 46 V20 H54 V50 L70 68 V92 Z")}`,
   // 123 Arbeitsstelle: Person mit Schaufel und Erdhaufen
   worker: `<circle cx="38" cy="16" r="8" fill="${BLACK}"/>${fill("M31 27 H47 L54 44 L48 60 L52 86 H43 L40 64 L34 60 L30 86 H21 L26 56 L24 40 Z")}${stroke("M46 42 L74 66", 6, "butt")}${fill("M68 60 L84 76 L78 82 L62 66 Z")}${fill("M56 92 Q76 62 96 92 Z")}`,
   // 124 Stau: drei Autos hintereinander
@@ -45,27 +45,27 @@ const PICT = {
   // 101-52 Bewegliche Brücke: rechte Fahrbahn, links hochgeklappter Brückenteil
   drawbridge: `${fill("M50 80 H94 V88 H50 Z")}${fill("M6 80 H22 V88 H6 Z")}${fill("M20 86 L16 80 L48 40 L54 46 Z")}${stroke("M28 94 q5 -5 10 0 t10 0 t10 0", 4)}`,
   // 101-53 Ufer: Kaimauer, Auto kippt zum Wasser, Wellen
-  shore: `${stroke("M4 62 H44 V94", 7, "butt")}<g transform="rotate(28 44 52)">${fill("M18 58 H70 L66 46 H56 L48 38 H32 L26 46 H18 Z")}<circle cx="30" cy="60" r="5" fill="${BLACK}"/><circle cx="58" cy="60" r="5" fill="${BLACK}"/></g>${stroke("M50 90 q6 -6 12 0 t12 0 t12 0", 4)}`,
+  shore: `${stroke("M4 66 H40 V96", 7, "butt")}<g transform="rotate(32 36 62)">${fill("M18 60 H72 L68 48 H58 L50 40 H32 L26 48 H18 Z")}<circle cx="30" cy="62" r="5" fill="${BLACK}"/><circle cx="60" cy="62" r="5" fill="${BLACK}"/></g>${stroke("M48 92 q6 -6 12 0 t12 0 t12 0", 4)}`,
   // 101-54 Unzureichendes Lichtraumprofil: Brückenträger, darunter zu hoher Lkw
-  lowClearance: `${fill("M16 34 H84 V42 H16 Z")}${fill("M16 42 H24 V92 H16 Z")}${fill("M76 42 H84 V92 H76 Z")}<g transform="translate(20 22) scale(0.6)">${P.truckFront}</g>`,
+  lowClearance: `${fill("M14 32 H86 V44 H14 Z")}${fill("M14 44 H24 V94 H14 Z")}${fill("M76 44 H86 V94 H76 Z")}<g transform="translate(20 26) scale(0.6)">${P.truckFront}</g>`,
   // 131 Lichtzeichenanlage: Ampel mit drei Leuchten
   lights: P.trafficLight,
   // 133 Fußgänger: gehende Person nach links
-  pedestrian: `<circle cx="42" cy="13" r="8" fill="${BLACK}"/>${fill("M35 23 H53 L52 55 H39 Z")}${stroke("M51 26 L62 46 M38 26 L27 44 M43 54 L27 86 M50 54 L61 86", 8)}`,
+  pedestrian: `<circle cx="44" cy="13" r="8" fill="${BLACK}"/>${fill("M37 23 H55 L54 55 H41 Z")}${stroke("M52 27 L62 46 M40 27 L28 42 M45 54 L32 70 L26 88 M52 54 L58 70 L68 82", 8)}`,
   // 101-11 Fußgängerüberweg: Person auf Zebrastreifen
-  crosswalk: `<g transform="translate(15 0) scale(0.7)"><circle cx="42" cy="13" r="8" fill="${BLACK}"/>${fill("M35 23 H53 L52 55 H39 Z")}${stroke("M51 26 L62 46 M38 26 L27 44 M43 54 L27 86 M50 54 L61 86", 8)}</g><g fill="${BLACK}"><rect x="30" y="70" width="40" height="6"/><rect x="22" y="80" width="56" height="6"/><rect x="12" y="90" width="76" height="6"/></g>`,
+  crosswalk: `<g transform="translate(15 0) scale(0.7)"><circle cx="44" cy="13" r="8" fill="${BLACK}"/>${fill("M37 23 H55 L54 55 H41 Z")}${stroke("M52 27 L62 46 M40 27 L28 42 M45 54 L32 70 L26 88 M52 54 L58 70 L68 82", 8)}</g><g fill="${BLACK}"><rect x="30" y="70" width="40" height="6"/><rect x="22" y="80" width="56" height="6"/><rect x="12" y="90" width="76" height="6"/></g>`,
   // 136 Kinder: zwei laufende Kinder nach links
   children: `<circle cx="34" cy="26" r="6.5" fill="${BLACK}"/>${fill("M28 34 H40 L38 56 H30 Z")}${stroke("M39 36 L48 46 M29 36 L19 42 M31 55 L18 80 M37 55 L46 78", 6.5)}<circle cx="68" cy="13" r="7.5" fill="${BLACK}"/>${fill("M61 22 H75 L73 52 H63 Z")}${stroke("M74 26 L86 40 M62 26 L50 30 M64 51 L50 84 M71 51 L84 80", 7.5)}`,
   // 138 Radverkehr: Fahrrad nach links
   bicycle: `<circle cx="26" cy="68" r="15" fill="none" stroke="${BLACK}" stroke-width="5"/><circle cx="74" cy="68" r="15" fill="none" stroke="${BLACK}" stroke-width="5"/>${stroke("M26 68 L36 40 L62 40 L74 68 M36 40 L50 70 L62 40 M50 70 L74 68 M30 36 H42 M58 37 H70", 5)}<circle cx="50" cy="70" r="4" fill="${BLACK}"/>`,
   // 142 Wildwechsel: springendes Wild nach links
-  deer: mirror(P.deer),
+  deer: `${fill("M28 52 Q46 38 70 46 L80 58 Q60 68 34 66 Z")}${stroke("M34 56 L24 34", 10, "butt")}${fill("M30 30 L12 30 L8 36 L20 42 L32 40 Z")}${stroke("M22 29 L16 12 M22 29 L30 10 M18 20 L10 20 M26 18 L34 14", 3.5)}${stroke("M36 64 L16 76 M40 66 L26 88 M66 62 L86 74 M64 64 L76 90", 6)}${stroke("M78 52 L88 46", 4)}`,
   // 101-12 Viehtrieb: Rind nach links
   cow: `${fill("M26 44 H72 Q82 44 82 54 V66 H76 V88 H69 V66 H60 V88 H53 V66 H39 V88 H32 V66 H26 Z")}${fill("M26 44 L16 38 L10 44 L12 58 L20 64 L28 62 Z")}${stroke("M14 38 L8 30 M18 36 L16 27", 3.5)}${stroke("M82 52 L90 68", 3.5)}`,
   // 101-13 Reiter: Pferd mit Reiter nach links
-  rider: `${fill("M26 52 H72 Q82 52 84 62 L86 76 H80 L77 63 H72 L74 88 H67 L63 64 H45 L41 88 H34 L38 64 H30 L26 78 H19 L22 62 Z")}${fill("M28 54 L20 34 L10 30 L8 38 L14 42 L18 44 L22 60 Z")}${fill("M44 52 L46 24 H57 L60 52 Z")}<circle cx="52" cy="15" r="6.5" fill="${BLACK}"/>${stroke("M46 50 L44 70 M48 30 L28 40", 5)}`,
+  rider: `${fill("M26 52 H72 Q82 52 84 62 L86 76 H80 L77 63 H72 L74 88 H67 L63 64 H45 L41 88 H34 L38 64 H30 L26 78 H19 L22 62 Z")}${fill("M32 54 L26 32 L14 28 L8 36 L16 40 L22 46 L24 62 Z")}${fill("M44 52 L46 24 H57 L60 52 Z")}<circle cx="52" cy="15" r="6.5" fill="${BLACK}"/>${stroke("M46 50 L44 70 M48 30 L28 40", 5)}`,
   // 101-14 Amphibienwanderung: Frosch nach links
-  frog: `<ellipse cx="52" cy="62" rx="20" ry="11" fill="${BLACK}"/>${fill("M36 58 L22 50 Q14 52 16 60 L28 70 L38 68 Z")}<circle cx="24" cy="48" r="4.5" fill="${BLACK}"/>${fill("M66 56 L86 42 L92 48 L78 62 L88 76 L82 82 L64 68 Z")}${fill("M42 70 L26 84 L32 88 L48 76 Z")}`,
+  frog: `<ellipse cx="48" cy="64" rx="24" ry="13" fill="${BLACK}"/><circle cx="24" cy="56" r="9" fill="${BLACK}"/><circle cx="21" cy="52" r="2.5" fill="${WHITE}"/>${stroke("M64 60 L86 46 L84 74 L96 86 M60 74 L84 80 M34 70 L30 88 L40 88", 7)}`,
   // 101-10 Flugbetrieb: Flugzeug (Draufsicht) nach links
   plane: `${fill("M8 53 L18 46 H80 Q90 46 90 53 Q90 60 80 60 H18 Z")}${fill("M40 47 H52 L60 12 H50 Z")}${fill("M40 59 H52 L60 94 H50 Z")}${fill("M72 47 H82 L88 32 H80 Z")}${fill("M72 59 H82 L88 74 H80 Z")}`,
   // 150 Bahnübergang mit Schranken (bis 2009): Zaun/Schranke
@@ -82,7 +82,7 @@ const tri = (inner, title, size) => triangleUp(inner, title, size);
 /** Bake mit n Streifen; side "rechts": Streifen fallen nach links ab, "links": nach rechts. withSign: Zeichen 151 oben. distance: Entfernungsangabe unten. */
 function bake(n, side, withSign, distance, title) {
   const W = 120;
-  const H = withSign ? 240 : 170;
+  const H = withSign ? 266 : 196;
   const bw = 40;
   const bh = 150;
   const bx = 40;
@@ -98,7 +98,7 @@ function bake(n, side, withSign, distance, title) {
       ? `<path d="M${bx} ${hi + rise} L${bx + bw} ${hi} V${hi + t} L${bx} ${hi + t + rise} Z"/>`
       : `<path d="M${bx} ${hi} L${bx + bw} ${hi + rise} V${hi + t + rise} L${bx} ${hi + t} Z"/>`;
   }
-  const plate = distance ? `<rect x="36" y="${by + bh + 2}" width="48" height="16" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.2"/>${text(60, by + bh + 14, 11, distance)}` : "";
+  const plate = distance ? `<rect x="30" y="${by + bh + 4}" width="60" height="22" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.5"/>${text(60, by + bh + 20, 14, distance)}` : "";
   const sign = withSign ? `<svg x="14" y="2" width="92" height="92" viewBox="0 0 120 120">${PICT_SIGN_151.replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "")}</svg>` : "";
   return `${svgOpen(W, H, title)}<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="2" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.5"/><g fill="${RED}">${stripes}</g><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="2" fill="none" stroke="${BLACK}" stroke-width="1.5"/>${plate}${sign}</svg>`;
 }

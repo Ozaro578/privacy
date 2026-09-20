@@ -1686,5 +1686,235 @@ export const SIGN_CATALOG: readonly SignEntry[] = [
     "meaning": "Die Zickzacklinie kennzeichnet den Bereich eines Halt- oder Parkverbots, etwa an Haltestellen, Grundstückszufahrten oder Feuerwehrzufahrten. Innerhalb der Markierung darf nicht gehalten, an Haltestellen nicht geparkt werden; sie verdeutlicht ein bestehendes Verbot.",
     "alt": "Zeichen 299 Grenzmarkierung für Halt- oder Parkverbote: weiße Zickzacklinie am rechten Fahrbahnrand auf grauem Asphalt",
     "file": "signs/299.svg"
+  },
+  {
+    "id": "600",
+    "number": "600",
+    "name": "Absperrschranke",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Sperrt eine Fahrbahn, einen Fahrstreifen oder eine Fläche vollständig ab; die Weiterfahrt dahinter ist verboten. Vor der Schranke anhalten oder der gekennzeichneten Umfahrung folgen.",
+    "alt": "Zeichen 600 Absperrschranke: waagerechter Balken mit rot-weißen Schrägstreifen auf zwei Füßen",
+    "file": "signs/600.svg"
+  },
+  {
+    "id": "605-10",
+    "number": "605-10",
+    "name": "Leitbake (Aufstellung rechts, Vorbeifahrt links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Absperrung (etwa an Arbeitsstellen) und weist mit den abfallenden Streifen an, links an der Bake vorbeizufahren. Geschwindigkeit verringern, der Leitlinie der Baken folgen und nicht zwischen den Baken hindurchfahren.",
+    "alt": "Zeichen 605-10 Leitbake: hohe schmale Tafel mit rot-weißen Schrägstreifen, die nach links abfallen",
+    "file": "signs/605-10.svg"
+  },
+  {
+    "id": "605-11",
+    "number": "605-11",
+    "name": "Schmale Leitbake (Aufstellung rechts, Vorbeifahrt links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Absperrung (etwa an Arbeitsstellen) und weist mit den abfallenden Streifen an, links an der Bake vorbeizufahren. Geschwindigkeit verringern, der Leitlinie der Baken folgen und nicht zwischen den Baken hindurchfahren.",
+    "alt": "Zeichen 605-11 Schmale Leitbake: schmale Tafel mit rot-weißen Schrägstreifen, die nach links abfallen",
+    "file": "signs/605-11.svg",
+    "note": "Suffix -11/-21 als schmale Leitbake nachgebildet; Zuordnung im VzKat bitte prüfen."
+  },
+  {
+    "id": "605-20",
+    "number": "605-20",
+    "name": "Leitbake (Aufstellung links, Vorbeifahrt rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Absperrung (etwa an Arbeitsstellen) und weist mit den abfallenden Streifen an, rechts an der Bake vorbeizufahren. Geschwindigkeit verringern, der Leitlinie der Baken folgen und nicht zwischen den Baken hindurchfahren.",
+    "alt": "Zeichen 605-20 Leitbake: hohe schmale Tafel mit rot-weißen Schrägstreifen, die nach rechts abfallen",
+    "file": "signs/605-20.svg"
+  },
+  {
+    "id": "605-21",
+    "number": "605-21",
+    "name": "Schmale Leitbake (Aufstellung links, Vorbeifahrt rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Absperrung (etwa an Arbeitsstellen) und weist mit den abfallenden Streifen an, rechts an der Bake vorbeizufahren. Geschwindigkeit verringern, der Leitlinie der Baken folgen und nicht zwischen den Baken hindurchfahren.",
+    "alt": "Zeichen 605-21 Schmale Leitbake: schmale Tafel mit rot-weißen Schrägstreifen, die nach rechts abfallen",
+    "file": "signs/605-21.svg",
+    "note": "Suffix -11/-21 als schmale Leitbake nachgebildet; Zuordnung im VzKat bitte prüfen."
+  },
+  {
+    "id": "605-30",
+    "number": "605-30",
+    "name": "Leitbake doppelseitig (Vorbeifahrt links und rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis, an dem links und rechts vorbeigefahren werden kann, etwa eine Verkehrsinsel oder eine Fahrbahnteilung. Geschwindigkeit verringern und auf der eigenen Seite an der Bake vorbeifahren.",
+    "alt": "Zeichen 605-30 Leitbake doppelseitig: Tafel mit rot-weißen Streifen, die von der Mitte nach beiden Seiten abfallen",
+    "file": "signs/605-30.svg",
+    "note": "Doppelseitige Bake als Winkelstreifen mit Spitze oben nachgebildet; Suffix -30 bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "605-31",
+    "number": "605-31",
+    "name": "Schmale Leitbake doppelseitig",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis, an dem links und rechts vorbeigefahren werden kann, etwa eine Verkehrsinsel oder eine Fahrbahnteilung. Geschwindigkeit verringern und auf der eigenen Seite an der Bake vorbeifahren.",
+    "alt": "Zeichen 605-31 Schmale Leitbake doppelseitig: schmale Tafel mit rot-weißen Streifen, die von der Mitte nach beiden Seiten abfallen",
+    "file": "signs/605-31.svg",
+    "note": "Suffix -31 als schmale doppelseitige Leitbake nachgebildet; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "605-40",
+    "number": "605-40",
+    "name": "Pfeilbake (Aufstellung links, Vorbeifahrt rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Leitbake mit Pfeil, der die Seite anzeigt, an der vorbeizufahren ist. Dem Pfeil folgen, Geschwindigkeit verringern und den Fahrstreifen rechtzeitig wechseln.",
+    "alt": "Zeichen 605-40 Pfeilbake: weiße Tafel mit rotem Pfeil nach rechts",
+    "file": "signs/605-40.svg",
+    "note": "Zuordnung der VzKat-Nummern 605-40/-41 (Pfeilbake, Aufstellung links/rechts) analog zu 620-40/-41 gewählt; bitte prüfen."
+  },
+  {
+    "id": "605-41",
+    "number": "605-41",
+    "name": "Pfeilbake (Aufstellung rechts, Vorbeifahrt links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Leitbake mit Pfeil, der die Seite anzeigt, an der vorbeizufahren ist. Dem Pfeil folgen, Geschwindigkeit verringern und den Fahrstreifen rechtzeitig wechseln.",
+    "alt": "Zeichen 605-41 Pfeilbake: weiße Tafel mit rotem Pfeil nach links",
+    "file": "signs/605-41.svg",
+    "note": "Zuordnung der VzKat-Nummern 605-40/-41 (Pfeilbake, Aufstellung links/rechts) analog zu 620-40/-41 gewählt; bitte prüfen."
+  },
+  {
+    "id": "610",
+    "number": "610",
+    "name": "Leitkegel",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet kurzzeitige Hindernisse und Absperrungen, etwa bei Arbeiten oder Unfällen, und leitet den Verkehr daran vorbei. Nicht zwischen den Kegeln hindurchfahren, Geschwindigkeit verringern und dem Verlauf der Kegel folgen.",
+    "alt": "Zeichen 610 Leitkegel: roter Kegel mit zwei weißen Ringen auf dunklem Fuß",
+    "file": "signs/610.svg"
+  },
+  {
+    "id": "615",
+    "number": "615",
+    "name": "Fahrbare Absperrtafel",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Sperrt bei Arbeitsstellen kürzerer Dauer einen Fahrstreifen ab; die Streifen und das Zeichen 222 zeigen an, auf welcher Seite vorbeizufahren ist. Rechtzeitig den Fahrstreifen wechseln, Geschwindigkeit verringern und auf Arbeiter achten.",
+    "alt": "Zeichen 615 Fahrbare Absperrtafel: Anhänger mit rot-weiß gestreifter Tafel, blauem Vorbeifahrt-Pfeil und zwei gelben Leuchten",
+    "file": "signs/615.svg"
+  },
+  {
+    "id": "616",
+    "number": "616",
+    "name": "Fahrbare Absperrtafel mit Blinkpfeil",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Sperrt bei Arbeitsstellen kürzerer Dauer einen Fahrstreifen ab; der gelbe Blinkpfeil zeigt an, auf welche Seite der Verkehr ausweichen muss. Rechtzeitig in Pfeilrichtung den Fahrstreifen wechseln, Geschwindigkeit verringern und auf Arbeiter achten.",
+    "alt": "Zeichen 616 Fahrbare Absperrtafel mit Blinkpfeil: Anhänger mit gelbem Leuchtpfeil auf schwarzem Grund über rot-weiß gestreifter Tafel",
+    "file": "signs/616.svg"
+  },
+  {
+    "id": "620-40",
+    "number": "620-40",
+    "name": "Leitpfosten (links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Markiert den linken Fahrbahnrand und macht den Straßenverlauf bei Dunkelheit und Nebel erkennbar; zwei runde Rückstrahler kennzeichnen die linke Seite. Leitpfosten stehen in der Regel im Abstand von 50 m und helfen beim Abschätzen des Sicherheitsabstands.",
+    "alt": "Zeichen 620-40 Leitpfosten links: weißer Pfosten mit schwarzem Band und zwei runden weißen Rückstrahlern",
+    "file": "signs/620-40.svg"
+  },
+  {
+    "id": "620-41",
+    "number": "620-41",
+    "name": "Leitpfosten (rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Markiert den rechten Fahrbahnrand und macht den Straßenverlauf bei Dunkelheit und Nebel erkennbar; ein rechteckiger Rückstrahler kennzeichnet die rechte Seite. Leitpfosten stehen in der Regel im Abstand von 50 m und helfen beim Abschätzen des Sicherheitsabstands.",
+    "alt": "Zeichen 620-41 Leitpfosten rechts: weißer Pfosten mit schwarzem Band und einem rechteckigen weißen Rückstrahler",
+    "file": "signs/620-41.svg"
+  },
+  {
+    "id": "625-10",
+    "number": "625-10",
+    "name": "Richtungstafel in Kurven (linksweisend)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Macht den Verlauf einer scharfen oder unübersichtlichen Linkskurve deutlich. Geschwindigkeit vor der Kurve verringern, dem Pfeil folgen und in der Kurve nicht bremsen.",
+    "alt": "Zeichen 625-10 Richtungstafel in Kurven: rote Tafel mit weißem Pfeil nach links",
+    "file": "signs/625-10.svg",
+    "note": "Zuordnung -10 linksweisend, -20 rechtsweisend analog zu anderen Richtungsvarianten; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "625-20",
+    "number": "625-20",
+    "name": "Richtungstafel in Kurven (rechtsweisend)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Macht den Verlauf einer scharfen oder unübersichtlichen Rechtskurve deutlich. Geschwindigkeit vor der Kurve verringern, dem Pfeil folgen und in der Kurve nicht bremsen.",
+    "alt": "Zeichen 625-20 Richtungstafel in Kurven: rote Tafel mit weißem Pfeil nach rechts",
+    "file": "signs/625-20.svg",
+    "note": "Zuordnung -10 linksweisend, -20 rechtsweisend analog zu anderen Richtungsvarianten; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "626-10",
+    "number": "626-10",
+    "name": "Leitplatte (Vorbeifahrt links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Fahrbahnteilung, an der links vorbeizufahren ist, etwa die Spitze einer Verkehrsinsel. Der Streifenrichtung folgen und Geschwindigkeit verringern.",
+    "alt": "Zeichen 626-10 Leitplatte: breite Tafel mit rot-weißen Schrägstreifen, die nach links abfallen",
+    "file": "signs/626-10.svg",
+    "note": "Suffix -10/-20 nach Richtung der Vorbeifahrt gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "626-20",
+    "number": "626-20",
+    "name": "Leitplatte (Vorbeifahrt rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet ein Hindernis oder eine Fahrbahnteilung, an der rechts vorbeizufahren ist, etwa die Spitze einer Verkehrsinsel. Der Streifenrichtung folgen und Geschwindigkeit verringern.",
+    "alt": "Zeichen 626-20 Leitplatte: breite Tafel mit rot-weißen Schrägstreifen, die nach rechts abfallen",
+    "file": "signs/626-20.svg",
+    "note": "Suffix -10/-20 nach Richtung der Vorbeifahrt gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "627-10",
+    "number": "627-10",
+    "name": "Leitmal (Aufstellung rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet feste Hindernisse am rechten Fahrbahnrand, etwa Brückenpfeiler, Tunnelportale oder Mauern, damit sie bei Dunkelheit erkennbar sind. Ausreichenden Seitenabstand halten und die Fahrbahnbreite beachten.",
+    "alt": "Zeichen 627-10 Leitmal: hochstehende Tafel mit rot-weißen Schrägstreifen, die zur Fahrbahn hin nach links abfallen",
+    "file": "signs/627-10.svg",
+    "note": "Suffix -10/-20 nach Aufstellungsseite gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "627-20",
+    "number": "627-20",
+    "name": "Leitmal (Aufstellung links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Kennzeichnet feste Hindernisse am linken Fahrbahnrand, etwa Brückenpfeiler, Tunnelportale oder Mauern, damit sie bei Dunkelheit erkennbar sind. Ausreichenden Seitenabstand halten und die Fahrbahnbreite beachten.",
+    "alt": "Zeichen 627-20 Leitmal: hochstehende Tafel mit rot-weißen Schrägstreifen, die zur Fahrbahn hin nach rechts abfallen",
+    "file": "signs/627-20.svg",
+    "note": "Suffix -10/-20 nach Aufstellungsseite gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "628",
+    "number": "628",
+    "name": "Leitschwelle",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Niedrige, aufgesetzte Schwelle, die Fahrstreifen oder Verkehrsflächen voneinander trennt, etwa an Arbeitsstellen. Nicht überfahren, sondern auf dem eigenen Fahrstreifen bleiben und die Führung der Schwelle beachten.",
+    "alt": "Zeichen 628 Leitschwelle: niedriger länglicher Körper mit rot-weißen Schrägstreifen",
+    "file": "signs/628.svg"
+  },
+  {
+    "id": "629",
+    "number": "629",
+    "name": "Leitbord",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Höherer Leitkörper, der wie ein Bordstein Fahrstreifen oder Verkehrsflächen trennt und Fahrzeuge führt. Nicht überfahren, auf dem eigenen Fahrstreifen bleiben und ausreichenden Seitenabstand halten.",
+    "alt": "Zeichen 629 Leitbord: hoher länglicher Körper mit rot-weißen Schrägstreifen",
+    "file": "signs/629.svg"
+  },
+  {
+    "id": "630-10",
+    "number": "630-10",
+    "name": "Parkwarntafel (Streifen nach links)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Rot-weiß gestreifte Tafel, die an ungünstig geparkten oder abgestellten Fahrzeugen und Anhängern anzubringen ist, damit sie im Dunkeln rechtzeitig erkennbar sind. Geschwindigkeit verringern und mit ausreichendem Seitenabstand links vorbeifahren.",
+    "alt": "Zeichen 630-10 Parkwarntafel: rechteckige Tafel mit rot-weißen Schrägstreifen, die nach links abfallen",
+    "file": "signs/630-10.svg",
+    "note": "Suffix -10/-20 nach Streifenrichtung gewählt; bitte gegen VzKat prüfen."
+  },
+  {
+    "id": "630-20",
+    "number": "630-20",
+    "name": "Parkwarntafel (Streifen nach rechts)",
+    "category": "verkehrseinrichtungen",
+    "meaning": "Rot-weiß gestreifte Tafel, die an ungünstig geparkten oder abgestellten Fahrzeugen und Anhängern anzubringen ist, damit sie im Dunkeln rechtzeitig erkennbar sind. Geschwindigkeit verringern und mit ausreichendem Seitenabstand rechts vorbeifahren.",
+    "alt": "Zeichen 630-20 Parkwarntafel: rechteckige Tafel mit rot-weißen Schrägstreifen, die nach rechts abfallen",
+    "file": "signs/630-20.svg",
+    "note": "Suffix -10/-20 nach Streifenrichtung gewählt; bitte gegen VzKat prüfen."
   }
 ];

@@ -11,6 +11,11 @@ export interface MediaItem {
   kind: MediaKind;
   alt: string;
   credit: string;
+  /** Nur Katalogzeichen: amtliche Nummer, Name, Gruppe und Bedeutung. */
+  number?: string;
+  name?: string;
+  category?: string;
+  meaning?: string;
 }
 
 export const MEDIA: readonly MediaItem[] = MEDIA_MANIFEST;

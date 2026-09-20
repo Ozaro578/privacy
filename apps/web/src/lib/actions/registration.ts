@@ -76,3 +76,62 @@ export async function registerStudentAction(tenantSlug: string, _prev: ActionSta
   if (loginError) redirect("/login?registriert=1");
   redirect("/heute");
 }
+
+const SELF_STUDY_SLUG = "selbstlerner";
+const SelfStudySchema = z.object({
+  first_name: z.string().min(1, "Vorname fehlt").max(80),
+  last_name: z.string().min(1, "Nachname fehlt").max(80),
+  email: z.string().email("E-Mail ungültig"),
+  password: z.string().min(8, "Passwort mindestens 8 Zeichen").max(128),
+  date_of_birth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Geburtsdatum fehlt"),
+  license_code: z.enum(["B", "B197", "B78"]).default("B"),
+  transmission: z.enum(["manual", "automatic"]).default("manual"),
+  locale: z.enum(["de", "en", "tr", "ar"]).default("de"),
+  consent_privacy: z.literal(true, { errorMap: () => ({ message: "Datenschutzerklärung muss akzeptiert werden" }) }),
+  consent_terms: z.literal(true, { errorMap: () => ({ message: "Nutzungsbedingungen müssen akzeptiert werden" }) }),
+});
+
+/**
+ * Selbstlern-Konto ohne Fahrschule: nur Name, Geburtsdatum (für den Rechtsrahmen Minderjähriger), E-Mail und Passwort.
+ * Der Lernende gehört zum Plattform-Mandanten "Selbstlernen"; Dokumenten-Checkliste entfällt.
+ */
+export async function registerSelfStudyAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = SelfStudySchema.safeParse({ ...raw, consent_privacy: raw["consent_privacy"] === "on" ? true : false, consent_terms: raw["consent_terms"] === "on" ? true : false });
+  if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
+  const data = parsed.data;
+  const admin = createSupabaseAdminClient();
+  const { data: created, error: authError } = await admin.auth.admin.createUser({ email: data.email, password: data.password, email_confirm: false, user_metadata: { first_name: data.first_name, last_name: data.last_name, locale: data.locale } });
+  if (authError || !created.user) return { error: authError?.message.includes("already") ? "Für diese E-Mail-Adresse existiert bereits ein Konto. Bitte anmelden." : "Konto konnte nicht angelegt werden." };
+  const { data: tenant } = await admin.from("driving_schools").select("id").eq("slug", SELF_STUDY_SLUG).single();
+  if (!tenant) return { error: "Selbstlern-Bereich ist nicht eingerichtet." };
+  const { data: studentId, error: regError } = await admin.rpc("register_student", { p_tenant_slug: SELF_STUDY_SLUG, p_payload: { first_name: data.first_name, last_name: data.last_name, email: data.email, date_of_birth: data.date_of_birth, license_code: data.license_code, transmission: data.transmission, locale: data.locale } as unknown as Json });
+  if (regError || !studentId) return { error: "Registrierung konnte nicht gespeichert werden." };
+  await Promise.all([
+    admin.from("students").update({ user_id: created.user.id, status: "active" }).eq("id", studentId),
+    admin.from("tenant_memberships").upsert({ tenant_id: tenant.id, user_id: created.user.id, role: "student", status: "active" }, { onConflict: "tenant_id,user_id" }),
+    admin.from("users").update({ active_tenant_id: tenant.id }).eq("id", created.user.id),
+    admin.from("documents").delete().eq("student_id", studentId),
+    admin.from("consents").insert([
+      { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "privacy_policy", text_version: "2026-09", granted: true },
+      { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "terms", text_version: "2026-09", granted: true },
+    ]),
+  ]);
+  const supabase = await createSupabaseServerClient();
+  const { error: loginError } = await supabase.auth.signInWithPassword({ email: data.email, password: data.password });
+  if (loginError) redirect("/login?registriert=1");
+  redirect("/heute");
+}
+
+const JoinSchema = z.object({ slug: z.string().regex(/^[a-z0-9-]{3,40}$/, "Fahrschul-Code ungültig") });
+
+/** Selbstlernender verbindet sich mit einer Fahrschule (Code = Anmeldelink-Kürzel). Lernstand wird übernommen. */
+export async function joinSchoolAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const parsed = JoinSchema.safeParse({ slug: String(formData.get("slug") ?? "").trim().toLowerCase() });
+  if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("join_school_from_self_study", { p_tenant_slug: parsed.data.slug, p_payload: {} as unknown as Json });
+  if (error) return { error: error.message.includes("nicht gefunden") ? "Fahrschule nicht gefunden. Frag deine Fahrschule nach ihrem Anmelde-Code." : error.message };
+  await supabase.auth.refreshSession();
+  redirect("/heute?verbunden=1");
+}

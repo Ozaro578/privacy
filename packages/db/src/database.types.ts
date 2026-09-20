@@ -3557,6 +3557,7 @@ export type Database = {
       handle_auth_user_signed_in: { Args: {  }; Returns: unknown };
       handle_new_auth_user: { Args: {  }; Returns: unknown };
       issue_invoice: { Args: { p_invoice_id: string; p_due_days?: number | null }; Returns: Database["public"]["Tables"]["invoices"]["Row"] };
+      join_school_from_self_study: { Args: { p_tenant_slug: string; p_payload: Json }; Returns: string };
       notify_conversation: { Args: { p_conversation_id: string; p_preview: string }; Returns: number };
       offer_lesson_to_waitlist: { Args: { p_lesson_id: string }; Returns: number };
       register_student: { Args: { p_tenant_slug: string; p_payload: Json }; Returns: string };

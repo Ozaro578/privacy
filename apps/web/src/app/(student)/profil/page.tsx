@@ -5,6 +5,7 @@ import { logoutAction } from "@/lib/actions/auth";
 import { DocumentUpload } from "@/components/profile/document-upload";
 import { NotificationSettings, PrivacyActions, LocaleSelect } from "@/components/profile/settings";
 import { AppearanceSettings } from "@/components/profile/appearance";
+import { JoinSchoolForm } from "@/components/auth/self-study-form";
 import { getAppearance } from "@/lib/appearance";
 
 export const metadata = { title: "Profil" };
@@ -49,6 +50,7 @@ export default async function ProfilePage() {
           ); })}</ul>
         </Card>
       </div>
+      {ctx.selfStudy && <Card title="Fahrschule verbinden"><JoinSchoolForm /></Card>}
       <Card title="Darstellung"><AppearanceSettings initial={appearance} /></Card>
       <Card title="Benachrichtigungen"><NotificationSettings prefs={prefs ?? []} /></Card>
       <Card title="Einstellungen">

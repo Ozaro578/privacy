@@ -28,6 +28,8 @@ export interface StudentContext {
   licenseInfo: Tables<"licenses">;
   rules: ResolvedRules;
   school: Pick<Tables<"driving_schools">, "id" | "name" | "slug" | "timezone" | "settings">;
+  /** Selbstlern-Modus ohne Fahrschule: nur Lernen, Prüfung, Zeichen, Profil. */
+  selfStudy: boolean;
 }
 
 /** Löst alle Regelversionen für eine Ausbildung auf (veröffentlicht bevorzugt, unverifiziert gekennzeichnet). */
@@ -62,7 +64,8 @@ export async function getStudentContextFor(db: Db, userId: string, tenantId: str
     resolveRulesFor(db, license.license_code, license.acquisition_kind as "first" | "extension"),
   ]);
   if (!licenseInfo || !school) throw new Error("Stammdaten unvollständig");
-  return { db, userId, tenantId, student, license, licenses: all, licenseInfo, rules, school };
+  const selfStudy = ((school.settings as Record<string, unknown> | null)?.["self_study"]) === true;
+  return { db, userId, tenantId, student, license, licenses: all, licenseInfo, rules, school, selfStudy };
 }
 
 /**

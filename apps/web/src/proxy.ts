@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PREFIXES = ["/vorschau", "/login", "/anmeldung", "/auth", "/datenschutz", "/impressum", "/_next", "/api/webhooks", "/favicon.ico", "/manifest.webmanifest"];
+const PUBLIC_PREFIXES = ["/vorschau", "/login", "/registrieren", "/anmeldung", "/auth", "/datenschutz", "/impressum", "/_next", "/api/webhooks", "/favicon.ico", "/manifest.webmanifest"];
 
 /**
  * Erneuert die Supabase-Session (Cookies) und leitet nicht angemeldete Nutzer auf /login.

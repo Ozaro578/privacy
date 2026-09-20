@@ -7,7 +7,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const h = await headers();
   const current = h.get("x-pathname") ?? "/heute";
   return (
-    <StudentShell schoolName={ctx.school.name} legalBasisDate={ctx.rules.legalBasisDate} current={current}>
+    <StudentShell schoolName={ctx.selfStudy ? "Selbstlernen" : ctx.school.name} legalBasisDate={ctx.rules.legalBasisDate} current={current} selfStudy={ctx.selfStudy}>
       {children}
     </StudentShell>
   );

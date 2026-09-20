@@ -16,6 +16,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       {params.fehler && <p className="mb-4 rounded-xl bg-danger-100 p-3 text-sm">Der Anmeldelink ist ungültig oder abgelaufen.</p>}
       <LoginForm {...(params.next ? { next: params.next } : {})} />
       <p className="mt-8 text-center text-xs text-ink-500">Neu hier? Deine Fahrschule schickt dir einen Anmeldelink.</p>
+      <p className="mt-2 text-center text-sm"><a href="/registrieren" className="text-brand-700 underline">Ohne Fahrschule lernen: Konto erstellen</a></p>
     </main>
   );
 }

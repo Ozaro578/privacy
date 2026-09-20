@@ -49,9 +49,9 @@ function leitbake(dir, schmal, title) {
 
 /** Pfeilbake: weiße Tafel mit rotem Pfeil in Richtung der Vorbeifahrt */
 function pfeilbake(dir, title) {
-  const arrow = `<path d="M8 80 L36 44 V66 H60 V94 H36 V116 Z" fill="${RED}"/>`;
-  const g = dir === "left" ? arrow : `<g transform="translate(120 0) scale(-1 1)">${arrow}</g>`;
-  return `${svgOpen(120, 190, title)}<rect x="56" y="168" width="8" height="14" fill="#374151"/><rect x="40" y="180" width="40" height="5" rx="2" fill="#374151"/><rect x="38" y="8" width="44" height="160" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.5"/><g transform="translate(38 8) scale(0.647 1)">${g}</g></svg>`;
+  const arrow = `<path d="M4 80 L26 48 V68 H40 V92 H26 V112 Z" fill="${RED}"/>`;
+  const g = dir === "left" ? arrow : `<g transform="translate(44 0) scale(-1 1)">${arrow}</g>`;
+  return `${svgOpen(120, 190, title)}<rect x="56" y="168" width="8" height="14" fill="#374151"/><rect x="40" y="180" width="40" height="5" rx="2" fill="#374151"/><rect x="38" y="8" width="44" height="160" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.5"/><g transform="translate(38 8)">${g}</g></svg>`;
 }
 
 function leitkegel(title) {
@@ -62,7 +62,7 @@ function leitkegel(title) {
 /** Fahrbare Absperrtafel: gestreifte Tafel mit Zeichen 222, gelben Leuchten und Rädern; blink = mit Blinkpfeil */
 function absperrtafel(blink, title) {
   const top = blink
-    ? `<rect x="10" y="40" width="180" height="72" fill="${BLACK}"/>${[[160, 76], [142, 76], [124, 76], [106, 76], [88, 76], [70, 76], [52, 76], [64, 64], [76, 52], [64, 88], [76, 100]].map(([x, y]) => lamp(x, y, 5.5)).join("")}${pass222(100, 150, 22, "left")}`
+    ? `<rect x="10" y="40" width="180" height="72" fill="${BLACK}"/>${[[160, 76], [142, 76], [124, 76], [106, 76], [88, 76], [70, 76], [52, 76], [64, 64], [76, 52], [64, 88], [76, 100]].map(([x, y]) => lamp(x, y, 5.5)).join("")}`
     : `<rect x="10" y="40" width="180" height="64" fill="${WHITE}" stroke="${BLACK}" stroke-width="1.5"/>${pass222(100, 72, 26, "left")}`;
   const stripesY = blink ? 112 : 104;
   return `${svgOpen(200, 224, title)}<g fill="#374151"><rect x="26" y="12" width="6" height="30"/><rect x="168" y="12" width="6" height="30"/></g>${lamp(29, 22, 12)}${lamp(171, 22, 12)}${top}${striped(10, stripesY, 180, 190 - stripesY, { dir: "left", t: 26, period: 52 })}<rect x="10" y="40" width="180" height="150" fill="none" stroke="${BLACK}" stroke-width="2"/><g fill="#374151"><rect x="40" y="190" width="120" height="8"/><circle cx="52" cy="208" r="12"/><circle cx="148" cy="208" r="12"/></g></svg>`;
