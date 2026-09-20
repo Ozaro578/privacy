@@ -7,7 +7,7 @@ import { getStudentContext } from "@/lib/data/student";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics, toMeta, type QuestionWithVersion } from "@/lib/data/learning";
 
-const ModeSchema = z.enum(["topic", "question_list", "exam", "random", "hard", "wrong", "bookmarked", "unseen", "review", "weakness", "daily_goal", "generated"]);
+const ModeSchema = z.enum(["topic", "question_list", "exam", "random", "hard", "wrong", "bookmarked", "unseen", "review", "weakness", "daily_goal", "generated", "ladder", "signs"]);
 
 export interface SessionQuestion {
   id: string;

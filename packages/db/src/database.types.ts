@@ -3578,7 +3578,7 @@ export type Database = {
       content_source: "own" | "official_licensed" | "tenant";
       exam_status: "not_ready" | "awaiting_instructor_release" | "ready" | "requested" | "scheduled" | "passed" | "failed" | "cancelled";
       invoice_status: "draft" | "issued" | "partially_paid" | "paid" | "overdue" | "cancelled" | "credited";
-      learning_mode: "topic" | "question_list" | "exam" | "random" | "hard" | "wrong" | "bookmarked" | "unseen" | "review" | "weakness" | "daily_goal" | "generated";
+      learning_mode: "topic" | "question_list" | "exam" | "random" | "hard" | "wrong" | "bookmarked" | "unseen" | "review" | "weakness" | "daily_goal" | "generated" | "ladder" | "signs";
       lesson_kind: "practice" | "overland" | "motorway" | "night" | "special" | "exam_prep" | "practical_exam" | "manual_conversion" | "trailer";
       lesson_status: "open" | "booked" | "confirmed" | "completed" | "no_show" | "cancelled";
       review_status: "draft" | "in_review" | "approved" | "published" | "retired" | "needs_verification";

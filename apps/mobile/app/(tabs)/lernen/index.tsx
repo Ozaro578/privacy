@@ -12,7 +12,7 @@ import { Button, Card, Loading, ProgressBar, Screen, Txt } from "@/components/ui
 const MODES: Array<{ mode: string; title: string; text: string; key?: keyof Pick<LocalOverview, "due" | "wrong" | "bookmarked" | "unseen" | "hard"> }> = [
   { mode: "review", title: "Wiederholung", text: "Fällige Fragen", key: "due" }, { mode: "weakness", title: "Schwachstellen", text: "Schwächste Themen" },
   { mode: "wrong", title: "Falsch beantwortet", text: "Zuletzt falsch", key: "wrong" }, { mode: "hard", title: "Schwierige Fragen", text: "Hohe Schwierigkeit", key: "hard" },
-  { mode: "unseen", title: "Noch nie beantwortet", text: "Neue Fragen", key: "unseen" }, { mode: "bookmarked", title: "Markierte Fragen", text: "Deine Merkliste", key: "bookmarked" }, { mode: "random", title: "Zufallsfragen", text: "Bunt gemischt" },
+  { mode: "ladder", title: "Stufen-Modus", text: "Von leicht nach schwer" }, { mode: "signs", title: "Zeichen-Trainer", text: "Verkehrszeichen erkennen" }, { mode: "unseen", title: "Noch nie beantwortet", text: "Neue Fragen", key: "unseen" }, { mode: "bookmarked", title: "Markierte Fragen", text: "Deine Merkliste", key: "bookmarked" }, { mode: "random", title: "Zufallsfragen", text: "Bunt gemischt" },
 ];
 
 export default function Learn() {

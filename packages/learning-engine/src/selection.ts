@@ -1,7 +1,8 @@
+import { currentLevel, ladderPool, levelProgress, type Level } from "./levels";
 import type { QuestionMeta, TopicMastery } from "./mastery";
 import { isDue, type QuestionState } from "./srs";
 
-export type LearningMode = "topic" | "question_list" | "exam" | "random" | "hard" | "wrong" | "bookmarked" | "unseen" | "review" | "weakness" | "daily_goal" | "generated";
+export type LearningMode = "topic" | "question_list" | "exam" | "random" | "hard" | "wrong" | "bookmarked" | "unseen" | "review" | "weakness" | "daily_goal" | "generated" | "ladder" | "signs";
 
 export interface SelectionOptions {
   mode: LearningMode;
@@ -11,6 +12,8 @@ export interface SelectionOptions {
   topicMastery?: TopicMastery[];
   now?: Date;
   random?: () => number;
+  /** Stufen-Modus: gewünschte Stufe; ohne Angabe wird sie aus dem Lernstand abgeleitet. */
+  level?: Level;
 }
 
 function shuffle<T>(items: T[], random: () => number): T[] {
@@ -28,6 +31,10 @@ export function selectQuestions(questions: QuestionMeta[], states: Map<string, Q
   const random = opts.random ?? Math.random;
   const st = (q: QuestionMeta) => states.get(q.id);
   const unseen = (q: QuestionMeta) => !st(q) || st(q)!.attempts === 0;
+  if (opts.mode === "ladder") {
+    const level = opts.level ?? currentLevel(levelProgress(questions, states));
+    return ladderPool(questions, states, level, opts.limit, random);
+  }
   let pool: QuestionMeta[];
   switch (opts.mode) {
     case "topic":
@@ -47,6 +54,9 @@ export function selectQuestions(questions: QuestionMeta[], states: Map<string, Q
       break;
     case "review":
       pool = questions.filter((q) => st(q) && st(q)!.attempts > 0 && isDue(st(q)!, now));
+      break;
+    case "signs":
+      pool = questions.filter((q) => (q.tags ?? []).includes("zeichenkatalog"));
       break;
     case "weakness": {
       const weakTopics = new Set((opts.topicMastery ?? []).filter((t) => t.weak).slice(0, 3).map((t) => t.topic_id));

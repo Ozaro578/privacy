@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getStudentContext } from "@/lib/data/student";
 import { buildLearningOverview, loadQuestionPool, loadStates, loadTopics } from "@/lib/data/learning";
 import { Card, ProgressBar, btn } from "@/components/ui";
+import { LEVEL_LABEL, currentLevel, levelProgress } from "@fahrpilot/learning-engine";
+import { toMeta } from "@/lib/data/learning";
 
 export const metadata = { title: "Lernen" };
 
@@ -13,6 +15,7 @@ const MODES: Array<{ mode: string; title: string; text: string; countKey?: "dueC
   { mode: "unseen", title: "Noch nie beantwortet", text: "Neue Fragen entdecken", countKey: "unseenCount" },
   { mode: "bookmarked", title: "Markierte Fragen", text: "Deine Merkliste", countKey: "bookmarkedCount" },
   { mode: "random", title: "Zufallsfragen", text: "Bunt gemischt durch alle Themen" },
+  { mode: "signs", title: "Zeichen-Trainer", text: "Verkehrszeichen erkennen und ihre Bedeutung kennen" },
 ];
 
 export default async function LearnPage() {
@@ -20,6 +23,8 @@ export default async function LearnPage() {
   const locale = ctx.student.preferred_locale;
   const [pool, states, topics] = await Promise.all([loadQuestionPool(ctx.db, ctx.license.license_code, ctx.licenseInfo.base_class, locale), loadStates(ctx.db, ctx.student.id), loadTopics(ctx.db, locale)]);
   const ov = buildLearningOverview(pool, states, topics);
+  const levels = levelProgress(pool.map((q) => toMeta(q)), states);
+  const level = currentLevel(levels);
   const basic = ov.topics.filter((t) => t.material_kind === "basic");
   const specific = ov.topics.filter((t) => t.material_kind === "class_specific");
   return (
@@ -32,6 +37,25 @@ export default async function LearnPage() {
         <Link href="/lernen/pruefung" className={btn.primary}>Prüfungssimulation</Link>
       </header>
       <p className="text-xs text-ink-500">Übungsfragen sind eigene Formulierungen der Plattform und kein amtlicher Prüfungsinhalt. Der amtliche Fragenkatalog wird nach Lizenzierung ergänzt.</p>
+
+      <section aria-labelledby="ladder" className="rounded-card border border-brand-100 bg-surface p-4 shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 id="ladder" className="text-base font-semibold">Stufe {level}: {LEVEL_LABEL[level]}</h2>
+            <p className="text-sm text-ink-700">Von leicht nach schwer. Jede Stufe gilt als geschafft, wenn du sie fast vollständig beherrschst; dann geht es eine Stufe höher.</p>
+          </div>
+          <Link href={`/lernen/session?mode=ladder&limit=15`} className={btn.primary}>Stufe {level} lernen</Link>
+        </div>
+        <ol className="mt-3 grid grid-cols-5 gap-2" aria-label="Stufen">
+          {levels.map((l) => (
+            <li key={l.level} className={`rounded-xl p-2 text-center text-xs ${l.cleared ? "bg-success-100" : l.level === level ? "bg-brand-50 ring-2 ring-brand-500" : "bg-ink-100"}`}>
+              <span className="block text-lg font-bold tabular-nums">{l.level}</span>
+              <span className="block">{LEVEL_LABEL[l.level]}</span>
+              <span className="block text-ink-500 tabular-nums">{l.mastered}/{l.total}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section aria-labelledby="modes">
         <h2 id="modes" className="mb-2 text-base font-semibold">Lernmodi</h2>
