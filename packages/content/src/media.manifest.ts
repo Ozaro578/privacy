@@ -4659,6 +4659,97 @@ export const MEDIA_MANIFEST: readonly MediaItem[] = [
     "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
   },
   {
+    "id": "vt-ampel-gruen-linksabbieger",
+    "file": "scenes/vt-ampel-gruen-linksabbieger.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit Ampeln, beide zeigen Grün: Ihr blaues Auto kommt von unten und will links abbiegen (Blinker links), ein rotes Auto A kommt von oben entgegen und fährt geradeaus.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-gruenpfeil-fussgaenger",
+    "file": "scenes/vt-gruenpfeil-fussgaenger.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit Ampel: Ihre Ampel zeigt Rot mit Grünpfeilschild (Zeichen 720), Sie wollen rechts abbiegen. Von links kommt ein grünes Auto A bei Grün geradeaus, und ein Fußgänger überquert die Straße, in die Sie einbiegen wollen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-zeichen-301",
+    "file": "scenes/vt-zeichen-301.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto kommt von unten, an Ihrer Zufahrt steht Zeichen 301 (Vorfahrt an der nächsten Kreuzung). Ein rotes Auto A kommt von rechts und hat Zeichen 205.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-einbahnstrasse-rvl",
+    "file": "scenes/vt-einbahnstrasse-rvl.svg",
+    "kind": "scene",
+    "alt": "Kreuzung ohne Vorfahrtzeichen: Ihr blaues Auto kommt von unten. Von rechts kommt ein rotes Auto A aus einer Einbahnstraße (Zeichen 220, Pfeil zur Kreuzung).",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-rechtsabbiegen-fussgaenger",
+    "file": "scenes/vt-rechtsabbiegen-fussgaenger.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: Ihr blaues Auto will rechts abbiegen (Blinker rechts). Ein Fußgänger überquert gerade die Straße, in die Sie einbiegen wollen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-links-fussgaenger-gegenverkehr",
+    "file": "scenes/vt-links-fussgaenger-gegenverkehr.svg",
+    "kind": "scene",
+    "alt": "Kreuzung ohne Zeichen: Ihr blaues Auto will links abbiegen (Blinker links). Ein rotes Auto A kommt von oben entgegen und fährt geradeaus, ein Fußgänger überquert die Straße links, in die Sie einbiegen wollen.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-kreisverkehr-radweg",
+    "file": "scenes/vt-kreisverkehr-radweg.svg",
+    "kind": "scene",
+    "alt": "Kreisverkehr mit Zeichen 215 und 205: Ihr blaues Auto fährt im Kreis und will an der nächsten Ausfahrt nach rechts hinaus. Um den Kreisverkehr führt ein Radweg; ein Radfahrer darauf fährt geradeaus weiter und kreuzt Ihre Ausfahrt.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-polizist-seite",
+    "file": "scenes/vt-polizist-seite.svg",
+    "kind": "scene",
+    "alt": "Kreuzung mit Polizist in der Mitte: Er steht mit der Seite zu Ihnen, seine ausgestreckten Arme zeigen in Ihre Fahrtrichtung (nach oben und unten). Ihr blaues Auto kommt von unten. Ein rotes Auto A kommt von rechts und sieht die Brust des Polizisten.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-ende-vorfahrtstrasse-rvl",
+    "file": "scenes/vt-ende-vorfahrtstrasse-rvl.svg",
+    "kind": "scene",
+    "alt": "Kreuzung: An Ihrer Zufahrt von unten steht Zeichen 307 (Ende der Vorfahrtstraße), sonst keine Zeichen. Ein rotes Auto A kommt von rechts.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-grundstueck-a-rechts",
+    "file": "scenes/vt-grundstueck-a-rechts.svg",
+    "kind": "scene",
+    "alt": "Ihr blaues Auto fährt auf einer Straße von links nach rechts. Rechts vor Ihnen will ein rotes Auto A aus einer Grundstücksausfahrt auf die Straße fahren.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-radfahrer-rvl",
+    "file": "scenes/vt-radfahrer-rvl.svg",
+    "kind": "scene",
+    "alt": "Kreuzung ohne Zeichen: Ihr blaues Auto kommt von unten, von rechts kommt ein Radfahrer auf der Fahrbahn.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-zebrastreifen",
+    "file": "scenes/vt-zebrastreifen.svg",
+    "kind": "scene",
+    "alt": "Gerade Straße mit Fußgängerüberweg (Zebrastreifen, Zeichen 350): Ihr blaues Auto kommt von unten, rechts wartet ein Fußgänger erkennbar am Rand, um die Straße zu überqueren.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
+    "id": "vt-linienbus-haltestelle",
+    "file": "scenes/vt-linienbus-haltestelle.svg",
+    "kind": "scene",
+    "alt": "Innerorts: Ein Linienbus steht in einer Haltestellenbucht rechts, blinkt links und will abfahren. Ihr blaues Auto kommt von unten auf der Fahrbahn.",
+    "credit": "Grafik FahrPilot (eigene Darstellung, schematisch)"
+  },
+  {
     "id": "kreisverkehr-beschildert",
     "file": "scenes/kreisverkehr-beschildert.svg",
     "kind": "scene",

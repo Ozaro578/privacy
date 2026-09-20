@@ -8,10 +8,13 @@ import { Confetti, playSuccessTone } from "./celebration";
 type Item = PriorityScenario & { file: string; alt: string };
 
 function shuffle<T>(items: T[]): T[] { const a = items.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j]!, a[i]!]; } return a; }
+/** Eine Runde umfasst höchstens 12 Situationen, gemischt über alle Stufen; "Noch eine Runde" zieht neu. */
+const ROUND = 12;
+const draw = <T,>(items: T[]) => shuffle(items).slice(0, ROUND);
 
 /** Vorfahrt-Trainer: Fahrzeuge in der Reihenfolge antippen, in der sie fahren dürfen. */
 export function PriorityTrainer({ scenarios }: { scenarios: Item[] }) {
-  const [round, setRound] = useState(() => shuffle(scenarios));
+  const [round, setRound] = useState(() => draw(scenarios));
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<string[]>([]);
   const [checked, setChecked] = useState<boolean | null>(null);
@@ -28,7 +31,7 @@ export function PriorityTrainer({ scenarios }: { scenarios: Item[] }) {
     if (ok) playSuccessTone("correct");
   };
   const next = () => { setPicked([]); setChecked(null); if (i + 1 < round.length) setI(i + 1); };
-  const restart = () => { setRound(shuffle(scenarios)); setI(0); setPicked([]); setChecked(null); setScore({ ok: 0, total: 0 }); };
+  const restart = () => { setRound(draw(scenarios)); setI(0); setPicked([]); setChecked(null); setScore({ ok: 0, total: 0 }); };
   const orderLabel = (k: string) => sc.vehicles.find((v) => v.key === k)?.label ?? k;
   return (
     <div className="space-y-4">

@@ -9,12 +9,15 @@ import { useTheme } from "@/lib/theme";
 import { Button, Card, Screen, Txt } from "@/components/ui";
 
 const shuffle = <T,>(items: readonly T[]): T[] => { const a = items.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j]!, a[i]!]; } return a; };
+/** Eine Runde umfasst höchstens 12 Situationen, gemischt über alle Stufen. */
+const ROUND = 12;
+const draw = <T,>(items: readonly T[]): T[] => shuffle(items).slice(0, ROUND);
 
 /** Vorfahrt-Trainer: Fahrzeuge in Fahr-Reihenfolge antippen. */
 export default function PriorityTrainerScreen() {
   const t = useTheme();
   const router = useRouter();
-  const [round, setRound] = useState<PriorityScenario[]>(() => shuffle(priorityScenarios));
+  const [round, setRound] = useState<PriorityScenario[]>(() => draw(priorityScenarios));
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<string[]>([]);
   const [checked, setChecked] = useState<boolean | null>(null);
@@ -27,7 +30,7 @@ export default function PriorityTrainerScreen() {
     setChecked(ok); setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
   };
   const next = () => { setPicked([]); setChecked(null); if (i + 1 < round.length) setI(i + 1); };
-  const restart = () => { setRound(shuffle(priorityScenarios)); setI(0); setPicked([]); setChecked(null); setScore({ ok: 0, total: 0 }); };
+  const restart = () => { setRound(draw(priorityScenarios)); setI(0); setPicked([]); setChecked(null); setScore({ ok: 0, total: 0 }); };
   const label = (k: string) => sc.vehicles.find((v) => v.key === k)?.label ?? k;
   const finished = checked !== null && i + 1 >= round.length;
   return (
