@@ -438,5 +438,78 @@ do $$ declare d numeric; begin
   if public.calibrate_question_difficulty(5, 0.5) <> 0 then raise exception 'Zweiter Lauf ändert erneut'; end if;
 end $$;
 
+-- 17) Sicherheitshärtung (0031)
+-- E-Mail im Profil nicht selbst änderbar, andere Felder schon
+select pg_temp.login('00000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000002', 'student');
+do $$ begin
+  begin
+    update public.users set email = 'i1@test.de' where id = '00000000-0000-0000-0000-000000000004';
+    raise exception 'E-Mail selbst änderbar';
+  exception when insufficient_privilege then null; end;
+  update public.users set first_name = 'Samuel' where id = '00000000-0000-0000-0000-000000000004';
+  -- register_student nicht direkt aufrufbar
+  begin
+    perform public.register_student('nord', '{"first_name":"X","last_name":"Y"}'::jsonb);
+    raise exception 'register_student direkt aufrufbar';
+  exception when insufficient_privilege then null; end;
+  -- Fremde Ausbildung: kein Sonderfahrten-Stand
+  begin
+    perform * from public.special_drive_progress('50000000-0000-0000-0000-000000000001');
+    raise exception 'Fremder Ausbildungsstand lesbar';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+-- Schüler sieht keine Fahrzeugdaten; Fahrlehrer schon
+select pg_temp.login('00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'student');
+do $$ begin
+  if exists (select 1 from public.vehicles) then raise exception 'Schüler sieht Fahrzeugdaten'; end if;
+  if (select count(*) from public.special_drive_progress('50000000-0000-0000-0000-000000000001')) < 0 then raise exception 'unreachable'; end if;
+  begin
+    perform public.offer_lesson_to_waitlist('60000000-0000-0000-0000-000000000002');
+    raise exception 'Schüler kann Warteliste auslösen';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+select pg_temp.login('00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', 'instructor');
+do $$ begin
+  if not exists (select 1 from public.vehicles) then raise exception 'Fahrlehrer sieht Fahrzeuge nicht'; end if;
+  -- Benachrichtigung an Nutzer eines anderen Mandanten nicht möglich
+  begin
+    insert into public.notifications (tenant_id, user_id, notification_type, title, body) values ('10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000004', 'lesson_reminder_24h', 'x', 'y');
+    raise exception 'Benachrichtigung an fremden Mandanten möglich';
+  exception when insufficient_privilege then null; end;
+end $$;
+select pg_temp.logout();
+-- Admin: keine Inhaberrolle vergeben, eigene Rolle nicht ändern, Status/Kennung der Fahrschule nicht ändern
+update public.tenant_memberships set role = 'admin' where user_id = '00000000-0000-0000-0000-000000000003' and tenant_id = '10000000-0000-0000-0000-000000000001';
+select pg_temp.login('00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'admin');
+do $$ begin
+  begin
+    update public.tenant_memberships set role = 'owner' where user_id = '00000000-0000-0000-0000-000000000002' and tenant_id = '10000000-0000-0000-0000-000000000001';
+    raise exception 'Admin konnte Inhaber ernennen';
+  exception when insufficient_privilege then null; end;
+  begin
+    update public.tenant_memberships set role = 'owner' where user_id = '00000000-0000-0000-0000-000000000003';
+    raise exception 'Admin konnte eigene Rolle ändern';
+  exception when insufficient_privilege then null; end;
+  begin
+    update public.driving_schools set status = 'active', slug = 'nord2' where id = '10000000-0000-0000-0000-000000000001';
+    raise exception 'Admin konnte Status oder Kennung ändern';
+  exception when insufficient_privilege then null; end;
+  update public.driving_schools set phone = '040 123' where id = '10000000-0000-0000-0000-000000000001';
+  update public.tenant_memberships set role = 'office' where user_id = '00000000-0000-0000-0000-000000000005' and tenant_id = '10000000-0000-0000-0000-000000000001';
+end $$;
+select pg_temp.logout();
+-- Einladung: unbestätigte Konten werden nicht gefunden und nicht verknüpft
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-000000000017', 'unbestaetigt@test.de');
+do $$ begin
+  if public.find_confirmed_user_by_email('unbestaetigt@test.de') is not null then raise exception 'Unbestätigtes Konto gefunden'; end if;
+end $$;
+-- Rate-Limit: drittes Ereignis im Fenster wird abgelehnt
+do $$ begin
+  if not public.hit_rate_limit('test:1', 60, 2) or not public.hit_rate_limit('test:1', 60, 2) then raise exception 'Rate-Limit zu früh'; end if;
+  if public.hit_rate_limit('test:1', 60, 2) then raise exception 'Rate-Limit greift nicht'; end if;
+end $$;
+
 select 'ALLE TESTS BESTANDEN' as ergebnis;
 rollback;

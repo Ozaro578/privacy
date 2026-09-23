@@ -2305,6 +2305,26 @@ export type Database = {
           { foreignKeyName: "question_versions_reviewed_by_fkey"; columns: ["reviewed_by"]; isOneToOne: false; referencedRelation: "users"; referencedColumns: ["id"] }
         ];
       };
+      rate_limits: {
+        Row: {
+          key: string;
+          window_start: string;
+          hits: number;
+        };
+        Insert: {
+          key: string;
+          window_start: string;
+          hits?: number;
+        };
+        Update: {
+          key?: string;
+          window_start?: string;
+          hits?: number;
+        };
+        Relationships: [
+
+        ];
+      };
       readiness_snapshots: {
         Row: {
           id: string;
@@ -3619,8 +3639,10 @@ export type Database = {
       custom_access_token_hook: { Args: { event: Json }; Returns: unknown };
       end_support_session: { Args: {  }; Returns: unknown };
       expire_support_sessions: { Args: {  }; Returns: number };
+      find_confirmed_user_by_email: { Args: { p_email: string }; Returns: string };
       handle_auth_user_signed_in: { Args: {  }; Returns: unknown };
       handle_new_auth_user: { Args: {  }; Returns: unknown };
+      hit_rate_limit: { Args: { p_key: string; p_window_seconds: number; p_max: number }; Returns: unknown };
       issue_invoice: { Args: { p_invoice_id: string; p_due_days?: number | null }; Returns: Database["public"]["Tables"]["invoices"]["Row"] };
       join_school_from_self_study: { Args: { p_tenant_slug: string; p_payload: Json }; Returns: string };
       notify_conversation: { Args: { p_conversation_id: string; p_preview: string }; Returns: number };
