@@ -65,8 +65,10 @@ export async function transitionRuleVersion(id: string, to: string, comment: str
 }
 
 /** Content-Freigabe für Fragen, Wissensbasis, Kapitel, Prüfer-Fragen (gleicher Workflow). */
+const ContentTable = z.enum(["theory_questions", "knowledge_entries", "chapters", "practical_check_questions"]);
 export async function transitionContent(table: "theory_questions" | "knowledge_entries" | "chapters" | "practical_check_questions", id: string, to: string, comment: string): Promise<ActionResult> {
   const session = await requirePlatformAdmin();
+  if (!ContentTable.safeParse(table).success || !z.string().uuid().safeParse(id).success) return { ok: false, message: "Ungültige Anfrage." };
   const db = await createSupabaseServerClient();
   const col = table === "theory_questions" ? "status" : "review_status";
   const { data: row } = await db.from(table).select(`id, ${col}, created_by`).eq("id", id).single();

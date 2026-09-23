@@ -1,4 +1,5 @@
 "use server";
+import { allow } from "@/lib/security/rate-limit";
 import { z } from "zod";
 import { createAiServices, explainQuestion, coachAnswer } from "@fahrpilot/ai";
 import type { Json } from "@fahrpilot/db";
@@ -42,6 +43,7 @@ export async function explainQuestionAction(raw: z.input<typeof Schema>): Promis
       sources: v.legal_reference ? [v.legal_reference] : [], legalBasisDate: v.legal_basis_date, disclaimer: v.explanation ? null : "Ohne geprüfte Quelle.",
     };
   }
+  if (!(await allow("coachStudentDay", ctx.student.id))) throw new Error("Das Tageskontingent für KI-Erklärungen ist erreicht. Die geprüfte Erklärung steht weiterhin unter der Frage; morgen geht es mit dem Coach weiter.");
   const out = await explainQuestion({ provider: services.coach, model: services.models.coach }, {
     question_text: v.text, answers: answers.map((a) => ({ position: a.position, text: a.text, is_correct: a.is_correct, explanation: a.explanation })),
     verified: { question_version_id: v.id, explanation: v.explanation, mnemonic: v.mnemonic, legal_reference: v.legal_reference, legal_basis_date: v.legal_basis_date },
@@ -63,6 +65,7 @@ export interface CoachReply { conversationId: string; answer: string; confidence
 export async function askCoachAction(raw: z.input<typeof AskSchema>): Promise<CoachReply> {
   const input = AskSchema.parse(raw);
   const ctx = await getStudentContext();
+  if (!(await allow("coachStudentDay", ctx.student.id))) throw new Error("Das Tageskontingent für Fragen an den KI-Coach ist erreicht. Morgen geht es weiter.");
   const services = createAiServices();
   const locale = asLocale(ctx.student.preferred_locale);
   let conversationId = input.conversationId;

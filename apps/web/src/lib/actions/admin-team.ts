@@ -18,7 +18,9 @@ export async function inviteTeamMember(_prev: ActionResult | null, fd: FormData)
   if (!p.success) return { ok: false, message: issues(p.error) };
   if (p.data.role === "owner" && session.role !== "owner") return { ok: false, message: "Nur der Inhaber kann weitere Inhaber einladen." };
   const admin = createSupabaseAdminClient();
-  const { data: existing } = await admin.from("users").select("id, first_name, last_name").eq("email", p.data.email).maybeSingle();
+  // Nur Konten mit bestätigter E-Mail gelten als "bestehend"; die Adresse im Profil ist nicht maßgeblich (Migration 0031).
+  const { data: existingId } = await admin.rpc("find_confirmed_user_by_email", { p_email: p.data.email });
+  const { data: existing } = existingId ? await admin.from("users").select("id, first_name, last_name").eq("id", existingId).maybeSingle() : { data: null };
   let userId: string;
   let message: string;
   if (existing) {
@@ -29,6 +31,7 @@ export async function inviteTeamMember(_prev: ActionResult | null, fd: FormData)
     message = "Nutzerkonto existiert bereits, Zugang wurde freigeschaltet.";
   } else {
     const { data, error } = await admin.auth.admin.inviteUserByEmail(p.data.email, { data: { locale: "de", first_name: p.data.first_name ?? "", last_name: p.data.last_name ?? "" } });
+    if (error?.message.toLowerCase().includes("already")) return { ok: false, message: "Für diese Adresse gibt es ein Konto, dessen E-Mail noch nicht bestätigt ist. Die Person muss zuerst ihre E-Mail bestätigen, danach die Einladung wiederholen." };
     if (error || !data.user) return { ok: false, message: `Einladung fehlgeschlagen: ${error?.message ?? "unbekannt"}` };
     userId = data.user.id;
     await admin.from("tenant_memberships").upsert({ tenant_id: session.tenantId, user_id: userId, role: p.data.role, status: "invited", invited_by: session.userId }, { onConflict: "tenant_id,user_id" });

@@ -4,6 +4,27 @@ import { z } from "zod";
 import type { Json } from "@fahrpilot/db";
 import { createSupabaseAdminClient, createSupabaseServerClient } from "@/lib/supabase/server";
 import type { ActionState } from "./auth";
+import { allow, clientIp, TOO_MANY } from "@/lib/security/rate-limit";
+
+/**
+ * Legt das Auth-Konto über den normalen Registrierungsweg an: Supabase verschickt die Bestätigungsmail, solange
+ * "Confirm email" im Projekt aktiv ist (empfohlen), und liefert nur ohne Bestätigungspflicht sofort eine Sitzung.
+ * Schülerdatensätze mit derselben E-Mail werden erst nach Bestätigung verknüpft (Trigger, Migration 0031).
+ */
+async function signUpAccount(email: string, password: string, meta: { first_name: string; last_name: string; locale: string }): Promise<{ userId: string; hasSession: boolean } | { error: string }> {
+  const supabase = await createSupabaseServerClient();
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+  const { data, error } = await supabase.auth.signUp({ email, password, options: { data: meta, emailRedirectTo: `${appUrl}/auth/callback?next=/heute` } });
+  // Bei bestehender Adresse liefert Supabase (mit Bestätigungspflicht) einen Platzhalter ohne Identitäten statt eines Fehlers
+  if (error?.message.toLowerCase().includes("already") || (data.user && (data.user.identities ?? []).length === 0)) return { error: "Für diese E-Mail-Adresse existiert bereits ein Konto. Bitte anmelden." };
+  if (error || !data.user) return { error: "Konto konnte nicht angelegt werden. Bitte E-Mail und Passwort prüfen." };
+  return { userId: data.user.id, hasSession: data.session !== null };
+}
+
+function finish(hasSession: boolean): never {
+  if (hasSession) redirect("/heute");
+  redirect("/login?bestaetigen=1");
+}
 
 const RegistrationSchema = z.object({
   first_name: z.string().min(1).max(80),
@@ -53,28 +74,25 @@ export async function registerStudentAction(tenantSlug: string, _prev: ActionSta
   if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
   const data = parsed.data;
   if (isMinor(data.date_of_birth) && !data.guardian_name) return { error: "Für Minderjährige sind die Angaben der Erziehungsberechtigten erforderlich." };
+  if (!(await allow("registerIp", await clientIp()))) return { error: TOO_MANY };
   const admin = createSupabaseAdminClient();
-  const { data: created, error: authError } = await admin.auth.admin.createUser({
-    email: data.email, password: data.password, email_confirm: false,
-    user_metadata: { first_name: data.first_name, last_name: data.last_name, locale: data.locale },
-  });
-  if (authError || !created.user) return { error: authError?.message.includes("already") ? "Für diese E-Mail-Adresse existiert bereits ein Konto. Bitte anmelden." : "Konto konnte nicht angelegt werden." };
-  const { data: tenant } = await admin.from("driving_schools").select("id").eq("slug", tenantSlug).single();
+  const { data: tenant } = await admin.from("driving_schools").select("id").eq("slug", tenantSlug).in("status", ["trial", "active"]).single();
   if (!tenant) return { error: "Fahrschule nicht gefunden." };
-  // Registrierung als der neue Nutzer ausführen (auth.uid() wird über die Service-Role-Session nicht gesetzt, daher explizit)
-  const { data: studentId, error: regError } = await admin.rpc("register_student", { p_tenant_slug: tenantSlug, p_payload: { ...data, user_id: created.user.id } as unknown as Json });
+  const account = await signUpAccount(data.email, data.password, { first_name: data.first_name, last_name: data.last_name, locale: data.locale });
+  if ("error" in account) return { error: account.error };
+  // Passwort und Einwilligungs-Flags gehören nicht in den Datensatz
+  const profile: Record<string, unknown> = { ...data };
+  delete profile["password"]; delete profile["consent_privacy"]; delete profile["consent_terms"];
+  const { data: studentId, error: regError } = await admin.rpc("register_student", { p_tenant_slug: tenantSlug, p_payload: profile as unknown as Json });
   if (regError || !studentId) return { error: "Anmeldung konnte nicht gespeichert werden." };
-  await admin.from("students").update({ user_id: created.user.id }).eq("id", studentId);
-  await admin.from("tenant_memberships").upsert({ tenant_id: tenant.id, user_id: created.user.id, role: "student", status: "active" }, { onConflict: "tenant_id,user_id" });
-  await admin.from("users").update({ active_tenant_id: tenant.id }).eq("id", created.user.id);
+  await admin.from("students").update({ user_id: account.userId }).eq("id", studentId);
+  await admin.from("tenant_memberships").upsert({ tenant_id: tenant.id, user_id: account.userId, role: "student", status: "active" }, { onConflict: "tenant_id,user_id" });
+  await admin.from("users").update({ active_tenant_id: tenant.id }).eq("id", account.userId);
   await admin.from("consents").insert([
-    { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "privacy_policy", text_version: "2026-09", granted: true },
-    { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "terms", text_version: "2026-09", granted: true },
+    { tenant_id: tenant.id, user_id: account.userId, student_id: studentId, consent_type: "privacy_policy", text_version: "2026-09", granted: true },
+    { tenant_id: tenant.id, user_id: account.userId, student_id: studentId, consent_type: "terms", text_version: "2026-09", granted: true },
   ]);
-  const supabase = await createSupabaseServerClient();
-  const { error: loginError } = await supabase.auth.signInWithPassword({ email: data.email, password: data.password });
-  if (loginError) redirect("/login?registriert=1");
-  redirect("/heute");
+  finish(account.hasSession);
 }
 
 const SELF_STUDY_SLUG = "selbstlerner";
@@ -100,27 +118,25 @@ export async function registerSelfStudyAction(_prev: ActionState, formData: Form
   const parsed = SelfStudySchema.safeParse({ ...raw, consent_privacy: raw["consent_privacy"] === "on" ? true : false, consent_terms: raw["consent_terms"] === "on" ? true : false });
   if (!parsed.success) return { error: parsed.error.issues.map((i) => i.message).join(", ") };
   const data = parsed.data;
+  if (!(await allow("registerIp", await clientIp()))) return { error: TOO_MANY };
   const admin = createSupabaseAdminClient();
-  const { data: created, error: authError } = await admin.auth.admin.createUser({ email: data.email, password: data.password, email_confirm: false, user_metadata: { first_name: data.first_name, last_name: data.last_name, locale: data.locale } });
-  if (authError || !created.user) return { error: authError?.message.includes("already") ? "Für diese E-Mail-Adresse existiert bereits ein Konto. Bitte anmelden." : "Konto konnte nicht angelegt werden." };
   const { data: tenant } = await admin.from("driving_schools").select("id").eq("slug", SELF_STUDY_SLUG).single();
   if (!tenant) return { error: "Selbstlern-Bereich ist nicht eingerichtet." };
+  const account = await signUpAccount(data.email, data.password, { first_name: data.first_name, last_name: data.last_name, locale: data.locale });
+  if ("error" in account) return { error: account.error };
   const { data: studentId, error: regError } = await admin.rpc("register_student", { p_tenant_slug: SELF_STUDY_SLUG, p_payload: { first_name: data.first_name, last_name: data.last_name, email: data.email, date_of_birth: data.date_of_birth, license_code: data.license_code, transmission: data.transmission, locale: data.locale } as unknown as Json });
   if (regError || !studentId) return { error: "Registrierung konnte nicht gespeichert werden." };
   await Promise.all([
-    admin.from("students").update({ user_id: created.user.id, status: "active" }).eq("id", studentId),
-    admin.from("tenant_memberships").upsert({ tenant_id: tenant.id, user_id: created.user.id, role: "student", status: "active" }, { onConflict: "tenant_id,user_id" }),
-    admin.from("users").update({ active_tenant_id: tenant.id }).eq("id", created.user.id),
+    admin.from("students").update({ user_id: account.userId, status: "active" }).eq("id", studentId),
+    admin.from("tenant_memberships").upsert({ tenant_id: tenant.id, user_id: account.userId, role: "student", status: "active" }, { onConflict: "tenant_id,user_id" }),
+    admin.from("users").update({ active_tenant_id: tenant.id }).eq("id", account.userId),
     admin.from("documents").delete().eq("student_id", studentId),
     admin.from("consents").insert([
-      { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "privacy_policy", text_version: "2026-09", granted: true },
-      { tenant_id: tenant.id, user_id: created.user.id, student_id: studentId, consent_type: "terms", text_version: "2026-09", granted: true },
+      { tenant_id: tenant.id, user_id: account.userId, student_id: studentId, consent_type: "privacy_policy", text_version: "2026-09", granted: true },
+      { tenant_id: tenant.id, user_id: account.userId, student_id: studentId, consent_type: "terms", text_version: "2026-09", granted: true },
     ]),
   ]);
-  const supabase = await createSupabaseServerClient();
-  const { error: loginError } = await supabase.auth.signInWithPassword({ email: data.email, password: data.password });
-  if (loginError) redirect("/login?registriert=1");
-  redirect("/heute");
+  finish(account.hasSession);
 }
 
 const JoinSchema = z.object({ slug: z.string().regex(/^[a-z0-9-]{3,40}$/, "Fahrschul-Code ungültig") });

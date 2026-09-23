@@ -1,4 +1,5 @@
 "use server";
+import { allow } from "@/lib/security/rate-limit";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import QRCode from "qrcode";
@@ -62,6 +63,7 @@ export async function instructorQueryAction(question: string): Promise<Instructo
   const q = z.string().min(2).max(500).parse(question.trim());
   const ctx = await getInstructorContext();
   const topics = await loadQueryTopics(ctx.db);
+  if (!(await allow("instructorAiDay", ctx.userId))) return { kind: "clarification", text: "Das Tageskontingent für KI-Abfragen ist erreicht. Morgen geht es weiter." };
   const services = createAiServices();
   const res = await instructorQuery({ provider: services.fast, model: services.models.fast }, { question: q, topics });
   if (res.query.type === "unknown") return { kind: "clarification", text: res.query.clarification };
@@ -159,6 +161,7 @@ export async function draftFromTranscriptAction(lessonId: string, transcript: st
   uuid.parse(lessonId);
   const text = z.string().min(1).max(20000).parse(transcript.trim());
   const ctx = await getInstructorContext();
+  if (!(await allow("instructorAiDay", ctx.userId))) return { ok: false, message: "Das Tageskontingent für KI-Entwürfe ist erreicht. Der Text bleibt als Transkript stehen.", transcript: text, draft: null, model: null };
   const services = createAiServices();
   if (!services.fast) return { ok: false, message: "Kein KI-Anbieter konfiguriert. Der Text wird als Transkript gespeichert, bitte das Formular manuell ausfüllen.", transcript: text, draft: null, model: null };
   const skills = await loadSkillLabels(ctx.db);
@@ -176,7 +179,8 @@ export async function draftFromAudioAction(formData: FormData): Promise<DraftRes
   const file = formData.get("audio");
   if (!(file instanceof Blob) || file.size === 0) return { ok: false, message: "Keine Aufnahme empfangen.", transcript: null, draft: null, model: null };
   if (file.size > 25 * 1024 * 1024) return { ok: false, message: "Die Aufnahme ist zu groß (maximal 25 MB).", transcript: null, draft: null, model: null };
-  await getInstructorContext();
+  const ictx = await getInstructorContext();
+  if (!(await allow("instructorAiDay", ictx.userId))) return { ok: false, message: "Das Tageskontingent für KI-Entwürfe ist erreicht. Bitte die Notiz als Text eingeben.", transcript: null, draft: null, model: null };
   const services = createAiServices();
   if (!services.transcription) return { ok: false, message: "Spracherkennung ist nicht konfiguriert. Bitte die Notiz als Text eingeben.", transcript: null, draft: null, model: null };
   try {

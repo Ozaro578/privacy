@@ -84,12 +84,14 @@ function isMinor(dob: string | null): boolean {
 /** Einladung per E-Mail (Service-Role). Bestehende Nutzer werden direkt als Mitglied freigeschaltet. */
 async function inviteMember(tenantId: string, email: string, role: "student" | "instructor" | "office" | "admin" | "owner", invitedBy: string, meta: Record<string, string>): Promise<{ userId: string; invited: boolean; message: string }> {
   const admin = createSupabaseAdminClient();
-  const { data: existing } = await admin.from("users").select("id").eq("email", email).maybeSingle();
-  if (existing) {
-    await admin.from("tenant_memberships").upsert({ tenant_id: tenantId, user_id: existing.id, role, status: "active", invited_by: invitedBy }, { onConflict: "tenant_id,user_id" });
-    return { userId: existing.id, invited: false, message: "Nutzerkonto existiert bereits, Zugang wurde freigeschaltet." };
+  // Nur Konten mit bestätigter E-Mail gelten als "bestehend"; die Adresse im Profil ist nicht maßgeblich (Migration 0031).
+  const { data: existingId } = await admin.rpc("find_confirmed_user_by_email", { p_email: email });
+  if (existingId) {
+    await admin.from("tenant_memberships").upsert({ tenant_id: tenantId, user_id: existingId, role, status: "active", invited_by: invitedBy }, { onConflict: "tenant_id,user_id" });
+    return { userId: existingId, invited: false, message: "Nutzerkonto existiert bereits, Zugang wurde freigeschaltet." };
   }
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { data: { locale: "de", ...meta } });
+  if (error?.message.toLowerCase().includes("already")) throw new Error("Für diese Adresse gibt es ein Konto, dessen E-Mail noch nicht bestätigt ist. Die Person muss zuerst ihre E-Mail bestätigen, danach die Einladung wiederholen.");
   if (error || !data.user) throw new Error(`Einladung fehlgeschlagen: ${error?.message ?? "unbekannt"}`);
   await admin.from("tenant_memberships").upsert({ tenant_id: tenantId, user_id: data.user.id, role, status: "invited", invited_by: invitedBy }, { onConflict: "tenant_id,user_id" });
   return { userId: data.user.id, invited: true, message: "Einladung per E-Mail versendet." };

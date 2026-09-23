@@ -104,10 +104,13 @@ export async function recordAttempt(raw: z.input<typeof AttemptSchema>): Promise
   let xpGained = 0;
   const newBadges: string[] = [];
   let next = prev;
+  // Die Session muss zum Schüler gehören; sonst wird der Versuch ohne Session-Bezug verbucht
+  const { data: ownSession } = await admin.from("learning_sessions").select("id").eq("id", input.sessionId).eq("student_id", ctx.student.id).maybeSingle();
+  const sessionId = ownSession ? input.sessionId : null;
   if (!existing) {
     next = reviewQuestion(prev, { correct, confidence: input.confidence, responseMs: input.responseMs, points: q.points });
     await Promise.all([
-      admin.from("student_question_attempts").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, question_id: q.id, question_version_id: v.id, session_id: input.sessionId, client_attempt_id: input.clientAttemptId, selected_positions: input.selected, numeric_answer: input.numericAnswer, is_correct: correct, points: q.points, confidence: input.confidence, response_ms: input.responseMs }),
+      admin.from("student_question_attempts").insert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, question_id: q.id, question_version_id: v.id, session_id: sessionId, client_attempt_id: input.clientAttemptId, selected_positions: input.selected, numeric_answer: input.numericAnswer, is_correct: correct, points: q.points, confidence: input.confidence, response_ms: input.responseMs }),
       admin.from("student_question_state").upsert({ tenant_id: ctx.tenantId, student_id: ctx.student.id, question_id: q.id, ...next, bookmarked: stateRow?.bookmarked ?? false }, { onConflict: "student_id,question_id" }),
     ]);
     const { data: sess } = await admin.from("learning_sessions").select("question_count, correct_count").eq("id", input.sessionId).eq("student_id", ctx.student.id).maybeSingle();

@@ -23,6 +23,11 @@ export async function proxy(request: NextRequest) {
   });
   const { data } = await supabase.auth.getClaims();
   const isPublic = PUBLIC_PREFIXES.some((p) => request.nextUrl.pathname.startsWith(p)) || request.nextUrl.pathname === "/";
+  if (!data?.claims && !isPublic && request.nextUrl.pathname.startsWith("/api/")) {
+    // API-Routen prüfen die Anmeldung selbst (Cookie oder Bearer-Token der App, Cron-Secret); ohne beides gibt es 401 statt Umleitung
+    if (request.headers.get("authorization") || request.headers.get("x-cron-secret")) return response;
+    return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 });
+  }
   if (!data?.claims && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

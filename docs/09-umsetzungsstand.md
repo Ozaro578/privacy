@@ -36,7 +36,7 @@ Dieses Dokument beschreibt, was im Repository fertig umgesetzt ist, was nur mit 
 - Regelwerte für die Klassen außer B verifizieren und veröffentlichen.
 - Löschlauf: Dokumente mit abgelaufener Frist werden täglich entfernt; Fristen je Kategorie aus `retention_policies` müssen fachlich bestätigt werden (review_status).
 - Support-Zugriff mit Freigabe ist umgesetzt (Einstellungen, Plattform, Protokoll); externe Prüfung der Rechtekonstruktion empfohlen.
-- Externer Penetrationstest, Datenschutz-Folgenabschätzung, AVV-Dokumente.
+- Externer Penetrationstest, Datenschutz-Folgenabschätzung, AVV-Dokumente. Interne Sicherheitsprüfung mit 16 Befunden ist abgeschlossen und behoben, siehe `16-sicherheitspruefung.md` (offen: Captcha-Schlüssel).
 - Observability: Fehler-Hook mit optionalem Webhook umgesetzt; Alarme und Wiederherstellungstest in Staging offen. Runbooks: docs/10-runbooks.md.
 - Pilotbetrieb mit einer Fahrschule inklusive Hypercare.
 
