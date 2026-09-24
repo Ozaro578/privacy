@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sortiment – ZUKKABRO</title>
+  <meta name="description" content="Das komplette ZUKKABRO-Sortiment: Süßes, Snacks, Getränke, Vapes und mehr.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="sortiment">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <span class="fl" style="left:6%;top:18%">🍬</span><span class="fl" style="right:7%;top:24%;animation-delay:-2s">🥤</span>
+      <div class="container">
+        <p class="eyebrow">Sortiment</p>
+        <h1>Alles, was <span class="drip">knallt</span></h1>
+        <p><span data-produktzahl>500</span> Produkte aus aller Welt. Preise auf Anfrage.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="toolbar reveal">
+          <label class="search"><span class="sr-only">Produkte durchsuchen</span><input type="search" id="suche" placeholder="Suchen, z. B. Takis, Monster, Peach …" autocomplete="off"></label>
+          <label><span class="sr-only">Sortierung</span><select class="select" id="sortierung"><option value="neu">Neueste zuerst</option><option value="az">Name A–Z</option><option value="marke">Nach Marke</option></select></label>
+          <label class="check"><input type="checkbox" id="nurLieferbar"> Nur lieferbare</label>
+        </div>
+        <div class="filters filters--scroll" id="filters" role="tablist" aria-label="Kategorien"></div>
+        <p class="katalog-info"><span id="anzahl" aria-live="polite"></span><small>Sortiment-Stand: <span id="sortimentStand"></span></small></p>
+        <div class="products" data-katalog="voll"></div>
+        <p class="mehr-wrap"><button class="btn btn--pink" id="mehr" type="button" hidden>Mehr anzeigen</button></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/katalog.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin – ZUKKABRO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="admin">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main class="portal pattern">
+    <div class="container">
+
+      <!-- ============ LOGIN ============ -->
+      <div class="login-wrap" id="loginBereich" hidden>
+        <div class="karte">
+          <img class="login-logo" src="/assets/img/logo.png" data-fallback="/assets/img/logo.svg" alt="ZUKKABRO">
+          <h1 class="center">Admin-Login</h1>
+          <p class="center">Nur für das ZUKKABRO-Team.</p>
+          <form class="form" id="loginForm" autocomplete="on">
+            <label class="feld">Benutzername<input name="benutzer" autocomplete="username" required></label>
+            <label class="feld">Passwort<input name="passwort" type="password" autocomplete="current-password" required></label>
+            <p class="fehlerbox" id="loginFehler" hidden></p>
+            <button class="btn btn--pink" type="submit">Anmelden</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ============ ADMIN-BEREICH ============ -->
+      <div id="app" hidden>
+        <div class="portal__kopf">
+          <div>
+            <h1>Admin-Bereich</h1>
+            <p>Angemeldet als <strong id="adminName"></strong></p>
+          </div>
+          <div class="leiste" style="margin:0">
+            <label class="feld">Jahr<select id="jahr"></select></label>
+            <button class="btn btn--light btn--klein" id="neuLaden" type="button">↻ Aktualisieren</button>
+            <button class="btn btn--light btn--klein" id="logout" type="button">Abmelden</button>
+          </div>
+        </div>
+
+        <nav class="reiter" id="reiter" role="tablist" aria-label="Admin-Bereiche">
+          <button data-tab="uebersicht" role="tab">📊 Übersicht</button>
+          <button data-tab="bestellungen" role="tab">📦 Bestellungen <span class="zahl" id="zahlBestellungen" hidden></span></button>
+          <button data-tab="haendler" role="tab">🏪 Händler <span class="zahl" id="zahlHaendler" hidden></span></button>
+          <button data-tab="preise" role="tab">🏷️ Händlerpreise</button>
+          <button data-tab="buchhaltung" role="tab">🧾 Buchhaltung</button>
+          <button data-tab="bestand" role="tab">📈 Bestand &amp; Verkäufe</button>
+          <button data-tab="protokoll" role="tab">🔐 Protokoll</button>
+        </nav>
+
+        <!-- Übersicht -->
+        <section data-panel="uebersicht" hidden>
+          <div class="leiste">
+            <label class="feld">Zeitraum<select id="uebersichtMonat"></select></label>
+          </div>
+          <div class="kpis" id="kpis"></div>
+          <div class="karte">
+            <h2>Monate im Überblick</h2>
+            <div class="tabelle-wrap"><table class="tabelle" id="monatsTabelle"></table></div>
+            <p class="hinweis" style="margin-top:1rem">Diese Übersicht ist eine interne Auswertung eurer Buchungen. Sie ersetzt keine Buchhaltungssoftware und keinen Steuerberater. Nutzt den CSV-Export für eure Steuerberatung.</p>
+          </div>
+        </section>
+
+        <!-- Bestellungen -->
+        <section data-panel="bestellungen" hidden>
+          <div class="leiste">
+            <label class="feld">Status<select id="bestellFilter">
+              <option value="">Alle</option><option value="neu">Neu</option><option value="bestaetigt">Bestätigt</option>
+              <option value="versendet">Versendet</option><option value="bezahlt">Bezahlt</option>
+              <option value="abgeschlossen">Abgeschlossen</option><option value="storniert">Storniert</option>
+            </select></label>
+          </div>
+          <div id="bestellListe"></div>
+        </section>
+
+        <!-- Händler -->
+        <section data-panel="haendler" hidden>
+          <div class="leiste">
+            <label class="feld">Status<select id="haendlerFilter"><option value="">Alle</option><option value="offen">Offen (zu prüfen)</option><option value="aktiv">Aktiv</option><option value="gesperrt">Gesperrt</option></select></label>
+          </div>
+          <div class="tabelle-wrap"><table class="tabelle" id="haendlerTabelle"></table></div>
+        </section>
+
+        <!-- Händlerpreise -->
+        <section data-panel="preise" hidden>
+          <p class="hinweis">Händlerpreise sind <strong>Netto-Preise pro Stück</strong>. VE = Stück pro Verpackungseinheit. Händler bestellen immer ganze VE. Nur Produkte mit Preis und „Aktiv“ sind für Händler bestellbar. Diese Preise sind öffentlich nicht sichtbar.</p>
+          <div class="leiste">
+            <label class="feld feld--breit">Suche<input type="search" id="preisSuche" placeholder="Produkt oder Marke"></label>
+            <label class="feld">Kategorie<select id="preisKat"><option value="">Alle</option></select></label>
+            <label class="feld">Anzeigen<select id="preisNur"><option value="">Alle Produkte</option><option value="mit">Nur mit Preis</option><option value="ohne">Nur ohne Preis</option></select></label>
+            <button class="btn btn--pink" id="preiseSpeichern" type="button" disabled>Änderungen speichern</button>
+          </div>
+          <div class="tabelle-wrap"><table class="tabelle" id="preisTabelle"></table></div>
+          <p class="mehr-wrap"><button class="btn btn--light btn--klein" id="preisMehr" type="button" hidden>Mehr anzeigen</button></p>
+        </section>
+
+        <!-- Buchhaltung -->
+        <section data-panel="buchhaltung" hidden>
+          <div class="karte">
+            <h2>Neue Buchung</h2>
+            <form class="form form--4" id="buchungForm" autocomplete="off">
+              <label class="feld">Art<select name="typ" required>
+                <option value="verkauf">Verkauf</option><option value="einkauf">Wareneinkauf</option>
+                <option value="ausgabe">Sonstige Ausgabe</option><option value="einnahme">Sonstige Einnahme</option>
+              </select></label>
+              <label class="feld">Datum<input type="date" name="datum" required></label>
+              <label class="feld voll" style="grid-column: span 2">Produkt / Bezeichnung<input name="name" list="produktListe" required placeholder="Produkt suchen oder frei eingeben"><small id="produktTreffer"></small></label>
+              <label class="feld">Menge (Stück)<input type="number" name="menge" min="1" step="1" value="1" required></label>
+              <label class="feld">Einzelpreis brutto (€)<input name="einzelpreis" inputmode="decimal" placeholder="0,00" required></label>
+              <label class="feld">MwSt<select name="mwst"><option value="19">19 %</option><option value="7">7 %</option><option value="0">0 %</option></select></label>
+              <label class="feld">Zahlungsart<select name="zahlungsart"><option>Bar</option><option>Karte</option><option>PayPal</option><option>Überweisung</option><option>Rechnung</option><option>Sonstiges</option></select></label>
+              <label class="feld">Beleg-Nr.<input name="beleg" placeholder="z. B. RE-2026-001"></label>
+              <label class="feld" style="grid-column: span 2">Notiz<input name="notiz"></label>
+              <div class="feld"><span>Gesamt brutto</span><strong id="buchungGesamt" style="font-size:1.3rem">0,00 €</strong></div>
+              <div class="voll"><button class="btn btn--pink" type="submit">Buchung speichern</button></div>
+            </form>
+            <datalist id="produktListe"></datalist>
+          </div>
+          <div class="karte">
+            <h2>Journal</h2>
+            <div class="leiste">
+              <label class="feld">Monat<select id="journalMonat"></select></label>
+              <label class="feld">Art<select id="journalTyp"><option value="">Alle</option><option value="verkauf">Verkauf</option><option value="einkauf">Wareneinkauf</option><option value="ausgabe">Ausgabe</option><option value="einnahme">Einnahme</option><option value="storno">Storno</option></select></label>
+              <label class="feld feld--breit">Suche<input type="search" id="journalSuche" placeholder="Bezeichnung, Beleg, Notiz"></label>
+              <button class="btn btn--gold btn--klein" id="journalExport" type="button">⬇ CSV für Excel</button>
+            </div>
+            <p class="hinweis">Buchungen lassen sich nicht löschen, nur stornieren. So bleibt nachvollziehbar, was wann erfasst wurde.</p>
+            <div class="tabelle-wrap"><table class="tabelle" id="journalTabelle"></table></div>
+          </div>
+        </section>
+
+        <!-- Bestand -->
+        <section data-panel="bestand" hidden>
+          <p class="hinweis">Bestand = eingekaufte Stück minus verkaufte Stück, über alle Jahre. Stornierte Buchungen zählen nicht. Stimmt nur, wenn alle Ein- und Verkäufe gebucht werden.</p>
+          <div class="leiste">
+            <label class="feld feld--breit">Suche<input type="search" id="bestandSuche" placeholder="Produkt"></label>
+            <label class="feld">Sortierung<select id="bestandSort"><option value="verkauft">Meistverkauft</option><option value="umsatz">Höchster Umsatz</option><option value="bestand">Niedrigster Bestand</option><option value="name">Name</option></select></label>
+            <button class="btn btn--gold btn--klein" id="bestandExport" type="button">⬇ CSV für Excel</button>
+          </div>
+          <div class="tabelle-wrap"><table class="tabelle" id="bestandTabelle"></table></div>
+        </section>
+
+        <!-- Protokoll -->
+        <section data-panel="protokoll" hidden>
+          <div class="leiste"><label class="feld">Monat<input type="month" id="protokollMonat"></label></div>
+          <div class="tabelle-wrap"><table class="tabelle" id="protokollTabelle"></table></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/portal.js"></script>
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

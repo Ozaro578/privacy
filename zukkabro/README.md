@@ -1,72 +1,70 @@
-# ZUKKABRO – Webseite
+# ZUKKABRO – Webseite, Händlerportal und Buchhaltung
 
 Snacks • Drinks • Vapes • More. Nur für Erwachsene ab 18 Jahren.
 
-Die Seite besteht nur aus HTML, CSS und JavaScript. Sie braucht keinen Server und keine Datenbank.
-Sie läuft auf GitHub Pages, Netlify oder jedem normalen Webspace.
+Läuft auf Netlify (Projekt `zukkabro`). Die ganze Seite ist zurzeit per Passwort geschützt und nur für das Team erreichbar.
 
 ## Aufbau
 
-| Datei | Inhalt |
+| Ordner / Datei | Inhalt |
 |---|---|
-| `index.html` | Startseite mit Altersabfrage, Kategorien, Produkten, Vapes 18+, Über uns und Kontakt |
-| `rechtliches.html` | Vorlage für Impressum und Datenschutz. Gelb markierte Stellen ausfüllen! |
-| `404.html` | Fehlerseite „Bro, hier gibt's nichts.“ |
-| `assets/js/produkte.js` | **Hier tragt ihr Preise, Produkte und Kontaktdaten ein** |
-| `assets/css/style.css` | Design und Farben |
-| `assets/img/` | Logos und eure Grafiken |
-| `assets/fonts/` | Schriften, lokal gespeichert und frei nutzbar (SIL Open Font License) |
+| `public/` | Die Webseite (wird veröffentlicht) |
+| `public/index.html` | Startseite |
+| `public/sortiment.html` | Ganzes Sortiment mit Suche und Filtern |
+| `public/vapes.html` | Vapes & Zubehör (18+) |
+| `public/ueber-uns.html`, `public/kontakt.html` | Über uns, Kontakt |
+| `public/haendler/` | Händlerportal: Registrierung, Login, Großbestellungen |
+| `public/admin/` | Admin-Bereich: Bestellungen, Händler, Händlerpreise, Buchhaltung, Bestand |
+| `public/rechtliches.html` | Impressum und Datenschutz (Vorlage, gelbe Stellen ausfüllen!) |
+| `public/assets/js/shop.js` | **Eure Angaben:** Kontaktdaten, Endkunden-Preise, Bestseller |
+| `public/assets/js/produkte.js` | Sortiment, automatisch vom Großhändler erzeugt |
+| `public/assets/js/layout.js` | Menü, Fußzeile, Altersabfrage für alle Seiten |
+| `netlify/functions/api/` | Server: Login, Händler, Bestellungen, Buchhaltung |
+| `netlify/edge-functions/zugangsschutz.ts` | Passwortschutz für die ganze Seite |
 
-## Preise und Produkte eintragen
+## Zugänge (Netlify-Umgebungsvariablen)
 
-Öffnet `assets/js/produkte.js`.
+| Variable | Zweck |
+|---|---|
+| `SITE_PASSWORD` | Passwort für die ganze Seite (Benutzername beliebig). Löschen = Seite öffentlich. |
+| `ADMIN_USERS` | Admin-Konten, Format `name=scrypt$…;name2=scrypt$…` (nur Hashes, keine Klartext-Passwörter) |
+| `SESSION_SECRET` | Geheimer Schlüssel für Anmelde-Cookies. Ändern = alle werden abgemeldet. |
 
-- `preis: null` zeigt „Preis auf Anfrage“.
-- `preis: 2.5` zeigt „2,50 €“.
-- Bei `SHOP` tragt ihr WhatsApp, Instagram, TikTok, E-Mail, Adresse und Öffnungszeiten ein.
-  Sobald die WhatsApp-Nummer drin ist, öffnet jeder „Anfragen“-Knopf direkt einen WhatsApp-Chat mit dem Produktnamen.
+Neues Admin-Passwort erzeugen: Claude fragen oder mit Node die Funktion `hashPasswort` aus `netlify/functions/api/sicherheit.mts` nutzen.
 
-## Eure Grafiken einbauen
+## Sortiment aktualisieren
 
-Ladet die Bilder mit **genau diesen Dateinamen** in den Ordner `assets/img/` hoch.
-Auf GitHub geht das über **Add file → Upload files**.
-Fehlt ein Bild, zeigt die Seite automatisch eine nachgebaute Version im gleichen Stil.
+```
+python3 werkzeuge/zukkabro_produkte_import.py
+```
 
-| Dateiname | Was aus dem Brand-Sheet | Wo auf der Seite |
-|---|---|---|
-| `logo.png` | Hauptlogo (transparent) | Altersabfrage, Hero, Impressum |
-| `logo-klein.png` | Logo-Variante / verkleinert | Header und Footer |
-| `icon.png` | Icon / Favicon / App (ZB) | Über uns, Handy-Homescreen |
-| `hero.jpg` | Website-Hero-Banner | Großes Banner ganz oben |
-| `banner-candy.jpg` | Candy-Banner | Kategorien |
-| `banner-snacks.jpg` | Snacks-Banner | Kategorien |
-| `banner-drinks.jpg` | Drinks-Banner | Kategorien |
-| `banner-vapes.jpg` | Vapes-Banner | Kategorien |
-| `neu.jpg` | Neu eingetroffen | Aktionskacheln |
-| `bestseller.jpg` | Bestseller | Aktionskacheln |
-| `mystery-box.jpg` | Mystery Box | Aktionskacheln |
-| `versand.jpg` | Schneller Versand | Aktionskacheln |
-| `badge-18.png` | 18+ Badge | Altersabfrage, Vape-Bereich |
-| `pattern.jpg` | Hintergrund / Pattern | Hintergrund von Hero und Produkten |
-| `danke.jpg` | Dankeskarte | Kontakt-Bereich |
-| `404.jpg` | 404-Seite | Fehlerseite |
+Holt Kategorien, Produkte und Bilder neu vom Großhändler, ohne Preise.
+Eure Preise und Kontaktdaten in `shop.js` bleiben erhalten.
+Artikel mit dem Hinweis „Rechtlich prüfen“ (CBD-Blüten, SHEESH BUDZ, Erotik) vor dem öffentlichen Start prüfen oder entfernen.
 
-Passende Seitenverhältnisse, damit nichts abgeschnitten wird:
+## Händlerportal
 
-- Hero: ungefähr 2,25 : 1, zum Beispiel 1800 × 800 Pixel
-- Kategorie-Banner: ungefähr 1,9 : 1, zum Beispiel 1140 × 600 Pixel
-- Aktionskacheln und 404: ungefähr 2,4 : 1, zum Beispiel 960 × 400 Pixel
-- Icon und 18+ Badge: quadratisch, zum Beispiel 512 × 512 Pixel
+1. Händler registrieren sich unter `/haendler/`.
+2. Im Admin-Bereich unter „Händler“ freischalten.
+3. Unter „Händlerpreise“ Netto-Stückpreis, VE (Stück pro Karton) und Mindestmenge eintragen. Nur Produkte mit Preis sind für Händler bestellbar.
+4. Bestellungen erscheinen unter „Bestellungen“. Status pflegen und mit „In Buchhaltung übernehmen“ als Verkauf buchen.
 
-Produktfotos kommen nach `assets/img/produkte/` und werden in `produkte.js` mit `bild: "assets/img/produkte/datei.jpg"` verknüpft.
+## Buchhaltung
 
-Die Dateien `logo.svg`, `logo-quer.svg` und `icon.svg` sind nachgebaute Vektor-Logos.
-Sie dienen als Ersatz, solange eure echten Logos fehlen. Bitte nicht löschen.
+- Verkäufe, Wareneinkäufe, Ausgaben und Einnahmen unter „Buchhaltung“ erfassen.
+- Buchungen können nicht gelöscht, nur storniert werden.
+- CSV-Export (Excel) für Journal und Bestand, zum Beispiel für die Steuerberatung.
+- Die Auswertung ist eine interne Übersicht und ersetzt keine Buchhaltungssoftware.
 
-## Rechtliches vor dem Start
+## Lokal testen
 
-- Impressum und Datenschutz in `rechtliches.html` ausfüllen.
-- E-Zigaretten und Liquids nur sachlich beschreiben, ohne Werbe-Slogans. Das verlangt das Tabakerzeugnisgesetz.
-- Keine Abgabe an unter 18-Jährige, auch nicht bei nikotinfreien Produkten (§ 10 Jugendschutzgesetz).
-- Beim Versand von 18+ Artikeln eine Altersprüfung bei der Zustellung nutzen, zum Beispiel den Alterssichtprüfungs-Service von DHL.
-- Fremde Markenlogos wie Takis, Prime oder Monster in euren Bannern nur zeigen, wenn ihr diese Produkte auch wirklich verkauft.
+```
+npm install
+node --experimental-transform-types netlify/functions/api/test-lokal.mts
+```
+
+## Eure Grafiken
+
+Bilder mit genau diesen Namen nach `public/assets/img/` hochladen. Fehlt ein Bild, zeigt die Seite eine nachgebaute Version:
+`logo.png`, `logo-klein.png`, `icon.png`, `hero.jpg`, `banner-candy.jpg`, `banner-snacks.jpg`, `banner-drinks.jpg`, `banner-vapes.jpg`,
+`neu.jpg`, `bestseller.jpg`, `mystery-box.jpg`, `versand.jpg`, `badge-18.png`, `pattern.jpg`, `danke.jpg`, `404.jpg`.

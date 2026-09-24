@@ -1,0 +1,9 @@
+{
+  "name": "zukkabro",
+  "private": true,
+  "description": "ZUKKABRO – Webseite, Händlerportal und Buchhaltung (Netlify)",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0"
+  }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Über uns – ZUKKABRO</title>
+  <meta name="description" content="Wer hinter ZUKKABRO steckt: zwei Brüder und eine Krone.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="ueber-uns">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <span class="fl" style="left:8%;top:22%">👑</span><span class="fl" style="right:8%;top:20%;animation-delay:-3s">🍭</span>
+      <div class="container">
+        <p class="eyebrow">Über uns</p>
+        <h1>Zwei Brüder. <span class="drip">Eine Krone.</span></h1>
+      </div>
+    </section>
+    <section class="section section--cream">
+      <div class="container about">
+        <div class="about__art reveal" aria-hidden="true">
+          <img src="/assets/img/icon.png" data-fallback="/assets/img/icon.svg" alt="">
+        </div>
+        <div class="about__text reveal">
+          <h2>Wer ist <span class="drip">ZUKKABRO?</span></h2>
+          <p>Wir sind <strong>ZUKKABRO</strong>. Zucker, Bros und alles, was knallt. Wir bringen dir internationale Snacks, Candy, Drinks und mehr, die du sonst nirgends findest.</p>
+          <p>Über unseren Großhändler bekommen wir laufend neue Ware, Trend-Produkte und Importe. Du suchst etwas Bestimmtes? Schreib uns, wir besorgen es.</p>
+          <div class="stickers">
+            <span class="sticker sticker--pink">Riesen Auswahl</span>
+            <span class="sticker sticker--gold">Faire Preise</span>
+            <span class="sticker sticker--blue">Schnelle Antwort</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section pattern">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">So läuft's</p>
+          <h2>In 3 Schritten zu <span class="drip">deinen Snacks</span></h2>
+        </header>
+        <div class="steps">
+          <div class="step reveal"><h3>Aussuchen</h3><p>Stöber durch unser Sortiment mit über 500 Produkten.</p></div>
+          <div class="step reveal"><h3>Anfragen</h3><p>Tipp auf „Anfragen“. Wir schicken dir Preis und Verfügbarkeit.</p></div>
+          <div class="step reveal"><h3>Genießen</h3><p>Abholen oder liefern lassen. Bei 18+ Artikeln mit Ausweis.</p></div>
+        </div>
+        <p class="mehr-wrap"><a class="btn btn--pink" href="/sortiment.html">Zum Sortiment →</a></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZUKKABRO – Snacks, Drinks, Vapes & More</title>
+  <meta name="description" content="ZUKKABRO – internationale Snacks, Candy, Drinks, Vapes und mehr. Deine Cravings. Unser Job. Nur für Erwachsene ab 18 Jahren.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="start">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero pattern">
+      <div class="container">
+        <a href="/sortiment.html" class="hero__banner slot" data-slot-box>
+          <img data-slot src="/assets/img/hero.jpg" alt="ZUKKABRO – Deine Cravings. Unser Job. Internationale Snacks, Drinks, Vapes und mehr, direkt zu dir. Jetzt shoppen.">
+          <div class="slot__fallback hero__fb">
+            <div class="hero__text">
+              <p class="hero__kicker">👑 Good snacks. Good mood.</p>
+              <p class="hero__title"><span>Deine Cravings.</span><span class="drip">Unser Job.</span></p>
+              <p class="hero__lead">Über <span data-produktzahl>500</span> internationale Snacks, Drinks, Vapes &amp; mehr. Direkt zu dir.</p>
+              <span class="btn btn--pink">Jetzt shoppen →</span>
+            </div>
+            <div class="hero__art" aria-hidden="true">
+              <img src="/assets/img/logo.png" data-fallback="/assets/img/logo.svg" alt="">
+              <span class="fl" style="--x:4%;--y:6%;--d:0s">🍫</span>
+              <span class="fl" style="--x:84%;--y:0%;--d:-2s">🥤</span>
+              <span class="fl" style="--x:88%;--y:66%;--d:-4s">🐻</span>
+              <span class="fl" style="--x:2%;--y:70%;--d:-1s">🍬</span>
+              <span class="fl" style="--x:46%;--y:80%;--d:-3s">🍭</span>
+            </div>
+          </div>
+        </a>
+        <h1 class="sr-only">ZUKKABRO – Snacks, Drinks, Vapes &amp; More</h1>
+      </div>
+    </section>
+
+    <!-- ============ LAUFBAND ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Snacks</span><i></i><span>Drinks</span><i></i><span>Vapes 18+</span><i></i><span>More</span><i></i><span>Candy</span><i></i><span>Mystery Packs</span><i></i>
+        <span>Snacks</span><i></i><span>Drinks</span><i></i><span>Vapes 18+</span><i></i><span>More</span><i></i><span>Candy</span><i></i><span>Mystery Packs</span><i></i>
+      </div>
+    </div>
+
+    <!-- ============ KATEGORIEN ============ -->
+    <section class="section" id="kategorien">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Kategorien</p>
+          <h2>Was geht <span class="drip">heute?</span></h2>
+        </header>
+        <div class="banners">
+          <a href="/sortiment.html?kat=susses" class="banner banner--candy slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/banner-candy.jpg" alt="Candy – Süßigkeiten aus der ganzen Welt. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback banner__fb">
+              <span class="banner__title">Candy</span>
+              <span class="banner__sub">Süßigkeiten aus der ganzen Welt</span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🐻🍬🍭</span>
+            </span>
+          </a>
+          <a href="/sortiment.html?kat=snacks" class="banner banner--snacks slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/banner-snacks.jpg" alt="Snacks – internationale Snacks. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback banner__fb">
+              <span class="banner__title">Snacks</span>
+              <span class="banner__sub">Internationale Snacks</span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🌶️🥔🍿</span>
+            </span>
+          </a>
+          <a href="/sortiment.html?kat=getraenke" class="banner banner--drinks slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/banner-drinks.jpg" alt="Drinks – coole Drinks für jeden Geschmack. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback banner__fb">
+              <span class="banner__title">Drinks</span>
+              <span class="banner__sub">Coole Drinks für jeden Geschmack</span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🥤⚡🧊</span>
+            </span>
+          </a>
+          <a href="/vapes.html" class="banner banner--vapes slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/banner-vapes.jpg" alt="Vapes ab 18 – Vapes und Zubehör. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback banner__fb">
+              <span class="banner__title">Vapes</span>
+              <span class="banner__sub">Vapes &amp; Zubehör</span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__18" aria-hidden="true">18+</span>
+              <span class="banner__deco" aria-hidden="true">💨</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="promos">
+          <a href="/sortiment.html?kat=neu" class="promo promo--neu slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/neu.jpg" alt="Neu eingetroffen. Jetzt shoppen." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Neu <small>eingetroffen</small></span><span class="promo__btn">Jetzt shoppen →</span><span class="promo__deco" aria-hidden="true">📦</span></span>
+          </a>
+          <a href="/sortiment.html?kat=bestseller" class="promo promo--best slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/bestseller.jpg" alt="Bestseller – unsere Top-Produkte. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Bestseller <small>unsere Top-Produkte</small></span><span class="promo__btn">Jetzt entdecken →</span><span class="promo__deco" aria-hidden="true">🍫</span></span>
+          </a>
+          <a href="/sortiment.html?kat=mystery" class="promo promo--mystery slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/mystery-box.jpg" alt="Mystery Box. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Mystery <small>Packs</small></span><span class="promo__btn">Jetzt entdecken →</span><span class="promo__deco" aria-hidden="true">🎁</span></span>
+          </a>
+          <a href="/kontakt.html#versand" class="promo promo--versand slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/versand.jpg" alt="Schneller Versand aus Deutschland zu dir." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Schneller Versand <small>aus Deutschland zu dir</small></span><span class="promo__deco" aria-hidden="true">🚚</span></span>
+          </a>
+        </div>
+
+        <div class="kacheln" data-kat-kacheln></div>
+      </div>
+    </section>
+
+    <!-- ============ NEU EINGETROFFEN ============ -->
+    <section class="section section--pink pattern">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Frisch reingekommen</p>
+          <h2>Neu im <span class="drip">Regal</span></h2>
+          <p>Die Preise stehen noch nicht fest. Frag einfach an, wir melden uns mit dem aktuellen Preis.</p>
+        </header>
+        <div class="products" data-katalog="vorschau" data-filter="neu" data-limit="8"></div>
+        <p class="mehr-wrap"><a class="btn btn--pink" href="/sortiment.html">Ganzes Sortiment ansehen (<span data-produktzahl>500</span> Produkte) →</a></p>
+      </div>
+    </section>
+
+    <!-- ============ ÜBER UNS (KURZ) ============ -->
+    <section class="section section--cream">
+      <div class="container about">
+        <div class="about__art reveal" aria-hidden="true">
+          <img src="/assets/img/icon.png" data-fallback="/assets/img/icon.svg" alt="">
+        </div>
+        <div class="about__text reveal">
+          <p class="eyebrow">Über uns</p>
+          <h2>Zwei Brüder. <span class="drip">Eine Krone.</span></h2>
+          <p>Wir sind <strong>ZUKKABRO</strong>. Zucker, Bros und alles, was knallt. Internationale Snacks, Candy, Drinks und mehr, die du sonst nirgends findest.</p>
+          <a class="btn btn--light" href="/ueber-uns.html">Mehr über uns →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/katalog.js"></script>
+</body>
+</html>

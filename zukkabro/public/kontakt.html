@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kontakt – ZUKKABRO</title>
+  <meta name="description" content="So erreichst du ZUKKABRO: WhatsApp, Instagram, TikTok und E-Mail.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="kontakt">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head page-head--gradient">
+      <div class="container">
+        <p class="eyebrow">Kontakt</p>
+        <h1>Schreib uns, Bro!</h1>
+        <p>Anfragen, Bestellungen, Wünsche. Wir antworten so schnell wie möglich.</p>
+      </div>
+    </section>
+    <section class="section section--gradient" id="kontakt">
+      <div class="container">
+        <div class="contact">
+          <a class="contact__card contact__card--wa reveal" id="waLink" href="#kontakt" target="_blank" rel="noopener">
+            <span class="contact__icon" aria-hidden="true">💬</span><h3>WhatsApp</h3><p data-shop="whatsappLabel">Nummer folgt</p>
+          </a>
+          <a class="contact__card contact__card--ig reveal" id="igLink" href="#kontakt" target="_blank" rel="noopener">
+            <span class="contact__icon" aria-hidden="true">📸</span><h3>Instagram</h3><p data-shop="instagramLabel">Kommt bald</p>
+          </a>
+          <a class="contact__card contact__card--tt reveal" id="ttLink" href="#kontakt" target="_blank" rel="noopener">
+            <span class="contact__icon" aria-hidden="true">🎵</span><h3>TikTok</h3><p data-shop="tiktokLabel">Kommt bald</p>
+          </a>
+          <a class="contact__card contact__card--mail reveal" id="mailLink" href="#kontakt">
+            <span class="contact__icon" aria-hidden="true">✉️</span><h3>E-Mail</h3><p data-shop="email">E-Mail folgt</p>
+          </a>
+        </div>
+        <div class="info reveal" id="versand">
+          <div><h3>🚚 Versand</h3><p data-shop="shipping">Schneller Versand aus Deutschland. 18+ Artikel nur mit Altersprüfung bei der Zustellung.</p></div>
+          <div><h3>📍 Standort</h3><p data-shop="address">Adresse folgt</p></div>
+          <div><h3>🕒 Öffnungszeiten</h3><p data-shop="hours">Werden bald bekannt gegeben</p></div>
+        </div>
+        <div class="danke slot reveal" data-slot-box>
+          <img data-slot src="/assets/img/danke.jpg" alt="Danke für deine Bestellung! Viel Spaß mit deinen Snacks." loading="lazy">
+          <div class="slot__fallback danke__fb">
+            <svg class="danke__crown" aria-hidden="true"><use href="#crown"/></svg>
+            <p class="danke__title">Danke, Bro!</p>
+            <p>Schön, dass du Teil unserer Community bist. Viel Spaß mit deinen Snacks!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+</body>
+</html>

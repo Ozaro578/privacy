@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Händler – ZUKKABRO</title>
+  <meta name="description" content="ZUKKABRO für Händler: Snacks, Drinks und Vapes in großen Mengen zu Händlerpreisen.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="haendler">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main class="portal pattern">
+    <div class="container">
+
+      <!-- ============ NICHT ANGEMELDET ============ -->
+      <div id="gast" hidden>
+        <header class="section__head">
+          <p class="eyebrow">Für Händler</p>
+          <h1 style="font-family:var(--display);font-weight:400">Großmengen zu <span class="drip">Händlerpreisen</span></h1>
+          <p>Kiosk, Späti, Tankstelle oder Shop? Registriere dich als Händler und bestell unser Sortiment in Verpackungseinheiten.</p>
+        </header>
+        <div class="login-wrap" style="max-width:620px">
+          <nav class="reiter" id="gastReiter" role="tablist">
+            <button data-tab="login" role="tab">🔑 Anmelden</button>
+            <button data-tab="registrieren" role="tab">📝 Als Händler registrieren</button>
+          </nav>
+          <section data-panel="login" hidden>
+            <div class="karte">
+              <h2>Händler-Login</h2>
+              <form class="form" id="loginForm">
+                <label class="feld">E-Mail<input name="benutzer" type="email" autocomplete="username" required></label>
+                <label class="feld">Passwort<input name="passwort" type="password" autocomplete="current-password" required></label>
+                <p class="fehlerbox" id="loginFehler" hidden></p>
+                <button class="btn btn--pink" type="submit">Anmelden</button>
+              </form>
+            </div>
+          </section>
+          <section data-panel="registrieren" hidden>
+            <div class="karte">
+              <h2>Händlerkonto beantragen</h2>
+              <p>Wir prüfen jede Anmeldung und schalten dein Konto frei. Nur für Gewerbetreibende.</p>
+              <form class="form form--2" id="regForm">
+                <label class="feld voll">Firmenname *<input name="firma" autocomplete="organization" required></label>
+                <label class="feld">Ansprechpartner *<input name="ansprechpartner" autocomplete="name" required></label>
+                <label class="feld">Telefon<input name="telefon" type="tel" autocomplete="tel"></label>
+                <label class="feld voll">Straße und Hausnummer *<input name="strasse" autocomplete="street-address" required></label>
+                <label class="feld">PLZ *<input name="plz" autocomplete="postal-code" required></label>
+                <label class="feld">Ort *<input name="ort" autocomplete="address-level2" required></label>
+                <label class="feld voll">USt-IdNr. oder Steuernummer<input name="ustId"></label>
+                <label class="feld">E-Mail (Login) *<input name="email" type="email" autocomplete="email" required></label>
+                <label class="feld">Passwort * <small>mind. 10 Zeichen</small><input name="passwort" type="password" autocomplete="new-password" minlength="10" required></label>
+                <label class="check-zeile voll"><input type="checkbox" name="gewerbe" required> Ich bestelle als Gewerbetreibender und verkaufe 18+ Artikel nur an Erwachsene.</label>
+                <label class="check-zeile voll"><input type="checkbox" name="datenschutz" required> Ich habe die <a href="/rechtliches.html#datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.</label>
+                <p class="fehlerbox voll" id="regFehler" hidden></p>
+                <p class="okbox voll" id="regOk" hidden></p>
+                <div class="voll"><button class="btn btn--pink" type="submit">Konto beantragen</button></div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ============ ANGEMELDET ============ -->
+      <div id="app" hidden>
+        <div class="portal__kopf">
+          <div>
+            <h1>Händlerbereich</h1>
+            <p>Hallo <strong id="firma"></strong>! Alle Preise netto pro Stück, zzgl. MwSt.</p>
+          </div>
+          <button class="btn btn--light btn--klein" id="logout" type="button">Abmelden</button>
+        </div>
+        <nav class="reiter" id="reiter" role="tablist">
+          <button data-tab="bestellen" role="tab">🛒 Bestellen</button>
+          <button data-tab="bestellungen" role="tab">📦 Meine Bestellungen</button>
+        </nav>
+
+        <section data-panel="bestellen" hidden>
+          <div class="bestell-layout">
+            <div>
+              <div class="leiste">
+                <label class="feld feld--breit">Suche<input type="search" id="suche" placeholder="Produkt oder Marke"></label>
+                <label class="feld">Kategorie<select id="kat"><option value="">Alle</option></select></label>
+              </div>
+              <div class="bestell-liste" id="liste"></div>
+              <p class="mehr-wrap"><button class="btn btn--light btn--klein" id="mehr" type="button" hidden>Mehr anzeigen</button></p>
+            </div>
+            <aside class="karte korb" aria-label="Warenkorb">
+              <h2>🛒 Warenkorb</h2>
+              <div id="korb"></div>
+              <label class="feld" style="margin-top:1rem">Notiz zur Bestellung<textarea id="notiz" rows="3" maxlength="1000" placeholder="z. B. Liefertermin, Abholung"></textarea></label>
+              <button class="btn btn--pink" id="absenden" type="button" style="width:100%;margin-top:1rem" disabled>Verbindlich bestellen</button>
+              <p style="font-size:.82rem;margin:.8rem 0 0;opacity:.75">Zahlung per Vorkasse oder Rechnung nach Absprache. Wir bestätigen jede Bestellung.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section data-panel="bestellungen" hidden>
+          <div id="meine"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/portal.js"></script>
+  <script src="/assets/js/haendler.js"></script>
+</body>
+</html>

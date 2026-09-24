@@ -1,8 +1,13 @@
 # Netlify-Konfiguration für ZUKKABRO
-# Reine statische Seite: kein Build nötig, dieser Ordner wird direkt veröffentlicht.
+# public/                  -> statische Webseite (wird veröffentlicht)
+# netlify/functions/       -> Server-Funktionen (Admin-Login, Buchhaltung)
+# netlify/edge-functions/  -> Zugangsschutz für die ganze Seite
 [build]
-  publish = "."
+  publish = "public"
   command = ""
+
+[functions]
+  node_bundler = "esbuild"
 
 [[headers]]
   for = "/*"
