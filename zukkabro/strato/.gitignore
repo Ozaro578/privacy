@@ -1,0 +1,5 @@
+# Geheim bzw. automatisch erzeugt – nie ins Git
+config.php
+api/*.json
+daten/*
+!daten/.htaccess

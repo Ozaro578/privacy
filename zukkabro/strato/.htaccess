@@ -1,0 +1,21 @@
+# ZUKKABRO – alles läuft über tor.php (Passwortschutz + Webseite + API)
+Options -Indexes
+DirectoryIndex tor.php
+AddDefaultCharset utf-8
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^tor\.php$ - [L]
+  RewriteRule ^ tor.php [L,QSA]
+</IfModule>
+
+# Nie direkt abrufbar: Einstellungen, Daten, Server-Code
+<FilesMatch "^(config\.php|.*\.json|.*\.md|\.ht.*)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
