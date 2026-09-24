@@ -28,6 +28,7 @@ BASIS = "https://my-candytown.com"
 ZIEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "zukkabro", "public")
 BILD_ORDNER = os.path.join(ZIEL, "assets", "img", "produkte")
 JS_DATEI = os.path.join(ZIEL, "assets", "js", "produkte.js")
+SERVER_DATEI = os.path.join(ZIEL, "..", "netlify", "functions", "api", "sortiment.mts")
 BILD_BREITE = 400
 NEU_TAGE = 45
 UA = "Mozilla/5.0 (ZUKKABRO Sortiment-Abgleich)"
@@ -58,7 +59,7 @@ AB18_TITEL = re.compile(r"erotik|fsk\s*18|nikotin|nicsalt|\d+\s*mg\b.*(pod|liqui
 # Name des Großhändlers nicht als Marke zeigen (Kunden sollen den Lieferanten nicht sehen)
 GROSSHAENDLER = re.compile(r"my\s*candy\s*town", re.I)
 # MHD-Angaben am Namensende entfernen, z. B. "20.08.27" oder "mhd 08/27"
-MHD = re.compile(r"\s*(?:mhd\s*)?\b\d{1,2}[./]\d{2}(?:[./]\d{2,4})?\s*$", re.I)
+MHD = re.compile(r"\s*(?:mhd\s*)?\b\d{1,2}[./](?:\d{4}|\d{2}(?:[./]\d{2,4})?)\s*$", re.I)
 
 
 def hole_json(url, versuche=3):
@@ -93,9 +94,12 @@ def sauberer_name(titel):
     return name
 
 
-def bild_laden(produkt):
-    handle, url = produkt["_bild_url_quelle"], produkt["_bild_url"]
-    ziel = os.path.join(BILD_ORDNER, f"{handle}.webp")
+MAX_BILDER = 6
+
+
+def bild_laden(auftrag):
+    dateiname, url = auftrag
+    ziel = os.path.join(BILD_ORDNER, dateiname)
     if os.path.exists(ziel) and os.path.getsize(ziel) > 0:
         return True
     trenn = "&" if "?" in url else "?"
@@ -107,7 +111,7 @@ def bild_laden(produkt):
             f.write(daten)
         return True
     except Exception as e:  # noqa: BLE001
-        print(f"  Bild fehlt für {handle}: {e}")
+        print(f"  Bild fehlt: {dateiname}: {e}")
         return False
 
 
@@ -156,27 +160,29 @@ def main():
         if PRUEFEN.search(titel):
             eintrag["pruefen"] = True
         if p.get("images"):
-            eintrag["_bild_url"] = p["images"][0]["src"]
-            eintrag["_bild_url_quelle"] = p["handle"]
+            eintrag["_bilder"] = [
+                (f"{p['handle']}.webp" if i == 0 else f"{p['handle']}-{i + 1}.webp", bild["src"])
+                for i, bild in enumerate(p["images"][:MAX_BILDER])
+            ]
         ergebnis.append((erstellt, eintrag))
 
     # Neueste zuerst
     ergebnis.sort(key=lambda x: x[0], reverse=True)
     eintraege = [e for _, e in ergebnis]
 
-    print(f"Lade {sum(1 for e in eintraege if '_bild_url' in e)} Bilder …")
-    mit_bild = [e for e in eintraege if "_bild_url" in e]
+    auftraege = [a for e in eintraege for a in e.get("_bilder", [])]
+    print(f"Lade {len(auftraege)} Bilder …")
     with cf.ThreadPoolExecutor(max_workers=6) as ex:
-        ok = list(ex.map(bild_laden, mit_bild))
-    for e, gut in zip(mit_bild, ok):
-        if gut:
-            e["bild"] = f"assets/img/produkte/{e['id']}.webp"
+        ok = dict(zip([a[0] for a in auftraege], ex.map(bild_laden, auftraege)))
     for e in eintraege:
-        e.pop("_bild_url", None)
-        e.pop("_bild_url_quelle", None)
+        dateien = [d for d, _ in e.pop("_bilder", []) if ok.get(d)]
+        if dateien:
+            e["bild"] = f"assets/img/produkte/{dateien[0]}"
+            if len(dateien) > 1:
+                e["bilder"] = [f"assets/img/produkte/{d}" for d in dateien]
 
     # Nicht mehr verwendete Bilder entfernen
-    gueltig = {f"{e['id']}.webp" for e in eintraege if "bild" in e}
+    gueltig = {os.path.basename(b) for e in eintraege for b in (e.get("bilder") or ([e["bild"]] if "bild" in e else []))}
     for datei in os.listdir(BILD_ORDNER):
         if datei.endswith(".webp") and datei not in gueltig:
             os.remove(os.path.join(BILD_ORDNER, datei))
@@ -195,6 +201,16 @@ def main():
         f.write("const PRODUKTE = [\n")
         f.write(",\n".join("  " + json.dumps(e, ensure_ascii=False, separators=(",", ":")) for e in eintraege))
         f.write("\n];\n")
+
+    # Kurzfassung für den Server (Name, Kategorien, 18+, lieferbar), damit die Kasse
+    # nicht den Angaben aus dem Browser vertrauen muss
+    server = {e["id"]: {"n": e["name"], "k": e["kat"], **({"a": 1} if e.get("ab18") else {}), **({"x": 1} if e.get("aus") else {})} for e in eintraege}
+    with open(SERVER_DATEI, "w", encoding="utf-8") as f:
+        f.write("// AUTOMATISCH ERZEUGT von werkzeuge/zukkabro_produkte_import.py – nicht von Hand ändern.\n")
+        f.write("// n = Name, k = Kategorien, a = ab 18, x = beim Großhändler nicht lieferbar\n")
+        f.write("export const SORTIMENT: Record<string, { n: string; k: string[]; a?: 1; x?: 1 }> = ")
+        f.write(json.dumps(server, ensure_ascii=False, separators=(",", ":")))
+        f.write(";\n")
 
     print(f"Fertig: {len(eintraege)} Produkte, {len(gueltig)} Bilder.")
     for kat in KATEGORIEN:

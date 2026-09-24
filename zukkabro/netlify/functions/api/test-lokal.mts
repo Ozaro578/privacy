@@ -80,9 +80,58 @@ r = await rufe("POST", "/admin/buchungen/storno", { id: verkauf.id, jahr, grund:
 r = await rufe("POST", "/admin/buchungen/storno", { id: verkauf.id, jahr, grund: "Test" }, admin); assert.equal(r.status, 200); ok("Storno angelegt");
 r = await rufe("POST", "/admin/buchungen/storno", { id: verkauf.id, jahr, grund: "Test" }, admin); assert.equal(r.status, 409); ok("Doppeltes Storno verhindert");
 
-// Sperren wirkt sofort
+// Sperren wirkt sofort (danach wieder freischalten für weitere Tests)
 r = await rufe("POST", "/admin/haendler/status", { id: hid, status: "gesperrt" }, admin);
 r = await rufe("GET", "/haendler/preise", undefined, haendler); assert.equal(r.status, 401); ok("Gesperrter Händler verliert sofort den Zugriff");
+
+// Shop: Endkunden-Kasse
+const { SORTIMENT } = await import("./sortiment.mts");
+const ids = Object.keys(SORTIMENT);
+const essen = ids.find((i) => !SORTIMENT[i].a && !SORTIMENT[i].x && SORTIMENT[i].k.includes("susses"))!;
+const vape = ids.find((i) => SORTIMENT[i].a && !SORTIMENT[i].x)!;
+const kunde = { vorname: "Max", nachname: "Muster", email: "max@test.de", telefon: "", strasse: "Weg 2", plz: "10115", ort: "Berlin" };
+r = await rufe("GET", "/shop/daten"); assert.deepEqual(r.daten.preise, {}); ok("Shop ohne Preise: nichts kaufbar");
+r = await rufe("POST", "/shop/bestellung", { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 2 }] });
+assert.equal(r.status, 400); ok("Artikel ohne Shop-Preis nicht bestellbar");
+r = await rufe("POST", "/admin/shoppreise", { aenderungen: { [essen]: { preis: 249, mwst: 7 }, [vape]: { preis: 999, mwst: 19 } } }, admin); assert.equal(r.status, 200);
+r = await rufe("POST", "/admin/einstellungen", { versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Laden", bankInhaber: "ZUKKABRO", bankIban: "DE00 1234", bankName: "Bank", paypal: "", hinweis: "Danke!" }, admin); assert.equal(r.status, 200);
+ok("Shop-Preise und Einstellungen gespeichert");
+r = await rufe("GET", "/shop/daten"); assert.equal(r.daten.preise[essen], 249); assert.equal(r.daten.versand.kosten, 590); ok("Öffentliche Shop-Daten liefern Preise");
+r = await rufe("GET", "/shop/daten"); assert.equal(JSON.stringify(r.daten).includes("150"), false); ok("Händlerpreise bleiben geheim");
+const basis = { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true };
+r = await rufe("POST", "/shop/bestellung", { ...basis, agb: false, positionen: [{ produktId: essen, menge: 2 }] }); assert.equal(r.status, 400); ok("Ohne AGB-Häkchen keine Bestellung");
+r = await rufe("POST", "/shop/bestellung", { ...basis, zahlart: "Bar bei Abholung", positionen: [{ produktId: essen, menge: 2 }] }); assert.equal(r.status, 400); ok("Barzahlung nur bei Abholung");
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: essen, menge: 2, preis: 1 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.brutto, 2 * 249 + 590); assert.equal(r.daten.zahlungsinfo.iban, "DE00 1234");
+ok("Kundenbestellung: 2 × 2,49 € + 5,90 € Versand = 10,88 € (Server-Preise)");
+const kNr = r.daten.nr;
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: vape, menge: 1 }] }); assert.equal(r.status, 400); ok("18+ Artikel ohne Geburtsdatum abgelehnt");
+r = await rufe("POST", "/shop/bestellung", { ...basis, geburtsdatum: "2012-01-01", ab18Bestaetigt: true, positionen: [{ produktId: vape, menge: 1 }] }); assert.equal(r.status, 403); ok("Minderjährige können keine 18+ Artikel kaufen");
+r = await rufe("POST", "/shop/bestellung", { ...basis, geburtsdatum: "1995-05-05", ab18Bestaetigt: true, positionen: [{ produktId: vape, menge: 3 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.brutto, 2997 + 590); ok("18+ Bestellung mit Geburtsdatum: 29,97 € + 5,90 € Versand (unter 50 €)");
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: essen, menge: 21 }] });
+assert.equal(r.daten.versand, 0); assert.equal(r.daten.brutto, 21 * 249); ok("Ab 50 € versandkostenfrei (52,29 €)");
+r = await rufe("POST", "/admin/bestellungen/buchen", { id: kNr }, admin); assert.equal(r.status, 200);
+r = await rufe("GET", "/admin/buchungen?jahr=" + jahr, undefined, admin);
+const zuK = r.daten.buchungen.filter((x: any) => x.beleg === kNr);
+assert.equal(zuK.reduce((a: number, x: any) => a + x.betrag, 0), 2 * 249 + 590); ok("Kundenbestellung gebucht inkl. Versandkosten (10,88 €)");
+
+// Pakete
+r = await rufe("GET", "/shop/daten"); assert.ok(r.daten.pakete.length >= 8); assert.equal(r.daten.pakete[0].preis, null); ok("Start-Pakete sichtbar (" + r.daten.pakete.length + "), Preis offen");
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: "paket:netflix-night", menge: 1 }] }); assert.equal(r.status, 400); ok("Paket ohne Preis nicht kaufbar");
+r = await rufe("GET", "/admin/pakete", undefined, admin);
+const pk = r.daten.pakete.map((x: any) => x.id === "netflix-night" ? { ...x, preis: 1999 } : x);
+r = await rufe("POST", "/admin/pakete", { pakete: [...pk, { id: "test", name: "", inhalt: [] }] }, admin); assert.equal(r.status, 400); ok("Paket ohne Namen abgelehnt");
+r = await rufe("POST", "/admin/pakete", { pakete: pk }, admin); assert.equal(r.status, 200); ok("Paketpreis gespeichert");
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: "paket:netflix-night", menge: 2 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.brutto, 3998 + 590); ok("2 × Netflix Night à 19,99 € + 5,90 € Versand = 45,88 €");
+
+// Händler: Preisanfrage
+r = await rufe("POST", "/admin/haendler/status", { id: hid, status: "aktiv" }, admin);
+r = await rufe("POST", "/haendler/preisanfrage", { positionen: [{ produktId: essen, stueck: 500 }], notiz: "Wochenbedarf" }, haendler);
+assert.equal(r.status, 200); assert.equal(r.daten.anfrage.art, "preisanfrage"); ok("Händler schickt Preisanfrage");
+r = await rufe("POST", "/admin/bestellungen/buchen", { id: r.daten.anfrage.id }, admin); assert.equal(r.status, 400); ok("Preisanfrage kann nicht gebucht werden");
+r = await rufe("POST", "/haendler/preisanfrage", { positionen: [{ produktId: essen, stueck: 1 }] }); assert.equal(r.status, 401); ok("Preisanfrage nur für angemeldete Händler");
 
 // Bremse gegen Passwort-Raten (gleiche IP)
 let letzte = 0;

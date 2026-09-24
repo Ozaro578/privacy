@@ -9,10 +9,11 @@
 
   var LISTE = typeof PRODUKTE !== "undefined" && Array.isArray(PRODUKTE) ? PRODUKTE : [];
   var KATS = typeof KATEGORIEN !== "undefined" && Array.isArray(KATEGORIEN) ? KATEGORIEN : [];
-  var PREIS = typeof PREISE === "object" && PREISE ? PREISE : {};
+  var PREIS = {};          // Endkundenpreise in Cent, kommen vom Server
+  var OHNE_PREIS_WEG = false;
   var BEST = typeof BESTSELLER !== "undefined" && Array.isArray(BESTSELLER) ? BESTSELLER : [];
   var SEITE = 48;
-  var euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
+  function euro(cent) { return window.ZBShop.euro(cent); }
   var katMap = {};
   KATS.forEach(function (k) { katMap[k.id] = k; });
 
@@ -27,6 +28,8 @@
   function istBest(p) { return BEST.indexOf(p.id) !== -1; }
   function hauptKat(p) { return katMap[p.kat && p.kat[0]] || { emoji: "🍬", farbe: "pink" }; }
 
+  function sichtbarImShop(p) { return !OHNE_PREIS_WEG || typeof PREIS[p.id] === "number"; }
+
   function passt(p, filter) {
     if (!filter || filter === "alle") return true;
     if (filter === "neu") return !!p.neu;
@@ -34,16 +37,10 @@
     return p.kat && p.kat.indexOf(filter) !== -1;
   }
 
-  function waHref(name) {
-    var wa = window.ZB_WA || "";
-    return wa ? "https://wa.me/" + wa + "?text=" + encodeURIComponent("Hallo ZUKKABRO! Ich interessiere mich für: " + name) : "/kontakt.html";
-  }
-
   function karte(p, i) {
     var k = hauptKat(p);
-    var preis = typeof PREIS[p.id] === "number"
-      ? '<span class="price">' + euro.format(PREIS[p.id]) + "</span>"
-      : '<span class="price price--open">Preis auf Anfrage</span>';
+    var hatPreis = typeof PREIS[p.id] === "number";
+    var preis = hatPreis ? '<span class="price">' + euro(PREIS[p.id]) + "</span>" : '<span class="price price--folgt">Preis folgt</span>';
     var badges = "";
     if (istBest(p)) badges += '<span class="badge badge--bestseller">BESTSELLER</span>';
     else if (p.neu) badges += '<span class="badge badge--neu">NEU</span>';
@@ -51,31 +48,46 @@
     var hinweise = "";
     if (p.aus) hinweise += '<span class="hint hint--aus">Gerade nicht lieferbar</span>';
     if (p.pruefen) hinweise += '<span class="hint hint--pruefen" title="Vor dem öffentlichen Start rechtlich prüfen">⚠️ Rechtlich prüfen</span>';
-    var wa = window.ZB_WA;
     var bild = p.bild
       ? '<img data-slot src="/' + esc(p.bild) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" width="400" height="400">'
       : "";
+    var href = "/produkt.html?id=" + encodeURIComponent(p.id);
+    var knopf = p.aus ? '<button class="product__cart" type="button" disabled>Nicht lieferbar</button>'
+      : hatPreis ? '<button class="product__cart" type="button" data-korb="' + esc(p.id) + '" aria-label="' + esc(p.name) + ' in den Warenkorb">🛒 In den Korb</button>'
+      : '<a class="product__ask" href="' + href + '">Ansehen →</a>';
     return (
       '<article class="product product--' + esc(k.farbe) + (p.aus ? " is-aus" : "") + '" style="--i:' + (i % SEITE) + '">' +
-        '<div class="product__art slot' + (p.bild ? " has-img" : " no-img") + '" data-slot-box>' + bild +
-          '<span class="product__emoji slot__fallback" aria-hidden="true">' + esc(k.emoji) + "</span>" + badges +
-        "</div>" +
-        '<div class="product__body">' +
-          (p.marke ? '<p class="product__brand">' + esc(p.marke) + "</p>" : "") +
-          "<h3>" + esc(p.name) + "</h3>" + hinweise +
-          '<div class="product__foot">' + preis +
-            '<a class="product__ask" href="' + esc(waHref(p.name)) + '"' + (wa ? ' target="_blank" rel="noopener"' : "") + ">Anfragen →</a>" +
+        '<a class="product__link" href="' + href + '">' +
+          '<div class="product__art slot' + (p.bild ? " has-img" : " no-img") + '" data-slot-box>' + bild +
+            '<span class="product__emoji slot__fallback" aria-hidden="true">' + esc(k.emoji) + "</span>" + badges +
           "</div>" +
-        "</div>" +
+          '<div class="product__body">' +
+            (p.marke ? '<p class="product__brand">' + esc(p.marke) + "</p>" : "") +
+            "<h3>" + esc(p.name) + "</h3>" + hinweise +
+          "</div>" +
+        "</a>" +
+        '<div class="product__foot product__foot--karte">' + preis + knopf + "</div>" +
       "</article>"
     );
   }
+
+  /* Klick auf "In den Korb" irgendwo auf der Seite */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-korb]");
+    if (!b) return;
+    e.preventDefault();
+    var id = b.getAttribute("data-korb");
+    var p = LISTE.find(function (x) { return x.id === id; });
+    window.ZBKorb.dazu(id, 1);
+    window.ZBToast("🛒 " + (p ? p.name : "Artikel") + " liegt im Warenkorb.");
+  });
 
   /* ---------- Vorschau (z. B. "Neu eingetroffen" auf der Startseite) ---------- */
   function vorschau(box) {
     var filter = box.getAttribute("data-filter") || "alle";
     var limit = parseInt(box.getAttribute("data-limit") || "8", 10);
-    var items = LISTE.filter(function (p) { return passt(p, filter) && !p.aus && !p.pruefen; }).slice(0, limit);
+    var ohne = box.getAttribute("data-ohne") || "";
+    var items = LISTE.filter(function (p) { return p.id !== ohne && passt(p, filter) && !p.aus && !p.pruefen && sichtbarImShop(p); }).slice(0, limit);
     if (!items.length) items = LISTE.filter(function (p) { return !p.aus; }).slice(0, limit);
     box.innerHTML = items.map(karte).join("");
   }
@@ -83,7 +95,8 @@
   /* ---------- Voller Katalog mit Suche, Filter, Sortierung ---------- */
   function voll(box) {
     var erlaubt = (box.getAttribute("data-kats") || "").split(",").filter(Boolean);
-    var basis = erlaubt.length ? LISTE.filter(function (p) { return p.kat.some(function (k) { return erlaubt.indexOf(k) !== -1; }); }) : LISTE;
+    var shopListe = LISTE.filter(sichtbarImShop);
+    var basis = erlaubt.length ? shopListe.filter(function (p) { return p.kat.some(function (k) { return erlaubt.indexOf(k) !== -1; }); }) : shopListe;
     var chipsBox = document.getElementById("filters");
     var suche = document.getElementById("suche");
     var sortierung = document.getElementById("sortierung");
@@ -180,6 +193,12 @@
   }
 
   function start() {
+    window.ZBShop.daten().then(function (d) {
+      PREIS = d.preise || {}; OHNE_PREIS_WEG = !!d.ohnePreisAusblenden;
+      zeichneAlles();
+    });
+  }
+  function zeichneAlles() {
     document.querySelectorAll("[data-kat-kacheln]").forEach(kacheln);
     document.querySelectorAll('[data-katalog="vorschau"]').forEach(vorschau);
     document.querySelectorAll('[data-katalog="voll"]').forEach(voll);

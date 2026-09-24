@@ -58,7 +58,9 @@
           <button data-tab="uebersicht" role="tab">📊 Übersicht</button>
           <button data-tab="bestellungen" role="tab">📦 Bestellungen <span class="zahl" id="zahlBestellungen" hidden></span></button>
           <button data-tab="haendler" role="tab">🏪 Händler <span class="zahl" id="zahlHaendler" hidden></span></button>
-          <button data-tab="preise" role="tab">🏷️ Händlerpreise</button>
+          <button data-tab="preise" role="tab">🏷️ Preise</button>
+          <button data-tab="pakete" role="tab">🎁 Pakete</button>
+          <button data-tab="einstellungen" role="tab">⚙️ Shop-Einstellungen</button>
           <button data-tab="buchhaltung" role="tab">🧾 Buchhaltung</button>
           <button data-tab="bestand" role="tab">📈 Bestand &amp; Verkäufe</button>
           <button data-tab="protokoll" role="tab">🔐 Protokoll</button>
@@ -80,6 +82,7 @@
         <!-- Bestellungen -->
         <section data-panel="bestellungen" hidden>
           <div class="leiste">
+            <label class="feld">Art<select id="bestellArt"><option value="">Alle</option><option value="kunde">🛒 Kunden (Shop)</option><option value="haendler">🏪 Händler</option><option value="preisanfrage">💬 Preisanfragen</option></select></label>
             <label class="feld">Status<select id="bestellFilter">
               <option value="">Alle</option><option value="neu">Neu</option><option value="bestaetigt">Bestätigt</option>
               <option value="versendet">Versendet</option><option value="bezahlt">Bezahlt</option>
@@ -99,7 +102,8 @@
 
         <!-- Händlerpreise -->
         <section data-panel="preise" hidden>
-          <p class="hinweis">Händlerpreise sind <strong>Netto-Preise pro Stück</strong>. VE = Stück pro Verpackungseinheit. Händler bestellen immer ganze VE. Nur Produkte mit Preis und „Aktiv“ sind für Händler bestellbar. Diese Preise sind öffentlich nicht sichtbar.</p>
+          <p class="hinweis"><strong>Shop-Preis</strong> = Endkundenpreis <strong>brutto</strong> (inkl. MwSt.) pro Stück. Ohne Shop-Preis steht im Shop „Preis folgt“ und der Artikel ist nicht kaufbar.<br>
+          <strong>Händlerpreis</strong> = <strong>netto</strong> pro Stück, nur für freigeschaltete Händler sichtbar. VE = Stück pro Verpackungseinheit, Händler bestellen ganze VE. Ohne Händlerpreis können Händler eine Preisanfrage schicken.</p>
           <div class="leiste">
             <label class="feld feld--breit">Suche<input type="search" id="preisSuche" placeholder="Produkt oder Marke"></label>
             <label class="feld">Kategorie<select id="preisKat"><option value="">Alle</option></select></label>
@@ -108,6 +112,36 @@
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="preisTabelle"></table></div>
           <p class="mehr-wrap"><button class="btn btn--light btn--klein" id="preisMehr" type="button" hidden>Mehr anzeigen</button></p>
+        </section>
+
+        <!-- Pakete -->
+        <section data-panel="pakete" hidden>
+          <p class="hinweis">Themen-Pakete wie „Netflix Night“ oder „Gamer Paket“. Ohne Preis steht im Shop „Preis folgt“. Preis = <strong>brutto</strong> für das ganze Paket. Ein Paket ist nur kaufbar, wenn alle Produkte darin lieferbar sind. Bei gemischten Paketen (Essen + Getränke) den MwSt-Satz mit dem Steuerberater klären.</p>
+          <div class="leiste">
+            <button class="btn btn--light btn--klein" id="paketNeu" type="button">+ Neues Paket</button>
+            <button class="btn btn--pink" id="paketeSpeichern" type="button">Alle Pakete speichern</button>
+          </div>
+          <div id="paketEditor"></div>
+        </section>
+
+        <!-- Shop-Einstellungen -->
+        <section data-panel="einstellungen" hidden>
+          <form class="karte form form--2" id="einstForm">
+            <h2 class="voll">Versand &amp; Abholung</h2>
+            <label class="feld">Versandkosten brutto (€)<input name="versand" inputmode="decimal" placeholder="5,90"></label>
+            <label class="feld">Versandkostenfrei ab (€) <small>0 = nie</small><input name="versandfreiAb" inputmode="decimal" placeholder="50,00"></label>
+            <label class="check-zeile"><input type="checkbox" name="abholung"><span>Abholung anbieten</span></label>
+            <label class="feld">Abholort / Hinweis<input name="abholort" placeholder="z. B. Musterstraße 1, nach Absprache"></label>
+            <h2 class="voll" style="margin-top:1rem">Zahlung</h2>
+            <label class="feld">Kontoinhaber<input name="bankInhaber"></label>
+            <label class="feld">IBAN<input name="bankIban" autocomplete="off"></label>
+            <label class="feld">Bank<input name="bankName"></label>
+            <label class="feld">PayPal (Link oder E-Mail) <small>leer = kein PayPal</small><input name="paypal" placeholder="https://paypal.me/…"></label>
+            <h2 class="voll" style="margin-top:1rem">Shop</h2>
+            <label class="check-zeile voll"><input type="checkbox" name="ohnePreisAusblenden"><span>Produkte ohne Shop-Preis im Shop ausblenden</span></label>
+            <label class="feld voll">Text auf der Bestellbestätigung<textarea name="hinweis" rows="2" placeholder="z. B. Wir melden uns innerhalb von 24 Stunden."></textarea></label>
+            <div class="voll"><button class="btn btn--pink" type="submit">Einstellungen speichern</button></div>
+          </form>
         </section>
 
         <!-- Buchhaltung -->

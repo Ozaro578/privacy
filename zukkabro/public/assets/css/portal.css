@@ -104,10 +104,6 @@ details.bestellung[open] summary { border-bottom: 2px solid #eadccd; background:
 .korb__summe { display: flex; justify-content: space-between; font-weight: 800; margin-top: .4rem; }
 .korb__summe--gross { font-family: var(--display); font-size: 1.25rem; }
 
-#toast { position: fixed; right: 16px; bottom: 16px; z-index: 3000; display: grid; gap: .5rem; max-width: min(360px, calc(100vw - 32px)); }
-.toast { background: var(--choco); color: #fff; padding: .8rem 1rem; border-radius: 14px; font-weight: 700; box-shadow: 4px 4px 0 var(--pink); transition: opacity .4s ease, transform .4s ease; }
-.toast--fehler { background: #b00; box-shadow: 4px 4px 0 var(--choco); }
-.toast.weg { opacity: 0; transform: translateY(10px); }
 
 @media (max-width: 960px) {
   .bestell-layout { grid-template-columns: 1fr; }

@@ -6,6 +6,11 @@ import {
   pruefePasswort, sitzungsCookie, type Sitzung,
 } from "./sicherheit.mts";
 import { lese, leseAlle, schreibe } from "./daten.mts";
+import {
+  STANDARD_EINSTELLUNGEN, alter, mwstAusBrutto, mwstVorschlag, produkt,
+  type ShopEinstellungen, type ShopPreise,
+} from "./shop.mts";
+import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
 
 /* =================== Typen =================== */
 type HStatus = "offen" | "aktiv" | "gesperrt";
@@ -17,11 +22,18 @@ interface Haendler {
 interface Preis { name: string; marke?: string; preis: number; ve: number; mindest: number; mwst: number; aktiv: boolean }
 type Preisliste = Record<string, Preis>;
 type BStatus = "neu" | "bestaetigt" | "versendet" | "bezahlt" | "abgeschlossen" | "storniert";
-interface Position { produktId: string; name: string; ve: number; anzahlVE: number; stueck: number; preis: number; mwst: number; netto: number }
+interface Position {
+  produktId: string; name: string; ve: number; anzahlVE: number; stueck: number;
+  preis: number; mwst: number; netto: number;
+  brutto?: number; // nur Kundenbestellungen: exakte Zeilensumme brutto
+}
+type BArt = "haendler" | "kunde" | "preisanfrage";
+interface Kunde { vorname: string; nachname: string; email: string; telefon: string; strasse: string; plz: string; ort: string; geburtsdatum?: string }
 interface Bestellung {
-  id: string; haendlerId: string; firma: string; positionen: Position[];
+  id: string; art?: BArt; haendlerId: string; firma: string; positionen: Position[];
   netto: number; mwst: number; brutto: number; notiz: string; status: BStatus;
   erstellt: string; verlauf: { status: BStatus; von: string; am: string }[]; gebucht?: boolean;
+  kunde?: Kunde; lieferart?: "versand" | "abholung"; zahlart?: string; versand?: number; ab18?: boolean;
 }
 type BTyp = "einkauf" | "verkauf" | "ausgabe" | "einnahme" | "storno";
 interface Buchung {
@@ -197,7 +209,7 @@ async function bestellen(req: Request, h: Haendler) {
   const netto = positionen.reduce((a, p) => a + p.netto, 0);
   const mwst = positionen.reduce((a, p) => a + Math.round((p.netto * p.mwst) / 100), 0);
   const best: Bestellung = {
-    id: neueId("ZB-"), haendlerId: h.id, firma: h.firma, positionen, netto, mwst, brutto: netto + mwst,
+    id: neueId("ZB-"), art: "haendler", haendlerId: h.id, firma: h.firma, positionen, netto, mwst, brutto: netto + mwst,
     notiz: text(b.notiz, 1000), status: "neu", erstellt: jetzt(), verlauf: [{ status: "neu", von: h.id, am: jetzt() }],
   };
   await schreibe(`bestellungen/${best.id}`, best);
@@ -226,14 +238,23 @@ async function bestellungBuchen(req: Request, s: Sitzung) {
   if (!best) throw new Fehler(404, "Bestellung nicht gefunden.");
   if (best.gebucht) throw new Fehler(409, "Diese Bestellung ist schon gebucht.");
   if (best.status === "storniert") throw new Fehler(400, "Stornierte Bestellungen können nicht gebucht werden.");
+  if (best.art === "preisanfrage") throw new Fehler(400, "Preisanfragen sind keine Verkäufe und werden nicht gebucht.");
   const tag = jetzt().slice(0, 10);
+  const zahlung = text(b.zahlungsart, 40) || best.zahlart || "Rechnung";
+  const wer = best.art === "kunde" ? `Kunde: ${best.firma}` : `Händler: ${best.firma}`;
   for (const p of best.positionen) {
-    // Betrag = exakte Zeilensumme der Rechnung (netto + MwSt), kein gerundeter Stückpreis × Menge
-    const betrag = p.netto + Math.round((p.netto * p.mwst) / 100);
+    // Betrag = exakte Zeilensumme der Rechnung, kein gerundeter Stückpreis × Menge
+    const betrag = typeof p.brutto === "number" ? p.brutto : p.netto + Math.round((p.netto * p.mwst) / 100);
     await neueBuchung({
       typ: "verkauf", datum: tag, produktId: p.produktId, name: p.name, menge: p.stueck,
-      einzelpreis: Math.round(betrag / p.stueck), betrag, mwst: p.mwst, zahlungsart: text(b.zahlungsart, 40) || "Rechnung",
-      beleg: best.id, notiz: `Händler: ${best.firma}`,
+      einzelpreis: Math.round(betrag / p.stueck), betrag, mwst: p.mwst, zahlungsart: zahlung,
+      beleg: best.id, notiz: wer,
+    }, s.id);
+  }
+  if (best.versand) {
+    await neueBuchung({
+      typ: "einnahme", datum: tag, produktId: "", name: "Versandkosten", menge: 1, einzelpreis: best.versand,
+      betrag: best.versand, mwst: 19, zahlungsart: zahlung, beleg: best.id, notiz: wer,
     }, s.id);
   }
   best.gebucht = true;
@@ -284,6 +305,202 @@ async function buchungStorno(req: Request, s: Sitzung) {
   return json({ ok: true, buchung: storno });
 }
 
+/* =================== Shop (Endkunden) =================== */
+async function shopPreise(): Promise<ShopPreise> {
+  return (await lese<ShopPreise>("preise/shop")) || {};
+}
+async function einstellungen(): Promise<ShopEinstellungen> {
+  return { ...STANDARD_EINSTELLUNGEN, ...((await lese<Partial<ShopEinstellungen>>("einstellungen/shop")) || {}) };
+}
+
+/* ---------- Pakete (Themenboxen) ---------- */
+const FARBEN = ["pink", "gold", "blue", "orange", "violet", "green", "gruen", "dark", "rot"];
+async function pakete(): Promise<Paket[]> {
+  return (await lese<Paket[]>("pakete/alle")) || PAKETE_VORLAGE;
+}
+/** Paket ist kaufbar, wenn es aktiv ist, einen Preis hat und alle Inhalte lieferbar sind */
+function paketStatus(pk: Paket) {
+  const inhalte = pk.inhalt.map((i) => produkt(i.id)).filter(Boolean) as { n: string; a?: 1; x?: 1 }[];
+  const vollstaendig = inhalte.length === pk.inhalt.length && inhalte.length > 0;
+  return { ab18: inhalte.some((p) => p.a), lieferbar: vollstaendig && !inhalte.some((p) => p.x) };
+}
+async function paketeSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh = Array.isArray(b.pakete) ? b.pakete.slice(0, 60) : [];
+  const ids = new Set<string>();
+  const liste: Paket[] = roh.map((r: any) => {
+    const id = text(r.id, 60).toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    if (!id || ids.has(id)) throw new Fehler(400, "Jedes Paket braucht eine eigene Kennung.");
+    ids.add(id);
+    const name = text(r.name, 80);
+    if (!name) throw new Fehler(400, "Jedes Paket braucht einen Namen.");
+    const inhalt = (Array.isArray(r.inhalt) ? r.inhalt : []).slice(0, 40).map((i: any) => {
+      const pid = text(i.id, 200);
+      if (!produkt(pid)) throw new Fehler(400, `${name}: Produkt ${pid} gibt es nicht im Sortiment.`);
+      return { id: pid, menge: ganz(i.menge, 1, 99) };
+    });
+    if (!inhalt.length) throw new Fehler(400, `${name}: Bitte mindestens ein Produkt hinzufügen.`);
+    const mwst = ganz(r.mwst, 0, 19);
+    if (!MWST_SAETZE.includes(mwst)) throw new Fehler(400, "MwSt-Satz muss 0, 7 oder 19 sein.");
+    return {
+      id, name, untertitel: text(r.untertitel, 160), emoji: text(r.emoji, 16) || "🎁",
+      farbe: FARBEN.includes(r.farbe) ? r.farbe : "pink", inhalt,
+      preis: r.preis === null || r.preis === "" || r.preis === undefined ? null : ganz(r.preis, 1, 10_000_000),
+      mwst, aktiv: r.aktiv !== false,
+    };
+  });
+  await schreibe("pakete/alle", liste);
+  await protokoll("pakete-geaendert", s.id, { anzahl: liste.length });
+  return json({ ok: true, pakete: liste });
+}
+
+/** Öffentliche Shop-Daten: Endkundenpreise und Versandregeln (keine Händlerpreise!) */
+async function shopDaten() {
+  const [preise, e, alle] = await Promise.all([shopPreise(), einstellungen(), pakete()]);
+  const nurPreise: Record<string, number> = {};
+  for (const [id, p] of Object.entries(preise)) if (produkt(id)) nurPreise[id] = p.preis;
+  return json({
+    preise: nurPreise,
+    versand: { kosten: e.versand, freiAb: e.versandfreiAb, abholung: e.abholung, abholort: e.abholort },
+    zahlarten: zahlarten(e),
+    ohnePreisAusblenden: !!(e as any).ohnePreisAusblenden,
+    pakete: alle.filter((pk) => pk.aktiv).map((pk) => ({
+      id: pk.id, name: pk.name, untertitel: pk.untertitel, emoji: pk.emoji, farbe: pk.farbe,
+      inhalt: pk.inhalt, preis: pk.preis, ...paketStatus(pk),
+    })),
+  });
+}
+function zahlarten(e: ShopEinstellungen): string[] {
+  const z = ["Überweisung (Vorkasse)"];
+  if (e.paypal) z.push("PayPal");
+  if (e.abholung) z.push("Bar bei Abholung");
+  return z;
+}
+
+async function kasse(req: Request, ip: string) {
+  await bremse("kasse", ip, 10, 60);
+  const b = await body(req);
+  const [preise, e, allePakete] = await Promise.all([shopPreise(), einstellungen(), pakete()]);
+  const k = b.kunde || {};
+  const kunde: Kunde = {
+    vorname: text(k.vorname, 80), nachname: text(k.nachname, 80), email: text(k.email, 120).toLowerCase(),
+    telefon: text(k.telefon, 40), strasse: text(k.strasse, 120), plz: text(k.plz, 10), ort: text(k.ort, 80),
+  };
+  const lieferart = b.lieferart === "abholung" ? "abholung" : "versand";
+  if (lieferart === "abholung" && !e.abholung) throw new Fehler(400, "Abholung ist zurzeit nicht möglich.");
+  if (!kunde.vorname || !kunde.nachname) throw new Fehler(400, "Bitte Vor- und Nachnamen angeben.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(kunde.email)) throw new Fehler(400, "Bitte eine gültige E-Mail-Adresse angeben.");
+  if (lieferart === "versand" && (!kunde.strasse || !kunde.plz || !kunde.ort)) throw new Fehler(400, "Bitte die vollständige Lieferadresse angeben.");
+  const zahlart = text(b.zahlart, 40);
+  if (!zahlarten(e).includes(zahlart)) throw new Fehler(400, "Bitte eine Zahlungsart wählen.");
+  if (zahlart === "Bar bei Abholung" && lieferart !== "abholung") throw new Fehler(400, "Barzahlung geht nur bei Abholung.");
+  if (b.agb !== true || b.datenschutz !== true) throw new Fehler(400, "Bitte AGB, Widerrufsbelehrung und Datenschutz bestätigen.");
+
+  const roh = Array.isArray(b.positionen) ? b.positionen.slice(0, 100) : [];
+  const positionen: Position[] = [];
+  let ab18 = false;
+  for (const r of roh) {
+    const id = text(r?.produktId, 200);
+    if (id.startsWith("paket:")) {
+      const pk = allePakete.find((x) => x.id === id.slice(6) && x.aktiv);
+      if (!pk || pk.preis === null) throw new Fehler(400, "Ein Paket im Warenkorb ist nicht mehr erhältlich. Bitte Warenkorb prüfen.");
+      const st = paketStatus(pk);
+      if (!st.lieferbar) throw new Fehler(400, `Paket ${pk.name} ist gerade nicht vollständig lieferbar.`);
+      const menge = ganz(r.menge, 1, 99);
+      if (st.ab18) ab18 = true;
+      const brutto = menge * pk.preis;
+      const mw = mwstAusBrutto(brutto, pk.mwst);
+      positionen.push({ produktId: id, name: `Paket: ${pk.name}`, ve: 1, anzahlVE: menge, stueck: menge, preis: Math.round((pk.preis * 100) / (100 + pk.mwst)), mwst: pk.mwst, netto: brutto - mw, brutto });
+      continue;
+    }
+    const prod = produkt(id);
+    const preis = preise[id];
+    if (!prod || !preis) throw new Fehler(400, "Ein Artikel im Warenkorb ist nicht mehr erhältlich. Bitte Warenkorb prüfen.");
+    if (prod.x) throw new Fehler(400, `${prod.n} ist gerade nicht lieferbar.`);
+    const menge = ganz(r.menge, 1, 999);
+    if (prod.a) ab18 = true;
+    const brutto = menge * preis.preis;
+    const mw = mwstAusBrutto(brutto, preis.mwst);
+    positionen.push({ produktId: id, name: prod.n, ve: 1, anzahlVE: menge, stueck: menge, preis: Math.round((preis.preis * 100) / (100 + preis.mwst)), mwst: preis.mwst, netto: brutto - mw, brutto });
+  }
+  if (!positionen.length) throw new Fehler(400, "Dein Warenkorb ist leer.");
+  if (ab18) {
+    const gd = datum(b.geburtsdatum);
+    if (alter(gd) < 18) throw new Fehler(403, "Artikel ab 18 dürfen wir nur an Volljährige verkaufen.");
+    if (b.ab18Bestaetigt !== true) throw new Fehler(400, "Bitte bestätige, dass du mindestens 18 Jahre alt bist.");
+    kunde.geburtsdatum = gd;
+  }
+  const warenwert = positionen.reduce((a, p) => a + (p.brutto || 0), 0);
+  const versand = lieferart === "versand" && !(e.versandfreiAb > 0 && warenwert >= e.versandfreiAb) ? e.versand : 0;
+  const mwst = positionen.reduce((a, p) => a + ((p.brutto || 0) - p.netto), 0) + mwstAusBrutto(versand, 19);
+  const brutto = warenwert + versand;
+  const best: Bestellung = {
+    id: neueId("ZK-"), art: "kunde", haendlerId: "", firma: `${kunde.vorname} ${kunde.nachname}`, positionen,
+    netto: brutto - mwst, mwst, brutto, notiz: text(b.notiz, 1000), status: "neu", erstellt: jetzt(),
+    verlauf: [{ status: "neu", von: "Kunde", am: jetzt() }], kunde, lieferart, zahlart, versand, ab18,
+  };
+  await schreibe(`bestellungen/${best.id}`, best);
+  await protokoll("kundenbestellung-neu", kunde.email, { bestellung: best.id, brutto });
+  const zahlungsinfo = zahlart.startsWith("Überweisung")
+    ? { art: "ueberweisung", inhaber: e.bankInhaber, iban: e.bankIban, bank: e.bankName, betrag: brutto, verwendungszweck: best.id }
+    : zahlart === "PayPal" ? { art: "paypal", ziel: e.paypal, betrag: brutto, verwendungszweck: best.id }
+    : { art: "bar", betrag: brutto, abholort: e.abholort };
+  return json({ ok: true, nr: best.id, brutto, versand, zahlungsinfo, hinweis: e.hinweis, ab18 });
+}
+
+/** Händler fragt Preise für Artikel ohne Händlerpreis an */
+async function preisanfrage(req: Request, h: Haendler) {
+  const b = await body(req);
+  const roh = Array.isArray(b.positionen) ? b.positionen.slice(0, 200) : [];
+  const positionen: Position[] = [];
+  for (const r of roh) {
+    const id = text(r?.produktId, 200);
+    const prod = produkt(id);
+    if (!prod) continue;
+    const stueck = ganz(r.stueck, 1, 1_000_000);
+    positionen.push({ produktId: id, name: prod.n, ve: 1, anzahlVE: stueck, stueck, preis: 0, mwst: mwstVorschlag(id), netto: 0 });
+  }
+  if (!positionen.length) throw new Fehler(400, "Bitte mindestens ein Produkt mit Wunschmenge auswählen.");
+  const anfrage: Bestellung = {
+    id: neueId("PA-"), art: "preisanfrage", haendlerId: h.id, firma: h.firma, positionen, netto: 0, mwst: 0, brutto: 0,
+    notiz: text(b.notiz, 1000), status: "neu", erstellt: jetzt(), verlauf: [{ status: "neu", von: h.id, am: jetzt() }],
+  };
+  await schreibe(`bestellungen/${anfrage.id}`, anfrage);
+  await protokoll("preisanfrage-neu", h.id, { anfrage: anfrage.id, artikel: positionen.length });
+  return json({ ok: true, anfrage });
+}
+
+async function shopPreiseSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const aenderungen = b.aenderungen && typeof b.aenderungen === "object" ? b.aenderungen : {};
+  const liste = await shopPreise();
+  let n = 0;
+  for (const [id, wert] of Object.entries<any>(aenderungen)) {
+    const pid = text(id, 200);
+    if (!pid || n++ > 2000) continue;
+    if (wert === null) { delete liste[pid]; continue; }
+    const mwst = ganz(wert.mwst, 0, 19);
+    if (!MWST_SAETZE.includes(mwst)) throw new Fehler(400, "MwSt-Satz muss 0, 7 oder 19 sein.");
+    liste[pid] = { preis: ganz(wert.preis, 1, 10_000_000), mwst };
+  }
+  await schreibe("preise/shop", liste);
+  await protokoll("shoppreise-geaendert", s.id, { anzahl: Object.keys(aenderungen).length });
+  return json({ ok: true, shop: liste });
+}
+
+async function einstellungenSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const e: ShopEinstellungen & { ohnePreisAusblenden: boolean } = {
+    versand: ganz(b.versand, 0, 100_000), versandfreiAb: ganz(b.versandfreiAb, 0, 10_000_000),
+    abholung: b.abholung === true, abholort: text(b.abholort, 200),
+    bankInhaber: text(b.bankInhaber, 100), bankIban: text(b.bankIban, 40).replace(/\s+/g, " "), bankName: text(b.bankName, 100),
+    paypal: text(b.paypal, 200), hinweis: text(b.hinweis, 1000), ohnePreisAusblenden: b.ohnePreisAusblenden === true,
+  };
+  await schreibe("einstellungen/shop", e);
+  await protokoll("einstellungen-geaendert", s.id);
+  return json({ ok: true, einstellungen: e });
+}
+
 /* =================== Router =================== */
 export default async (req: Request, context: Context) => {
   const url = new URL(req.url);
@@ -300,6 +517,8 @@ export default async (req: Request, context: Context) => {
     if (m === "POST" && pfad === "/logout") return json({ ok: true }, 200, { "Set-Cookie": abmeldeCookie() });
     if (m === "GET" && pfad === "/ich") return await ich(s);
     if (m === "POST" && pfad === "/haendler/registrieren") return await registrieren(req, ip);
+    if (m === "GET" && pfad === "/shop/daten") return await shopDaten();
+    if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
 
     /* ---- Händler ---- */
     if (pfad.startsWith("/haendler/")) {
@@ -315,6 +534,7 @@ export default async (req: Request, context: Context) => {
         return json({ bestellungen: alle.filter((b) => b.haendlerId === h.id).reverse() });
       }
       if (m === "POST" && pfad === "/haendler/bestellungen") return await bestellen(req, h);
+      if (m === "POST" && pfad === "/haendler/preisanfrage") return await preisanfrage(req, h);
       throw new Fehler(404, "Nicht gefunden.");
     }
 
@@ -337,7 +557,14 @@ export default async (req: Request, context: Context) => {
         await protokoll("haendler-status", a.id, { haendler: h.id, status });
         return json({ ok: true, haendler: ohnePass(h) });
       }
-      if (m === "GET" && pfad === "/admin/preise") return json({ preise: await preisliste() });
+      if (m === "GET" && pfad === "/admin/preise") {
+        const [preise, shop, e] = await Promise.all([preisliste(), shopPreise(), einstellungen()]);
+        return json({ preise, shop, einstellungen: e });
+      }
+      if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "POST" && pfad === "/admin/einstellungen") return await einstellungenSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/pakete") return json({ pakete: await pakete() });
+      if (m === "POST" && pfad === "/admin/pakete") return await paketeSpeichern(req, a);
       if (m === "POST" && pfad === "/admin/preise") return await preiseSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/bestellungen") return json({ bestellungen: (await leseAlle<Bestellung>("bestellungen/")).reverse() });
       if (m === "POST" && pfad === "/admin/bestellungen/status") return await bestellStatus(req, a);

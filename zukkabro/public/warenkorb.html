@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Warenkorb – ZUKKABRO</title>
+  <meta name="description" content="Dein Warenkorb bei ZUKKABRO.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="warenkorb">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <div class="container">
+        <p class="eyebrow">Warenkorb</p>
+        <h1 id="korbTitel">Dein <span class="drip">Warenkorb</span></h1>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <!-- Schritt 1: Warenkorb -->
+        <div class="korb-layout" id="schrittKorb">
+          <div class="korb-liste" id="korbListe"><p class="leer">Lade …</p></div>
+          <aside class="karte summe-box" aria-label="Zusammenfassung">
+            <h2>Zusammenfassung</h2>
+            <div id="summe1"></div>
+            <button class="btn btn--pink" id="zurKasse" type="button" style="width:100%;margin-top:1rem">Zur Kasse →</button>
+            <p id="korbHinweis" class="hint hint--pruefen" style="margin-top:.8rem" hidden></p>
+            <p style="font-size:.82rem;margin:.8rem 0 0;opacity:.75">Alle Preise inkl. MwSt.</p>
+          </aside>
+        </div>
+
+        <!-- Schritt 2: Kasse -->
+        <form class="korb-layout" id="schrittKasse" hidden novalidate>
+          <div class="kasse-schritt">
+            <div class="karte">
+              <h2>1. Deine Daten</h2>
+              <div class="form form--2">
+                <label class="feld">Vorname *<input name="vorname" autocomplete="given-name" required></label>
+                <label class="feld">Nachname *<input name="nachname" autocomplete="family-name" required></label>
+                <label class="feld">E-Mail *<input name="email" type="email" autocomplete="email" required></label>
+                <label class="feld">Telefon<input name="telefon" type="tel" autocomplete="tel"></label>
+              </div>
+            </div>
+            <div class="karte">
+              <h2>2. Lieferung</h2>
+              <div class="auswahl" id="lieferarten">
+                <label><input type="radio" name="lieferart" value="versand" checked><span>🚚 Versand <small id="versandText"></small></span></label>
+                <label id="abholungOption" hidden><input type="radio" name="lieferart" value="abholung"><span>🏪 Abholung <small id="abholText">kostenlos</small></span></label>
+              </div>
+              <div class="form form--2" id="adresse" style="margin-top:1rem">
+                <label class="feld voll">Straße und Hausnummer *<input name="strasse" autocomplete="street-address"></label>
+                <label class="feld">PLZ *<input name="plz" autocomplete="postal-code" inputmode="numeric"></label>
+                <label class="feld">Ort *<input name="ort" autocomplete="address-level2"></label>
+              </div>
+            </div>
+            <div class="karte" id="alterBox" hidden>
+              <h2>3. Altersprüfung (18+)</h2>
+              <p>In deinem Warenkorb sind Artikel, die wir nur an Erwachsene verkaufen dürfen. Beim Versand prüft der Zusteller dein Alter, bei Abholung wir.</p>
+              <div class="form form--2">
+                <label class="feld">Geburtsdatum *<input name="geburtsdatum" type="date"></label>
+              </div>
+              <label class="check-zeile" style="margin-top:.8rem"><input type="checkbox" name="ab18"><span>Ich bin mindestens 18 Jahre alt und lege bei Übergabe einen Ausweis vor.</span></label>
+            </div>
+            <div class="karte">
+              <h2 id="zahlTitel">3. Zahlung</h2>
+              <div class="auswahl" id="zahlarten"></div>
+              <label class="feld" style="margin-top:1rem">Anmerkung zur Bestellung<textarea name="notiz" rows="2" maxlength="1000"></textarea></label>
+            </div>
+          </div>
+          <aside class="karte summe-box" aria-label="Bestellübersicht">
+            <h2>Deine Bestellung</h2>
+            <div id="summe2"></div>
+            <label class="check-zeile" style="margin-top:1rem"><input type="checkbox" name="agb"><span>Ich habe die <a href="/rechtliches.html#agb" target="_blank">AGB</a> und die <a href="/rechtliches.html#widerruf" target="_blank">Widerrufsbelehrung</a> gelesen.</span></label>
+            <label class="check-zeile" style="margin-top:.6rem"><input type="checkbox" name="datenschutz"><span>Ich habe die <a href="/rechtliches.html#datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.</span></label>
+            <p class="fehlerbox" id="kasseFehler" hidden style="margin-top:1rem"></p>
+            <button class="btn btn--pink" type="submit" id="bestellen" style="width:100%;margin-top:1rem">Zahlungspflichtig bestellen</button>
+            <button class="linklike" type="button" id="zurueck" style="margin-top:.8rem">← Zurück zum Warenkorb</button>
+          </aside>
+        </form>
+
+        <!-- Schritt 3: Danke -->
+        <div class="karte bestaetigt" id="schrittDanke" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/warenkorb.js"></script>
+</body>
+</html>

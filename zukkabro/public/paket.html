@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paket – ZUKKABRO</title>
+  <meta name="description" content="Themen-Paket bei ZUKKABRO.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="pakete">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="section pattern" style="padding-top:clamp(24px,4vw,40px)">
+      <div class="container">
+        <p class="brotkrumen"><a href="/pakete.html">Alle Pakete</a></p>
+        <div id="paketDetail"><p class="leer">Lade Paket …</p></div>
+      </div>
+    </section>
+    <section class="section section--cream">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow">Noch mehr Pakete</p>
+          <h2>Pack <span class="drip">noch eins</span> drauf</h2>
+        </header>
+        <div class="pakete" data-pakete="start"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/pakete.js"></script>
+</body>
+</html>

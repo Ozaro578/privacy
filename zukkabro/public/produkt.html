@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Produkt – ZUKKABRO</title>
+  <meta name="description" content="Produktdetails bei ZUKKABRO.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="sortiment">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="section pattern" style="padding-top:clamp(24px,4vw,40px)">
+      <div class="container">
+        <p class="brotkrumen" id="brotkrumen"><a href="/sortiment.html">Sortiment</a></p>
+        <div class="pdp" id="pdp">
+          <p class="leer">Lade Produkt …</p>
+        </div>
+      </div>
+    </section>
+    <section class="section section--cream" id="aehnlich" hidden>
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow">Mehr davon</p>
+          <h2>Das könnte dir auch <span class="drip">schmecken</span></h2>
+        </header>
+        <div class="products" id="aehnlichListe"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/katalog.js"></script>
+  <script src="/assets/js/produkt.js"></script>
+</body>
+</html>

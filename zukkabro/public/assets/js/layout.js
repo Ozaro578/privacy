@@ -9,6 +9,7 @@
   var MENUE = [
     { id: "start",     href: "/",                 text: "Start" },
     { id: "sortiment", href: "/sortiment.html",   text: "Sortiment" },
+    { id: "pakete",    href: "/pakete.html",      text: "Pakete" },
     { id: "vapes",     href: "/vapes.html",       text: "Vapes 18+" },
     { id: "ueber-uns", href: "/ueber-uns.html",   text: "Über uns" },
     { id: "haendler",  href: "/haendler/",        text: "Für Händler" },
@@ -57,6 +58,7 @@
       "</div>" +
       '<header class="header" id="top"><div class="container header__inner">' +
         '<a href="/" class="logo" aria-label="ZUKKABRO Startseite"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="190" height="50"></a>' +
+        '<a class="korb-knopf" href="/warenkorb.html" aria-label="Warenkorb"><span aria-hidden="true">🛒</span><span class="korb-zahl" id="korbZahl" hidden>0</span></a>' +
         '<button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>' +
         '<nav class="nav" id="nav" aria-label="Hauptmenü">' + links + "</nav>" +
       "</div></header>";
@@ -67,13 +69,49 @@
         '<div><a href="/" class="footer__logo"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="220" height="58" loading="lazy"></a>' +
         '<p class="footer__note">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p></div>' +
         '<nav class="footer__links" aria-label="Weitere Seiten">' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/kontakt.html">Kontakt</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/pakete.html">Pakete</a><a href="/haendler/">Für Händler</a><a href="/kontakt.html">Kontakt</a>' +
           '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a>' +
           '<a href="/admin/">Admin-Login</a>' +
           '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
         "</nav></div>" +
         '<p class="footer__copy">© <span id="year">2026</span> ZUKKABRO. Alle Rechte vorbehalten.</p></footer>';
   }
+
+  /* ---------- Warenkorb (im Browser gespeichert) ---------- */
+  var KORB_KEY = "zb_warenkorb";
+  window.ZBKorb = {
+    alle: function () { try { var k = JSON.parse(localStorage.getItem(KORB_KEY) || "{}"); return k && typeof k === "object" ? k : {}; } catch (e) { return {}; } },
+    speichern: function (k) { try { localStorage.setItem(KORB_KEY, JSON.stringify(k)); } catch (e) { /* egal */ } window.dispatchEvent(new Event("zb-korb")); },
+    setze: function (id, menge) { var k = this.alle(); menge = Math.max(0, Math.min(999, menge | 0)); if (menge) k[id] = menge; else delete k[id]; this.speichern(k); },
+    dazu: function (id, menge) { var k = this.alle(); this.setze(id, (k[id] || 0) + (menge || 1)); },
+    anzahl: function () { var k = this.alle(); return Object.keys(k).reduce(function (a, id) { return a + k[id]; }, 0); },
+    leeren: function () { this.speichern({}); }
+  };
+
+  /* ---------- Shop-Daten (Endkundenpreise, Versand) vom Server, einmal pro Seite ---------- */
+  var shopVersprechen = null;
+  window.ZBShop = {
+    daten: function () {
+      if (!shopVersprechen) {
+        shopVersprechen = fetch("/api/shop/daten", { credentials: "same-origin" })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .catch(function () { return null; })
+          .then(function (d) { return d || { preise: {}, versand: { kosten: 0, freiAb: 0, abholung: false }, zahlarten: [], ohnePreisAusblenden: false }; });
+      }
+      return shopVersprechen;
+    },
+    euro: function (cent) { return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100); }
+  };
+
+  /* ---------- Kurze Meldung ---------- */
+  window.ZBToast = function (text, fehler) {
+    var box = document.getElementById("toast");
+    if (!box) { box = document.createElement("div"); box.id = "toast"; box.setAttribute("role", "status"); document.body.appendChild(box); }
+    var el = document.createElement("div");
+    el.className = "toast" + (fehler ? " toast--fehler" : "");
+    el.textContent = text; box.appendChild(el);
+    setTimeout(function () { el.classList.add("weg"); setTimeout(function () { el.remove(); }, 400); }, fehler ? 6000 : 2600);
+  };
 
   /* ---------- Kopf sofort einsetzen (Skript steht direkt nach #layout-oben) ---------- */
   var oben = document.getElementById("layout-oben");
@@ -109,6 +147,16 @@
     toggle.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", String(open));
   });
+
+  /* ---------- Warenkorb-Zähler ---------- */
+  function korbZaehler() {
+    var n = window.ZBKorb.anzahl(), el = document.getElementById("korbZahl");
+    if (!el) return;
+    el.textContent = n > 99 ? "99+" : n; el.hidden = !n;
+  }
+  window.addEventListener("zb-korb", korbZaehler);
+  window.addEventListener("storage", function (e) { if (e.key === KORB_KEY) korbZaehler(); });
+  korbZaehler();
 
   /* ---------- Header beim Scrollen ---------- */
   var header = document.querySelector(".header");

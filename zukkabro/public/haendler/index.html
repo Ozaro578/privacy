@@ -63,8 +63,8 @@
                 <label class="feld voll">USt-IdNr. oder Steuernummer<input name="ustId"></label>
                 <label class="feld">E-Mail (Login) *<input name="email" type="email" autocomplete="email" required></label>
                 <label class="feld">Passwort * <small>mind. 10 Zeichen</small><input name="passwort" type="password" autocomplete="new-password" minlength="10" required></label>
-                <label class="check-zeile voll"><input type="checkbox" name="gewerbe" required> Ich bestelle als Gewerbetreibender und verkaufe 18+ Artikel nur an Erwachsene.</label>
-                <label class="check-zeile voll"><input type="checkbox" name="datenschutz" required> Ich habe die <a href="/rechtliches.html#datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.</label>
+                <label class="check-zeile voll"><input type="checkbox" name="gewerbe" required><span>Ich bestelle als Gewerbetreibender und verkaufe 18+ Artikel nur an Erwachsene.</span></label>
+                <label class="check-zeile voll"><input type="checkbox" name="datenschutz" required><span>Ich habe die <a href="/rechtliches.html#datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.</span></label>
                 <p class="fehlerbox voll" id="regFehler" hidden></p>
                 <p class="okbox voll" id="regOk" hidden></p>
                 <div class="voll"><button class="btn btn--pink" type="submit">Konto beantragen</button></div>
@@ -94,6 +94,7 @@
               <div class="leiste">
                 <label class="feld feld--breit">Suche<input type="search" id="suche" placeholder="Produkt oder Marke"></label>
                 <label class="feld">Kategorie<select id="kat"><option value="">Alle</option></select></label>
+                <label class="feld">Anzeigen<select id="nurPreis"><option value="">Ganzes Sortiment</option><option value="mit">Nur mit Händlerpreis</option><option value="ohne">Nur Preis auf Anfrage</option></select></label>
               </div>
               <div class="bestell-liste" id="liste"></div>
               <p class="mehr-wrap"><button class="btn btn--light btn--klein" id="mehr" type="button" hidden>Mehr anzeigen</button></p>
@@ -104,6 +105,12 @@
               <label class="feld" style="margin-top:1rem">Notiz zur Bestellung<textarea id="notiz" rows="3" maxlength="1000" placeholder="z. B. Liefertermin, Abholung"></textarea></label>
               <button class="btn btn--pink" id="absenden" type="button" style="width:100%;margin-top:1rem" disabled>Verbindlich bestellen</button>
               <p style="font-size:.82rem;margin:.8rem 0 0;opacity:.75">Zahlung per Vorkasse oder Rechnung nach Absprache. Wir bestätigen jede Bestellung.</p>
+              <div id="anfrageBox" hidden style="margin-top:1.4rem;border-top:3px dashed var(--gold);padding-top:1rem">
+                <h2>💬 Preisanfrage</h2>
+                <div id="anfrageListe"></div>
+                <label class="feld" style="margin-top:.8rem">Notiz zur Anfrage<textarea id="anfrageNotiz" rows="2" maxlength="1000" placeholder="z. B. regelmäßiger Bedarf, Lieferrhythmus"></textarea></label>
+                <button class="btn btn--gold" id="anfrageSenden" type="button" style="width:100%;margin-top:.8rem">Preisanfrage senden</button>
+              </div>
             </aside>
           </div>
         </section>

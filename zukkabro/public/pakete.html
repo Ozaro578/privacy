@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pakete – ZUKKABRO</title>
+  <meta name="description" content="Themen-Pakete von ZUKKABRO: Netflix Night, Filmabend, Gamer Paket und mehr.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="pakete">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <span class="fl" style="left:7%;top:20%">🎁</span><span class="fl" style="right:8%;top:22%;animation-delay:-2s">🍿</span>
+      <div class="container">
+        <p class="eyebrow">Pakete</p>
+        <h1>Fertig gepackt für <span class="drip">jeden Anlass</span></h1>
+        <p>Netflix Night, Filmabend, Gamer-Session oder Challenge mit Freunden: Wir haben die Snacks schon zusammengestellt.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="pakete" data-pakete="liste"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/pakete.js"></script>
+</body>
+</html>

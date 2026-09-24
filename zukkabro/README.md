@@ -12,11 +12,14 @@ Läuft auf Netlify (Projekt `zukkabro`). Die ganze Seite ist zurzeit per Passwor
 | `public/index.html` | Startseite |
 | `public/sortiment.html` | Ganzes Sortiment mit Suche und Filtern |
 | `public/vapes.html` | Vapes & Zubehör (18+) |
+| `public/produkt.html` | Produktseite mit Bildergalerie, Menge und Warenkorb |
+| `public/pakete.html`, `public/paket.html` | Themen-Pakete (Netflix Night, Gamer Paket, …) |
+| `public/warenkorb.html` | Warenkorb und Kasse |
 | `public/ueber-uns.html`, `public/kontakt.html` | Über uns, Kontakt |
 | `public/haendler/` | Händlerportal: Registrierung, Login, Großbestellungen |
 | `public/admin/` | Admin-Bereich: Bestellungen, Händler, Händlerpreise, Buchhaltung, Bestand |
 | `public/rechtliches.html` | Impressum und Datenschutz (Vorlage, gelbe Stellen ausfüllen!) |
-| `public/assets/js/shop.js` | **Eure Angaben:** Kontaktdaten, Endkunden-Preise, Bestseller |
+| `public/assets/js/shop.js` | **Eure Angaben:** Kontaktdaten und Bestseller |
 | `public/assets/js/produkte.js` | Sortiment, automatisch vom Großhändler erzeugt |
 | `public/assets/js/layout.js` | Menü, Fußzeile, Altersabfrage für alle Seiten |
 | `netlify/functions/api/` | Server: Login, Händler, Bestellungen, Buchhaltung |
@@ -42,12 +45,22 @@ Holt Kategorien, Produkte und Bilder neu vom Großhändler, ohne Preise.
 Eure Preise und Kontaktdaten in `shop.js` bleiben erhalten.
 Artikel mit dem Hinweis „Rechtlich prüfen“ (CBD-Blüten, SHEESH BUDZ, Erotik) vor dem öffentlichen Start prüfen oder entfernen.
 
+## Shop, Preise und Pakete
+
+- **Shop-Preise** (brutto) und **Händlerpreise** (netto) im Admin-Bereich unter „Preise“ eintragen.
+  Ohne Shop-Preis steht „Preis folgt“ und der Artikel ist nicht kaufbar.
+- **Versand, Abholung, Bankverbindung, PayPal** unter „Shop-Einstellungen“.
+- **Pakete** unter „Pakete“: Name, Untertitel, Emoji, Farbe, Inhalt, Preis. Start-Pakete sind schon angelegt.
+- Kundenbestellungen erscheinen unter „Bestellungen“ (🛒 Kunde). Bezahlung per Überweisung, PayPal-Link oder bar bei Abholung.
+- Bei Artikeln ab 18 fragt die Kasse das Geburtsdatum ab und lehnt Minderjährige ab. Bei Übergabe trotzdem Ausweis prüfen!
+
 ## Händlerportal
 
 1. Händler registrieren sich unter `/haendler/`.
 2. Im Admin-Bereich unter „Händler“ freischalten.
 3. Unter „Händlerpreise“ Netto-Stückpreis, VE (Stück pro Karton) und Mindestmenge eintragen. Nur Produkte mit Preis sind für Händler bestellbar.
 4. Bestellungen erscheinen unter „Bestellungen“. Status pflegen und mit „In Buchhaltung übernehmen“ als Verkauf buchen.
+5. Für Artikel ohne Händlerpreis schicken Händler eine **Preisanfrage** mit Wunschmenge. Sie erscheint unter „Bestellungen“ (💬 Preisanfrage).
 
 ## Buchhaltung
 
