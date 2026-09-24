@@ -261,6 +261,56 @@ def elemente():
     schreibe("25-krone-umriss-schwarz.svg", svg(270, 175, gruppe(kronen_umriss("#000000"), 10, 12, 1)))
 
 
+# ---------- Einfarbig schwarz für den braunen Kraft-Karton ----------
+def logo_einfarbig(farbe="#000000"):
+    """Schriftzug nur in einer Farbe (für einfarbigen Druck), ca. 1400 × 520."""
+    W = 1400
+    zw, zb = width(TITAN, "ZUKKA", 220, 6)
+    bw, bb = width(WET, "BRO", 215, 10)
+    x0 = (W - (zw + 26 + bw)) / 2
+    zd, _ = text(TITAN, "ZUKKA", 220, 6, x0=x0 - zb[0], y0=380)
+    bd, _ = text(WET, "BRO", 215, 10, x0=x0 + zw + 26 - bb[0], y0=380)
+    tag = "SNACKS  •  DRINKS  •  CANDY  •  MORE"
+    tw, tb = width(FRED, tag, 38, 10)
+    td, _ = text(FRED, tag, 38, 10, x0=(W - tw) / 2 - tb[0], y0=490)
+    return (gruppe(kronen_umriss(farbe, 12), 580, 20, 1.0)
+            + f'<path d="{zd}" fill="{farbe}"/><path d="{bd}" fill="{farbe}"/><path d="{td}" fill="{farbe}"/>')
+
+
+def slogan_einfarbig(farbe="#000000"):
+    a, _ = text(TITAN, "DEINE CRAVINGS.", 120, 4, x0=0, y0=120)
+    b, _ = text(WET, "UNSER JOB.", 150, 6, x0=0, y0=290)
+    return f'<path d="{a}" fill="{farbe}"/><path d="{b}" fill="{farbe}"/>'
+
+
+def kraft():
+    schreibe("30-kraft-logo-schwarz.svg", svg(1400, 520, logo_einfarbig()))
+    sb = round(slogan_breite() + 40)
+    schreibe("31-kraft-slogan-schwarz.svg", svg(sb, 330, gruppe(slogan_einfarbig(), 20, 10, 1)))
+    web, b = schrift("zukkabro.de  •  @zukkabro", 90, "#000000", FRED, 4, 0, 0)
+    schreibe("32-kraft-webseite-schwarz.svg", svg(round(b[2] - b[0] + 40), 130, gruppe(web, 20 - b[0], 105, 1)))
+    # fertige Deckelfläche: Logo groß + verstreute Kronen (transparent, nur Schwarz)
+    w, h = cm(30), cm(22)
+    rnd = random.Random(11)
+    deko = ""
+    for _ in range(14):
+        while True:
+            x, y = rnd.uniform(0, w - 250), rnd.uniform(0, h - 160)
+            if not (w * 0.08 < x < w * 0.86 and h * 0.2 < y < h * 0.72):
+                break
+        deko += gruppe(kronen_umriss("#000000", 11), x, y, rnd.uniform(0.55, 0.9), rnd.randint(-25, 25))
+    s = w * 0.8 / 1400
+    deckel = deko + gruppe(logo_einfarbig(), (w - 1400 * s) / 2, (h - 520 * s) / 2, s)
+    schreibe("33-kraft-deckel-schwarz.svg", svg(w, h, deckel))
+    # Seitenfläche: Slogan links, Webseite rechts
+    w2, h2 = cm(30), cm(10)
+    s2 = min(w2 * 0.55 / slogan_breite(), h2 * 0.7 / 330)
+    seite = gruppe(slogan_einfarbig(), w2 * 0.04, (h2 - 310 * s2) / 2, s2)
+    seite += gruppe(kronen_umriss("#000000", 11), w2 * 0.72, h2 * 0.12, 1.2)
+    seite += gruppe(web, w2 * 0.63 - b[0], h2 * 0.8, 1)
+    schreibe("34-kraft-seite-schwarz.svg", svg(w2, h2, seite))
+
+
 if __name__ == "__main__":
     os.makedirs(AUS, exist_ok=True)
     print("Erzeuge Verpackungsdateien:")
@@ -269,4 +319,4 @@ if __name__ == "__main__":
     klebeband(PINK, "06b-klebeband-pink-auf-weiss.svg")
     seidenpapier(PINK, "07-seidenpapier-pink.svg")
     seidenpapier("#111111", "07b-seidenpapier-schwarz.svg")
-    sticker(); danke_karte(); etikett(); elemente()
+    sticker(); danke_karte(); etikett(); elemente(); kraft()
