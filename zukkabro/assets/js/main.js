@@ -2,12 +2,18 @@
   "use strict";
 
   /* ---------- Speicher-Helfer (funktioniert auch im privaten Modus) ---------- */
-  const AGE_KEY = "lokum_age_ok";
+  const AGE_KEY = "zukkabro_age_ok";
   const store = {
     get(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* ignorieren */ } },
     del(k) { try { window.localStorage.removeItem(k); } catch (e) { /* ignorieren */ } }
   };
+
+  /* ---------- Lade-Animation ---------- */
+  const loader = document.getElementById("loader");
+  function hideLoader() { if (loader) loader.classList.add("is-done"); }
+  window.addEventListener("load", function () { setTimeout(hideLoader, 350); });
+  setTimeout(hideLoader, 2500);
 
   /* ---------- Altersabfrage ---------- */
   const gate = document.getElementById("ageGate");
@@ -83,6 +89,7 @@
   setText("email", S.email);
   setText("address", S.address);
   setText("hours", S.hours);
+  setText("shipping", S.shipping);
 
   /* ---------- Produkte ---------- */
   const list = Array.isArray(typeof PRODUKTE !== "undefined" ? PRODUKTE : null) ? PRODUKTE : [];
@@ -95,17 +102,28 @@
     });
   }
 
+  function matches(p, f) {
+    if (f === "alle") return true;
+    if (p.kategorie === f) return true;
+    if ((p.badge || "").toLowerCase() === f) return true;
+    return Array.isArray(p.tags) && p.tags.indexOf(f) !== -1;
+  }
+
   function card(p, i) {
     const price = typeof p.preis === "number"
       ? '<span class="price">' + euro.format(p.preis) + "</span>"
       : '<span class="price price--open">Preis auf Anfrage</span>';
-    const badge = p.badge ? '<span class="badge">' + esc(p.badge) + "</span>" : "";
+    const badge = p.badge ? '<span class="badge badge--' + esc(p.badge.toLowerCase()) + '">' + esc(p.badge) + "</span>" : "";
     const age = p.ab18 ? '<span class="badge badge--18">18+</span>' : "";
     const href = waNumber ? waHref("Hallo! Ich interessiere mich für: " + p.name) : "#kontakt";
     const target = waNumber ? ' target="_blank" rel="noopener"' : "";
     return (
       '<article class="product product--' + esc(p.farbe || "pink") + '" data-cat="' + esc(p.kategorie) + '" style="--i:' + i + '">' +
-        '<div class="product__art"><span class="product__emoji" aria-hidden="true">' + esc(p.emoji || "🍬") + "</span>" + badge + age + "</div>" +
+        '<div class="product__art slot" data-slot-box>' +
+          (p.bild ? '<img data-slot src="' + esc(p.bild) + '" alt="' + esc(p.name) + '" loading="lazy">' : "") +
+          '<span class="product__emoji' + (p.bild ? " slot__fallback" : "") + '" aria-hidden="true">' + esc(p.emoji || "🍬") + "</span>" +
+          badge + age +
+        "</div>" +
         '<div class="product__body">' +
           "<h3>" + esc(p.name) + "</h3>" +
           "<p>" + esc(p.text) + "</p>" +
@@ -118,10 +136,10 @@
   }
 
   function render(filter) {
-    const items = list.filter(function (p) { return filter === "alle" || p.kategorie === filter; });
+    const items = list.filter(function (p) { return matches(p, filter); });
     grid.innerHTML = items.length
       ? items.map(card).join("")
-      : '<p class="products__empty">Hier kommt bald was Leckeres rein! 🍬</p>';
+      : '<p class="products__empty">Hier kommt bald was Leckeres rein, Bro! 👑</p>';
   }
 
   const chips = document.querySelectorAll("#filters .chip");
