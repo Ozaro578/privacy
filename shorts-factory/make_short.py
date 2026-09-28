@@ -150,8 +150,8 @@ def main(argv=None) -> int:
 
     if args.cmd == "auth":
         from pipeline.youtube import get_credentials
-        get_credentials(interactive=True)
-        print("[youtube] Token gespeichert in secrets/token.json")
+        get_credentials(interactive=True, cfg=cfg)
+        print(f"[youtube] Token gespeichert in secrets/{cfg['youtube'].get('token_file', 'token.json')}")
         return 0
 
     if args.cmd == "generate":

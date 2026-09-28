@@ -9,24 +9,30 @@ from typing import Any
 from .config import SECRETS_DIR
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
-CLIENT_SECRET = SECRETS_DIR / "client_secret.json"
-TOKEN_FILE = SECRETS_DIR / "token.json"
 
 
-def _materialize_from_env() -> None:
+def _files(cfg: dict[str, Any] | None) -> tuple[Path, Path]:
+    yt = (cfg or {}).get("youtube", {})
+    client = SECRETS_DIR / yt.get("client_secret_file", "client_secret.json")
+    token = SECRETS_DIR / yt.get("token_file", "token.json")
+    return client, token
+
+
+def _materialize_from_env(client_secret: Path, token_file: Path) -> None:
     """In CI (GitHub Actions) kommen die Dateien als Secrets in Umgebungsvariablen."""
-    for env_key, target in (("YT_CLIENT_SECRET_JSON", CLIENT_SECRET), ("YT_TOKEN_JSON", TOKEN_FILE)):
+    for env_key, target in (("YT_CLIENT_SECRET_JSON", client_secret), ("YT_TOKEN_JSON", token_file)):
         val = os.environ.get(env_key)
         if val and not target.exists():
             target.write_text(val, encoding="utf-8")
 
 
-def get_credentials(interactive: bool = True):
+def get_credentials(interactive: bool = True, cfg: dict[str, Any] | None = None):
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
     from google_auth_oauthlib.flow import InstalledAppFlow
 
-    _materialize_from_env()
+    CLIENT_SECRET, TOKEN_FILE = _files(cfg)
+    _materialize_from_env(CLIENT_SECRET, TOKEN_FILE)
     creds = None
     if TOKEN_FILE.exists():
         creds = Credentials.from_authorized_user_file(str(TOKEN_FILE), SCOPES)
@@ -53,7 +59,7 @@ def upload(video: Path, title: str, description: str, tags: list[str], cfg: dict
     from googleapiclient.http import MediaFileUpload
 
     yt_cfg = cfg["youtube"]
-    creds = get_credentials(interactive=not os.environ.get("CI"))
+    creds = get_credentials(interactive=not os.environ.get("CI"), cfg=cfg)
     service = build("youtube", "v3", credentials=creds, cache_discovery=False)
 
     if "#shorts" not in title.lower():

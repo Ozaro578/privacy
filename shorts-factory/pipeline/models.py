@@ -13,10 +13,15 @@ class RankItem(BaseModel):
     image_prompt: str = Field(description="Englischer Bild-Prompt fuer diesen Eintrag, kindgerechter Cartoon-Stil, kein Text im Bild")
 
 
+class Scene(BaseModel):
+    caption: str = Field(description="Kurzer gesprochener/eingeblendeter Satz zu dieser Szene (max. 10 Woerter), z.B. 'Monday. 8 a.m. Meeting.'")
+    image_prompt: str = Field(description="Englischer Bild-Prompt fuer diese Szene mit der wiederkehrenden Figur, kein Text im Bild")
+
+
 class ShortScript(BaseModel):
     """Alles, was fuer ein einzelnes Short gebraucht wird."""
 
-    format: Literal["story", "ranking"] = Field(default="story", description="story = Erzaehlung, ranking = Countdown Platz 5..1")
+    format: Literal["story", "ranking", "scenes"] = Field(default="story", description="story = Erzaehlung, ranking = Countdown, scenes = Szenen-Comedy (ein Bild pro Gag)")
     topic: str = Field(description="Kurzes internes Thema, z.B. 'Warum schlafen Fledermaeuse kopfueber?'")
     title: str = Field(description="YouTube-Titel, max. 60 Zeichen, neugierig machend, ohne Clickbait-Luegen")
     hook: str = Field(description="Erster gesprochener Satz. Muss in 2 Sekunden fesseln.")
@@ -30,7 +35,8 @@ class ShortScript(BaseModel):
         description="Englischer Bild-Prompt (1 Satz) fuer eine KI-Illustration zum Thema, bunt und kindgerecht, kein Text im Bild",
     )
     # Nur fuer format = ranking:
-    items: List[RankItem] = Field(default_factory=list, description="Die Plaetze, sortiert von hoechster Nummer (zuerst) bis 1 (zuletzt)")
+    items: List[RankItem] = Field(default_factory=list, description="Nur ranking: die Plaetze, sortiert von hoechster Nummer (zuerst) bis 1 (zuletzt)")
+    scenes: List[Scene] = Field(default_factory=list, description="Nur scenes: 4-6 Szenen in Reihenfolge, jede mit Gag-Caption und Bild-Prompt")
     on_screen_title: str = Field(default="", description="Bildschirm-Titel in 2 Zeilen, getrennt mit '|', max. 3 Woerter pro Zeile, z.B. 'Die 5 schnellsten|Tiere der Welt'")
     highlight_word: str = Field(default="", description="Ein Wort aus on_screen_title, das farbig hervorgehoben wird")
     rank_prefix: str = Field(default="Number {rank}.", exclude=True, description="intern: gesprochener Prefix je Platz (aus config ranking.spoken_prefix)")
@@ -43,6 +49,8 @@ class ShortScript(BaseModel):
             for it in sorted(self.items, key=lambda i: -i.rank):
                 prefix = self.rank_prefix.format(rank=it.rank).strip()
                 parts.append((f"item:{it.rank}", f"{prefix} {it.name}. {it.line}".strip()))
+        elif self.format == "scenes":
+            parts += [(f"scene:{i+1}", sc.caption) for i, sc in enumerate(self.scenes)]
         else:
             parts += [("line", ln) for ln in self.lines]
         parts.append(("outro", self.outro))

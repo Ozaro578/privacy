@@ -1,0 +1,41 @@
+{
+  "format": "scenes",
+  "topic": "POV: your baby has a 9 to 5 job",
+  "title": "POV: your baby has a 9 to 5 job",
+  "hook": "POV: your baby has a nine to five job.",
+  "lines": [],
+  "scenes": [
+    {
+      "caption": "Monday. 8 a.m. Briefcase packed.",
+      "image_prompt": "walking through a glass office entrance in a tiny navy suit carrying a small leather briefcase, serious face, morning light"
+    },
+    {
+      "caption": "The meeting could have been an email.",
+      "image_prompt": "sitting at a long conference table in a meeting with adult coworkers, visibly bored, chin resting on hand"
+    },
+    {
+      "caption": "Third coffee. Still tired.",
+      "image_prompt": "at an office desk with two monitors, drinking from a baby milk bottle held like a coffee mug, tired eyes"
+    },
+    {
+      "caption": "Someone forgot to refill the milk.",
+      "image_prompt": "standing on an office chair behind a big boss desk, pointing firmly at the door, an adult employee walking out sadly with a cardboard box"
+    },
+    {
+      "caption": "Overtime hits different.",
+      "image_prompt": "asleep face-down on a keyboard at an office desk at night, loosened tie, city lights through the window"
+    }
+  ],
+  "outro": "Same job tomorrow. Would you hire him?",
+  "on_screen_title": "POV: baby has|a 9 to 5 job",
+  "highlight_word": "baby",
+  "description": "Bo the baby survives another workday. Meetings, milk and overtime.",
+  "hashtags": [
+    "aibaby",
+    "pov",
+    "officehumor",
+    "babycomedy"
+  ],
+  "visual_keyword": "baby office",
+  "visual_prompt": "in a tiny navy business suit standing in a modern office lobby, confident pose"
+}

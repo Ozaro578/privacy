@@ -1,4 +1,16 @@
-# Kanal-Plan: „The Mind Twist“ – Psychologie-Shorts, englisch, vollautomatisch
+# Kanal-Plan: zwei Testkanaele, vollautomatisch
+
+| Kanal | Nische | Format | Config | Workflow |
+|---|---|---|---|---|
+| **The Mind Twist** (@TheMindTwist) | Psychologie / menschliches Verhalten, englisch | Story + Countdown, 3x/Tag | `config.yaml` | `daily-short.yml` |
+| **Baby Has A Job** (@BabyHasAJob) | KI-Baby-Comedy mit wiederkehrender Figur „Bo“, englisch | Szenen (5 Bilder + Gag-Captions), 2x/Tag | `config.baby.yaml` | `daily-baby-short.yml` |
+
+Beide laufen getrennt (eigener YouTube-Kanal, eigenes Token, eigener Verlauf), wie von ChatGPT empfohlen:
+zwei Viral-Tests statt alles auf einen Kanal. Nach 3–4 Wochen entscheidet die Swipe-Rate, welcher Kanal auf 3/Tag geht.
+
+---
+
+# Kanal 1: „The Mind Twist“ – Psychologie-Shorts, englisch
 
 Stand: 28.09.2026 · Basis: ChatGPT-Strategie (Nische Psychologie / menschliches Verhalten, englischer
 Hauptkanal, 2–3 hochwertige Shorts/Tag), Kellan-Henneberry-Methode (faceless AI-Shorts, AVD & Swipe-Rate)
@@ -152,3 +164,48 @@ Affiliate (Buecher/Apps zu Psychologie), eigener Newsletter, lokalisierte Kanael
 
 ChatGPT in dieser Claude-Session: Es gibt keinen ChatGPT-Connector im Verzeichnis. Die Verbindung laeuft
 ueber den OpenAI-API-Key in der Pipeline (Skripte). Strategie-Ideen aus ChatGPT einfach hier einfuegen.
+
+
+---
+
+# Kanal 2: „Baby Has A Job“ – KI-Baby-Comedy mit Figur
+
+## Name
+
+Geprueft am 28.09.2026, frei: **@BabyHasAJob** (Empfehlung, sagt das Format), @BabyGoesToWork, @BabyCEO,
+@BabyBusiness, @BabyNineToFive, @AdultingBaby. Vergeben: TinyAdult, OfficeBaby, BabyAtWork, LilBossman u.a.
+**Nicht** „Boss Baby“ verwenden (DreamWorks-Marke).
+
+## Figur „Bo“
+
+Ein chubby Einjaehriger, grosse braune Augen, eine dunkle Haartolle, rote Wangen, Gruebchen links.
+Referenzbild: `assets/character/baby_reference.png` (Higgsfield, neutraler Hintergrund). Es wird bei jeder
+Bildgenerierung als Referenz mitgeschickt (`higgsfield.character_reference`), so bleibt das Gesicht gleich,
+nur Outfit und Situation wechseln. Ergebnis im Demo: 5 Buero-Szenen, Figur konsistent.
+
+## Format „POV“ (20–30 s)
+
+Hook = Situation („POV: your baby has a 9 to 5 job“) -> 5 Szenen, jede ein Bild + eine trockene Caption
+(„The meeting could have been an email.“) -> Punchline in Szene 5 -> Frage. Britisch-trockener Erzaehler
+(`en-GB-RyanNeural`), helle Bilder, Captions unten, pinkes Highlight, lockere Musik.
+
+## Slots
+
+| Slot  | Berlin | Serie          | Fokus                                                  |
+|-------|--------|----------------|--------------------------------------------------------|
+| morgen| 08:30  | Baby Has A Job | Beruf: Buero, Kueche, Baustelle, Taxi, Flugzeug …       |
+| abend | 20:30  | Baby Life      | Erwachsenen-Alltag: Gym, Steuern, Umzug, Dating-App …   |
+
+20 Startthemen stehen in `config.baby.yaml`. Kosten: 6 Bilder pro Short ≈ 1,5 Credits, 2 Shorts/Tag ≈ 3 Credits.
+
+## Upgrade-Pfad
+
+Sobald Budget da ist: `background: higgsfield_video` mit einem Bild-zu-Video-Modell (MiniMax H3 Max 480p ≈ 7,5
+Credits/5 s, Seedance 2.5 ≈ 35 Credits/5 s) fuer echte Bewegung. Bis dahin Ken-Burns-Slideshow.
+
+## Zusaetzlich freischalten
+
+- Zweiter YouTube-Kanal im selben Google-Konto anlegen (YouTube -> Konto -> „Kanal hinzufuegen“).
+- Einmal `python make_short.py --config config.baby.yaml auth` ausfuehren, dabei **diesen** Kanal waehlen ->
+  `secrets/token_baby.json` -> als GitHub-Secret `YT_TOKEN_JSON_BABY`.
+- Gleicher `OPENAI_API_KEY`, `HF_KEY`, `YT_CLIENT_SECRET_JSON` wie Kanal 1.

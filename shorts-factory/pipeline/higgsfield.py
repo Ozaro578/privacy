@@ -14,7 +14,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from .config import OUTPUT_DIR
+from .config import OUTPUT_DIR, ROOT
 
 
 def available() -> bool:
@@ -43,6 +43,19 @@ def generate_images(prompts: list[str], cfg: dict[str, Any], stem: str) -> list[
     extra = dict(hf.get("image_arguments") or {})
     result_path = hf.get("image_result_path", "images.0.url")
     style = hf.get("style_suffix", "")
+
+    # Wiederkehrende Figur: Referenzbild einmal hochladen und bei jedem Bild mitgeben.
+    ref_cfg = hf.get("character_reference") or ""
+    if ref_cfg:
+        ref_path = Path(ref_cfg) if Path(ref_cfg).is_absolute() else (ROOT / ref_cfg)
+        if ref_path.exists():
+            ref_url = higgsfield_client.upload_file(str(ref_path))
+            field = hf.get("image_reference_field", "image_urls")
+            extra[field] = [ref_url] if hf.get("image_reference_as_list", True) else ref_url
+            style = f"{hf.get('character_description', '')} {style}".strip()
+            print(f"[higgsfield] Referenzfigur: {ref_path.name}")
+        else:
+            print(f"[higgsfield] character_reference {ref_path} nicht gefunden – ohne Referenz.")
 
     paths: list[Path] = []
     for i, prompt in enumerate(prompts):

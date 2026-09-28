@@ -1,10 +1,12 @@
-# Shorts Factory – automatischer YouTube-Shorts-Kanal (Psychologie, englisch)
+# Shorts Factory – automatische YouTube-Shorts-Kanaele
+
+Kanal 1 „The Mind Twist“ (Psychologie, `config.yaml`) und Kanal 2 „Baby Has A Job“ (KI-Baby-Comedy mit wiederkehrender Figur, `config.baby.yaml`).
 
 ChatGPT schreibt · edge-tts spricht · Higgsfield malt · ffmpeg schneidet · GitHub Actions laedt 3x taeglich hoch.
 
 Den kompletten Kanal-Plan (Name, Serien, Posting-Zeiten, 30 Startthemen, KPIs, Checkliste) findest du in [PLAN.md](PLAN.md).
 
-Zwei Formate: **Story** (Hook -> Mechanismus -> Twist -> Frage) und **Countdown** („3 signs …“, Badge #3 -> #1, Fortschrittsbalken).
+Drei Formate: **Story** (Hook -> Mechanismus -> Twist -> Frage), **Countdown** („3 signs …“, Badge #3 -> #1, Fortschrittsbalken) und **Szenen** (Comedy: ein Bild pro Gag, wiederkehrende Figur per Higgsfield-Referenzbild).
 
 ## Schnellstart (lokal)
 
@@ -16,6 +18,7 @@ cp .env.example .env                     # Keys eintragen (OPENAI_API_KEY, HF_KE
 
 python make_short.py run --script scripts/demo.json --no-upload           # Story-Testvideo ohne Keys
 python make_short.py run --script scripts/demo_ranking.json --no-upload   # Countdown-Testvideo
+python make_short.py --config config.baby.yaml run --script scripts/demo_baby.json --no-upload   # Baby-Comedy-Testvideo
 python make_short.py run --no-upload                              # neues Skript via ChatGPT, kein Upload
 python make_short.py auth                                         # einmalig: YouTube-Login
 python make_short.py run --slot abend                             # kompletter Durchlauf inkl. Upload
@@ -43,7 +46,8 @@ Ergebnis liegt in `output/<name>.mp4`, das Skript in `scripts/<datum>_<thema>.js
 - `ranking` – Anzahl Plaetze, Titel-Suffix, gesprochener Prefix, Badge-Text
 - `voice` – edge-tts Stimme, Tempo
 - `video.background` – `higgsfield` (KI-Bilder) · `gradient` · `video`/`image` (eigene Dateien in `assets/backgrounds`) · `pexels` · `higgsfield_video`
-- `higgsfield` – Endpunkt, Bilder pro Video, Stil-Suffix
+- `higgsfield` – Endpunkt, Bilder pro Video, Stil-Suffix, `character_reference` fuer eine wiederkehrende Figur
+- `scenes` – Szenen pro Short und Figurbeschreibung (Comedy-Format)
 - `captions` – Schrift, Groesse, Farben, Woerter pro Block
 - `youtube` – Sichtbarkeit, Kategorie, `made_for_kids`, Tags, geplante Veroeffentlichung
 
@@ -61,6 +65,7 @@ Benoetigte Repository-Secrets (Settings -> Secrets and variables -> Actions):
 | `HF_KEY` | Higgsfield `id:secret` |
 | `YT_CLIENT_SECRET_JSON` | Inhalt von `secrets/client_secret.json` (Google OAuth Desktop-Client) |
 | `YT_TOKEN_JSON` | Inhalt von `secrets/token.json` nach `python make_short.py auth` |
+| `YT_TOKEN_JSON_BABY` | Token des zweiten Kanals (`--config config.baby.yaml auth`) |
 | `PEXELS_API_KEY` | optional |
 | `ANTHROPIC_API_KEY` | optional, falls `script.provider: claude` |
 

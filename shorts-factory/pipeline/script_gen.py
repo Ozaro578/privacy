@@ -66,6 +66,20 @@ FORMAT: RANKING (Countdown). Setze "format" auf "ranking".
 - "highlight_word": genau ein Wort aus on_screen_title (das wichtigste, z.B. "schnellsten").
 - Der YouTube-"title" endet mit: "{rk.get('title_suffix', '')}"
 """
+    elif fmt == "scenes":
+        n_sc = int(cfg.get("scenes", {}).get("count", 5))
+        character = cfg.get("scenes", {}).get("character", "")
+        format_rules = f"""
+FORMAT: SCENES (Comedy-Szenen mit wiederkehrender Figur). Setze "format" auf "scenes".
+- Figur: {character}
+- "hook": der Titel-Satz der Situation, gesprochen als erster Satz (z.B. "POV: your baby has a 9 to 5 job").
+- "scenes": genau {n_sc} Szenen in Reihenfolge. Jede Szene = ein Bild + eine kurze Caption (max. 10 Woerter,
+  trocken-komisch, Alltag eines Erwachsenen aus Baby-Sicht). Aufsteigende Absurditaet, letzte Szene = Punchline.
+- "image_prompt" je Szene: englisch, beschreibt Ort, Handlung, Requisiten und Mimik der Figur; die Figur
+  selbst NICHT neu beschreiben (kommt aus der Referenz), kein Text im Bild.
+- "lines" und "items" bleiben leer. "outro": eine Frage oder Mini-Punchline (1 Satz).
+- "on_screen_title": die Situation in 2 Zeilen mit "|", max. 3 Woerter je Zeile. "highlight_word": das lustigste Wort.
+"""
     else:
         format_rules = """
 FORMAT: STORY. Setze "format" auf "story", "items" bleibt leer.
