@@ -1,0 +1,39 @@
+{
+  "format": "ranking",
+  "topic": "3 signs someone secretly dislikes you",
+  "title": "3 signs someone secretly dislikes you (#1 will surprise you)",
+  "hook": "Three signs someone secretly dislikes you. Number one is the one nobody expects.",
+  "lines": [],
+  "items": [
+    {
+      "rank": 3,
+      "name": "Short answers",
+      "line": "They answer, but never ask anything back. Psychologists call this low reciprocity, and it's rarely an accident.",
+      "image_prompt": "two people at a cafe table, one texting and looking away, other person talking, cinematic moody lighting"
+    },
+    {
+      "rank": 2,
+      "name": "No small talk",
+      "line": "They skip small talk with you but not with others. Small talk is a social investment. They're not investing.",
+      "image_prompt": "group of coworkers chatting in an office kitchen while one person stands slightly apart, cinematic lighting"
+    },
+    {
+      "rank": 1,
+      "name": "Too polite",
+      "line": "They are extra polite. Studies link over-politeness to social distance. Warmth is casual. Dislike is formal.",
+      "image_prompt": "a person giving a stiff, overly formal smile and handshake, dramatic close-up, cinematic"
+    }
+  ],
+  "outro": "Who did you just think of? Be honest.",
+  "on_screen_title": "3 signs they|secretly dislike you",
+  "highlight_word": "dislike",
+  "description": "Three subtle signs that someone doesn't like you, from low reciprocity to over-politeness. Not medical advice, just psychology.",
+  "hashtags": [
+    "psychology",
+    "signs",
+    "humanbehavior",
+    "bodylanguage"
+  ],
+  "visual_keyword": "awkward conversation",
+  "visual_prompt": "two people in an awkward conversation, subtle tension, cinematic moody lighting, dark teal and amber palette"
+}

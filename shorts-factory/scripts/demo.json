@@ -1,16 +1,28 @@
 {
-  "topic": "Warum haben Giraffen so lange Haelse?",
-  "title": "Warum haben Giraffen so lange Hälse?",
-  "hook": "Wusstest du, dass eine Giraffe so groß ist wie ein Haus mit zwei Stockwerken?",
+  "format": "story",
+  "topic": "Your brain does something weird when someone ignores you",
+  "title": "Your brain does something weird when someone ignores you",
+  "hook": "Your brain does something weird when someone ignores you.",
   "lines": [
-    "Ihr Hals allein ist fast zwei Meter lang.",
-    "Damit erreicht sie die leckersten Blätter ganz oben im Baum.",
-    "Kein anderes Tier kommt da ran.",
-    "Und das Beste: Sie hat genauso viele Halsknochen wie du.",
-    "Nämlich genau sieben. Nur viel, viel größer!"
+    "You text them. Nothing. Hours pass.",
+    "And suddenly you can't stop thinking about them.",
+    "Psychologists link this to something called the Zeigarnik effect.",
+    "Your brain hates open loops. An unanswered message is an unfinished story.",
+    "So it keeps replaying it, looking for closure.",
+    "The less attention they give you, the more attention your brain gives them.",
+    "That's why silence can feel louder than an argument.",
+    "Here's the twist: it was never about them."
   ],
-  "outro": "Was würdest du mit so einem langen Hals machen? Schreib es uns!",
-  "description": "Giraffen haben einen riesigen Hals, aber genauso viele Halsknochen wie wir. Ein kurzes Lernvideo für kleine Entdecker.",
-  "hashtags": ["tiere", "giraffe", "kinder", "lernen"],
-  "visual_keyword": "giraffe savanna"
+  "outro": "It's your brain trying to close a loop. Who are you still waiting on?",
+  "on_screen_title": "When someone|ignores you",
+  "highlight_word": "ignores",
+  "description": "Why being ignored makes you think about someone even more. Psychologists connect it to open loops and the brain's need for closure.",
+  "hashtags": [
+    "psychology",
+    "humanbehavior",
+    "brain",
+    "relationships"
+  ],
+  "visual_keyword": "phone waiting night",
+  "visual_prompt": "a person sitting alone in a dim room at night staring at a glowing phone screen, cinematic, moody, dramatic lighting"
 }

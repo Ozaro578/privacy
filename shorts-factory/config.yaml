@@ -1,127 +1,167 @@
 # =====================================================================
 #  Shorts Factory – Kanal-Konfiguration
-#  Alles hier steuert, welche Videos automatisch entstehen.
+#  Hauptkanal: Englisch, Nische Psychologie / menschliches Verhalten.
+#  Fuer lokalisierte Kanaele (DE/TR) eine Kopie anlegen: config.de.yaml
+#  und mit  python make_short.py --config config.de.yaml run  starten.
 # =====================================================================
 
 channel:
-  name: "Kleine Entdecker"        # Kanalname (wird Claude als Kontext gegeben)
-  language: "de"                  # Sprache der Skripte
-  audience: "kinder"              # kinder | allgemein  -> steuert Ton, Sicherheit & YouTube-Kids-Flag
-  age_range: "4-9"                # Zielalter
-  # Die Nische: Claude erfindet daraus jeden Tag ein neues Thema.
+  name: "The Mind Twist"         # Kanalname (steht in jedem Prompt)
+  handle: "@TheMindTwist"
+  language: "en"                 # Sprache der Skripte (en | de | tr ...)
+  audience: "allgemein"          # kinder | allgemein
   niche: >
-    Kurze, froehliche Lernvideos fuer Kinder: Tiere, Natur, Weltraum,
-    Zahlen, Farben, Koerper, "Warum ist ...?"-Fragen und kleine
-    Mitmach-Ideen. Einfache Sprache, ein Staunen-Moment pro Video,
-    am Ende eine Frage oder Aufgabe zum Mitmachen.
-  # Optional: feste Themenliste. Ist sie leer, waehlt Claude selbst.
-  topics: []
-  # Themen, die nicht vorkommen sollen
+    Psychology and human behavior, told as ultra-short stories with a hook and
+    a twist. Why your brain does weird things, hidden signs in how people act,
+    tricks companies and people use on you, and what psychology says about
+    attraction, attention, habits and decisions. Every video explains ONE
+    specific mechanism with a concrete everyday situation, states it as
+    "psychologists suggest / studies link this to", never as absolute truth,
+    and ends with a small twist that reframes the beginning.
+  # Die ersten Themen (werden der Reihe nach verbraucht, danach erfindet das LLM selbst)
+  topics:
+    - "Your brain does something weird when someone ignores you"
+    - "Why you can't stop thinking about one person"
+    - "The reason people suddenly lose interest"
+    - "3 signs someone secretly dislikes you"
+    - "A psychological trick restaurants use on you"
+    - "Why silence makes people uncomfortable"
+    - "Your brain lies to you every single day"
+    - "Why you remember embarrassing moments for years"
+    - "The 3-second rule your brain uses to judge strangers"
+    - "Why you feel watched when nobody is there"
+    - "What your brain does when you get left on read"
+    - "Why supermarkets put milk at the back"
+    - "The reason you like people who are hard to get"
+    - "3 signs someone is lying to you (not what you think)"
+    - "Why songs get stuck in your head"
+    - "Why you feel tired after doing nothing all day"
+    - "The trick casinos use so you lose track of time"
+    - "Why you talk differently to your crush"
+    - "Why a text with a period feels angry"
+    - "The reason you procrastinate on things you love"
+    - "Why we trust people with deep voices"
+    - "3 signs someone respects you without saying it"
+    - "Why you cringe at your own voice"
+    - "The price trick that makes 9.99 feel cheap"
+    - "Why you get more ideas in the shower"
+    - "The reason you can't remember names"
+    - "Why we laugh when nothing is funny"
+    - "3 signs a friendship is quietly ending"
+    - "Why your brain hates unfinished stories"
+    - "The reason you check your phone with no notification"
   avoid:
-    - Gewalt
-    - Angst / Horror
-    - Politik
-    - Religion
-    - Werbung / Produkte
-    - medizinische Ratschlaege
+    - medical or mental-health advice, diagnoses, self-harm
+    - politics, religion
+    - manipulation tactics that could hurt someone
+    - invented statistics or fake studies
 
 script:
   provider: "openai"             # openai (ChatGPT) | claude
-  openai_model: "gpt-5"          # ChatGPT-Modell fuer die Skripte
+  openai_model: "gpt-5"
   claude_model: "claude-opus-5-5"
-  target_seconds: 40             # Ziel-Laenge des gesprochenen Textes
-  max_seconds: 58                # Shorts muessen < 60 s sein
-  words_per_second: 2.6          # Sprechtempo-Schaetzung fuer die Laengenplanung
+  target_seconds: 32             # 25-40 s ist der Sweet Spot fuer Wiedergabedauer
+  max_seconds: 50                # harte Grenze (Shorts < 60 s)
+  words_per_second: 2.7
 
 # ---------------------------------------------------------------------
-# Posting-Plan: 3 Videos pro Tag, jeder Slot hat eine eigene Serie.
-# Zeiten in Europe/Berlin. Der Workflow ruft `run --slot <name>` auf;
-# ohne --slot wird der Slot anhand der aktuellen Uhrzeit gewaehlt.
+# Posting-Plan: 3 Slots pro Tag, jeder Slot hat eine eigene Serie.
+# Zeiten in Europe/Berlin – Hauptpublikum USA: 07:30 Berlin = 01:30 NY (Nachtscroller),
+# 15:30 Berlin = 09:30 NY (Morgen), 21:30 Berlin = 15:30 NY / 12:30 LA (Nachmittag).
 # ---------------------------------------------------------------------
 schedule:
   timezone: "Europe/Berlin"
   slots:
     - name: "morgen"
-      time: "07:15"
-      series: "Guten-Morgen-Fakt"
+      time: "07:30"
+      format: "story"
+      series: "Your Brain Does This"
       title_prefix: ""
       focus: >
-        Ein einziger verblueffender Tier- oder Natur-Fakt zum Wachwerden.
-        Positiv, kurz, mit einem "Wow"-Moment.
+        One weird thing the brain/mind does in everyday life (attention, memory,
+        attraction, habits). Story: concrete situation -> what happens in the
+        brain -> twist. Hook pattern: "Your brain does something weird when ...".
     - name: "nachmittag"
       time: "15:30"
-      series: "Warum eigentlich?"
-      title_prefix: "Warum "
-      focus: >
-        Eine "Warum ist / Warum haben / Warum koennen ..."-Frage aus Alltag,
-        Koerper, Wetter oder Weltraum – kindgerecht erklaert in 3 Schritten.
-    - name: "abend"
-      time: "18:30"
-      series: "Mitmach-Minute"
+      format: "story"
+      series: "Tricks Used On You"
       title_prefix: ""
       focus: >
-        Ein kleines Raetsel, Zaehl-Spiel, Bewegungs- oder Suchaufgabe zum
-        Mitmachen vor dem Bildschirm. Aufloesung am Ende.
+        A psychological trick that shops, apps, restaurants, casinos, ads or
+        people use on us, explained with the mechanism behind it, ending with
+        how to notice it next time. Hook pattern: "A trick ... uses on you".
+    - name: "abend"
+      time: "21:30"
+      format: "ranking"
+      series: "3 Signs"
+      title_prefix: "3 signs "
+      focus: >
+        A countdown of 3 subtle signs (someone dislikes you, is lying, respects
+        you, is losing interest ...). Sign 3 and 2 are surprising, sign 1 is
+        the one nobody expects. Ends with a question to the viewer.
+
+# Ranking-/Listen-Format (Countdown). Inspiriert von RankZilla: fester Teaser im Titel.
+ranking:
+  items: 3
+  title_suffix: "(#1 will surprise you)"
+  spoken_prefix: "Number {rank}."     # gesprochen vor jedem Eintrag (DE: "Platz {rank}.")
+  badge_label: "#{rank}"              # Text im Badge (DE: "PLATZ {rank}")
+  gap_seconds: 0.35                   # Pause zwischen den Plaetzen
 
 voice:
-  # Deutsche Stimmen: de-DE-ConradNeural (m), de-DE-KillianNeural (m),
-  # de-DE-KatjaNeural (w), de-DE-AmalaNeural (w), de-DE-FlorianMultilingualNeural (m)
-  # Alle Stimmen anzeigen:  python make_short.py voices
-  name: "de-DE-KatjaNeural"
-  rate: "+0%"                    # etwas schneller = mehr Energie
-  pitch: "+0Hz"
+  # Englische Stimmen anzeigen: python make_short.py voices
+  # Ruhig, tief, "documentary": en-US-AndrewMultilingualNeural (m), en-US-BrianMultilingualNeural (m)
+  # Klar, jung: en-US-AvaMultilingualNeural (w), en-US-EmmaMultilingualNeural (w)
+  name: "en-US-AndrewMultilingualNeural"
+  rate: "+6%"
+  pitch: "-2Hz"
+  sentence_gap: 0.22             # kurze Pause zwischen Saetzen (jeder Satz wird einzeln gesprochen)
 
 video:
   width: 1080
   height: 1920
   fps: 30
-  # Hintergrund-Modus:
-  #   gradient : animierter Farbverlauf (keine Assets noetig)
-  #   video    : zufaelliges Video aus assets/backgrounds (mp4/mov)
-  #   image    : zufaelliges Bild aus assets/backgrounds mit Ken-Burns-Zoom
-  #   pexels   : kostenloses Stock-Video passend zum Thema (braucht PEXELS_API_KEY)
-  #   higgsfield       : KI-Illustrationen von Higgsfield + Ken-Burns-Zoom (~0.25-1 Credit/Bild)
-  #   higgsfield_video : echter KI-Videoclip von Higgsfield (~35 Credits/Clip!)
+  # gradient | video | image | pexels | higgsfield | higgsfield_video
   background: "higgsfield"
-  gradient_colors: ["#ff9a3c", "#ff5e8a", "#5ad1ff"]
-  darken: 0.15                   # Abdunkeln des Hintergrunds (0 = aus, 1 = schwarz)
-  music_volume: 0.12             # Lautstaerke fuer assets/music (0 = keine Musik)
-  outro_padding: 0.6             # Sekunden Stille am Ende
+  gradient_colors: ["#05060a", "#141a33", "#2a1447"]
+  darken: 0.30                   # Bilder abdunkeln, damit die Captions knallen
+  music_volume: 0.10             # assets/music (lizenzfrei!) – Sounddesign
+  outro_padding: 0.6
 
 # ---------------------------------------------------------------------
 # Higgsfield (https://console.higgsfield.ai) – Zugang ueber HF_KEY in .env
-# Jeder Modell-Endpunkt hat im Console eine eigene API-Seite mit Schema.
 # ---------------------------------------------------------------------
 higgsfield:
-  images_per_video: 3                          # Szenenbilder pro Short (Hook / Mitte / Outro)
-  image_endpoint: "bytedance/seedream/v4/text-to-image"   # Alternativ: higgsfield-ai/soul/v2/standard
-  image_arguments:                             # zusaetzliche Felder laut Modell-Doku
+  images_per_video: 4                          # 4 Szenen = Bildwechsel alle ~8 s
+  image_endpoint: "bytedance/seedream/v4/text-to-image"   # alternativ: higgsfield-ai/soul/v2/standard
+  image_arguments:
     aspect_ratio: "9:16"
     resolution: "2K"
-  image_result_path: "images.0.url"            # wo die Antwort die Bild-URL traegt
-  style_suffix: "soft 3D cartoon style for young children, bright cheerful colors, no text"
-  # Optional fuer background: higgsfield_video (teuer):
-  video_endpoint: ""                           # z.B. "bytedance/seedance/v2.5/..." laut Console
+  image_result_path: "images.0.url"
+  style_suffix: "cinematic, moody, dramatic lighting, shallow depth of field, dark teal and amber palette, photorealistic, vertical 9:16, no text, no letters, no watermark"
+  video_endpoint: ""                           # optional, teuer (~35 Credits/Clip)
   video_arguments: {}
   video_result_path: "video.url"
   video_seconds: 10
 
 captions:
   font: "DejaVu Sans"
-  size: 96
-  words_per_line: 3              # Woerter pro Untertitel-Block
+  size: 88
+  words_per_line: 3
+  max_chars: 18                  # laengere Bloecke werden geteilt (kein Ueberlauf)
   color: "#FFFFFF"
-  highlight: "#FFE600"           # Farbe des gerade gesprochenen Wortes
+  highlight: "#FFD400"
   outline: "#000000"
-  position: 0.55                 # vertikale Position (0 = oben, 1 = unten)
+  position: 0.55
+  position_ranking: 0.70
+  title_size: 80
+  badge_size: 100
+  badge_bg: "#7B2CFF"
+  gold: "#FFC300"
 
 youtube:
-  privacy: "public"              # public | unlisted | private
-  category_id: "27"              # 27 = Bildung, 24 = Unterhaltung, 22 = People & Blogs
-  # PFLICHT bei Kinderinhalten (COPPA / YouTube-Richtlinie). Folgen: keine
-  # personalisierte Werbung, keine Kommentare, Video landet auch in YouTube Kids.
-  made_for_kids: true
-  default_tags: ["shorts", "kinder", "lernen", "kinderlieder", "kindervideo"]
-  # Optional: Veroeffentlichung planen (ISO-8601, UTC). Leer = sofort.
-  # publish_at: "2026-10-01T15:00:00Z"
+  privacy: "public"
+  category_id: "27"              # 27 = Education, 22 = People & Blogs, 24 = Entertainment
+  made_for_kids: false
+  default_tags: ["shorts", "psychology", "humanbehavior", "psychologyfacts", "mindset", "brain"]
   publish_at: ""

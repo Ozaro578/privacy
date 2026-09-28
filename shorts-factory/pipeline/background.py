@@ -21,6 +21,7 @@ class Background:
     kind: str                       # gradient | video | image | slideshow
     path: Path | None               # None bei gradient
     paths: list[Path] | None = None # bei slideshow: mehrere Bilder nacheinander
+    durations: list[float] | None = None  # bei slideshow: Anzeigedauer je Bild (None = gleichmaessig)
 
 
 def _pick(exts: set[str]) -> Path | None:
@@ -78,17 +79,49 @@ def _scene_prompts(script, cfg: dict[str, Any]) -> list[str]:
     return [f"{base}. Scene: {s}" for s in scenes]
 
 
-def pick_background(cfg: dict[str, Any], keyword: str, duration: float, script=None, stem: str = "bg") -> Background:
+def _ranking_prompts(script) -> list[str]:
+    """Ein Bild pro Teil: Hook (Uebersicht), je Platz, Outro (Uebersicht)."""
+    base = script.visual_prompt or f"{script.visual_keyword}, cute cartoon illustration for children"
+    items = sorted(script.items, key=lambda i: -i.rank)
+    return [base, *[it.image_prompt or f"{it.name}, {base}" for it in items], base]
+
+
+def slideshow_durations(segments, total: float) -> list[float]:
+    """Anzeigedauer je Bild aus den Sprech-Segmenten (hook, item..., outro)."""
+    durs = [max(0.8, sg.end - sg.start) for sg in segments]
+    durs[-1] = max(0.8, total - segments[-1].start)
+    return durs
+
+
+def story_durations(segments, total: float, n_images: int) -> list[float]:
+    """Bildwechsel nur an Satzgrenzen: Saetze moeglichst gleichmaessig auf n Bilder verteilen."""
+    n_seg = len(segments)
+    per = max(1, round(n_seg / n_images))
+    bounds = [segments[min(i * per, n_seg - 1)].start for i in range(n_images)] + [total]
+    bounds[0] = 0.0
+    return [max(0.8, b - a) for a, b in zip(bounds, bounds[1:])]
+
+
+def pick_background(cfg: dict[str, Any], keyword: str, duration: float, script=None, stem: str = "bg", segments=None) -> Background:
     mode = str(cfg["video"].get("background", "gradient")).lower()
+    is_ranking = bool(script is not None and getattr(script, "format", "story") == "ranking" and script.items)
     if mode in {"higgsfield", "higgsfield_image"}:
         from . import higgsfield
         if not higgsfield.available():
             print("[background] HF_KEY fehlt – fallback auf Gradient.")
         else:
             try:
-                prompts = _scene_prompts(script, cfg) if script else [keyword]
+                if is_ranking:
+                    prompts = _ranking_prompts(script)
+                else:
+                    prompts = _scene_prompts(script, cfg) if script else [keyword]
                 imgs = higgsfield.generate_images(prompts, cfg, stem)
-                return Background("slideshow", imgs[0], imgs) if len(imgs) > 1 else Background("image", imgs[0])
+                if len(imgs) > 1:
+                    durs = slideshow_durations(segments, duration) if (is_ranking and segments and len(segments) == len(imgs)) else None
+                    if durs is None and segments:
+                        durs = story_durations(segments, duration, len(imgs))
+                    return Background("slideshow", imgs[0], imgs, durs)
+                return Background("image", imgs[0])
             except Exception as exc:  # noqa: BLE001
                 print(f"[background] Higgsfield-Fehler: {exc} – fallback auf Gradient.")
     elif mode == "higgsfield_video":
@@ -108,9 +141,17 @@ def pick_background(cfg: dict[str, Any], keyword: str, duration: float, script=N
             return Background("video", p)
         print("[background] Kein Video in assets/backgrounds – fallback auf Gradient.")
     elif mode == "image":
-        p = _pick(IMAGE_EXT)
-        if p:
-            return Background("image", p)
+        folder = ASSETS_DIR / "backgrounds"
+        files = sorted(p for p in folder.iterdir() if p.suffix.lower() in IMAGE_EXT) if folder.exists() else []
+        if files and is_ranking and segments:
+            seq = [files[i % len(files)] for i in range(len(segments))]
+            return Background("slideshow", seq[0], seq, slideshow_durations(segments, duration))
+        if len(files) > 1 and segments:
+            n = min(len(files), int(cfg.get("higgsfield", {}).get("images_per_video", 4)))
+            seq = random.sample(files, n) if len(files) > n else files
+            return Background("slideshow", seq[0], seq, story_durations(segments, duration, len(seq)))
+        if files:
+            return Background("image", random.choice(files))
         print("[background] Kein Bild in assets/backgrounds – fallback auf Gradient.")
     elif mode == "pexels":
         p = _pexels(keyword, duration)

@@ -49,13 +49,14 @@ def _bg_input_and_filter(bg: Background, cfg: dict[str, Any], duration: float) -
     if bg.kind == "slideshow" and bg.paths:
         # Mehrere Bilder nacheinander, jedes mit Ken-Burns-Zoom, weicher Uebergang
         n = len(bg.paths)
-        seg = duration / n + 0.5
-        frames = int(seg * fps) + 1
+        durs = bg.durations or [duration / n + 0.5] * n
         inputs: list[str] = []
         parts: list[str] = []
-        for i, p in enumerate(bg.paths):
-            inputs += ["-loop", "1", "-t", f"{seg:.2f}", "-i", str(p)]
-            direction = "min(zoom+0.0008,1.3)" if i % 2 == 0 else "if(eq(on,1),1.3,max(zoom-0.0008,1.0))"
+        for i, (p, seg) in enumerate(zip(bg.paths, durs)):
+            frames = int(round(seg * fps))
+            inputs += ["-i", str(p)]
+            zstep = 0.25 / max(frames, 1)
+            direction = f"min(zoom+{zstep:.5f},1.3)" if i % 2 == 0 else f"if(eq(on,1),1.3,max(zoom-{zstep:.5f},1.0))"
             parts.append(
                 f"[{i}:v]scale={w*2}:{h*2}:force_original_aspect_ratio=increase,crop={w*2}:{h*2},"
                 f"zoompan=z='{direction}':d={frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps},"
@@ -67,7 +68,7 @@ def _bg_input_and_filter(bg: Background, cfg: dict[str, Any], duration: float) -
 
     # image: Ken-Burns-Zoom
     frames = int(duration * fps) + fps
-    inputs = ["-loop", "1", "-i", str(bg.path)]
+    inputs = ["-i", str(bg.path)]
     flt = (
         f"[0:v]scale={w*2}:{h*2}:force_original_aspect_ratio=increase,crop={w*2}:{h*2},"
         f"zoompan=z='min(zoom+0.0006,1.25)':d={frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps},"

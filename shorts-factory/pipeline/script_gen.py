@@ -18,7 +18,15 @@ ZIELGRUPPE: Kinder ({age_range} Jahre). Halte dich strikt an diese Regeln:
 """
 
 GENERAL_RULES = """
-ZIELGRUPPE: Allgemeines Publikum. Fakten muessen stimmen. Kein Clickbait ohne Substanz.
+ZIELGRUPPE: Allgemeines Publikum (13+), vor allem 16-35, scrollt auf dem Handy.
+- Jeder Satz treibt die Story voran. Konkrete Alltagssituation statt abstrakter Fakten.
+- Psychologische Aussagen als Tendenz formulieren ("psychologists suggest", "studies link this to"),
+  nie als absolute Wahrheit. Keine erfundenen Zahlen, keine erfundenen Studien.
+- Keine medizinischen/therapeutischen Ratschlaege, keine Diagnosen, keine Manipulationsanleitungen.
+- Der Hook ist der erste gesprochene Satz: eine Situation, die JEDER kennt, plus ein "weird"/"secretly"/"actually".
+- Das Video endet mit einem Twist (ein Satz, der den Anfang neu einordnet), dann eine kurze Frage.
+- Kein Clickbait ohne Einloesung: Was der Hook verspricht, wird erklaert.
+- Eigenstaendiger Inhalt pro Video (YouTube monetarisiert keine repetitiven Template-Videos).
 """
 
 
@@ -36,17 +44,42 @@ def build_prompt(cfg: dict[str, Any], history_titles: list[str], slot: dict[str,
         else "Erfinde selbst ein frisches, konkretes Thema, das zur Nische passt."
     )
     series_hint = ""
+    fmt = (slot or {}).get("format", "story")
     if slot:
         series_hint = (
             f"\nSERIE FUER DIESES VIDEO: \"{slot.get('series', '')}\"\n"
             f"Fokus: {slot.get('focus', '')}\n"
             f"Der Titel beginnt mit dem Serien-Praefix \"{slot.get('title_prefix', '')}\", falls angegeben.\n"
         )
+    rk = cfg.get("ranking", {})
+    n_items = int(rk.get("items", 5))
+    format_rules = ""
+    if fmt == "ranking":
+        format_rules = f"""
+FORMAT: RANKING (Countdown). Setze "format" auf "ranking".
+- "items": genau {n_items} Eintraege, "rank" von {n_items} (zuerst) bis 1 (zuletzt, der Hoehepunkt).
+- Jeder Eintrag: "name" (max. 4 Woerter, steht gross im Bild), "line" (1-2 kurze gesprochene Saetze,
+  NICHT mit "Platz X" beginnen – das wird automatisch vorangestellt), "image_prompt" (englisch, Cartoon, kein Text).
+- "hook": 1 Satz, der das Ranking ankuendigt und Platz 1 anteasert ("Platz 1 haette ich nie erraten!").
+- "lines" bleibt leer. "outro": Frage an die Kinder ("Welches ist dein Lieblings...?").
+- "on_screen_title": 2 Zeilen mit "|" getrennt, max. 3 Woerter je Zeile, z.B. "Die 5 schnellsten|Tiere der Welt".
+- "highlight_word": genau ein Wort aus on_screen_title (das wichtigste, z.B. "schnellsten").
+- Der YouTube-"title" endet mit: "{rk.get('title_suffix', '')}"
+"""
+    else:
+        format_rules = """
+FORMAT: STORY. Setze "format" auf "story", "items" bleibt leer.
+- "on_screen_title": 2-4 Woerter mit "|" als Zeilenumbruch, die das Thema auf stumm verstaendlich machen.
+- "highlight_word": das wichtigste Wort daraus.
+"""
     avoid = ch.get("avoid") or []
     used = "\n- ".join(history_titles[-80:]) if history_titles else "(noch keine)"
 
+    lang_names = {"en": "ENGLISCH", "de": "DEUTSCH", "tr": "TUERKISCH", "es": "SPANISCH", "fr": "FRANZOESISCH"}
+    lang = ch.get("language", "en")
     return f"""Du schreibst Skripte fuer den YouTube-Shorts-Kanal "{ch['name']}".
-Sprache: {ch.get('language', 'de')}.
+AUSGABESPRACHE: {lang_names.get(lang, lang.upper())} – alle gesprochenen und sichtbaren Texte
+(hook, lines, outro, title, description, on_screen_title, items) in dieser Sprache. Bild-Prompts auf Englisch.
 
 NISCHE:
 {ch['niche'].strip()}
@@ -56,7 +89,7 @@ NISCHE:
 TABU-THEMEN: {', '.join(avoid) if avoid else 'keine'}
 
 {topic_hint}
-
+{format_rules}
 BEREITS VEROEFFENTLICHTE TITEL (nicht wiederholen, auch nicht in Abwandlung):
 - {used}
 

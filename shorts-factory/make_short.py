@@ -10,7 +10,8 @@ Shorts Factory – CLI
   python make_short.py render scripts/x.json            # Video aus Skript
   python make_short.py upload output/x.mp4 --script scripts/x.json
   python make_short.py auth                # einmalige YouTube-Anmeldung (oeffnet Browser)
-  python make_short.py voices              # verfuegbare deutsche Stimmen
+  python make_short.py voices              # verfuegbare Stimmen in der Kanalsprache
+  python make_short.py --config config.de.yaml run   # lokalisierter Zweitkanal
 """
 from __future__ import annotations
 
@@ -27,7 +28,7 @@ from pipeline.captions import build_ass
 from pipeline.config import OUTPUT_DIR, SCRIPTS_DIR, load_config
 from pipeline.models import ShortScript
 from pipeline.render import check_tools, render
-from pipeline.tts import synthesize
+from pipeline.tts import synthesize_parts
 
 
 def slug(text: str, n: int = 40) -> str:
@@ -88,15 +89,20 @@ def cmd_render(cfg, script: ShortScript, base: str) -> Path:
     ass = OUTPUT_DIR / f"{base}.ass"
     mp4 = OUTPUT_DIR / f"{base}.mp4"
 
-    print(f"[tts] Stimme {cfg['voice']['name']} ...")
-    words = synthesize(script.spoken_text, cfg, mp3)
-    duration = words[-1].end
+    print(f"[tts] Stimme {cfg['voice']['name']} ({script.format}) ...")
+    rk = cfg.get("ranking", {})
+    script.rank_prefix = rk.get("spoken_prefix", "Number {rank}.")
+    gap = float(rk.get("gap_seconds", 0.35)) if script.format == "ranking" else float(cfg["voice"].get("sentence_gap", 0.22))
+    words, segments, sentences = synthesize_parts(script.spoken_parts, cfg, mp3, gap=gap)
+    duration = segments[-1].end
     print(f"[tts] {len(words)} Woerter, {duration:.1f} s")
     if duration > cfg["script"]["max_seconds"]:
         print(f"[warn] Audio ist {duration:.1f}s – Shorts muessen < 60 s sein. Skript kuerzen oder rate erhoehen.")
 
-    build_ass(words, cfg, ass)
-    bg = pick_background(cfg, script.visual_keyword, duration, script=script, stem=base)
+    total = duration + float(cfg["video"].get("outro_padding", 0.5))
+    build_ass(words, cfg, ass, title=script.on_screen_title, highlight_word=script.highlight_word,
+              segments=segments, total=total, badge_label=rk.get("badge_label", "#{rank}"), groups_from=sentences)
+    bg = pick_background(cfg, script.visual_keyword, duration, script=script, stem=base, segments=segments)
     print(f"[render] Hintergrund: {bg.kind}{' ' + bg.path.name if bg.path else ''}")
     render(mp3, ass, bg, cfg, mp4)
     print(f"[render] Fertig: {mp4}")
@@ -112,6 +118,7 @@ def cmd_upload(cfg, script: ShortScript, video: Path) -> str:
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--config", default=None, help="andere Konfigurationsdatei, z.B. config.de.yaml (lokalisierter Kanal)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     r = sub.add_parser("run", help="kompletter Durchlauf")
@@ -133,7 +140,7 @@ def main(argv=None) -> int:
     sub.add_parser("voices", help="edge-tts Stimmen auflisten")
 
     args = p.parse_args(argv)
-    cfg = load_config()
+    cfg = load_config(Path(args.config)) if args.config else load_config()
 
     if args.cmd == "voices":
         from pipeline.tts import list_voices

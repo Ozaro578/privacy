@@ -1,8 +1,10 @@
-# Shorts Factory – automatischer YouTube-Shorts-Kanal fuer Kinder
+# Shorts Factory – automatischer YouTube-Shorts-Kanal (Psychologie, englisch)
 
 ChatGPT schreibt · edge-tts spricht · Higgsfield malt · ffmpeg schneidet · GitHub Actions laedt 3x taeglich hoch.
 
-Den kompletten Kanal-Plan (Name, Serien, Posting-Zeiten, KPIs, Checkliste) findest du in [PLAN.md](PLAN.md).
+Den kompletten Kanal-Plan (Name, Serien, Posting-Zeiten, 30 Startthemen, KPIs, Checkliste) findest du in [PLAN.md](PLAN.md).
+
+Zwei Formate: **Story** (Hook -> Mechanismus -> Twist -> Frage) und **Countdown** („3 signs …“, Badge #3 -> #1, Fortschrittsbalken).
 
 ## Schnellstart (lokal)
 
@@ -12,7 +14,8 @@ pip install -r requirements.txt          # Python 3.11+
 # ffmpeg installieren: apt install ffmpeg  |  brew install ffmpeg  |  winget install ffmpeg
 cp .env.example .env                     # Keys eintragen (OPENAI_API_KEY, HF_KEY, ...)
 
-python make_short.py run --script scripts/demo.json --no-upload   # Testvideo ohne Keys
+python make_short.py run --script scripts/demo.json --no-upload           # Story-Testvideo ohne Keys
+python make_short.py run --script scripts/demo_ranking.json --no-upload   # Countdown-Testvideo
 python make_short.py run --no-upload                              # neues Skript via ChatGPT, kein Upload
 python make_short.py auth                                         # einmalig: YouTube-Login
 python make_short.py run --slot abend                             # kompletter Durchlauf inkl. Upload
@@ -29,13 +32,15 @@ Ergebnis liegt in `output/<name>.mp4`, das Skript in `scripts/<datum>_<thema>.js
 | `render scripts/x.json` | Video aus vorhandenem Skript |
 | `upload output/x.mp4 --script scripts/x.json` | fertiges Video hochladen |
 | `auth` | YouTube-OAuth einrichten (oeffnet Browser) |
-| `voices` | deutsche Stimmen auflisten |
+| `voices` | Stimmen in der Kanalsprache auflisten |
+| `--config config.de.yaml <befehl>` | lokalisierter Zweitkanal mit eigener Config |
 
 ## Konfiguration (`config.yaml`)
 
-- `channel` – Name, Nische, Zielgruppe (`audience: kinder` schaltet Kinder-Regeln + YouTube-Kids-Flag ein), Tabu-Themen
+- `channel` – Name, Sprache, Nische, Startthemen, Tabu-Themen (`audience: kinder` schaltet Kinder-Regeln ein)
 - `script` – Provider `openai` (ChatGPT) oder `claude`, Ziel-Laenge
-- `schedule` – die 3 Tages-Slots mit Serie und Fokus
+- `schedule` – die 3 Tages-Slots mit Serie, Format (story | ranking) und Fokus
+- `ranking` – Anzahl Plaetze, Titel-Suffix, gesprochener Prefix, Badge-Text
 - `voice` – edge-tts Stimme, Tempo
 - `video.background` – `higgsfield` (KI-Bilder) · `gradient` · `video`/`image` (eigene Dateien in `assets/backgrounds`) · `pexels` · `higgsfield_video`
 - `higgsfield` – Endpunkt, Bilder pro Video, Stil-Suffix
