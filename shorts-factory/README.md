@@ -1,6 +1,6 @@
 # Shorts Factory – automatische YouTube-Shorts-Kanaele
 
-Kanal 1 „The Mind Twist“ (Psychologie, `config.yaml`) und Kanal 2 „Baby Has A Job“ (KI-Baby-Comedy mit wiederkehrender Figur, `config.baby.yaml`).
+Kanal 1 „The Mind Twist“ (Psychologie, `config.yaml`) und Kanal 2 „Baby of Wall Street“ (KI-Baby-Comedy mit wiederkehrender Figur, `config.baby.yaml`).
 
 ChatGPT schreibt · edge-tts spricht · Higgsfield malt · ffmpeg schneidet · GitHub Actions laedt 3x taeglich hoch.
 

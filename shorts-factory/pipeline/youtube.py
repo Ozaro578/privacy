@@ -26,6 +26,67 @@ def _materialize_from_env(client_secret: Path, token_file: Path) -> None:
             target.write_text(val, encoding="utf-8")
 
 
+def device_login(cfg: dict[str, Any] | None = None):
+    """OAuth 'Limited Input Device'-Flow: Code wird angezeigt, Login passiert auf Handy/PC.
+    Funktioniert ohne Browser auf dieser Maschine (z.B. Cloud-Session, Server).
+    Der OAuth-Client in der Google Cloud Console muss vom Typ 'Fernseher und Geraete mit begrenzter Eingabe' sein."""
+    import time
+    import urllib.parse
+    import urllib.request
+
+    from google.oauth2.credentials import Credentials
+
+    CLIENT_SECRET, TOKEN_FILE = _files(cfg)
+    _materialize_from_env(CLIENT_SECRET, TOKEN_FILE)
+    if not CLIENT_SECRET.exists():
+        raise RuntimeError(f"{CLIENT_SECRET} fehlt (OAuth-Client-JSON aus der Google Cloud Console).")
+    data = json.loads(CLIENT_SECRET.read_text(encoding="utf-8"))
+    conf = data.get("installed") or data.get("web") or next(iter(data.values()))
+    client_id, client_secret = conf["client_id"], conf["client_secret"]
+
+    def post(url: str, fields: dict[str, str]) -> dict[str, Any]:
+        body = urllib.parse.urlencode(fields).encode()
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return json.loads(resp.read().decode())
+        except urllib.error.HTTPError as exc:  # type: ignore[attr-defined]
+            return json.loads(exc.read().decode())
+
+    dev = post("https://oauth2.googleapis.com/device/code", {"client_id": client_id, "scope": " ".join(SCOPES)})
+    if "user_code" not in dev:
+        raise RuntimeError(f"Device-Flow abgelehnt: {dev}")
+    print("\n=== YouTube-Anmeldung ===")
+    print(f"1. Auf dem Handy oder PC oeffnen: {dev.get('verification_url', 'https://www.google.com/device')}")
+    print(f"2. Diesen Code eingeben:          {dev['user_code']}")
+    print("3. Mit dem Google-Konto anmelden und den YouTube-KANAL auswaehlen, der hochladen soll.\n")
+    interval = int(dev.get("interval", 5))
+    deadline = time.time() + int(dev.get("expires_in", 1800))
+    while time.time() < deadline:
+        time.sleep(interval)
+        tok = post("https://oauth2.googleapis.com/token", {
+            "client_id": client_id, "client_secret": client_secret,
+            "device_code": dev["device_code"], "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+        })
+        err = tok.get("error")
+        if err == "authorization_pending":
+            continue
+        if err == "slow_down":
+            interval += 2
+            continue
+        if err:
+            raise RuntimeError(f"Anmeldung fehlgeschlagen: {tok}")
+        creds = Credentials(
+            token=tok["access_token"], refresh_token=tok.get("refresh_token"),
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id=client_id, client_secret=client_secret, scopes=SCOPES,
+        )
+        TOKEN_FILE.write_text(creds.to_json(), encoding="utf-8")
+        print(f"[youtube] Token gespeichert: {TOKEN_FILE}")
+        return creds
+    raise RuntimeError("Code abgelaufen – bitte erneut starten.")
+
+
 def get_credentials(interactive: bool = True, cfg: dict[str, Any] | None = None):
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials

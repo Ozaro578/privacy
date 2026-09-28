@@ -1,8 +1,8 @@
 {
   "format": "scenes",
-  "topic": "POV: your baby has a 9 to 5 job",
-  "title": "POV: your baby has a 9 to 5 job",
-  "hook": "POV: your baby has a nine to five job.",
+  "topic": "POV: the Baby of Wall Street on a Monday",
+  "title": "POV: the Baby of Wall Street on a Monday",
+  "hook": "POV: the Baby of Wall Street on a Monday.",
   "lines": [],
   "scenes": [
     {
@@ -27,14 +27,14 @@
     }
   ],
   "outro": "Same job tomorrow. Would you hire him?",
-  "on_screen_title": "POV: baby has|a 9 to 5 job",
-  "highlight_word": "baby",
-  "description": "Bo the baby survives another workday. Meetings, milk and overtime.",
+  "on_screen_title": "Baby of|Wall Street",
+  "highlight_word": "Baby",
+  "description": "Bo, the Baby of Wall Street, survives another Monday. Meetings, milk and overtime.",
   "hashtags": [
+    "babyofwallstreet",
     "aibaby",
     "pov",
-    "officehumor",
-    "babycomedy"
+    "officehumor"
   ],
   "visual_keyword": "baby office",
   "visual_prompt": "in a tiny navy business suit standing in a modern office lobby, confident pose"

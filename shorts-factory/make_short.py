@@ -10,6 +10,7 @@ Shorts Factory – CLI
   python make_short.py render scripts/x.json            # Video aus Skript
   python make_short.py upload output/x.mp4 --script scripts/x.json
   python make_short.py auth                # einmalige YouTube-Anmeldung (oeffnet Browser)
+  python make_short.py auth --device       # Anmeldung per Code auf dem Handy (Server/Cloud)
   python make_short.py voices              # verfuegbare Stimmen in der Kanalsprache
   python make_short.py --config config.de.yaml run   # lokalisierter Zweitkanal
 """
@@ -136,7 +137,8 @@ def main(argv=None) -> int:
     up.add_argument("video")
     up.add_argument("--script", required=True)
 
-    sub.add_parser("auth", help="YouTube OAuth einmalig einrichten")
+    au = sub.add_parser("auth", help="YouTube OAuth einmalig einrichten")
+    au.add_argument("--device", action="store_true", help="Login per Code auf dem Handy (kein Browser auf dieser Maschine noetig)")
     sub.add_parser("voices", help="edge-tts Stimmen auflisten")
 
     args = p.parse_args(argv)
@@ -149,8 +151,11 @@ def main(argv=None) -> int:
         return 0
 
     if args.cmd == "auth":
-        from pipeline.youtube import get_credentials
-        get_credentials(interactive=True, cfg=cfg)
+        from pipeline.youtube import device_login, get_credentials
+        if args.device:
+            device_login(cfg)
+        else:
+            get_credentials(interactive=True, cfg=cfg)
         print(f"[youtube] Token gespeichert in secrets/{cfg['youtube'].get('token_file', 'token.json')}")
         return 0
 

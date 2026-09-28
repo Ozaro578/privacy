@@ -1,40 +1,42 @@
 # =====================================================================
-#  Kanal 2: KI-Baby-Comedy (englisch, wiederkehrende Figur)
+#  Kanal 2: "Baby of Wall Street" – KI-Baby-Comedy (englisch, wiederkehrende Figur)
 #  Start:  python make_short.py --config config.baby.yaml run --no-upload
 # =====================================================================
 
 channel:
-  name: "Baby Has A Job"
-  handle: "@BabyHasAJob"
+  name: "Baby of Wall Street"
+  handle: "@BabyOfWallStreet"
   language: "en"
   audience: "allgemein"
   niche: >
-    AI baby comedy with ONE recurring character: Bo, a chubby one-year-old who lives
-    the life of a stressed adult. Every short is a "POV" situation (baby has a 9 to 5
-    job, baby at the gym, baby as a chef, baby at a job interview, baby doing taxes,
-    baby as a taxi driver). Dry, absurd, wholesome humor. Visual gags first, very few
-    words. No cruelty, no danger for the baby, no adult themes, no brands.
+    AI baby comedy with ONE recurring character: Bo, "the Baby of Wall Street", a chubby
+    one-year-old who acts like a ruthless finance boss. Every short is a "POV" situation:
+    Bo closes a deal, fires the CFO, survives a Monday meeting, negotiates a raise, rings
+    the stock exchange bell, runs a hedge fund from his high chair. Second series: Bo
+    "after hours" in normal adult life (gym, taxes, dating app, moving, cooking). Dry,
+    absurd, wholesome humor. Visual gags first, very few words. No cruelty, no danger
+    for the baby, no adult themes, no real brands, no real financial advice.
   topics:
-    - "POV: your baby has a 9 to 5 job"
-    - "POV: your baby is the gym bro"
-    - "POV: your baby is a head chef"
-    - "POV: your baby has a job interview"
-    - "POV: your baby is doing taxes"
-    - "POV: your baby is a taxi driver"
-    - "POV: your baby is a barista on Monday"
-    - "POV: your baby is a wedding DJ"
-    - "POV: your baby is a construction foreman"
-    - "POV: your baby is a flight attendant"
-    - "POV: your baby is a real estate agent"
-    - "POV: your baby is a personal trainer"
-    - "POV: your baby is a night shift security guard"
-    - "POV: your baby is a food critic"
-    - "POV: your baby is a firefighter (cat stuck in tree)"
-    - "POV: your baby runs a lemonade empire"
-    - "POV: your baby is a pizza delivery driver"
-    - "POV: your baby is a school principal"
-    - "POV: your baby is a detective"
-    - "POV: your baby is a farmer at 5 a.m."
+    - "POV: the Baby of Wall Street on a Monday"
+    - "POV: your baby closes a million dollar deal"
+    - "POV: your baby fires the CFO"
+    - "POV: your baby negotiates a raise"
+    - "POV: your baby rings the opening bell"
+    - "POV: your baby runs a hedge fund from a high chair"
+    - "POV: your baby's first day at the bank"
+    - "POV: your baby has a job interview at Wall Street"
+    - "POV: your baby checks the stock market at 6 a.m."
+    - "POV: your baby buys the company"
+    - "POV: your baby explains the budget to the board"
+    - "POV: your baby's meeting could have been an email"
+    - "POV: your baby takes a business lunch"
+    - "POV: your baby's IPO day"
+    - "POV: your baby does the quarterly review"
+    - "POV: your baby after hours at the gym"
+    - "POV: your baby does taxes at midnight"
+    - "POV: your baby is moving into a penthouse"
+    - "POV: your baby's private jet has no milk"
+    - "POV: your baby retires at age 2"
   # Stil-Vorbilder (Kellan-Methode): Transkripte von 1-3 viralen Shorts der Nische hier einfuegen
   # (z.B. ueber youtubetotranscript.com). Das LLM uebernimmt Stil, Tempo und Laenge, nie den Inhalt.
   style_examples: []
@@ -58,27 +60,28 @@ schedule:
     - name: "morgen"
       time: "08:30"
       format: "scenes"
-      series: "Baby Has A Job"
+      series: "Baby of Wall Street"
       title_prefix: "POV: "
       focus: >
-        A workday job situation: office, shop, restaurant, transport. The gag is the
-        contrast between adult routine (coffee, meetings, deadlines) and baby logic
-        (milk bottle, nap, tantrum). Last scene is the punchline.
+        A finance-boss situation: trading floor, boardroom, deals, bank, stock
+        exchange, corner office. The gag is the contrast between ruthless money
+        talk and baby logic (milk bottle instead of espresso, nap in the meeting,
+        tantrum over the budget). Last scene is the punchline.
     - name: "abend"
       time: "20:30"
       format: "scenes"
-      series: "Baby Life"
+      series: "Baby After Hours"
       title_prefix: "POV: "
       focus: >
-        A non-job adult situation: gym, dating app, taxes, moving apartment, cooking
-        dinner, DIY, airport. Same character, same dry humor, punchline in the last scene.
+        Bo off duty in normal adult life: gym, taxes, dating app, moving, cooking,
+        airport, penthouse. Same character, same dry humor, punchline in the last scene.
 
 scenes:
   count: 5                       # Szenen pro Short (jede = ein Bild + eine Caption)
   character: >
-    Bo – a chubby one-year-old baby, big brown eyes, one curly dark tuft of hair,
-    rosy cheeks, a dimple on the left cheek. Always the same face; outfits change
-    with the job (tiny suit, chef hat, hi-vis vest ...).
+    Bo, the Baby of Wall Street – a chubby one-year-old baby, big brown eyes, one curly
+    dark tuft of hair, rosy cheeks, a dimple on the left cheek. Signature look: tiny navy
+    suit and tie. Always the same face; outfits change only when the situation needs it.
 
 ranking:
   items: 3
@@ -142,7 +145,7 @@ youtube:
   privacy: "public"
   category_id: "23"              # 23 = Comedy
   made_for_kids: false           # Comedy fuer Erwachsene/Teens, nicht "fuer Kinder"
-  default_tags: ["shorts", "aibaby", "babycomedy", "pov", "funny", "ai"]
+  default_tags: ["shorts", "aibaby", "babyofwallstreet", "babycomedy", "pov", "funny", "wallstreet"]
   publish_at: ""
   client_secret_file: "client_secret.json"
   token_file: "token_baby.json"  # eigener YouTube-Kanal = eigenes Token

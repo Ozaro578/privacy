@@ -3,7 +3,7 @@
 | Kanal | Nische | Format | Config | Workflow |
 |---|---|---|---|---|
 | **The Mind Twist** (@TheMindTwist) | Psychologie / menschliches Verhalten, englisch | Story + Countdown, 3x/Tag | `config.yaml` | `daily-short.yml` |
-| **Baby Has A Job** (@BabyHasAJob) | KI-Baby-Comedy mit wiederkehrender Figur „Bo“, englisch | Szenen (5 Bilder + Gag-Captions), 2x/Tag | `config.baby.yaml` | `daily-baby-short.yml` |
+| **Baby of Wall Street** (@BabyOfWallStreet) | KI-Baby-Comedy mit wiederkehrender Figur „Bo“, englisch | Szenen (5 Bilder + Gag-Captions), 2x/Tag | `config.baby.yaml` | `daily-baby-short.yml` |
 
 Beide laufen getrennt (eigener YouTube-Kanal, eigenes Token, eigener Verlauf), wie von ChatGPT empfohlen:
 zwei Viral-Tests statt alles auf einen Kanal. Nach 3–4 Wochen entscheidet die Swipe-Rate, welcher Kanal auf 3/Tag geht.
@@ -190,12 +190,12 @@ ueber den OpenAI-API-Key in der Pipeline (Skripte). Strategie-Ideen aus ChatGPT 
 
 ---
 
-# Kanal 2: „Baby Has A Job“ – KI-Baby-Comedy mit Figur
+# Kanal 2: „Baby of Wall Street“ – KI-Baby-Comedy mit Figur
 
 ## Name
 
-Geprueft am 28.09.2026, frei: **@BabyHasAJob** (Empfehlung, sagt das Format), @BabyGoesToWork, @BabyCEO,
-@BabyBusiness, @BabyNineToFive, @AdultingBaby. Vergeben: TinyAdult, OfficeBaby, BabyAtWork, LilBossman u.a.
+Gewaehlt und angelegt am 28.09.2026: **@BabyOfWallStreet** (Anspielung auf „Wolf of Wall Street“).
+Ebenfalls frei gewesen: @BabyMogul, @BabyEmpire, @BabyGodfather, @BabyHedgeFund, @BabyGrindset.
 **Nicht** „Boss Baby“ verwenden (DreamWorks-Marke).
 
 ## Figur „Bo“
@@ -215,8 +215,8 @@ Hook = Situation („POV: your baby has a 9 to 5 job“) -> 5 Szenen, jede ein B
 
 | Slot  | Berlin | Serie          | Fokus                                                  |
 |-------|--------|----------------|--------------------------------------------------------|
-| morgen| 08:30  | Baby Has A Job | Beruf: Buero, Kueche, Baustelle, Taxi, Flugzeug …       |
-| abend | 20:30  | Baby Life      | Erwachsenen-Alltag: Gym, Steuern, Umzug, Dating-App …   |
+| morgen| 08:30  | Baby of Wall Street | Finanz-Boss: Deals, Boardroom, Boerse, CFO feuern …  |
+| abend | 20:30  | Baby After Hours    | Erwachsenen-Alltag: Gym, Steuern, Penthouse, Jet …   |
 
 20 Startthemen stehen in `config.baby.yaml`. Kosten: 6 Bilder pro Short ≈ 1,5 Credits, 2 Shorts/Tag ≈ 3 Credits.
 
