@@ -28,6 +28,15 @@ BILD_BREITE = 320
 BILD_QUALITAET = 62
 TEIL_GROESSE = 6_000_000  # Zeichen pro bilder-N.js
 
+# Beispiel-Angebote in der Vorschau (Preise sind nur Beispiele). Leer lassen = Slider zeigt Bestseller/Neuheiten.
+BEISPIEL_ANGEBOTE = [
+    {"id": "takis-fuego", "preis": 199, "alt": 249, "titel": "🔥 Deal der Woche", "bis": "2026-10-05"},
+    {"id": "fanta-mix-flavor-box-china-12-330-ml", "preis": 1999, "alt": 2499, "titel": "🥤 Box-Deal"},
+    {"id": "kinder-milkredible-milky-46-8g", "preis": 179, "alt": 219, "titel": "🍫 Neu & günstig"},
+    {"id": "oreo-dutch-cocoa-wafer-double-choco-117g", "preis": 229, "alt": 279, "titel": "🍪 Snack-Angebot"},
+    {"id": "skittles-asia-edition-sour-fruits-40g", "preis": 149, "alt": 199, "titel": "🌈 Sauer macht lustig"},
+]
+
 SEITEN = {  # Quelle -> Ziel (alles flach in einem Ordner)
     "index.html": "index.html", "sortiment.html": "sortiment.html", "vapes.html": "vapes.html",
     "produkt.html": "produkt.html", "pakete.html": "pakete.html", "paket.html": "paket.html",
@@ -47,6 +56,11 @@ def shop_daten() -> dict:
         (api / "sortiment.json").write_text(json.dumps(ts_json(API_TS / "sortiment.mts", "SORTIMENT", "};")), encoding="utf-8")
         (api / "pakete-vorlage.json").write_text(json.dumps(ts_json(API_TS / "pakete-vorlage.mts", "PAKETE_VORLAGE", "];")), encoding="utf-8")
         (Path(tmp) / "daten").mkdir()
+        if BEISPIEL_ANGEBOTE:  # Beispiel-Angebote für den Slider, gleiche Logik wie auf dem Server
+            (Path(tmp) / "daten" / "preise").mkdir()
+            (Path(tmp) / "daten" / "angebote").mkdir()
+            (Path(tmp) / "daten" / "preise" / "shop.json").write_text(json.dumps({a["id"]: {"preis": a["alt"], "mwst": 7} for a in BEISPIEL_ANGEBOTE}), encoding="utf-8")
+            (Path(tmp) / "daten" / "angebote" / "alle.json").write_text(json.dumps([{"id": a["id"], "preis": a["preis"], "titel": a["titel"], "aktiv": True, "bis": a.get("bis", "")} for a in BEISPIEL_ANGEBOTE]), encoding="utf-8")
         code = (f"const ZB_DATEN={json.dumps(tmp + '/daten')};const ZB_SESSION_SECRET='{'x' * 40}';const ZB_ADMIN_USERS=[];"
                 f"$_SERVER['REQUEST_URI']='/api/shop/daten';$_SERVER['REQUEST_METHOD']='GET';"
                 f"require {json.dumps(str(api / 'index.php'))};zb_api();")

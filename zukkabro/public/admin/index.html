@@ -60,6 +60,7 @@
           <button data-tab="haendler" role="tab">🏪 Händler <span class="zahl" id="zahlHaendler" hidden></span></button>
           <button data-tab="preise" role="tab">🏷️ Preise</button>
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
+          <button data-tab="angebote" role="tab">🔥 Angebote</button>
           <button data-tab="einstellungen" role="tab">⚙️ Shop-Einstellungen</button>
           <button data-tab="buchhaltung" role="tab">🧾 Buchhaltung</button>
           <button data-tab="bestand" role="tab">📈 Bestand &amp; Verkäufe</button>
@@ -122,6 +123,17 @@
             <button class="btn btn--pink" id="paketeSpeichern" type="button">Alle Pakete speichern</button>
           </div>
           <div id="paketEditor"></div>
+        </section>
+
+        <!-- Angebote -->
+        <section data-panel="angebote" hidden>
+          <p class="hinweis">Angebote laufen oben auf der Startseite als <strong>Slideshow</strong> und gelten sofort im Shop: Der <strong>Aktionspreis brutto</strong> ersetzt den Shop-Preis, der alte Preis wird durchgestrichen gezeigt. Reihenfolge = Reihenfolge im Slider. Ohne Angebote zeigt der Slider Bestseller und Neuheiten.</p>
+          <div class="leiste">
+            <label class="feld feld--breit">Produkt hinzufügen<input list="produktListe" id="angebotNeu" placeholder="Produkt suchen"></label>
+            <button class="btn btn--gold btn--klein" id="angebotHinzu" type="button">+ Ins Angebot</button>
+            <button class="btn btn--pink" id="angeboteSpeichern" type="button">Angebote speichern</button>
+          </div>
+          <div class="tabelle-wrap"><table class="tabelle" id="angebotTabelle"></table></div>
         </section>
 
         <!-- Shop-Einstellungen -->

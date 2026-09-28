@@ -90,6 +90,7 @@
     if (id === "preise") preise();
     if (id === "einstellungen") einstellungenZeigen();
     if (id === "pakete") paketeLaden();
+    if (id === "angebote") angeboteLaden();
     if (id === "buchhaltung") journal();
     if (id === "bestand") bestand();
     if (id === "protokoll") protokoll();
@@ -359,7 +360,7 @@
       preise(); ZB.meldung("Preise gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
-  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert) { e.preventDefault(); e.returnValue = ""; } });
 
   /* ================= Pakete ================= */
   var paketListe = null, paketGeaendert = false;
@@ -441,6 +442,77 @@
       });
       var r = await ZB.api("POST", "/admin/pakete", { pakete: daten });
       paketListe = r.pakete; paketGeaendert = false; paketeZeichnen(); ZB.meldung("Pakete gespeichert.");
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
+
+  /* ================= Angebote (Slider) ================= */
+  var angebotListe = null, angebotGeaendert = false;
+  async function angeboteLaden() {
+    if (angebotListe) return angeboteZeichnen();
+    try { angebotListe = (await ZB.api("GET", "/admin/angebote")).angebote; angeboteZeichnen(); }
+    catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  function angeboteZeichnen() {
+    var zeilen = angebotListe.map(function (a, i) {
+      var p = ZB.produkte[a.id] || { name: a.id + " (nicht im Sortiment!)", marke: "" };
+      var shop = daten.shop[a.id];
+      var alt = shop ? euro(shop.preis) : '<span class="status status--offen">kein Shop-Preis</span>';
+      var rabatt = shop && a.preis && shop.preis > a.preis ? "−" + Math.round((1 - a.preis / shop.preis) * 100) + " %" : "";
+      return '<tr data-angebot="' + i + '"><td>' + (p.bild ? '<img class="klein-bild" src="/' + esc(p.bild) + '" alt="">' : "") + "</td>" +
+        "<td><strong>" + esc(p.name) + "</strong>" + (p.marke ? "<br><small>" + esc(p.marke) + "</small>" : "") + (p.aus ? ' <span class="status status--storniert">nicht lieferbar</span>' : "") + (p.ab18 ? " 🔞" : "") + "</td>" +
+        '<td class="num">' + alt + "</td>" +
+        '<td class="num"><input inputmode="decimal" style="width:100px" data-feld="preis" value="' + (a._preisRoh !== undefined ? esc(a._preisRoh) : ZB.centFeld(a.preis)) + '" placeholder="1,99"> <small>' + rabatt + "</small></td>" +
+        '<td><input data-feld="titel" maxlength="40" value="' + esc(a.titel || "") + '" placeholder="🔥 Angebot der Woche"></td>' +
+        '<td><input type="date" data-feld="bis" value="' + esc(a.bis || "") + '"></td>' +
+        '<td><label class="check-zeile"><input type="checkbox" data-feld="aktiv"' + (a.aktiv !== false ? " checked" : "") + "><span>Aktiv</span></label></td>" +
+        '<td style="white-space:nowrap"><button class="btn btn--light btn--klein" type="button" data-schieb="' + i + ':-1" aria-label="Nach oben"' + (i === 0 ? " disabled" : "") + '>↑</button> ' +
+        '<button class="btn btn--light btn--klein" type="button" data-schieb="' + i + ':1" aria-label="Nach unten"' + (i === angebotListe.length - 1 ? " disabled" : "") + '>↓</button> ' +
+        '<button class="btn btn--rot btn--klein" type="button" data-angebot-weg="' + i + '">✕</button></td></tr>';
+    }).join("");
+    $("angebotTabelle").innerHTML = '<thead><tr><th></th><th>Produkt</th><th class="num">Shop-Preis</th><th class="num">Aktionspreis brutto (€)</th><th>Überschrift im Slider</th><th>Gültig bis</th><th></th><th></th></tr></thead><tbody>' +
+      (zeilen || '<tr><td colspan="8" class="leer">Noch keine Angebote. Oben ein Produkt suchen und hinzufügen.</td></tr>') + "</tbody>";
+    $("angeboteSpeichern").textContent = angebotGeaendert ? "Angebote speichern (ungespeichert!)" : "Angebote speichern";
+  }
+  function angebotGeaendertSetzen() { angebotGeaendert = true; $("angeboteSpeichern").textContent = "Angebote speichern (ungespeichert!)"; }
+  function angebotFeld(e) {
+    var tr = e.target.closest("[data-angebot]"); if (!tr) return;
+    var a = angebotListe[+tr.getAttribute("data-angebot")], f = e.target.getAttribute("data-feld");
+    if (!f) return;
+    if (f === "aktiv") a.aktiv = e.target.checked;
+    else if (f === "preis") a._preisRoh = e.target.value;
+    else a[f] = e.target.value;
+    angebotGeaendertSetzen();
+  }
+  $("angebotTabelle").addEventListener("input", angebotFeld);
+  $("angebotTabelle").addEventListener("change", angebotFeld);
+  $("angebotTabelle").addEventListener("click", function (e) {
+    var b;
+    if ((b = e.target.closest("[data-angebot-weg]"))) { angebotListe.splice(+b.getAttribute("data-angebot-weg"), 1); angebotGeaendertSetzen(); return angeboteZeichnen(); }
+    if ((b = e.target.closest("[data-schieb]"))) {
+      var t = b.getAttribute("data-schieb").split(":"), i = +t[0], j = i + (+t[1]);
+      if (j < 0 || j >= angebotListe.length) return;
+      var x = angebotListe[i]; angebotListe[i] = angebotListe[j]; angebotListe[j] = x;
+      angebotGeaendertSetzen(); angeboteZeichnen();
+    }
+  });
+  $("angebotHinzu").addEventListener("click", async function () {
+    if (!angebotListe) await angeboteLaden();
+    var feld = $("angebotNeu"), id = nameZuId[(feld.value || "").toLowerCase()];
+    if (!id) return ZB.meldung("Bitte ein Produkt aus der Liste wählen.", "fehler");
+    if (angebotListe.some(function (a) { return a.id === id; })) return ZB.meldung("Das Produkt ist schon im Angebot.", "fehler");
+    if (angebotListe.length >= 12) return ZB.meldung("Höchstens 12 Angebote gleichzeitig.", "fehler");
+    angebotListe.push({ id: id, preis: 0, _preisRoh: "", titel: "", bis: "", aktiv: true });
+    feld.value = ""; angebotGeaendertSetzen(); angeboteZeichnen();
+  });
+  $("angeboteSpeichern").addEventListener("click", async function () {
+    try {
+      var liste = angebotListe.map(function (a) {
+        var preis = a._preisRoh !== undefined ? ZB.cent(a._preisRoh) : a.preis;
+        if (isNaN(preis) || preis <= 0) throw new Error("Bitte einen Aktionspreis eingeben bei " + (ZB.produkte[a.id] || { name: a.id }).name);
+        return { id: a.id, preis: preis, titel: a.titel || "", bis: a.bis || "", aktiv: a.aktiv !== false };
+      });
+      var r = await ZB.api("POST", "/admin/angebote", { angebote: liste });
+      angebotListe = r.angebote; angebotGeaendert = false; angeboteZeichnen(); ZB.meldung("Angebote gespeichert. Der Slider auf der Startseite ist aktualisiert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
 
@@ -599,7 +671,7 @@
   async function protokoll() {
     try {
       var r = await ZB.api("GET", "/admin/protokoll?monat=" + $("protokollMonat").value);
-      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert" };
+      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert", "angebote-geaendert": "Angebote geändert" };
       $("protokollTabelle").innerHTML = "<thead><tr><th>Zeit</th><th>Ereignis</th><th>Wer</th><th>Details</th></tr></thead><tbody>" +
         (r.protokoll.length ? r.protokoll.map(function (p) {
           var d = Object.keys(p).filter(function (k) { return ["am", "ereignis", "von"].indexOf(k) === -1; }).map(function (k) { return k + ": " + p[k]; }).join(", ");

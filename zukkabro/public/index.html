@@ -26,29 +26,40 @@
   <script src="/assets/js/layout.js"></script>
 
   <main>
-    <!-- ============ HERO ============ -->
+    <!-- ============ HERO: SLIDER MIT ANGEBOTEN ============ -->
     <section class="hero pattern">
       <div class="container">
-        <a href="/sortiment.html" class="hero__banner slot" data-slot-box>
-          <img data-slot src="/assets/img/hero.jpg" alt="ZUKKABRO – Deine Cravings. Unser Job. Internationale Snacks, Drinks, Vapes und mehr, direkt zu dir. Jetzt shoppen.">
-          <div class="slot__fallback hero__fb">
-            <div class="hero__text">
-              <p class="hero__kicker">👑 Good snacks. Good mood.</p>
-              <p class="hero__title"><span>Deine Cravings.</span><span class="drip">Unser Job.</span></p>
-              <p class="hero__lead">Über <span data-produktzahl>500</span> internationale Snacks, Drinks, Vapes &amp; mehr. Direkt zu dir.</p>
-              <span class="btn btn--pink">Jetzt shoppen →</span>
-            </div>
-            <div class="hero__art" aria-hidden="true">
-              <img src="/assets/img/logo.png" data-fallback="/assets/img/logo.svg" alt="">
-              <span class="fl" style="--x:4%;--y:6%;--d:0s">🍫</span>
-              <span class="fl" style="--x:84%;--y:0%;--d:-2s">🥤</span>
-              <span class="fl" style="--x:88%;--y:66%;--d:-4s">🐻</span>
-              <span class="fl" style="--x:2%;--y:70%;--d:-1s">🍬</span>
-              <span class="fl" style="--x:46%;--y:80%;--d:-3s">🍭</span>
-            </div>
-          </div>
-        </a>
         <h1 class="sr-only">ZUKKABRO – Snacks, Drinks, Vapes &amp; More</h1>
+        <div class="slider" id="slider" tabindex="0" aria-roledescription="Karussell" aria-label="Angebote und Highlights">
+          <div class="slider__track">
+            <article class="slide slide--marke is-active" aria-roledescription="Slide" aria-label="1 von 1">
+              <div class="slide__text">
+                <p class="slide__kicker">👑 Good snacks. Good mood.</p>
+                <p class="hero__title"><span>Deine Cravings.</span><span class="drip">Unser Job.</span></p>
+                <p class="hero__lead">Über <span data-produktzahl>500</span> internationale Snacks, Drinks, Vapes &amp; mehr. Direkt zu dir.</p>
+                <div class="slide__cta"><a class="btn btn--pink" href="/sortiment.html">Jetzt shoppen →</a><a class="btn btn--light" href="/pakete.html">🎁 Pakete</a></div>
+              </div>
+              <div class="hero__art" aria-hidden="true">
+                <img src="/assets/img/logo.png" data-fallback="/assets/img/logo.svg" alt="">
+                <span class="fl" style="--x:4%;--y:6%;--d:0s">🍫</span>
+                <span class="fl" style="--x:84%;--y:0%;--d:-2s">🥤</span>
+                <span class="fl" style="--x:88%;--y:66%;--d:-4s">🐻</span>
+                <span class="fl" style="--x:2%;--y:70%;--d:-1s">🍬</span>
+                <span class="fl" style="--x:46%;--y:80%;--d:-3s">🍭</span>
+              </div>
+            </article>
+          </div>
+          <button class="slider__pfeil slider__pfeil--l" type="button" data-richtung="-1" aria-label="Vorheriges Angebot">‹</button>
+          <button class="slider__pfeil slider__pfeil--r" type="button" data-richtung="1" aria-label="Nächstes Angebot">›</button>
+          <div class="slider__punkte" role="tablist" aria-label="Slide wählen"></div>
+        </div>
+
+        <ul class="usp reveal is-visible" aria-label="Unsere Versprechen">
+          <li><span class="usp__icon" aria-hidden="true">🚚</span><span><strong>Versand aus Deutschland</strong><small>sicher verpackt, schnell bei dir</small></span></li>
+          <li><span class="usp__icon" aria-hidden="true">🌍</span><span><strong><span data-produktzahl>500</span>+ Produkte</strong><small>aus USA, Japan, Korea &amp; mehr</small></span></li>
+          <li><span class="usp__icon" aria-hidden="true">🔞</span><span><strong>Nur ab 18</strong><small>Altersprüfung bei Übergabe</small></span></li>
+          <li><span class="usp__icon" aria-hidden="true">🏪</span><span><strong>Händler willkommen</strong><small>Großmengen auf Anfrage</small></span></li>
+        </ul>
       </div>
     </section>
 
@@ -136,7 +147,7 @@
         <header class="section__head reveal">
           <p class="eyebrow">Frisch reingekommen</p>
           <h2>Neu im <span class="drip">Regal</span></h2>
-          <p>Die Preise stehen noch nicht fest. Frag einfach an, wir melden uns mit dem aktuellen Preis.</p>
+          <p>Jede Woche neue Sorten aus den USA, Japan, Korea und dem Rest der Welt.</p>
         </header>
         <div class="products" data-katalog="vorschau" data-filter="neu" data-limit="8"></div>
         <p class="mehr-wrap"><a class="btn btn--pink" href="/sortiment.html">Ganzes Sortiment ansehen (<span data-produktzahl>500</span> Produkte) →</a></p>
@@ -177,5 +188,6 @@
   <script src="/assets/js/produkte.js"></script>
   <script src="/assets/js/katalog.js"></script>
   <script src="/assets/js/pakete.js"></script>
+  <script src="/assets/js/slider.js"></script>
 </body>
 </html>

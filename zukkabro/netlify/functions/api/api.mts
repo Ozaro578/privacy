@@ -354,13 +354,54 @@ async function paketeSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, pakete: liste });
 }
 
+/* ---------- Angebote (Slider auf der Startseite, Aktionspreise) ---------- */
+interface Angebot { id: string; preis: number; titel: string; aktiv: boolean; bis: string }
+async function angebote(): Promise<Angebot[]> {
+  return (await lese<Angebot[]>("angebote/alle")) || [];
+}
+/** Nur laufende Angebote: aktiv, Produkt vorhanden und lieferbar, Enddatum nicht überschritten */
+async function laufendeAngebote(): Promise<Angebot[]> {
+  const heute = jetzt().slice(0, 10);
+  return (await angebote()).filter((a) => a.aktiv && produkt(a.id) && !produkt(a.id)!.x && (!a.bis || a.bis >= heute));
+}
+/** Endkundenpreise inkl. Aktionspreise: ein laufendes Angebot ersetzt den Shop-Preis */
+async function effektivePreise(): Promise<{ preise: ShopPreise; angebote: (Angebot & { alt: number | null })[] }> {
+  const [shop, laufend] = await Promise.all([shopPreise(), laufendeAngebote()]);
+  const preise: ShopPreise = { ...shop };
+  const liste = laufend.map((a) => {
+    const regulaer = shop[a.id];
+    preise[a.id] = { preis: a.preis, mwst: regulaer ? regulaer.mwst : mwstVorschlag(a.id) };
+    return { ...a, alt: regulaer && regulaer.preis > a.preis ? regulaer.preis : null };
+  });
+  return { preise, angebote: liste };
+}
+async function angeboteSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh = Array.isArray(b.angebote) ? b.angebote.slice(0, 12) : [];
+  const ids = new Set<string>();
+  const liste: Angebot[] = [];
+  for (const r of roh) {
+    const id = text(r?.id, 200);
+    if (!produkt(id)) throw new Fehler(400, `Unbekanntes Produkt: ${id || "(leer)"}`);
+    if (ids.has(id)) throw new Fehler(400, `${produkt(id)!.n} ist doppelt im Angebot.`);
+    ids.add(id);
+    const bis = text(r?.bis, 10);
+    if (bis && !/^\d{4}-\d{2}-\d{2}$/.test(bis)) throw new Fehler(400, "Enddatum bitte als Datum angeben.");
+    liste.push({ id, preis: ganz(r?.preis, 1, 10_000_000), titel: text(r?.titel, 40), aktiv: r?.aktiv !== false, bis });
+  }
+  await schreibe("angebote/alle", liste);
+  await protokoll("angebote-geaendert", s.id, { anzahl: liste.length });
+  return json({ ok: true, angebote: liste });
+}
+
 /** Öffentliche Shop-Daten: Endkundenpreise und Versandregeln (keine Händlerpreise!) */
 async function shopDaten() {
-  const [preise, e, alle] = await Promise.all([shopPreise(), einstellungen(), pakete()]);
+  const [{ preise, angebote: laufend }, e, alle] = await Promise.all([effektivePreise(), einstellungen(), pakete()]);
   const nurPreise: Record<string, number> = {};
   for (const [id, p] of Object.entries(preise)) if (produkt(id)) nurPreise[id] = p.preis;
   return json({
     preise: nurPreise,
+    angebote: laufend.map((a) => ({ id: a.id, preis: a.preis, alt: a.alt, titel: a.titel, bis: a.bis })),
     versand: { kosten: e.versand, freiAb: e.versandfreiAb, abholung: e.abholung, abholort: e.abholort },
     zahlarten: zahlarten(e),
     ohnePreisAusblenden: !!(e as any).ohnePreisAusblenden,
@@ -380,7 +421,7 @@ function zahlarten(e: ShopEinstellungen): string[] {
 async function kasse(req: Request, ip: string) {
   await bremse("kasse", ip, 10, 60);
   const b = await body(req);
-  const [preise, e, allePakete] = await Promise.all([shopPreise(), einstellungen(), pakete()]);
+  const [{ preise }, e, allePakete] = await Promise.all([effektivePreise(), einstellungen(), pakete()]);
   const k = b.kunde || {};
   const kunde: Kunde = {
     vorname: text(k.vorname, 80), nachname: text(k.nachname, 80), email: text(k.email, 120).toLowerCase(),
@@ -562,6 +603,8 @@ export default async (req: Request, context: Context) => {
         return json({ preise, shop, einstellungen: e });
       }
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/angebote") return json({ angebote: await angebote() });
+      if (m === "POST" && pfad === "/admin/angebote") return await angeboteSpeichern(req, a);
       if (m === "POST" && pfad === "/admin/einstellungen") return await einstellungenSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/pakete") return json({ pakete: await pakete() });
       if (m === "POST" && pfad === "/admin/pakete") return await paketeSpeichern(req, a);

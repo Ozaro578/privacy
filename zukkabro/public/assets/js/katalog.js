@@ -10,6 +10,7 @@
   var LISTE = typeof PRODUKTE !== "undefined" && Array.isArray(PRODUKTE) ? PRODUKTE : [];
   var KATS = typeof KATEGORIEN !== "undefined" && Array.isArray(KATEGORIEN) ? KATEGORIEN : [];
   var PREIS = {};          // Endkundenpreise in Cent, kommen vom Server
+  var ANGEBOT = {};        // laufende Angebote: id -> { preis, alt }
   var OHNE_PREIS_WEG = false;
   var BEST = typeof BESTSELLER !== "undefined" && Array.isArray(BESTSELLER) ? BESTSELLER : [];
   var SEITE = 48;
@@ -40,9 +41,13 @@
   function karte(p, i) {
     var k = hauptKat(p);
     var hatPreis = typeof PREIS[p.id] === "number";
-    var preis = hatPreis ? '<span class="price">' + euro(PREIS[p.id]) + "</span>" : '<span class="price price--folgt">Preis folgt</span>';
+    var ang = ANGEBOT[p.id];
+    var preis = hatPreis
+      ? '<span class="price' + (ang ? " price--angebot" : "") + '">' + euro(PREIS[p.id]) + (ang && ang.alt ? ' <s class="price__alt">' + euro(ang.alt) + "</s>" : "") + "</span>"
+      : '<span class="price price--folgt">Preis folgt</span>';
     var badges = "";
-    if (istBest(p)) badges += '<span class="badge badge--bestseller">BESTSELLER</span>';
+    if (ang) badges += '<span class="badge badge--angebot">' + (ang.alt ? "−" + Math.round((1 - ang.preis / ang.alt) * 100) + " %" : "ANGEBOT") + "</span>";
+    else if (istBest(p)) badges += '<span class="badge badge--bestseller">BESTSELLER</span>';
     else if (p.neu) badges += '<span class="badge badge--neu">NEU</span>';
     if (p.ab18) badges += '<span class="badge badge--18">18+</span>';
     var hinweise = "";
@@ -195,6 +200,7 @@
   function start() {
     window.ZBShop.daten().then(function (d) {
       PREIS = d.preise || {}; OHNE_PREIS_WEG = !!d.ohnePreisAusblenden;
+      ANGEBOT = {}; (d.angebote || []).forEach(function (a) { ANGEBOT[a.id] = a; });
       zeichneAlles();
     });
   }

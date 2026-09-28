@@ -56,6 +56,11 @@
           '<p class="age-gate__small">Bei Abholung und Lieferung wird das Alter kontrolliert.</p>' +
         "</div>" +
       "</div>" +
+      '<div class="topbar"><div class="container topbar__inner">' +
+        '<span>🚚 Versand aus Deutschland</span>' +
+        '<span id="topbarFrei" hidden>📦 Versandkostenfrei ab <b data-versandfrei></b></span>' +
+        '<span>🔞 Nur für Erwachsene ab 18</span>' +
+      "</div></div>" +
       '<header class="header" id="top"><div class="container header__inner">' +
         '<a href="/" class="logo" aria-label="ZUKKABRO Startseite"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="190" height="50"></a>' +
         '<a class="korb-knopf" href="/warenkorb.html" aria-label="Warenkorb"><span aria-hidden="true">🛒</span><span class="korb-zahl" id="korbZahl" hidden>0</span></a>' +
@@ -66,15 +71,23 @@
 
   function fuss() {
     return '<footer class="footer"><div class="container footer__inner">' +
-        '<div><a href="/" class="footer__logo"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="220" height="58" loading="lazy"></a>' +
-        '<p class="footer__note">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p></div>' +
-        '<nav class="footer__links" aria-label="Weitere Seiten">' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/pakete.html">Pakete</a><a href="/haendler/">Für Händler</a><a href="/kontakt.html">Kontakt</a>' +
-          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a>' +
-          '<a href="/admin/">Admin-Login</a>' +
+        '<div class="footer__marke"><a href="/" class="footer__logo"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="220" height="58"></a>' +
+          '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Deine Cravings. Unser Job.</p>' +
+          '<div class="footer__social" id="footerSocial"></div></div>' +
+        '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+        "</nav>" +
+        '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
+          '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +
+        "</nav>" +
+        '<nav class="footer__spalte" aria-label="Rechtliches"><h3>Rechtliches</h3>' +
+          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a>' +
           '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
         "</nav></div>" +
-        '<p class="footer__copy">© <span id="year">2026</span> ZUKKABRO. Alle Rechte vorbehalten.</p></footer>';
+        '<div class="container footer__unten">' +
+          '<p class="footer__jugend">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p>' +
+          '<p class="footer__copy">© <span id="year">2026</span> ZUKKABRO. Alle Rechte vorbehalten. · <a href="/admin/">Admin</a></p>' +
+        "</div></footer>";
   }
 
   /* ---------- Warenkorb (im Browser gespeichert) ---------- */
@@ -193,6 +206,20 @@
     setText("tiktokLabel", tt ? "@" + tt : "");
     setLink("mailLink", S.email ? "mailto:" + S.email : "");
     setText("email", S.email); setText("address", S.address); setText("hours", S.hours); setText("shipping", S.shipping);
+    var social = document.getElementById("footerSocial");
+    if (social) {
+      var s = [];
+      if (ig) s.push('<a href="https://instagram.com/' + ig + '" target="_blank" rel="noopener">Instagram</a>');
+      if (tt) s.push('<a href="https://www.tiktok.com/@' + tt + '" target="_blank" rel="noopener">TikTok</a>');
+      if (wa) s.push('<a href="https://wa.me/' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
+      social.innerHTML = s.join("");
+    }
+
+    /* Versandkostenfrei-Grenze in die obere Leiste */
+    window.ZBShop.daten().then(function (d) {
+      var frei = d && d.versand && d.versand.freiAb, el = document.getElementById("topbarFrei");
+      if (el && frei > 0) { el.querySelector("[data-versandfrei]").textContent = window.ZBShop.euro(frei); el.hidden = false; }
+    });
 
     /* Einblend-Animationen */
     var reveals = document.querySelectorAll(".reveal");

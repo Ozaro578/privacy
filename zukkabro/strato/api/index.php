@@ -275,10 +275,51 @@ function zahlarten(array $e): array {
     return $z;
 }
 
+/* ---------- Angebote (Slider auf der Startseite, Aktionspreise) ---------- */
+function angebote(): array { $a = lese('angebote/alle'); return is_array($a) ? $a : []; }
+/** Nur laufende Angebote: aktiv, Produkt vorhanden und lieferbar, Enddatum nicht überschritten */
+function laufende_angebote(): array {
+    $heute = substr(jetzt(), 0, 10);
+    return array_values(array_filter(angebote(), function ($a) use ($heute) {
+        $p = produkt((string) $a['id']);
+        return !empty($a['aktiv']) && $p && empty($p['x']) && (empty($a['bis']) || $a['bis'] >= $heute);
+    }));
+}
+/** Endkundenpreise inkl. Aktionspreise: ein laufendes Angebot ersetzt den Shop-Preis */
+function effektive_preise(): array {
+    $shop = shop_preise(); $preise = $shop; $liste = [];
+    foreach (laufende_angebote() as $a) {
+        $regulaer = $shop[$a['id']] ?? null;
+        $preise[$a['id']] = ['preis' => $a['preis'], 'mwst' => $regulaer ? $regulaer['mwst'] : mwst_vorschlag($a['id'])];
+        $a['alt'] = $regulaer && $regulaer['preis'] > $a['preis'] ? $regulaer['preis'] : null;
+        $liste[] = $a;
+    }
+    return ['preise' => $preise, 'angebote' => $liste];
+}
+function angebote_speichern(array $s): never {
+    $b = body();
+    $roh = is_array($b['angebote'] ?? null) ? array_slice($b['angebote'], 0, 12) : [];
+    $ids = []; $liste = [];
+    foreach ($roh as $r) {
+        $id = text($r['id'] ?? '', 200);
+        $p = produkt($id);
+        if (!$p) throw new Fehler(400, 'Unbekanntes Produkt: ' . ($id ?: '(leer)'));
+        if (isset($ids[$id])) throw new Fehler(400, "{$p['n']} ist doppelt im Angebot.");
+        $ids[$id] = true;
+        $bis = text($r['bis'] ?? '', 10);
+        if ($bis !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $bis)) throw new Fehler(400, 'Enddatum bitte als Datum angeben.');
+        $liste[] = ['id' => $id, 'preis' => ganz($r['preis'] ?? null, 1, 10000000), 'titel' => text($r['titel'] ?? '', 40), 'aktiv' => ($r['aktiv'] ?? true) !== false, 'bis' => $bis];
+    }
+    schreibe('angebote/alle', $liste);
+    protokoll('angebote-geaendert', $s['id'], ['anzahl' => count($liste)]);
+    antwort(['ok' => true, 'angebote' => $liste]);
+}
+
 function shop_daten(): never {
-    $preise = shop_preise(); $e = einstellungen();
+    ['preise' => $preise, 'angebote' => $laufend] = effektive_preise(); $e = einstellungen();
     $nur = [];
     foreach ($preise as $id => $p) if (produkt((string) $id)) $nur[$id] = $p['preis'];
+    $ang = array_map(fn($a) => ['id' => $a['id'], 'preis' => $a['preis'], 'alt' => $a['alt'], 'titel' => $a['titel'], 'bis' => $a['bis']], $laufend);
     $pk = [];
     foreach (pakete() as $p) {
         if (!$p['aktiv']) continue;
@@ -286,7 +327,7 @@ function shop_daten(): never {
             'inhalt' => $p['inhalt'], 'preis' => $p['preis']], paket_status($p));
     }
     antwort([
-        'preise' => obj($nur),
+        'preise' => obj($nur), 'angebote' => $ang,
         'versand' => ['kosten' => $e['versand'], 'freiAb' => $e['versandfreiAb'], 'abholung' => $e['abholung'], 'abholort' => $e['abholort']],
         'zahlarten' => zahlarten($e), 'ohnePreisAusblenden' => (bool) $e['ohnePreisAusblenden'], 'pakete' => $pk,
     ]);
@@ -295,7 +336,7 @@ function shop_daten(): never {
 function kasse(string $ip): never {
     bremse('kasse', $ip, 10, 60);
     $b = body();
-    $preise = shop_preise(); $e = einstellungen(); $allePakete = pakete();
+    $preise = effektive_preise()['preise']; $e = einstellungen(); $allePakete = pakete();
     $k = is_array($b['kunde'] ?? null) ? $b['kunde'] : [];
     $kunde = [
         'vorname' => text($k['vorname'] ?? '', 80), 'nachname' => text($k['nachname'] ?? '', 80), 'email' => strtolower(text($k['email'] ?? '', 120)),
@@ -540,6 +581,8 @@ function zb_api(): never {
             }
             if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen()]);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/angebote') antwort(['angebote' => angebote()]);
+            if ($m === 'POST' && $pfad === '/admin/angebote') angebote_speichern($a);
             if ($m === 'POST' && $pfad === '/admin/einstellungen') einstellungen_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/pakete') antwort(['pakete' => pakete()]);
             if ($m === 'POST' && $pfad === '/admin/pakete') pakete_speichern($a);

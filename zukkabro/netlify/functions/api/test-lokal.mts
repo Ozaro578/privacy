@@ -116,6 +116,27 @@ r = await rufe("GET", "/admin/buchungen?jahr=" + jahr, undefined, admin);
 const zuK = r.daten.buchungen.filter((x: any) => x.beleg === kNr);
 assert.equal(zuK.reduce((a: number, x: any) => a + x.betrag, 0), 2 * 249 + 590); ok("Kundenbestellung gebucht inkl. Versandkosten (10,88 €)");
 
+// Angebote (Aktionspreise für den Slider)
+const snack = ids.find((i) => i !== essen && !SORTIMENT[i].a && !SORTIMENT[i].x && SORTIMENT[i].k.includes("snacks"))!;
+r = await rufe("GET", "/admin/angebote", undefined, admin); assert.deepEqual(r.daten.angebote, []); ok("Noch keine Angebote");
+r = await rufe("POST", "/admin/angebote", { angebote: [{ id: "gibt-es-nicht", preis: 100 }] }, admin); assert.equal(r.status, 400); ok("Angebot mit unbekanntem Produkt abgelehnt");
+r = await rufe("POST", "/admin/angebote", { angebote: [{ id: essen, preis: 199 }, { id: essen, preis: 150 }] }, admin); assert.equal(r.status, 400); ok("Doppeltes Angebot abgelehnt");
+r = await rufe("POST", "/admin/angebote", { angebote: [
+  { id: essen, preis: 199, titel: "Deal der Woche" },
+  { id: snack, preis: 149, bis: "2000-01-01" },
+  { id: vape, preis: 899, aktiv: false },
+] }, admin); assert.equal(r.status, 200); assert.equal(r.daten.angebote.length, 3); ok("Angebote gespeichert");
+r = await rufe("GET", "/shop/daten");
+assert.equal(r.daten.angebote.length, 1); assert.equal(r.daten.angebote[0].id, essen); assert.equal(r.daten.angebote[0].alt, 249); assert.equal(r.daten.angebote[0].titel, "Deal der Woche");
+assert.equal(r.daten.preise[essen], 199); assert.equal(r.daten.preise[vape], 999); assert.equal(r.daten.preise[snack], undefined);
+ok("Shop zeigt nur laufende Angebote: 1,99 € statt 2,49 €, abgelaufene und inaktive nicht");
+r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: essen, menge: 2 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.brutto, 2 * 199 + 590); assert.equal(r.daten.positionen?.[0]?.mwst ?? 7, 7); ok("Kasse rechnet mit Aktionspreis (2 × 1,99 € + Versand)");
+r = await rufe("POST", "/admin/angebote", { angebote: [{ id: snack, preis: 149 }] }, admin); assert.equal(r.status, 200);
+r = await rufe("GET", "/shop/daten"); assert.equal(r.daten.preise[essen], 249); assert.equal(r.daten.preise[snack], 149); assert.equal(r.daten.angebote[0].alt, null);
+ok("Angebot ohne regulären Preis: kaufbar zum Aktionspreis, kein Streichpreis");
+r = await rufe("POST", "/admin/angebote", { angebote: [] }, admin); assert.equal(r.status, 200);
+
 // Pakete
 r = await rufe("GET", "/shop/daten"); assert.ok(r.daten.pakete.length >= 8); assert.equal(r.daten.pakete[0].preis, null); ok("Start-Pakete sichtbar (" + r.daten.pakete.length + "), Preis offen");
 r = await rufe("POST", "/shop/bestellung", { ...basis, positionen: [{ produktId: "paket:netflix-night", menge: 1 }] }); assert.equal(r.status, 400); ok("Paket ohne Preis nicht kaufbar");
