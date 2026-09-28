@@ -49,6 +49,28 @@
             <span class="contact__icon" aria-hidden="true">✉️</span><h3>E-Mail</h3><p data-shop="email">E-Mail folgt</p>
           </a>
         </div>
+        <div class="kontaktform reveal" id="nachricht">
+          <div class="kontaktform__kopf">
+            <h2>Oder schreib uns <span class="drip">direkt hier</span></h2>
+            <p>Frage zu einem Produkt, Wunschartikel oder Händleranfrage. Wir antworten meist am selben Tag.</p>
+          </div>
+          <form id="kontaktForm" novalidate>
+            <label>Name<input name="name" required maxlength="100" autocomplete="name"></label>
+            <label>E-Mail<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+            <label>Telefon <small>optional</small><input name="telefon" maxlength="40" autocomplete="tel"></label>
+            <label>Worum geht's?<select name="betreff"><option>Frage zu einem Produkt</option><option>Wunschartikel</option><option>Meine Bestellung</option><option>Händleranfrage</option><option>Sonstiges</option></select></label>
+            <label class="voll">Nachricht<textarea name="text" rows="5" required maxlength="2000" placeholder="Hey ZUKKABRO, …"></textarea></label>
+            <label class="kontaktform__hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+            <label class="voll kontaktform__check"><input type="checkbox" name="datenschutz" required><span>Ich habe die <a href="/rechtliches.html#datenschutz">Datenschutzerklärung</a> gelesen.</span></label>
+            <p class="kontaktform__fehler voll" id="kontaktFehler" hidden></p>
+            <div class="voll"><button class="btn btn--pink" type="submit" id="kontaktSenden">Nachricht senden →</button></div>
+          </form>
+          <div class="kontaktform__danke" id="kontaktDanke" hidden>
+            <svg class="danke__crown" aria-hidden="true"><use href="#crown"/></svg>
+            <p class="danke__title">Danke, Bro!</p>
+            <p>Deine Nachricht ist angekommen. Wir melden uns bei dir.</p>
+          </div>
+        </div>
         <div class="info reveal" id="versand">
           <div><h3>🚚 Versand</h3><p data-shop="shipping">Schneller Versand aus Deutschland. 18+ Artikel nur mit Altersprüfung bei der Zustellung.</p></div>
           <div><h3>📍 Standort</h3><p data-shop="address">Adresse folgt</p></div>
@@ -68,5 +90,6 @@
 
   <div id="layout-unten"></div>
   <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/kontakt.js"></script>
 </body>
 </html>

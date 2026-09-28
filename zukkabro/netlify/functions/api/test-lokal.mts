@@ -154,6 +154,16 @@ assert.equal(r.status, 200); assert.equal(r.daten.anfrage.art, "preisanfrage"); 
 r = await rufe("POST", "/admin/bestellungen/buchen", { id: r.daten.anfrage.id }, admin); assert.equal(r.status, 400); ok("Preisanfrage kann nicht gebucht werden");
 r = await rufe("POST", "/haendler/preisanfrage", { positionen: [{ produktId: essen, stueck: 1 }] }); assert.equal(r.status, 401); ok("Preisanfrage nur für angemeldete Händler");
 
+// Kontaktformular
+r = await rufe("POST", "/kontakt", { name: "Lea", email: "lea@test.de", text: "Habt ihr Takis Blue Heat?", datenschutz: true, betreff: "Frage zu einem Produkt" });
+assert.equal(r.status, 200); const nId = r.daten.id; ok("Kontaktnachricht angenommen");
+r = await rufe("POST", "/kontakt", { name: "Bot", email: "bot@test.de", text: "spam", datenschutz: true, website: "http://x" }); assert.equal(r.status, 200); ok("Honigtopf-Nachricht still verworfen");
+r = await rufe("POST", "/kontakt", { name: "", email: "lea@test.de", text: "x", datenschutz: true }); assert.equal(r.status, 400); ok("Nachricht ohne Name abgelehnt");
+r = await rufe("POST", "/kontakt", { name: "Lea", email: "keine-mail", text: "x", datenschutz: true }); assert.equal(r.status, 400); ok("Nachricht mit falscher E-Mail abgelehnt");
+r = await rufe("GET", "/admin/nachrichten", undefined, admin); assert.equal(r.daten.nachrichten.length, 1); assert.equal(r.daten.nachrichten[0].gelesen, false); ok("Admin sieht genau eine Nachricht (Spam nicht)");
+r = await rufe("GET", "/admin/nachrichten"); assert.equal(r.status, 401); ok("Nachrichten nur für Admins");
+r = await rufe("POST", "/admin/nachrichten/status", { id: nId, gelesen: true }, admin); assert.equal(r.daten.nachricht.gelesen, true); ok("Nachricht als gelesen markiert");
+
 // Bremse gegen Passwort-Raten (gleiche IP)
 let letzte = 0;
 for (let i = 0; i < 12; i++) {

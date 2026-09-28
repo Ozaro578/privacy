@@ -275,6 +275,33 @@ function zahlarten(array $e): array {
     return $z;
 }
 
+/* ---------- Kontaktformular ---------- */
+function kontakt(string $ip): never {
+    bremse('kontakt', $ip, 5, 60);
+    $b = body();
+    $n = [
+        'id' => neue_id('N-'), 'name' => text($b['name'] ?? '', 100), 'email' => strtolower(text($b['email'] ?? '', 120)), 'telefon' => text($b['telefon'] ?? '', 40),
+        'betreff' => text($b['betreff'] ?? '', 120), 'text' => text($b['text'] ?? '', 2000), 'erstellt' => jetzt(), 'gelesen' => false,
+    ];
+    if ($n['name'] === '' || $n['text'] === '') throw new Fehler(400, 'Bitte Name und Nachricht angeben.');
+    if (!email_ok($n['email'])) throw new Fehler(400, 'Bitte eine gültige E-Mail-Adresse angeben.');
+    if (($b['datenschutz'] ?? null) !== true) throw new Fehler(400, 'Bitte die Datenschutzerklärung bestätigen.');
+    if (text($b['website'] ?? '', 10) !== '') antwort(['ok' => true, 'id' => $n['id']]); // Honigtopf: nur Bots füllen das versteckte Feld
+    schreibe('nachrichten/' . $n['id'], $n);
+    protokoll('nachricht-neu', $n['email'], ['id' => $n['id'], 'betreff' => $n['betreff']]);
+    antwort(['ok' => true, 'id' => $n['id']]);
+}
+function nachricht_status(): never {
+    $b = body();
+    $id = text($b['id'] ?? '', 40);
+    if (!preg_match('/^N-\d{8}-[0-9A-F]{8}$/', $id)) throw new Fehler(404, 'Nachricht nicht gefunden.');
+    $n = lese('nachrichten/' . $id);
+    if (!$n) throw new Fehler(404, 'Nachricht nicht gefunden.');
+    $n['gelesen'] = ($b['gelesen'] ?? true) !== false;
+    schreibe('nachrichten/' . $id, $n);
+    antwort(['ok' => true, 'nachricht' => $n]);
+}
+
 /* ---------- Angebote (Slider auf der Startseite, Aktionspreise) ---------- */
 function angebote(): array { $a = lese('angebote/alle'); return is_array($a) ? $a : []; }
 /** Nur laufende Angebote: aktiv, Produkt vorhanden und lieferbar, Enddatum nicht überschritten */
@@ -545,6 +572,7 @@ function zb_api(): never {
         if ($m === 'POST' && $pfad === '/haendler/registrieren') registrieren($ip);
         if ($m === 'GET' && $pfad === '/shop/daten') shop_daten();
         if ($m === 'POST' && $pfad === '/shop/bestellung') kasse($ip);
+        if ($m === 'POST' && $pfad === '/kontakt') kontakt($ip);
 
         if (str_starts_with($pfad, '/haendler/')) {
             $h = aktiver_haendler($s);
@@ -581,6 +609,8 @@ function zb_api(): never {
             }
             if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen()]);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/nachrichten') antwort(['nachrichten' => array_reverse(lese_alle('nachrichten/'))]);
+            if ($m === 'POST' && $pfad === '/admin/nachrichten/status') nachricht_status();
             if ($m === 'GET' && $pfad === '/admin/angebote') antwort(['angebote' => angebote()]);
             if ($m === 'POST' && $pfad === '/admin/angebote') angebote_speichern($a);
             if ($m === 'POST' && $pfad === '/admin/einstellungen') einstellungen_speichern($a);

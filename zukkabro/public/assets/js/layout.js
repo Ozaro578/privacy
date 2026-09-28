@@ -96,7 +96,7 @@
     alle: function () { try { var k = JSON.parse(localStorage.getItem(KORB_KEY) || "{}"); return k && typeof k === "object" ? k : {}; } catch (e) { return {}; } },
     speichern: function (k) { try { localStorage.setItem(KORB_KEY, JSON.stringify(k)); } catch (e) { /* egal */ } window.dispatchEvent(new Event("zb-korb")); },
     setze: function (id, menge) { var k = this.alle(); menge = Math.max(0, Math.min(999, menge | 0)); if (menge) k[id] = menge; else delete k[id]; this.speichern(k); },
-    dazu: function (id, menge) { var k = this.alle(); this.setze(id, (k[id] || 0) + (menge || 1)); },
+    dazu: function (id, menge) { var k = this.alle(); this.setze(id, (k[id] || 0) + (menge || 1)); if (window.ZBKorbLade) window.ZBKorbLade.oeffnen(id); },
     anzahl: function () { var k = this.alle(); return Object.keys(k).reduce(function (a, id) { return a + k[id]; }, 0); },
     leeren: function () { this.speichern({}); }
   };
@@ -116,8 +116,76 @@
     euro: function (cent) { return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100); }
   };
 
+  /* ---------- Mini-Warenkorb (Schublade rechts, öffnet sich beim "In den Korb") ---------- */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var lade = null;
+  function ladeBauen() {
+    lade = document.createElement("div"); lade.className = "korb-lade"; lade.id = "korbLade"; lade.hidden = true;
+    lade.innerHTML = '<div class="korb-lade__hinter" data-korb-zu></div>' +
+      '<aside class="korb-lade__box" role="dialog" aria-modal="true" aria-label="Warenkorb">' +
+        '<header class="korb-lade__kopf"><h2>🛒 Dein Warenkorb</h2><button type="button" class="korb-lade__zu" data-korb-zu aria-label="Schließen">✕</button></header>' +
+        '<div class="korb-lade__liste" id="korbLadeListe"></div>' +
+        '<footer class="korb-lade__fuss"><p class="korb-lade__summe"><span>Warenwert</span><b id="korbLadeSumme">0,00 €</b></p>' +
+          '<a class="btn btn--pink" href="/warenkorb.html">Zum Warenkorb →</a><button type="button" class="btn btn--light" data-korb-zu>Weiter shoppen</button></footer>' +
+      "</aside>";
+    document.body.appendChild(lade);
+    lade.addEventListener("click", function (e) {
+      if (e.target.closest("[data-korb-zu]")) return ladeZu();
+      var w = e.target.closest("[data-lade-weg]");
+      if (w) { window.ZBKorb.setze(w.getAttribute("data-lade-weg"), 0); return ladeZeichnen(); }
+      var m = e.target.closest("[data-lade-menge]");
+      if (m) { var t = m.getAttribute("data-lade-menge").split("|"), k = window.ZBKorb.alle(); window.ZBKorb.setze(t[0], (k[t[0]] || 0) + parseInt(t[1], 10)); return ladeZeichnen(); }
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !lade.hidden) ladeZu(); });
+  }
+  function ladeZu() {
+    if (!lade) return;
+    lade.classList.remove("is-offen");
+    setTimeout(function () { lade.hidden = true; document.body.classList.remove("lade-offen"); }, 250);
+  }
+  function ladeZeichnen(neuId) {
+    window.ZBShop.daten().then(function (d) {
+      var k = window.ZBKorb.alle(), summe = 0, offen = false, PROD = {};
+      if (typeof PRODUKTE !== "undefined") PRODUKTE.forEach(function (p) { PROD[p.id] = p; });
+      var html = Object.keys(k).map(function (id) {
+        var name, bild = "", preis;
+        if (id.indexOf("paket:") === 0) {
+          var pk = (d.pakete || []).filter(function (x) { return x.id === id.slice(6); })[0];
+          name = pk ? "🎁 Paket: " + pk.name : "Paket"; preis = pk ? pk.preis : undefined;
+          var erstes = pk && pk.inhalt.map(function (i) { return PROD[i.id]; }).filter(function (p) { return p && p.bild; })[0];
+          if (erstes) bild = erstes.bild;
+        } else {
+          var p = PROD[id]; name = p ? p.name : "Artikel"; bild = p && p.bild ? p.bild : ""; preis = (d.preise || {})[id];
+        }
+        var hat = typeof preis === "number";
+        if (hat) summe += preis * k[id]; else offen = true;
+        return '<div class="korb-lade__artikel' + (id === neuId ? " is-neu" : "") + '">' +
+          (bild ? '<img src="/' + esc(bild) + '" alt="">' : '<span class="korb-lade__leer" aria-hidden="true">🍬</span>') +
+          '<div><p class="korb-lade__name">' + esc(name) + '</p><p class="korb-lade__preis">' + (hat ? window.ZBShop.euro(preis * k[id]) : "Preis folgt") + "</p>" +
+          '<div class="korb-lade__menge"><button type="button" data-lade-menge="' + esc(id) + '|-1" aria-label="Weniger">−</button><span>' + k[id] + '</span><button type="button" data-lade-menge="' + esc(id) + '|1" aria-label="Mehr">+</button></div></div>' +
+          '<button type="button" class="korb-lade__weg" data-lade-weg="' + esc(id) + '" aria-label="Entfernen">✕</button></div>';
+      }).join("");
+      document.getElementById("korbLadeListe").innerHTML = html || '<p class="korb-lade__nichts">Dein Warenkorb ist noch leer.</p>';
+      document.getElementById("korbLadeSumme").textContent = window.ZBShop.euro(summe) + (offen ? " + offene Preise" : "");
+    });
+  }
+  window.ZBKorbLade = {
+    oeffnen: function (neuId) {
+      if (!lade) ladeBauen();
+      ladeZeichnen(neuId);
+      lade.hidden = false; document.body.classList.add("lade-offen");
+      requestAnimationFrame(function () { lade.classList.add("is-offen"); });
+    },
+    schliessen: ladeZu
+  };
+
   /* ---------- Kurze Meldung ---------- */
   window.ZBToast = function (text, fehler) {
+    if (!fehler && lade && !lade.hidden) return; // Mini-Warenkorb zeigt es schon
     var box = document.getElementById("toast");
     if (!box) { box = document.createElement("div"); box.id = "toast"; box.setAttribute("role", "status"); document.body.appendChild(box); }
     var el = document.createElement("div");
@@ -213,6 +281,14 @@
       if (tt) s.push('<a href="https://www.tiktok.com/@' + tt + '" target="_blank" rel="noopener">TikTok</a>');
       if (wa) s.push('<a href="https://wa.me/' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
       social.innerHTML = s.join("");
+    }
+    /* WhatsApp-Knopf unten links, sobald eine Nummer in shop.js steht */
+    if (wa && seite !== "admin" && seite !== "haendler") {
+      var fab = document.createElement("a");
+      fab.className = "wa-fab"; fab.href = "https://wa.me/" + wa + "?text=" + encodeURIComponent("Hallo ZUKKABRO! Ich habe eine Frage.");
+      fab.target = "_blank"; fab.rel = "noopener"; fab.setAttribute("aria-label", "Per WhatsApp schreiben");
+      fab.innerHTML = '<span aria-hidden="true">💬</span><span>WhatsApp</span>';
+      document.body.appendChild(fab);
     }
 
     /* Versandkostenfrei-Grenze in die obere Leiste */

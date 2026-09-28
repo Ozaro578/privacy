@@ -58,6 +58,7 @@
           <button data-tab="uebersicht" role="tab">📊 Übersicht</button>
           <button data-tab="bestellungen" role="tab">📦 Bestellungen <span class="zahl" id="zahlBestellungen" hidden></span></button>
           <button data-tab="haendler" role="tab">🏪 Händler <span class="zahl" id="zahlHaendler" hidden></span></button>
+          <button data-tab="nachrichten" role="tab">✉️ Nachrichten <span class="zahl" id="zahlNachrichten" hidden></span></button>
           <button data-tab="preise" role="tab">🏷️ Preise</button>
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
           <button data-tab="angebote" role="tab">🔥 Angebote</button>
@@ -99,6 +100,13 @@
             <label class="feld">Status<select id="haendlerFilter"><option value="">Alle</option><option value="offen">Offen (zu prüfen)</option><option value="aktiv">Aktiv</option><option value="gesperrt">Gesperrt</option></select></label>
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="haendlerTabelle"></table></div>
+        </section>
+
+        <!-- Nachrichten aus dem Kontaktformular -->
+        <section data-panel="nachrichten" hidden>
+          <p class="hinweis">Nachrichten aus dem Kontaktformular der Webseite. Antworten per E-Mail oder Telefon, danach als gelesen markieren.</p>
+          <div class="leiste"><label class="feld">Anzeigen<select id="nachrichtFilter"><option value="">Alle</option><option value="neu">Nur ungelesene</option></select></label></div>
+          <div id="nachrichtListe"></div>
         </section>
 
         <!-- Händlerpreise -->

@@ -116,6 +116,17 @@
       window.ZBKorb.dazu(p.id, n);
       window.ZBToast("🛒 " + n + " × " + p.name + " im Warenkorb.");
     });
+    /* Handy: Kaufleiste unten, sobald der Kaufknopf aus dem Bild gescrollt ist */
+    if (knopf && typeof preis === "number") {
+      var leiste = document.createElement("div");
+      leiste.className = "kaufleiste";
+      leiste.innerHTML = '<span class="kaufleiste__preis">' + window.ZBShop.euro(preis) + '</span><button class="btn btn--pink" type="button">🛒 In den Warenkorb</button>';
+      document.body.appendChild(leiste);
+      leiste.querySelector("button").addEventListener("click", function () { knopf.click(); });
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (e) { leiste.classList.toggle("is-sichtbar", !e[0].isIntersecting); }).observe(knopf);
+      } else leiste.classList.add("is-sichtbar");
+    }
   });
 
   // Ähnliche Produkte aus der Hauptkategorie (zeichnet katalog.js)

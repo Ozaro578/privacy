@@ -354,6 +354,34 @@ async function paketeSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, pakete: liste });
 }
 
+/* ---------- Kontaktformular ---------- */
+interface Nachricht { id: string; name: string; email: string; telefon: string; betreff: string; text: string; erstellt: string; gelesen: boolean }
+async function kontakt(req: Request, ip: string) {
+  await bremse("kontakt", ip, 5, 60);
+  const b = await body(req);
+  const n: Nachricht = {
+    id: neueId("N-"), name: text(b.name, 100), email: text(b.email, 120).toLowerCase(), telefon: text(b.telefon, 40),
+    betreff: text(b.betreff, 120), text: text(b.text, 2000), erstellt: jetzt(), gelesen: false,
+  };
+  if (!n.name || !n.text) throw new Fehler(400, "Bitte Name und Nachricht angeben.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(n.email)) throw new Fehler(400, "Bitte eine gültige E-Mail-Adresse angeben.");
+  if (b.datenschutz !== true) throw new Fehler(400, "Bitte die Datenschutzerklärung bestätigen.");
+  if (text(b.website, 10)) return json({ ok: true, id: n.id }); // Honigtopf: nur Bots füllen das versteckte Feld
+  await schreibe("nachrichten/" + n.id, n);
+  await protokoll("nachricht-neu", n.email, { id: n.id, betreff: n.betreff });
+  return json({ ok: true, id: n.id });
+}
+async function nachrichtStatus(req: Request) {
+  const b = await body(req);
+  const id = text(b.id, 40);
+  if (!/^N-\d{8}-[0-9A-F]{8}$/.test(id)) throw new Fehler(404, "Nachricht nicht gefunden.");
+  const n = await lese<Nachricht>("nachrichten/" + id);
+  if (!n) throw new Fehler(404, "Nachricht nicht gefunden.");
+  n.gelesen = b.gelesen !== false;
+  await schreibe("nachrichten/" + id, n);
+  return json({ ok: true, nachricht: n });
+}
+
 /* ---------- Angebote (Slider auf der Startseite, Aktionspreise) ---------- */
 interface Angebot { id: string; preis: number; titel: string; aktiv: boolean; bis: string }
 async function angebote(): Promise<Angebot[]> {
@@ -559,6 +587,7 @@ export default async (req: Request, context: Context) => {
     if (m === "GET" && pfad === "/ich") return await ich(s);
     if (m === "POST" && pfad === "/haendler/registrieren") return await registrieren(req, ip);
     if (m === "GET" && pfad === "/shop/daten") return await shopDaten();
+    if (m === "POST" && pfad === "/kontakt") return await kontakt(req, ip);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
 
     /* ---- Händler ---- */
@@ -603,6 +632,8 @@ export default async (req: Request, context: Context) => {
         return json({ preise, shop, einstellungen: e });
       }
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/nachrichten") return json({ nachrichten: (await leseAlle<Nachricht>("nachrichten/")).reverse() });
+      if (m === "POST" && pfad === "/admin/nachrichten/status") return await nachrichtStatus(req);
       if (m === "GET" && pfad === "/admin/angebote") return json({ angebote: await angebote() });
       if (m === "POST" && pfad === "/admin/angebote") return await angeboteSpeichern(req, a);
       if (m === "POST" && pfad === "/admin/einstellungen") return await einstellungenSpeichern(req, a);

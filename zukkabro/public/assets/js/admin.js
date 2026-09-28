@@ -10,7 +10,7 @@
   var STATUS_TEXT = { neu: "Neu", bestaetigt: "Bestätigt", versendet: "Versendet", bezahlt: "Bezahlt", abgeschlossen: "Abgeschlossen", storniert: "Storniert", offen: "Offen", aktiv: "Aktiv", gesperrt: "Gesperrt" };
   var TYP_TEXT = { verkauf: "Verkauf", einkauf: "Wareneinkauf", ausgabe: "Ausgabe", einnahme: "Einnahme", storno: "Storno" };
 
-  var daten = { buchungen: [], alleBuchungen: null, bestellungen: [], haendler: [], preise: {}, shop: {}, einstellungen: {} };
+  var daten = { buchungen: [], alleBuchungen: null, bestellungen: [], haendler: [], nachrichten: [], preise: {}, shop: {}, einstellungen: {} };
   var preisAenderungen = {};   // Händlerpreise
   var shopAenderungen = {};    // Endkunden-Shop-Preise
   var preisZeige = 50;
@@ -63,9 +63,11 @@
         ZB.api("GET", "/admin/bestellungen"),
         ZB.api("GET", "/admin/haendler"),
         ZB.api("GET", "/admin/preise"),
+        ZB.api("GET", "/admin/nachrichten"),
       ]);
       daten.buchungen = r[0].buchungen; daten.bestellungen = r[1].bestellungen;
       daten.haendler = r[2].haendler; daten.preise = r[3].preise; daten.shop = r[3].shop || {}; daten.einstellungen = r[3].einstellungen || {}; daten.alleBuchungen = null;
+      daten.nachrichten = r[4].nachrichten || [];
       zaehler();
       zeichneTab(aktuellerTab);
     } catch (e) {
@@ -81,12 +83,42 @@
     var offen = daten.haendler.filter(function (h) { return h.status === "offen"; }).length;
     $("zahlBestellungen").textContent = neu; $("zahlBestellungen").hidden = !neu;
     $("zahlHaendler").textContent = offen; $("zahlHaendler").hidden = !offen;
+    var ungelesen = daten.nachrichten.filter(function (n) { return !n.gelesen; }).length;
+    $("zahlNachrichten").textContent = ungelesen; $("zahlNachrichten").hidden = !ungelesen;
   }
+
+  /* ================= Nachrichten (Kontaktformular) ================= */
+  function nachrichten() {
+    var nurNeu = $("nachrichtFilter").value === "neu";
+    var liste = daten.nachrichten.filter(function (n) { return !nurNeu || !n.gelesen; });
+    if (!liste.length) { $("nachrichtListe").innerHTML = '<p class="leer">Keine Nachrichten.</p>'; return; }
+    $("nachrichtListe").innerHTML = liste.map(function (n) {
+      return '<article class="karte' + (n.gelesen ? "" : " karte--neu") + '" data-nachricht="' + esc(n.id) + '">' +
+        '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:baseline">' +
+          "<h2 style=\"margin:0\">" + (n.gelesen ? "" : '<span class="status status--neu">Neu</span> ') + esc(n.betreff || "Nachricht") + "</h2>" +
+          "<small>" + ZB.zeitDE(n.erstellt) + "</small></div>" +
+        "<p><strong>" + esc(n.name) + '</strong> · <a href="mailto:' + esc(n.email) + '">' + esc(n.email) + "</a>" + (n.telefon ? ' · <a href="tel:' + esc(n.telefon) + '">' + esc(n.telefon) + "</a>" : "") + "</p>" +
+        '<p style="white-space:pre-wrap">' + esc(n.text) + "</p>" +
+        '<button class="btn btn--light btn--klein" type="button" data-gelesen="' + (n.gelesen ? "0" : "1") + '">' + (n.gelesen ? "Als ungelesen markieren" : "✓ Als gelesen markieren") + "</button>" +
+      "</article>";
+    }).join("");
+  }
+  $("nachrichtFilter").addEventListener("change", nachrichten);
+  $("nachrichtListe").addEventListener("click", async function (e) {
+    var b = e.target.closest("[data-gelesen]"); if (!b) return;
+    var id = b.closest("[data-nachricht]").getAttribute("data-nachricht");
+    try {
+      var r = await ZB.api("POST", "/admin/nachrichten/status", { id: id, gelesen: b.getAttribute("data-gelesen") === "1" });
+      daten.nachrichten = daten.nachrichten.map(function (n) { return n.id === id ? r.nachricht : n; });
+      zaehler(); nachrichten();
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
 
   function zeichneTab(id) {
     if (id === "uebersicht") uebersicht();
     if (id === "bestellungen") bestellungen();
     if (id === "haendler") haendler();
+    if (id === "nachrichten") nachrichten();
     if (id === "preise") preise();
     if (id === "einstellungen") einstellungenZeigen();
     if (id === "pakete") paketeLaden();
