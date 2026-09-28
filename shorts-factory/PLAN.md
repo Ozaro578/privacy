@@ -138,10 +138,32 @@ Affiliate (Buecher/Apps zu Psychologie), eigener Newsletter, lokalisierte Kanael
 
 ---
 
+## 6b. Zusatz-Erkenntnisse aus der Szenenanalyse des Kellan-Videos (Higgsfield)
+
+- **Stil-Vorbild statt Blindflug:** Kellan transkribiert ein virales Short der Nische (youtubetotranscript.com)
+  und laesst ChatGPT „im exakt gleichen Stil, Laenge und Ton, aber zu anderem Thema“ schreiben. Umgesetzt:
+  `channel.style_examples` in beiden Configs – 1–3 Transkripte einfuegen, der Rest passiert automatisch.
+- **Alter Kanal schlaegt neuen Kanal:** Ein seit Jahren bestehender YouTube-Kanal ohne Verstoesse braucht kein
+  Warm-up. Nur ein frischer Kanal braucht die 2 Tage Scrollen/Liken/Kommentieren.
+- **Telefon-Verifizierung („Intermediate features“) ist Pflicht fuer Monetarisierung – und eine Nummer gilt nur
+  fuer 2 Kanaele pro Jahr.** Bei unseren zwei Kanaelen also genau planen, welche Nummer wo verifiziert wird.
+- **Feature-Check:** YouTube Studio -> Einstellungen -> Kanal -> Funktionsberechtigung: „Standardfunktionen“
+  muessen aktiv sein (kein Verstoss), sonst neuen Kanal anlegen.
+- **Branding in 5–10 Minuten:** Name via ChatGPT, Profilbild per KI, Banner optional (Canva). Nicht laenger.
+- **Beschreibung (macht den Kanal „legit“):** Zeile 1 = was der Kanal macht, Kontakt-E-Mail, kurzer
+  Copyright-/Fair-Use-Disclaimer, E-Mail nochmal fuer Rueckfragen.
+- **Ranking-Sweet-Spot 4–6 Eintraege**, nie unter 4, nie ueber 6; der erste Clip/Eintrag muss der staerkste sein,
+  #1 in Gold. Fuer „3 Signs“ deshalb `ranking.items` auf 4–5 erhoehen, sobald die Skripte kurz genug bleiben.
+- **Kurz und loopbar:** Sein 30-Mio-Video war 17 s lang mit 21 s Ø-Wiedergabedauer (Zuschauer schauen 1,2x).
+  Ziel: Videos so kurz, dass sie ein zweites Mal laufen – Baby-Comedy 18–25 s, Psychologie 25–32 s.
+
 ## 7. Checkliste Kanal-Start
 
 - [ ] Handle @TheMindTwist auf YouTube/TikTok/Instagram sichern
-- [ ] Tag 1 + 2: Kanal aufwaermen (je 30–60 min Psychologie-Shorts schauen, liken, kommentieren, abonnieren)
+- [ ] Alten, unbenutzten YouTube-Kanal vorhanden? Dann den nutzen (kein Warm-up noetig). Sonst Tag 1 + 2
+      aufwaermen (je 30–60 min Psychologie-Shorts schauen, liken, kommentieren, abonnieren)
+- [ ] Studio -> Einstellungen -> Kanal -> Funktionsberechtigung: Standardfunktionen aktiv; Telefon-Verifizierung
+      einplanen (max. 2 Kanaele pro Nummer und Jahr)
 - [ ] Profilbild + Banner mit Higgsfield (dunkles Gehirn-/Loop-Motiv, teal/amber, ohne Text)
 - [ ] Kanalbeschreibung: „One weird thing about your brain. Every day. With a twist.“ + Kontakt-Mail +
       „Content is for entertainment and education, not medical advice.“

@@ -88,6 +88,15 @@ FORMAT: STORY. Setze "format" auf "story", "items" bleibt leer.
 """
     avoid = ch.get("avoid") or []
     used = "\n- ".join(history_titles[-80:]) if history_titles else "(noch keine)"
+    examples = [e.strip() for e in (ch.get("style_examples") or []) if e and e.strip()]
+    style_block = ""
+    if examples:
+        joined = "\n\n---\n\n".join(examples[:3])
+        style_block = f"""
+STIL-VORBILD (Transkripte erfolgreicher Shorts dieser Nische). Schreibe im EXAKT gleichen Schreibstil,
+Tempo und Ton und mit aehnlicher Laenge – aber zu einem ANDEREN Thema. Nichts daraus wortwoertlich uebernehmen:
+{joined}
+"""
 
     lang_names = {"en": "ENGLISCH", "de": "DEUTSCH", "tr": "TUERKISCH", "es": "SPANISCH", "fr": "FRANZOESISCH"}
     lang = ch.get("language", "en")
@@ -103,7 +112,7 @@ NISCHE:
 TABU-THEMEN: {', '.join(avoid) if avoid else 'keine'}
 
 {topic_hint}
-{format_rules}
+{format_rules}{style_block}
 BEREITS VEROEFFENTLICHTE TITEL (nicht wiederholen, auch nicht in Abwandlung):
 - {used}
 

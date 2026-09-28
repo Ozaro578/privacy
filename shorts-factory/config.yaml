@@ -50,6 +50,9 @@ channel:
     - "3 signs a friendship is quietly ending"
     - "Why your brain hates unfinished stories"
     - "The reason you check your phone with no notification"
+  # Stil-Vorbilder (Kellan-Methode): Transkripte von 1-3 viralen Shorts der Nische hier einfuegen
+  # (z.B. ueber youtubetotranscript.com). Das LLM uebernimmt Stil, Tempo und Laenge, nie den Inhalt.
+  style_examples: []
   avoid:
     - medical or mental-health advice, diagnoses, self-harm
     - politics, religion

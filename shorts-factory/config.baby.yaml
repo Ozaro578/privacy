@@ -35,6 +35,9 @@ channel:
     - "POV: your baby is a school principal"
     - "POV: your baby is a detective"
     - "POV: your baby is a farmer at 5 a.m."
+  # Stil-Vorbilder (Kellan-Methode): Transkripte von 1-3 viralen Shorts der Nische hier einfuegen
+  # (z.B. ueber youtubetotranscript.com). Das LLM uebernimmt Stil, Tempo und Laenge, nie den Inhalt.
+  style_examples: []
   avoid:
     - danger, injury, violence
     - anything sexual or adult
