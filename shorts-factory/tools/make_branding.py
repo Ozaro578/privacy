@@ -33,11 +33,41 @@ def make_profile(src: Path, out: Path) -> None:
     rgba.save(out / "profile_round_preview.png")
 
 
-def make_banner(src: Path, out: Path, name: str, tagline: str, color: str, text_color: str, align: str, shadow: bool) -> None:
+def make_banner(src: Path, out: Path, name: str, tagline: str, color: str, text_color: str, align: str, shadow: bool,
+                subject_crop: tuple[float, float, float, float] | None = None, bg_blur: int = 0,
+                bg_crop: tuple[float, float, float, float] | None = None) -> None:
     W, H = 2560, 1440
     SW, SH = 1546, 423                      # Sicherheitszone (auf allen Geraeten sichtbar)
-    img = cover(Image.open(src).convert("RGB"), W, H)
+    raw = Image.open(src).convert("RGB")
+    bg_src = raw
+    if bg_crop:  # Hintergrund nur aus einem Teil des Rohbilds (z.B. ohne das Motiv, das separat gesetzt wird)
+        bx0, by0, bx1, by1 = bg_crop
+        bg_src = raw.crop((int(bx0 * raw.width), int(by0 * raw.height), int(bx1 * raw.width), int(by1 * raw.height)))
+    img = cover(bg_src, W, H)
+    if bg_blur:
+        img = img.filter(ImageFilter.GaussianBlur(bg_blur))
     sx, sy = (W - SW) // 2, (H - SH) // 2
+    if subject_crop:
+        # Motiv (z.B. Kopf + Oberkoerper) aus dem Rohbild schneiden und rechts IN die Sicherheitszone setzen,
+        # damit es auch auf Handy/Laptop sichtbar ist (dort wird nur der Mittelstreifen gezeigt).
+        x0, y0, x1, y1 = subject_crop
+        sub = raw.crop((int(x0 * raw.width), int(y0 * raw.height), int(x1 * raw.width), int(y1 * raw.height)))
+        target_h = SH + 120                                   # ragt leicht ueber die Zone hinaus (TV-Ansicht)
+        sub = sub.resize((round(sub.width * target_h / sub.height), target_h), Image.LANCZOS)
+        px = sx + SW - sub.width + 10
+        py = sy - 60
+        # weicher Rand, damit der Ausschnitt nicht wie ein Rechteck wirkt
+        mask = Image.new("L", sub.size, 255)
+        md = ImageDraw.Draw(mask)
+        fade = 170
+        for i in range(fade):
+            a = int(255 * i / fade)
+            md.line([(i, 0), (i, sub.height)], fill=a)                                   # linker Rand
+            md.line([(0, i), (sub.width, i)], fill=a)                                    # oberer Rand
+            md.line([(0, sub.height - 1 - i), (sub.width, sub.height - 1 - i)], fill=a)  # unterer Rand
+            md.line([(sub.width - 1 - i, 0), (sub.width - 1 - i, sub.height)], fill=a)   # rechter Rand
+        mask = mask.filter(ImageFilter.GaussianBlur(16))
+        img.paste(sub, (px, py), mask)
     draw = ImageDraw.Draw(img, "RGBA")
     if shadow:  # weiche dunkle Flaeche hinter dem Text
         overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -98,10 +128,15 @@ def main() -> None:
     ap.add_argument("--text-color", default="#FFFFFF")
     ap.add_argument("--align", choices=["left", "center"], default="left")
     ap.add_argument("--no-shadow", action="store_true")
+    ap.add_argument("--subject-crop", default=None, help="x0,y0,x1,y1 als Anteile (0-1) des Rohbanners, z.B. 0.62,0.05,0.95,0.55")
+    ap.add_argument("--bg-blur", type=int, default=0, help="Hintergrund weichzeichnen (Pixel)")
+    ap.add_argument("--bg-crop", default=None, help="x0,y0,x1,y1 (0-1): nur diesen Teil des Rohbanners als Hintergrund nutzen")
     a = ap.parse_args()
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     make_profile(Path(a.profile), out)
-    make_banner(Path(a.banner), out, a.name, a.tagline, a.color, a.text_color, a.align, not a.no_shadow)
+    crop = tuple(float(v) for v in a.subject_crop.split(",")) if a.subject_crop else None
+    bgc = tuple(float(v) for v in a.bg_crop.split(",")) if a.bg_crop else None
+    make_banner(Path(a.banner), out, a.name, a.tagline, a.color, a.text_color, a.align, not a.no_shadow, crop, a.bg_blur, bgc)
     print(f"fertig: {out}")
 
 
