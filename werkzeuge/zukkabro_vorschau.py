@@ -6,7 +6,9 @@
 - statt Server-API eine Attrappe im Browser: Shop und Pakete funktionieren, Bestellen und Login melden "nur Vorschau"
 - ?id=… in Links wird zu #id=…
 
-Aufruf: python3 werkzeuge/zukkabro_vorschau.py ZIELORDNER
+Aufruf: python3 werkzeuge/zukkabro_vorschau.py ZIELORDNER [--lokal]
+  --lokal: Schriften in die CSS einbetten, damit die Seite auch per Doppelklick (file://) läuft,
+           und eine Anleitung dazulegen.
 """
 import base64
 import io
@@ -89,9 +91,11 @@ def pfade(text: str, css: bool = False) -> str:
 
 
 def main():
-    if len(sys.argv) != 2:
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    lokal = "--lokal" in sys.argv
+    if len(args) != 1:
         sys.exit(__doc__)
-    ziel = Path(sys.argv[1]).resolve()
+    ziel = Path(args[0]).resolve()
     if ziel.exists():
         shutil.rmtree(ziel)
     (ziel / "assets").mkdir(parents=True)
@@ -101,7 +105,12 @@ def main():
         shutil.copytree(PUBLIC / "assets" / ordner, ziel / "assets" / ordner, ignore=shutil.ignore_patterns("produkte"))
     (ziel / "assets" / "css").mkdir()
     for f in (PUBLIC / "assets" / "css").glob("*.css"):
-        (ziel / "assets" / "css" / f.name).write_text(pfade(f.read_text(encoding="utf-8"), css=True), encoding="utf-8")
+        css = pfade(f.read_text(encoding="utf-8"), css=True)
+        if lokal:  # Browser laden Schriften nicht von file://, deshalb einbetten
+            for font in (PUBLIC / "assets" / "fonts").glob("*.woff2"):
+                daten = "data:font/woff2;base64," + base64.b64encode(font.read_bytes()).decode()
+                css = css.replace(f'url("../fonts/{font.name}")', f'url("{daten}")')
+        (ziel / "assets" / "css" / f.name).write_text(css, encoding="utf-8")
     (ziel / "assets" / "js").mkdir()
     for f in (PUBLIC / "assets" / "js").glob("*.js"):
         t = f.read_text(encoding="utf-8")
@@ -141,10 +150,20 @@ def main():
         kopf = '<script src="assets/js/vorschau.js"></script>'
         if "produkte.js" in t:
             kopf += "".join(f'<script src="{s}"></script>' for s in bild_skripte)
+        if lokal:  # Vorladen der Schrift scheitert bei file://, die Schrift steckt schon in der CSS
+            t = re.sub(r'\s*<link rel="preload"[^>]*as="font"[^>]*>', "", t)
         t = t.replace("</head>", kopf + "</head>", 1)
         if name == "index.html":  # kurzer Name für die Galerie
             t = re.sub(r"<title>[^<]*</title>", "<title>ZUKKABRO</title>", t, count=1)
         (ziel / name).write_text(t, encoding="utf-8")
+
+    if lokal:
+        (ziel / "LIES-MICH.txt").write_text(
+            "ZUKKABRO - Vorschau der Webseite (ohne Server)\n\n"
+            "Doppelklick auf index.html, dann oeffnet sich die Seite im Browser.\n"
+            "Alle Seiten, Produkte, Pakete und der Warenkorb funktionieren.\n"
+            "Bestellen, Haendler-Login und Admin gehen erst auf der richtigen Seite (Server noetig).\n"
+            "Die Angebote im Slider sind Beispiele.\n", encoding="utf-8")
 
     reste = subprocess.run(["grep", "-rnoE", r"""["'(]/(assets|api/|[a-z-]+\.html)""", str(ziel), "--include=*.html", "--include=*.css"],
                            capture_output=True, text=True).stdout
