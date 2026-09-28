@@ -136,6 +136,7 @@ def main(argv=None) -> int:
     up = sub.add_parser("upload", help="fertiges Video hochladen")
     up.add_argument("video")
     up.add_argument("--script", required=True)
+    up.add_argument("--privacy", choices=["public", "unlisted", "private"], help="ueberschreibt youtube.privacy aus der Config")
 
     au = sub.add_parser("auth", help="YouTube OAuth einmalig einrichten")
     au.add_argument("--device", action="store_true", help="Login per Code auf dem Handy (kein Browser auf dieser Maschine noetig)")
@@ -170,6 +171,8 @@ def main(argv=None) -> int:
         return 0
 
     if args.cmd == "upload":
+        if args.privacy:
+            cfg["youtube"]["privacy"] = args.privacy
         script = load_script(Path(args.script))
         vid = cmd_upload(cfg, script, Path(args.video))
         state.add_entry(title=script.title, topic=script.topic, video_id=vid, file=Path(args.video).name)
