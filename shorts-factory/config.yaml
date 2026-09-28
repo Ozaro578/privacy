@@ -1,0 +1,127 @@
+# =====================================================================
+#  Shorts Factory – Kanal-Konfiguration
+#  Alles hier steuert, welche Videos automatisch entstehen.
+# =====================================================================
+
+channel:
+  name: "Kleine Entdecker"        # Kanalname (wird Claude als Kontext gegeben)
+  language: "de"                  # Sprache der Skripte
+  audience: "kinder"              # kinder | allgemein  -> steuert Ton, Sicherheit & YouTube-Kids-Flag
+  age_range: "4-9"                # Zielalter
+  # Die Nische: Claude erfindet daraus jeden Tag ein neues Thema.
+  niche: >
+    Kurze, froehliche Lernvideos fuer Kinder: Tiere, Natur, Weltraum,
+    Zahlen, Farben, Koerper, "Warum ist ...?"-Fragen und kleine
+    Mitmach-Ideen. Einfache Sprache, ein Staunen-Moment pro Video,
+    am Ende eine Frage oder Aufgabe zum Mitmachen.
+  # Optional: feste Themenliste. Ist sie leer, waehlt Claude selbst.
+  topics: []
+  # Themen, die nicht vorkommen sollen
+  avoid:
+    - Gewalt
+    - Angst / Horror
+    - Politik
+    - Religion
+    - Werbung / Produkte
+    - medizinische Ratschlaege
+
+script:
+  provider: "openai"             # openai (ChatGPT) | claude
+  openai_model: "gpt-5"          # ChatGPT-Modell fuer die Skripte
+  claude_model: "claude-opus-5-5"
+  target_seconds: 40             # Ziel-Laenge des gesprochenen Textes
+  max_seconds: 58                # Shorts muessen < 60 s sein
+  words_per_second: 2.6          # Sprechtempo-Schaetzung fuer die Laengenplanung
+
+# ---------------------------------------------------------------------
+# Posting-Plan: 3 Videos pro Tag, jeder Slot hat eine eigene Serie.
+# Zeiten in Europe/Berlin. Der Workflow ruft `run --slot <name>` auf;
+# ohne --slot wird der Slot anhand der aktuellen Uhrzeit gewaehlt.
+# ---------------------------------------------------------------------
+schedule:
+  timezone: "Europe/Berlin"
+  slots:
+    - name: "morgen"
+      time: "07:15"
+      series: "Guten-Morgen-Fakt"
+      title_prefix: ""
+      focus: >
+        Ein einziger verblueffender Tier- oder Natur-Fakt zum Wachwerden.
+        Positiv, kurz, mit einem "Wow"-Moment.
+    - name: "nachmittag"
+      time: "15:30"
+      series: "Warum eigentlich?"
+      title_prefix: "Warum "
+      focus: >
+        Eine "Warum ist / Warum haben / Warum koennen ..."-Frage aus Alltag,
+        Koerper, Wetter oder Weltraum – kindgerecht erklaert in 3 Schritten.
+    - name: "abend"
+      time: "18:30"
+      series: "Mitmach-Minute"
+      title_prefix: ""
+      focus: >
+        Ein kleines Raetsel, Zaehl-Spiel, Bewegungs- oder Suchaufgabe zum
+        Mitmachen vor dem Bildschirm. Aufloesung am Ende.
+
+voice:
+  # Deutsche Stimmen: de-DE-ConradNeural (m), de-DE-KillianNeural (m),
+  # de-DE-KatjaNeural (w), de-DE-AmalaNeural (w), de-DE-FlorianMultilingualNeural (m)
+  # Alle Stimmen anzeigen:  python make_short.py voices
+  name: "de-DE-KatjaNeural"
+  rate: "+0%"                    # etwas schneller = mehr Energie
+  pitch: "+0Hz"
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30
+  # Hintergrund-Modus:
+  #   gradient : animierter Farbverlauf (keine Assets noetig)
+  #   video    : zufaelliges Video aus assets/backgrounds (mp4/mov)
+  #   image    : zufaelliges Bild aus assets/backgrounds mit Ken-Burns-Zoom
+  #   pexels   : kostenloses Stock-Video passend zum Thema (braucht PEXELS_API_KEY)
+  #   higgsfield       : KI-Illustrationen von Higgsfield + Ken-Burns-Zoom (~0.25-1 Credit/Bild)
+  #   higgsfield_video : echter KI-Videoclip von Higgsfield (~35 Credits/Clip!)
+  background: "higgsfield"
+  gradient_colors: ["#ff9a3c", "#ff5e8a", "#5ad1ff"]
+  darken: 0.15                   # Abdunkeln des Hintergrunds (0 = aus, 1 = schwarz)
+  music_volume: 0.12             # Lautstaerke fuer assets/music (0 = keine Musik)
+  outro_padding: 0.6             # Sekunden Stille am Ende
+
+# ---------------------------------------------------------------------
+# Higgsfield (https://console.higgsfield.ai) – Zugang ueber HF_KEY in .env
+# Jeder Modell-Endpunkt hat im Console eine eigene API-Seite mit Schema.
+# ---------------------------------------------------------------------
+higgsfield:
+  images_per_video: 3                          # Szenenbilder pro Short (Hook / Mitte / Outro)
+  image_endpoint: "bytedance/seedream/v4/text-to-image"   # Alternativ: higgsfield-ai/soul/v2/standard
+  image_arguments:                             # zusaetzliche Felder laut Modell-Doku
+    aspect_ratio: "9:16"
+    resolution: "2K"
+  image_result_path: "images.0.url"            # wo die Antwort die Bild-URL traegt
+  style_suffix: "soft 3D cartoon style for young children, bright cheerful colors, no text"
+  # Optional fuer background: higgsfield_video (teuer):
+  video_endpoint: ""                           # z.B. "bytedance/seedance/v2.5/..." laut Console
+  video_arguments: {}
+  video_result_path: "video.url"
+  video_seconds: 10
+
+captions:
+  font: "DejaVu Sans"
+  size: 96
+  words_per_line: 3              # Woerter pro Untertitel-Block
+  color: "#FFFFFF"
+  highlight: "#FFE600"           # Farbe des gerade gesprochenen Wortes
+  outline: "#000000"
+  position: 0.55                 # vertikale Position (0 = oben, 1 = unten)
+
+youtube:
+  privacy: "public"              # public | unlisted | private
+  category_id: "27"              # 27 = Bildung, 24 = Unterhaltung, 22 = People & Blogs
+  # PFLICHT bei Kinderinhalten (COPPA / YouTube-Richtlinie). Folgen: keine
+  # personalisierte Werbung, keine Kommentare, Video landet auch in YouTube Kids.
+  made_for_kids: true
+  default_tags: ["shorts", "kinder", "lernen", "kinderlieder", "kindervideo"]
+  # Optional: Veroeffentlichung planen (ISO-8601, UTC). Leer = sofort.
+  # publish_at: "2026-10-01T15:00:00Z"
+  publish_at: ""
