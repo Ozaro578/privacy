@@ -1,6 +1,7 @@
 """Baut das fertige 9:16-Video mit ffmpeg zusammen."""
 from __future__ import annotations
 
+import math
 import random
 import shutil
 import subprocess
@@ -54,6 +55,17 @@ def _bg_input_and_filter(bg: Background, cfg: dict[str, Any], duration: float) -
         parts: list[str] = []
         for i, (p, seg) in enumerate(zip(bg.paths, durs)):
             frames = int(round(seg * fps))
+            if p.suffix.lower() in VIDEO_EXT:
+                # echter Videoclip: endlich oft wiederholen, bis die Segmentlaenge erreicht ist,
+                # dann exakt trimmen (kein Zoompan – der wuerde jeden Frame vervielfachen)
+                clip_dur = max(0.1, _ffprobe_duration(p))
+                loops = max(0, math.ceil(seg / clip_dur) - 1)
+                inputs += ["-stream_loop", str(loops), "-i", str(p)]
+                parts.append(
+                    f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},"
+                    f"fps={fps},trim=duration={seg:.2f},setpts=PTS-STARTPTS,format=yuv420p,setsar=1[s{i}]"
+                )
+                continue
             inputs += ["-i", str(p)]
             zstep = 0.25 / max(frames, 1)
             direction = f"min(zoom+{zstep:.5f},1.3)" if i % 2 == 0 else f"if(eq(on,1),1.3,max(zoom-{zstep:.5f},1.0))"
