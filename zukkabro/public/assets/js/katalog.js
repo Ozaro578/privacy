@@ -184,17 +184,113 @@
   }
 
   /* ---------- Kategorie-Kacheln (Startseite) ---------- */
+  /* ---------- Wechselnde Produktfotos (Kacheln, Aktionskacheln, Social-Wand) ---------- */
+  var ROTOR = [], rotorLaeuft = false;
+  var ruhig = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function mischen(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  /** Bis zu n Produkte mit Foto, Neuheiten zuerst, Rest zufällig */
+  function fotoProdukte(filterFn, n) {
+    var pool = LISTE.filter(function (p) { return p.bild && !p.pruefen && !p.aus && filterFn(p); });
+    var neu = mischen(pool.filter(function (p) { return p.neu; })), rest = mischen(pool.filter(function (p) { return !p.neu; }));
+    return neu.concat(rest).slice(0, n);
+  }
+  function rotorHtml(bilder, cls) {
+    return '<span class="' + cls + '" data-rotor aria-hidden="true">' + bilder.map(function (b, i) {
+      return i === 0 ? '<img src="/' + esc(b) + '" alt="" loading="lazy" decoding="async" class="is-aktiv">' : '<img data-src="/' + esc(b) + '" alt="" decoding="async">';
+    }).join("") + "</span>";
+  }
+  function rotorAnmelden(root) {
+    root.querySelectorAll("[data-rotor]").forEach(function (el, n) {
+      if (el.__rotor) return;
+      el.__rotor = true;
+      ROTOR.push({ el: el, i: 0, takt: 3400 + (n % 5) * 450, naechste: Date.now() + 2600 + n * 520 });
+    });
+    if (rotorLaeuft || ruhig) return;
+    rotorLaeuft = true;
+    setInterval(function () {
+      if (document.hidden) return;
+      var jetzt = Date.now();
+      ROTOR.forEach(function (r) {
+        if (jetzt < r.naechste) return;
+        var imgs = r.el.querySelectorAll("img");
+        if (imgs.length < 2) return;
+        var naechstes = (r.i + 1) % imgs.length, img = imgs[naechstes];
+        if (!img.getAttribute("src") && img.getAttribute("data-src")) img.src = img.getAttribute("data-src");
+        if (!img.complete || !img.naturalWidth) { r.naechste = jetzt + 700; return; } // noch am Laden, kurz warten
+        imgs[r.i].classList.remove("is-aktiv"); img.classList.add("is-aktiv"); r.i = naechstes; r.naechste = jetzt + r.takt;
+        var vor = imgs[(naechstes + 1) % imgs.length];
+        if (!vor.getAttribute("src") && vor.getAttribute("data-src")) vor.src = vor.getAttribute("data-src");
+      });
+    }, 400);
+  }
+
+  /* ---------- Kategorie-Kacheln mit wechselnden Fotos ---------- */
   function kacheln(box) {
     box.innerHTML = KATS.map(function (k) {
       var n = LISTE.filter(function (p) { return p.kat.indexOf(k.id) !== -1; }).length;
       if (!n) return "";
       var href = k.ab18 ? "/vapes.html?kat=" + k.id : "/sortiment.html?kat=" + k.id;
-      return '<a class="kachel reveal' + (k.ab18 ? " kachel--18" : "") + '" href="' + href + '">' +
+      var fotos = fotoProdukte(function (p) { return p.kat.indexOf(k.id) !== -1; }, 4).map(function (p) { return p.bild; });
+      return '<a class="kachel reveal' + (k.ab18 ? " kachel--18" : "") + (fotos.length ? " kachel--foto" : "") + '" href="' + href + '">' +
+        (fotos.length ? rotorHtml(fotos, "kachel__bild") : "") +
         '<span class="kachel__emoji" aria-hidden="true">' + esc(k.emoji) + "</span>" +
         '<span class="kachel__name">' + esc(k.name) + (k.ab18 ? " 18+" : "") + "</span>" +
         '<span class="kachel__n">' + n + " Produkte</span></a>";
     }).join("");
     box.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("is-visible"); });
+    rotorAnmelden(box);
+  }
+
+  /* ---------- Aktionskacheln (Neu, Bestseller, Mystery) mit Foto ---------- */
+  function promoFotos() {
+    document.querySelectorAll("[data-rotor-kat]").forEach(function (el) {
+      var f = el.getAttribute("data-rotor-kat");
+      var fotos = fotoProdukte(function (p) { return passt(p, f); }, 4).map(function (p) { return p.bild; });
+      if (!fotos.length) fotos = fotoProdukte(function () { return true; }, 4).map(function (p) { return p.bild; });
+      el.innerHTML = rotorHtml(fotos, "promo__foto");
+      el.closest(".promo").classList.add("promo--foto");
+      rotorAnmelden(el);
+    });
+  }
+
+  /* ---------- Social-Wand (Instagram/TikTok-Look) ---------- */
+  function socialWand(box) {
+    var S = typeof SHOP === "object" ? SHOP : {};
+    var posts = typeof SOCIAL_POSTS !== "undefined" && Array.isArray(SOCIAL_POSTS) ? SOCIAL_POSTS.filter(function (x) { return x && x.bild; }).slice(0, 6) : [];
+    var html;
+    if (posts.length) {
+      html = posts.map(function (x) {
+        return '<a class="social-kachel" href="' + esc(x.link || "#") + '"' + (x.link ? ' target="_blank" rel="noopener"' : "") + '>' +
+          '<img src="/' + esc(x.bild) + '" alt="' + esc(x.text || "") + '" loading="lazy" class="is-aktiv">' +
+          '<span class="social-kachel__ig" aria-hidden="true"></span>' + (x.text ? '<span class="social-kachel__text">' + esc(x.text) + "</span>" : "") + "</a>";
+      }).join("");
+    } else {
+      // Noch keine echten Posts: sechs Kacheln mit wechselnden Produktfotos, Neuheiten und Bestseller zuerst
+      var genutzt = {}, kacheln6 = [], kats = {};
+      // Bestseller zuerst, dann Neuheiten aus möglichst verschiedenen Kategorien, dann der Rest
+      var gruppen = [function (p) { return istBest(p); }, function (p) { return p.neu && !p.ab18 && !kats[p.kat[0]]; }, function (p) { return !p.ab18 && !kats[p.kat[0]]; }, function (p) { return !p.ab18; }];
+      gruppen.forEach(function (fn) {
+        fotoProdukte(function (p) { return !genutzt[p.id] && fn(p); }, 6 - kacheln6.length).forEach(function (p) {
+          if (kacheln6.length >= 6) return;
+          genutzt[p.id] = true; kats[p.kat[0]] = true; kacheln6.push(p);
+        });
+      });
+      html = kacheln6.slice(0, 6).map(function (p, i) {
+        var k = hauptKat(p);
+        var fotos = [p.bild].concat(fotoProdukte(function (q) { return q.id !== p.id && !genutzt[q.id] && q.kat[0] === p.kat[0] && !q.ab18; }, 2).map(function (q) { return q.bild; }));
+        var text = istBest(p) ? "👑 Bestseller" : (p.neu ? "✨ Neu · " : k.emoji + " ") + k.name;
+        return '<a class="social-kachel" href="/produkt.html?id=' + encodeURIComponent(p.id) + '" style="--i:' + i + '">' +
+          rotorHtml(fotos, "social-kachel__bild") + '<span class="social-kachel__ig" aria-hidden="true"></span>' +
+          '<span class="social-kachel__text">' + esc(text) + "</span></a>";
+      }).join("");
+    }
+    box.innerHTML = html;
+    rotorAnmelden(box);
+    var ig = (S.instagram || "").replace(/^@/, ""), tt = (S.tiktok || "").replace(/^@/, "");
+    var igK = document.getElementById("igFolgen"), ttK = document.getElementById("ttFolgen"), bald = document.getElementById("socialBald");
+    if (igK && ig) { igK.href = "https://instagram.com/" + ig; igK.textContent = "📸 @" + ig + " auf Instagram"; igK.hidden = false; }
+    if (ttK && tt) { ttK.href = "https://www.tiktok.com/@" + tt; ttK.textContent = "🎵 @" + tt + " auf TikTok"; ttK.hidden = false; }
+    if (bald && (ig || tt)) bald.hidden = true;
   }
 
   function start() {
@@ -206,6 +302,8 @@
   }
   function zeichneAlles() {
     document.querySelectorAll("[data-kat-kacheln]").forEach(kacheln);
+    promoFotos();
+    document.querySelectorAll("[data-social]").forEach(socialWand);
     document.querySelectorAll('[data-katalog="vorschau"]').forEach(vorschau);
     document.querySelectorAll('[data-katalog="voll"]').forEach(voll);
     var stand = document.getElementById("sortimentStand");

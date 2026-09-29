@@ -545,7 +545,7 @@ a:focus-visible, button:focus-visible { outline: 3px dashed var(--pink); outline
 
 /* Kategorie-Kacheln */
 .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .9rem; margin-top: 1.6rem; }
-.kachel { display: flex; flex-direction: column; align-items: center; gap: .2rem; text-align: center; text-decoration: none; padding: 1rem .6rem; border: 3px solid var(--choco); border-radius: 20px; background: var(--paper); box-shadow: 4px 4px 0 var(--choco); transition: transform .15s ease, box-shadow .15s ease; }
+.kachel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; text-align: center; text-decoration: none; padding: 1rem .6rem; border: 3px solid var(--choco); border-radius: 20px; background: var(--paper); box-shadow: 4px 4px 0 var(--choco); transition: transform .15s ease, box-shadow .15s ease; }
 .kachel:hover { transform: translate(-3px, -3px) rotate(-1deg); box-shadow: 7px 7px 0 var(--choco); }
 .kachel__emoji { font-size: 2.2rem; }
 .kachel__name { font-weight: 700; line-height: 1.2; }
@@ -827,3 +827,40 @@ body.lade-offen { overflow: hidden; }
 .wa-fab { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 950; display: inline-flex; align-items: center; gap: .4rem; background: #25d366; color: #fff; font-weight: 800; text-decoration: none; padding: .6em 1em; border-radius: 999px; border: 3px solid var(--choco); box-shadow: 4px 4px 0 var(--choco); transition: transform .15s ease, box-shadow .15s ease; }
 .wa-fab:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--choco); }
 @media (max-width: 520px) { .kontaktform form { grid-template-columns: 1fr; } .wa-fab span:last-child { display: none; } .wa-fab { padding: .55em .7em; } }
+
+/* =========================================================
+   Wechselnde Produktfotos: Kacheln, Aktionskacheln, Social-Wand
+   ========================================================= */
+.kacheln { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); }
+.kachel--foto { position: relative; padding: 0 0 .8rem; gap: 0; overflow: hidden; }
+.kachel__bild { position: relative; display: block; width: 100%; aspect-ratio: 1.15; background: #fff; border-bottom: 3px solid var(--choco); margin-bottom: .6rem; }
+.kachel__bild img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 10%; opacity: 0; transform: scale(1.05); transition: opacity .8s ease, transform .8s ease; }
+.kachel__bild img.is-aktiv { opacity: 1; transform: none; }
+.kachel--foto .kachel__emoji { position: absolute; top: 8px; left: 8px; z-index: 1; font-size: 1.3rem; line-height: 1; background: var(--paper); border: 2px solid var(--choco); border-radius: 12px; padding: .2em .35em; box-shadow: 2px 2px 0 var(--choco); }
+.kachel--foto .kachel__name { padding: 0 .6rem; }
+.kachel--foto:hover .kachel__bild img.is-aktiv { transform: scale(1.08); }
+.kachel--18.kachel--foto .kachel__bild { border-bottom-color: var(--violet); }
+
+.promo__foto { position: absolute; right: .7rem; top: 50%; transform: translateY(-50%) rotate(5deg); width: 36%; max-width: 120px; aspect-ratio: 1; background: #fff; border: 3px solid var(--choco); border-radius: 18px; box-shadow: 3px 3px 0 var(--choco); overflow: hidden; }
+.promo__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 8%; opacity: 0; transition: opacity .8s ease; }
+.promo__foto img.is-aktiv { opacity: 1; }
+.promo--foto .promo__deco { display: none; }
+.promo--foto .promo__title { max-width: 60%; }
+.promo--foto:hover .promo__foto { transform: translateY(-50%) rotate(-3deg) scale(1.05); transition: transform .3s ease; }
+
+.section--social { background: var(--paper); border-block: 4px solid var(--choco); }
+.social-wand { display: grid; grid-template-columns: repeat(6, 1fr); gap: .8rem; }
+.social-kachel { position: relative; display: block; aspect-ratio: 1; border: 3px solid var(--choco); border-radius: 18px; overflow: hidden; background: #fff; box-shadow: var(--pop); text-decoration: none; color: #fff; transition: transform .2s ease, box-shadow .2s ease; animation: cardIn .45s cubic-bezier(.2, 1.3, .4, 1) both; animation-delay: calc(var(--i, 0) * 60ms); }
+.social-kachel:hover { transform: translate(-3px, -3px) rotate(-1deg); box-shadow: var(--pop-lg); }
+.social-kachel__bild { position: absolute; inset: 0; display: block; }
+.social-kachel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 8%; opacity: 0; transition: opacity .8s ease; }
+.social-kachel img.is-aktiv { opacity: 1; }
+.social-kachel__ig { position: absolute; top: .55rem; right: .55rem; width: 24px; height: 24px; border: 2.5px solid var(--choco); border-radius: 7px; background: rgba(255, 255, 255, .85); }
+.social-kachel__ig::before { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border: 2.5px solid var(--choco); border-radius: 50%; }
+.social-kachel__ig::after { content: ""; position: absolute; top: 3px; right: 3px; width: 3px; height: 3px; border-radius: 50%; background: var(--choco); }
+.social-kachel__text { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.4rem .6rem .5rem; font-size: .8rem; font-weight: 700; line-height: 1.2; background: linear-gradient(transparent, rgba(43, 20, 10, .88)); text-shadow: 0 1px 0 rgba(0, 0, 0, .4); }
+.social-knoepfe { display: flex; gap: .8rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1.6rem; }
+.social-bald { margin: 0; font-weight: 600; opacity: .85; text-align: center; }
+.social-bald a { color: var(--pink-deep); }
+@media (max-width: 860px) { .social-wand { grid-template-columns: repeat(3, 1fr); gap: .5rem; } .social-kachel { border-radius: 14px; border-width: 2px; box-shadow: 3px 3px 0 var(--choco); } .social-kachel__text { font-size: .7rem; padding: 1rem .4rem .4rem; } }
+@media (max-width: 520px) { .kacheln { grid-template-columns: repeat(2, 1fr); gap: .6rem; } .kachel__bild { aspect-ratio: 1.25; } }

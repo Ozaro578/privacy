@@ -29,3 +29,11 @@ const PREISE = {
 */
 const BESTSELLER = [
 ];
+
+/* Echte Instagram/TikTok-Posts für die Startseite (bis zu 6). Leer = wechselnde Produktfotos.
+   Bild = Pfad im Ordner assets/img/social/, Link = Adresse des Posts.
+   Beispiel:
+     { bild: "assets/img/social/post-1.jpg", text: "Unboxing: Takis aus Mexiko", link: "https://www.instagram.com/p/xyz/" },
+*/
+const SOCIAL_POSTS = [
+];
