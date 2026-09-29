@@ -13,5 +13,13 @@
     "topic": "POV: your baby closes a million dollar deal",
     "video_id": "6Z5Rimkcaf8",
     "file": "2026-09-29_baby-million-deal.mp4"
+  },
+  {
+    "created_at": "2026-09-29T00:40:07+00:00",
+    "title": "POV: your baby's meeting could have been an email",
+    "topic": "POV: your baby's meeting could have been an email",
+    "file": "2026-09-29_baby-meeting-email.mp4",
+    "script": "2026-09-29_baby-meeting-email.json",
+    "slot": null
   }
 ]
