@@ -123,7 +123,7 @@ higgsfield:
   style_suffix: "photorealistic, bright natural lighting, comedic, vertical 9:16, no text, no letters, no watermark"
   # Echte Bewegung: einzelne Szenen als Bild-zu-Video-Clip (Seedance 2.0 Mini ~2 Credits / 4 s).
   # animate_scenes: Indizes der Szenen (0 = Hook, -1 = letzte/Punchline). Leer = nur Ken-Burns.
-  animate_scenes: [0, -1]
+  animate_scenes: [0, 1, 2, 3, 4, 5]          # ALLE Szenen als KI-Videoclips, keine Standbilder
   animate_endpoint: "bytedance/seedance/v2.0-mini/image-to-video"   # exakten Pfad im Higgsfield-Console pruefen
   animate_arguments:
     aspect_ratio: "9:16"
