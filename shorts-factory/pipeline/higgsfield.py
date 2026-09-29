@@ -68,6 +68,38 @@ def generate_images(prompts: list[str], cfg: dict[str, Any], stem: str) -> list[
     return paths
 
 
+def animate_images(images: list[Path], prompts: list[str], cfg: dict[str, Any], stem: str) -> list[Path]:
+    """Animiert ausgewaehlte Szenenbilder zu kurzen Clips (Bild-zu-Video). Welche: higgsfield.animate_scenes
+    (Liste von Indizes, z.B. [0, -1] = Hook und Punchline). Rueckgabe: Pfade je Szene (Clip oder Bild)."""
+    import higgsfield_client
+
+    hf = cfg.get("higgsfield", {})
+    endpoint = hf.get("animate_endpoint", "")
+    which = hf.get("animate_scenes") or []
+    if not endpoint or not which:
+        return images
+    idxs = {i % len(images) for i in which}
+    extra = dict(hf.get("animate_arguments") or {})
+    field = hf.get("animate_image_field", "image_url")
+    result_path = hf.get("animate_result_path", "video.url")
+    out: list[Path] = []
+    for i, img in enumerate(images):
+        if i not in idxs:
+            out.append(img)
+            continue
+        url = higgsfield_client.upload_file(str(img))
+        args = {"prompt": prompts[i] if i < len(prompts) else "subtle natural motion", field: url, **extra}
+        print(f"[higgsfield] Animiere Szene {i+1}: {endpoint} ...")
+        try:
+            result = higgsfield_client.subscribe(endpoint, arguments=args)
+            clip = _download(_dig(result, result_path), OUTPUT_DIR / f"{stem}_hf{i+1}.mp4")
+            out.append(clip)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[higgsfield] Animation fehlgeschlagen ({exc}) – nehme das Standbild.")
+            out.append(img)
+    return out
+
+
 def generate_video(prompt: str, cfg: dict[str, Any], stem: str, duration: int) -> Path:
     """Optional: echter KI-Videoclip (teuer, ~35 Credits/Clip). Nur bei higgsfield.video_endpoint gesetzt."""
     import higgsfield_client

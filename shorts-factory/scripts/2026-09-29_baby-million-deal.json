@@ -1,0 +1,41 @@
+{
+  "format": "scenes",
+  "topic": "POV: your baby closes a million dollar deal",
+  "title": "POV: your baby closes a million dollar deal",
+  "hook": "POV: your baby closes a million dollar deal.",
+  "lines": [],
+  "scenes": [
+    {
+      "caption": "Client meeting. He brought snacks.",
+      "image_prompt": "sitting at the head of a boardroom table in a tiny navy suit, a plate of baby crackers in front of him, two adult clients in suits listening seriously"
+    },
+    {
+      "caption": "The pitch: 'Ba.'",
+      "image_prompt": "standing on a chair in a tiny navy suit pointing at a whiteboard covered in scribbles, adults nodding impressed"
+    },
+    {
+      "caption": "Negotiation got intense.",
+      "image_prompt": "sitting across a table from an adult businessman, both staring each other down, tiny navy suit, dramatic office lighting"
+    },
+    {
+      "caption": "They tried to lowball. He's offended.",
+      "image_prompt": "sitting at a boardroom table with a pouting, offended expression and crossed arms, adult businesspeople looking apologetic, bright office"
+    },
+    {
+      "caption": "Deal closed. Nap earned.",
+      "image_prompt": "asleep in a big leather office chair in a tiny navy suit, a signed contract and a pen on the desk, sunset through the window"
+    }
+  ],
+  "outro": "Would you sign with him?",
+  "on_screen_title": "Baby closes|a million dollar deal",
+  "highlight_word": "million",
+  "description": "Bo, the Baby of Wall Street, closes his biggest deal yet. Snacks were involved.",
+  "hashtags": [
+    "babyofwallstreet",
+    "aibaby",
+    "pov",
+    "business"
+  ],
+  "visual_keyword": "baby deal",
+  "visual_prompt": "in a tiny navy business suit shaking hands with an adult businessman in a glass office, confident smirk"
+}

@@ -121,6 +121,17 @@ higgsfield:
   image_reference_as_list: true
   character_description: "the same baby as in the reference image,"
   style_suffix: "photorealistic, bright natural lighting, comedic, vertical 9:16, no text, no letters, no watermark"
+  # Echte Bewegung: einzelne Szenen als Bild-zu-Video-Clip (Seedance 2.0 Mini ~2 Credits / 4 s).
+  # animate_scenes: Indizes der Szenen (0 = Hook, -1 = letzte/Punchline). Leer = nur Ken-Burns.
+  animate_scenes: [0, -1]
+  animate_endpoint: "bytedance/seedance/v2.0-mini/image-to-video"   # exakten Pfad im Higgsfield-Console pruefen
+  animate_arguments:
+    aspect_ratio: "9:16"
+    duration: 4
+    resolution: "480p"
+    generate_audio: false
+  animate_image_field: "image_url"
+  animate_result_path: "video.url"
   video_endpoint: ""
   video_arguments: {}
   video_result_path: "video.url"

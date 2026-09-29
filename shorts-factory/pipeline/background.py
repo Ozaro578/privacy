@@ -132,6 +132,7 @@ def pick_background(cfg: dict[str, Any], keyword: str, duration: float, script=N
                 else:
                     prompts = _scene_prompts(script, cfg) if script else [keyword]
                 imgs = higgsfield.generate_images(prompts, cfg, stem)
+                imgs = higgsfield.animate_images(imgs, prompts, cfg, stem)
                 if len(imgs) > 1:
                     durs = slideshow_durations(segments, duration) if (per_part and segments and len(segments) == len(imgs)) else None
                     if durs is None and segments:
@@ -159,6 +160,8 @@ def pick_background(cfg: dict[str, Any], keyword: str, duration: float, script=N
     elif mode == "image":
         folder = _bg_folder(cfg)
         files = sorted(p for p in folder.iterdir() if p.suffix.lower() in IMAGE_EXT) if folder.exists() else []
+        # Liegt zu einem Bild ein gleichnamiger Videoclip (s3.png -> s3.mp4), wird der Clip verwendet
+        files = [next((p.with_suffix(ext) for ext in (".mp4", ".mov", ".webm") if p.with_suffix(ext).exists()), p) for p in files]
         if files and per_part and segments:
             # Reihenfolge: hook -> Szene 1..n -> outro; bei zu wenig Dateien reihum, Outro = Hook-Bild
             n = len(segments)
