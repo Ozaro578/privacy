@@ -1,0 +1,48 @@
+{
+  "format": "scenes",
+  "topic": "POV: your baby's meeting could have been an email",
+  "title": "POV: your baby's meeting could have been an email",
+  "hook": "POV: your baby's meeting could have been an email.",
+  "lines": [],
+  "scenes": [
+    {
+      "caption": "9 a.m. Mandatory meeting. His idea.",
+      "image_prompt": "3D Pixar-style cartoon: standing on a chair at the head of a colorful boardroom table, tapping a tiny watch, adult cartoon coworkers yawning, bright office",
+      "motion_prompt": "the baby taps his watch impatiently and points at the empty chairs, coworkers shuffle in yawning, gentle camera push in"
+    },
+    {
+      "caption": "Slide one of forty.",
+      "image_prompt": "3D Pixar-style cartoon: pointing a laser pointer at a huge projector screen showing a pie chart made of cookies, coworkers staring blankly",
+      "motion_prompt": "the baby waves the laser pointer wildly across the screen, one coworker slowly leans back and closes his eyes"
+    },
+    {
+      "caption": "Any questions? No. Good.",
+      "image_prompt": "3D Pixar-style cartoon: arms crossed, chin up, at the head of the table, coworkers frozen with hands half raised, bright office",
+      "motion_prompt": "the baby crosses his arms and nods proudly, a coworker slowly lowers his hand, subtle zoom"
+    },
+    {
+      "caption": "The dog was not invited. He came anyway.",
+      "image_prompt": "3D Pixar-style cartoon: a big golden retriever wearing a tie sits at the table next to the baby, the baby glares at him, coworkers giggling",
+      "motion_prompt": "the dog wags his tail and knocks a coffee cup over, the baby turns his head slowly and glares, coworkers giggle"
+    },
+    {
+      "caption": "Meeting adjourned. Nap time.",
+      "image_prompt": "3D Pixar-style cartoon: asleep on the boardroom table with his head on a stack of papers, tiny blanket, coworkers tiptoeing out, warm light",
+      "motion_prompt": "the baby breathes softly in his sleep, coworkers tiptoe out of frame one by one, the lights dim slightly"
+    }
+  ],
+  "outro": "Would you survive his meetings?",
+  "on_screen_title": "This meeting could|have been an email",
+  "highlight_word": "email",
+  "description": "Bo, the Baby of Wall Street, hosts a mandatory 9 a.m. meeting. Nobody survives slide one.",
+  "hashtags": [
+    "babyofwallstreet",
+    "aibaby",
+    "pov",
+    "officehumor",
+    "3danimation"
+  ],
+  "visual_keyword": "baby meeting",
+  "visual_prompt": "3D Pixar-style cartoon: walking into a bright colorful office lobby with a tiny briefcase and a big grin, coworkers in the background",
+  "hook_motion": "the baby struts into the lobby swinging his briefcase, coworkers turn their heads, playful camera follow"
+}
