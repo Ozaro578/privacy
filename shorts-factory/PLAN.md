@@ -4,6 +4,7 @@
 |---|---|---|---|---|
 | **The Mind Twist** (@TheMindTwist) | Psychologie / menschliches Verhalten, englisch | Story + Countdown, 3x/Tag | `config.yaml` | `daily-short.yml` |
 | **Baby of Wall Street** (@BabyOfWallStreet) | KI-Baby-Comedy mit wiederkehrender Figur „Bo“, englisch | Szenen (5 Bilder + Gag-Captions), 2x/Tag | `config.baby.yaml` | `daily-baby-short.yml` |
+| **Cat Overlords** (@CatOverlords) | KI-Katzen-Comedy mit Figur „Sir Biscuit“, englisch | Szenen, 2x/Tag | `config.cats.yaml` | `daily-cats-short.yml` |
 
 Beide laufen getrennt (eigener YouTube-Kanal, eigenes Token, eigener Verlauf), wie von ChatGPT empfohlen:
 zwei Viral-Tests statt alles auf einen Kanal. Nach 3–4 Wochen entscheidet die Swipe-Rate, welcher Kanal auf 3/Tag geht.
@@ -231,3 +232,16 @@ Credits/5 s, Seedance 2.5 ≈ 35 Credits/5 s) fuer echte Bewegung. Bis dahin Ken
 - Einmal `python make_short.py --config config.baby.yaml auth` ausfuehren, dabei **diesen** Kanal waehlen ->
   `secrets/token_baby.json` -> als GitHub-Secret `YT_TOKEN_JSON_BABY`.
 - Gleicher `OPENAI_API_KEY`, `HF_KEY`, `YT_CLIENT_SECRET_JSON` wie Kanal 1.
+
+
+---
+
+# Kanal 3: „Cat Overlords“ – KI-Katzen-Comedy mit Figur
+
+Frei geprueft am 29.09.2026: **@CatOverlords** (Empfehlung), @CatMogul, @CatEmpire, @CatHasAJob, @CatGrindset,
+@CatBigshot. Vergeben: CatOfWallStreet, CorporateCat, CatCEO, CatLandlord, CatGodfather, KittyMogul.
+
+Figur **Sir Biscuit**: chubby oranger Tabby, grosse gruene Augen, leicht genervter Blick, weisser Fleck auf der Brust.
+Referenzbild `assets/character/cat_reference.png`. Konzept: Die Katze ist ueberzeugt, dass ihr das Haus, die Menschen
+und der Hund gehoeren. Serien: „Cat Overlords“ (Katze als Boss des Haushalts, 09:30) und „Cat Has A Job“ (Katze im
+Menschen-Job, 19:30). 20 Startthemen in `config.cats.yaml`. Eigenes Token `token_cats.json` -> Secret `YT_TOKEN_JSON_CATS`.

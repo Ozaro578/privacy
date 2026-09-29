@@ -1,0 +1,144 @@
+# =====================================================================
+#  Kanal 3: "Cat Overlords" – KI-Katzen-Comedy (englisch, wiederkehrende Figur)
+#  Start:  python make_short.py --config config.cats.yaml run --no-upload
+# =====================================================================
+
+channel:
+  name: "Cat Overlords"
+  handle: "@CatOverlords"
+  language: "en"
+  audience: "allgemein"
+  niche: >
+    AI cat comedy with ONE recurring character: Sir Biscuit, a chubby orange tabby who
+    is convinced he owns the house, the humans and possibly the planet. Every short is a
+    "POV" situation from the cat's point of view: the cat is the landlord, the cat runs
+    the morning meeting at 5 a.m., the cat reviews the food, the cat manages the dog,
+    the cat works from home, the cat judges your date. Dry, absurd, wholesome humor.
+    Visual gags first, very few words. No cruelty, no danger for animals, no real brands.
+  topics:
+    - "POV: your cat is your landlord"
+    - "POV: your cat runs the 5 a.m. meeting"
+    - "POV: your cat reviews the new food"
+    - "POV: your cat manages the dog"
+    - "POV: your cat works from home"
+    - "POV: your cat judges your date"
+    - "POV: your cat is the night shift security guard"
+    - "POV: your cat plans a heist on the fridge"
+    - "POV: your cat is the CEO of the couch"
+    - "POV: your cat gives feedback on your cooking"
+    - "POV: your cat has a job interview at the vet"
+    - "POV: your cat runs a hotel for stray cats"
+    - "POV: your cat becomes a fitness coach"
+    - "POV: your cat inspects your new furniture"
+    - "POV: your cat negotiates dinner time"
+    - "POV: your cat is a real estate agent (for boxes)"
+    - "POV: your cat is the boss of the vacuum cleaner"
+    - "POV: your cat hosts a talk show"
+    - "POV: your cat is a detective (case: the missing treat)"
+    - "POV: your cat retires to a sunny window"
+  style_examples: []
+  avoid:
+    - danger, injury, cruelty to animals
+    - anything sexual or adult
+    - real brands, logos, celebrities
+    - medical advice about pets
+
+script:
+  provider: "openai"
+  openai_model: "gpt-5"
+  claude_model: "claude-opus-5-5"
+  target_seconds: 22
+  max_seconds: 40
+  words_per_second: 2.4
+
+schedule:
+  timezone: "Europe/Berlin"
+  slots:
+    - name: "morgen"
+      time: "09:30"
+      format: "scenes"
+      series: "Cat Overlords"
+      title_prefix: "POV: "
+      focus: >
+        The cat as the boss of the household: landlord, manager, inspector, judge.
+        Gag = the cat treats humans like staff. Punchline in the last scene.
+    - name: "abend"
+      time: "19:30"
+      format: "scenes"
+      series: "Cat Has A Job"
+      title_prefix: "POV: "
+      focus: >
+        The cat in a human job or situation: office, vet, hotel, gym, talk show,
+        detective. Same character, same dry humor, punchline in the last scene.
+
+scenes:
+  count: 5
+  character: >
+    Sir Biscuit – a chubby orange tabby cat, big round green eyes, slightly annoyed
+    expression, small white patch on the chest, fluffy cheeks. Always the same cat;
+    props and outfits change with the situation (tiny tie, glasses, clipboard ...).
+
+ranking:
+  items: 3
+  title_suffix: ""
+  spoken_prefix: "Number {rank}."
+  badge_label: "#{rank}"
+  gap_seconds: 0.35
+
+voice:
+  name: "en-GB-RyanNeural"
+  rate: "+4%"
+  pitch: "+0Hz"
+  sentence_gap: 0.45
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30
+  background: "higgsfield"
+  backgrounds_dir: "assets/backgrounds_cats"
+  gradient_colors: ["#ffb347", "#ffcc33", "#ff8c69"]
+  darken: 0.08
+  music_volume: 0.14
+  outro_padding: 0.8
+
+higgsfield:
+  images_per_video: 5
+  image_endpoint: "bytedance/seedream/v4/edit"
+  image_arguments:
+    aspect_ratio: "9:16"
+    resolution: "2K"
+  image_result_path: "images.0.url"
+  character_reference: "assets/character/cat_reference.png"
+  image_reference_field: "image_urls"
+  image_reference_as_list: true
+  character_description: "the same cat as in the reference image,"
+  style_suffix: "photorealistic, bright natural lighting, comedic, vertical 9:16, no text, no letters, no watermark"
+  video_endpoint: ""
+  video_arguments: {}
+  video_result_path: "video.url"
+  video_seconds: 10
+
+captions:
+  font: "DejaVu Sans"
+  size: 84
+  words_per_line: 3
+  max_chars: 18
+  color: "#FFFFFF"
+  highlight: "#FF9F1C"
+  outline: "#000000"
+  position: 0.78
+  position_ranking: 0.78
+  title_size: 76
+  badge_size: 100
+  badge_bg: "#FF9F1C"
+  gold: "#FFC300"
+
+youtube:
+  privacy: "public"
+  category_id: "23"
+  made_for_kids: false
+  default_tags: ["shorts", "aicat", "catcomedy", "pov", "funny", "cats", "catoverlords"]
+  publish_at: ""
+  client_secret_file: "client_secret.json"
+  token_file: "token_cats.json"

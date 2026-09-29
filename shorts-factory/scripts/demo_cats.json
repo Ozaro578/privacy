@@ -1,0 +1,41 @@
+{
+  "format": "scenes",
+  "topic": "POV: your cat is your landlord",
+  "title": "POV: your cat is your landlord",
+  "hook": "POV: your cat is your landlord.",
+  "lines": [],
+  "scenes": [
+    {
+      "caption": "Rent is due. In treats.",
+      "image_prompt": "sitting on a kitchen counter next to an empty food bowl, staring at the camera with a demanding expression, morning light"
+    },
+    {
+      "caption": "Inspection day. Unannounced.",
+      "image_prompt": "wearing tiny reading glasses, sitting on a bed inspecting a messy bedroom, judging look, sunlight through window"
+    },
+    {
+      "caption": "The couch is now a common area. His.",
+      "image_prompt": "lying stretched out across an entire sofa, a human sitting on the floor in the background, living room"
+    },
+    {
+      "caption": "Noise complaint. Against you.",
+      "image_prompt": "sitting on a desk next to a laptop, pawing at the keyboard, human on a video call in the background looking stressed"
+    },
+    {
+      "caption": "Eviction notice. For the dog.",
+      "image_prompt": "sitting proudly in a cardboard box at the front door while a sad golden retriever looks in from outside, hallway"
+    }
+  ],
+  "outro": "Would you sign the lease?",
+  "on_screen_title": "Your cat is|your landlord",
+  "highlight_word": "landlord",
+  "description": "Sir Biscuit runs this household. Rent is due in treats.",
+  "hashtags": [
+    "catoverlords",
+    "aicat",
+    "pov",
+    "catcomedy"
+  ],
+  "visual_keyword": "cat landlord",
+  "visual_prompt": "sitting upright like a boss in an armchair in a cozy living room, a tiny set of house keys next to him"
+}

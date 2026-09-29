@@ -1,6 +1,6 @@
 # Shorts Factory – automatische YouTube-Shorts-Kanaele
 
-Kanal 1 „The Mind Twist“ (Psychologie, `config.yaml`) und Kanal 2 „Baby of Wall Street“ (KI-Baby-Comedy mit wiederkehrender Figur, `config.baby.yaml`).
+Kanal 1 „The Mind Twist“ (Psychologie, `config.yaml`), Kanal 2 „Baby of Wall Street“ (KI-Baby-Comedy, `config.baby.yaml`) und Kanal 3 „Cat Overlords“ (KI-Katzen-Comedy, `config.cats.yaml`).
 
 ChatGPT schreibt · edge-tts spricht · Higgsfield malt · ffmpeg schneidet · GitHub Actions laedt 3x taeglich hoch.
 
@@ -66,6 +66,7 @@ Benoetigte Repository-Secrets (Settings -> Secrets and variables -> Actions):
 | `YT_CLIENT_SECRET_JSON` | Inhalt von `secrets/client_secret.json` (Google OAuth Desktop-Client) |
 | `YT_TOKEN_JSON` | Inhalt von `secrets/token.json` nach `python make_short.py auth` |
 | `YT_TOKEN_JSON_BABY` | Token des zweiten Kanals (`--config config.baby.yaml auth`) |
+| `YT_TOKEN_JSON_CATS` | Token des dritten Kanals (`--config config.cats.yaml auth`) |
 | `PEXELS_API_KEY` | optional |
 | `ANTHROPIC_API_KEY` | optional, falls `script.provider: claude` |
 
