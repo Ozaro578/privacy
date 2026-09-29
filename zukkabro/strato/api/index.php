@@ -13,7 +13,7 @@ const MWST_SAETZE = [0, 7, 19];
 const FARBEN = ['pink', 'gold', 'blue', 'orange', 'violet', 'green', 'gruen', 'dark', 'rot'];
 const LEBENSMITTEL = ['susses', 'snacks', 'scharfes', 'pipapo'];
 const STANDARD_EINSTELLUNGEN = [
-    'versand' => 590, 'versandfreiAb' => 5000, 'abholung' => true, 'abholort' => '',
+    'versand' => 590, 'versandfreiAb' => 5000, 'abholung' => true, 'abholort' => 'Heilbronn, Termin nach Absprache',
     'bankInhaber' => '', 'bankIban' => '', 'bankName' => '', 'paypal' => '', 'hinweis' => '', 'ohnePreisAusblenden' => false,
 ];
 

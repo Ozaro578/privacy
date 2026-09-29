@@ -105,7 +105,7 @@
     // Zahlarten passend zur Lieferart
     var gewaehlt = (form.querySelector("input[name=zahlart]:checked") || {}).value;
     var arten = (shop.zahlarten || []).filter(function (z) { return z !== "Bar bei Abholung" || la === "abholung"; });
-    var texte = { "Überweisung (Vorkasse)": "Du bekommst unsere Bankverbindung nach der Bestellung. Versand nach Zahlungseingang.", "PayPal": "Du bekommst unseren PayPal-Link nach der Bestellung.", "Bar bei Abholung": "Zahlung bei Abholung im Laden." };
+    var texte = { "Überweisung (Vorkasse)": "Du bekommst unsere Bankverbindung nach der Bestellung. Versand innerhalb von 3 Werktagen nach Zahlungseingang.", "PayPal": "Du bekommst unseren PayPal-Link nach der Bestellung.", "Bar bei Abholung": "Zahlung bei Abholung im Laden." };
     $("zahlarten").innerHTML = arten.map(function (z, i) {
       var an = z === gewaehlt || (!arten.some(function (a) { return a === gewaehlt; }) && i === 0);
       return '<label><input type="radio" name="zahlart" value="' + esc(z) + '"' + (an ? " checked" : "") + "><span>" + esc(z) + "<small>" + esc(texte[z] || "") + "</small></span></label>";

@@ -57,7 +57,8 @@
         "</div>" +
       "</div>" +
       '<div class="topbar"><div class="container topbar__inner">' +
-        '<span>🚚 Versand aus Deutschland</span>' +
+        '<span>🚚 Versand in 3 Werktagen</span>' +
+        '<span>📍 Abholung in Heilbronn</span>' +
         '<span id="topbarFrei" hidden>📦 Versandkostenfrei ab <b data-versandfrei></b></span>' +
         '<span>🔞 Nur für Erwachsene ab 18</span>' +
       "</div></div>" +
@@ -72,7 +73,7 @@
   function fuss() {
     return '<footer class="footer"><div class="container footer__inner">' +
         '<div class="footer__marke"><a href="/" class="footer__logo"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="220" height="58"></a>' +
-          '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Deine Cravings. Unser Job.</p>' +
+          '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen oder Abholung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
           '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +

@@ -76,7 +76,7 @@
                 : '<p class="pdp__preis" style="font-size:1.6rem;color:var(--gold-deep)">Preis folgt</p><p class="pdp__mwst">Wir stellen die Preise gerade ein. Schau bald wieder vorbei!</p>') +
       '<div class="pdp__kaufen">' + kaufen + "</div>" +
       warnung +
-      '<ul class="pdp__vorteile"><li>🚚 Schneller Versand aus Deutschland</li><li>🏪 Abholung nach Absprache</li>' + (p.ab18 ? "<li>🪪 Altersprüfung bei Übergabe</li>" : "") + "</ul>" +
+      '<ul class="pdp__vorteile"><li>🚚 Versand innerhalb von 3 Werktagen</li><li>📍 Abholung in Heilbronn, kostenlos</li>' + (p.ab18 ? "<li>🪪 Altersprüfung bei Übergabe</li>" : "") + "</ul>" +
       "</div>";
   }
 

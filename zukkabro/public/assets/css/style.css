@@ -864,3 +864,33 @@ body.lade-offen { overflow: hidden; }
 .social-bald a { color: var(--pink-deep); }
 @media (max-width: 860px) { .social-wand { grid-template-columns: repeat(3, 1fr); gap: .5rem; } .social-kachel { border-radius: 14px; border-width: 2px; box-shadow: 3px 3px 0 var(--choco); } .social-kachel__text { font-size: .7rem; padding: 1rem .4rem .4rem; } }
 @media (max-width: 520px) { .kacheln { grid-template-columns: repeat(2, 1fr); gap: .6rem; } .kachel__bild { aspect-ratio: 1.25; } }
+
+/* =========================================================
+   Abholung in Heilbronn
+   ========================================================= */
+.section--abhol { padding-top: 0; }
+.abhol { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(1rem, 3vw, 2.5rem); align-items: center; border: 4px solid var(--choco); border-radius: 30px; box-shadow: var(--pop-lg); padding: clamp(24px, 4vw, 52px) clamp(22px, 5vw, 64px); color: #fff; overflow: hidden;
+  background: radial-gradient(circle, rgba(255, 255, 255, .22) 3px, transparent 4px) 0 0 / 34px 34px, linear-gradient(120deg, var(--blue) 0%, var(--violet) 60%, var(--pink) 115%); }
+.abhol .eyebrow { background: var(--paper); }
+.abhol h2 { text-shadow: 3px 3px 0 var(--choco); font-size: clamp(2rem, 5vw, 3.6rem); }
+.abhol__lead { font-size: clamp(1.02rem, 2vw, 1.2rem); font-weight: 600; max-width: 42ch; }
+.abhol__punkte { list-style: none; padding: 0; margin: 0 0 1.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: .45rem .8rem; font-weight: 700; }
+.abhol__punkte li { background: rgba(43, 20, 10, .35); border-radius: 12px; padding: .45em .8em; }
+.abhol__art { position: relative; display: grid; place-items: center; min-height: 300px; }
+.abhol__pin { position: absolute; top: 2%; left: 8%; font-size: clamp(3rem, 6vw, 5rem); filter: drop-shadow(4px 6px 0 rgba(43, 20, 10, .35)); animation: bob 4s ease-in-out infinite; }
+.abhol__stadt { font-family: var(--display); font-size: clamp(4rem, 9vw, 7.2rem); line-height: .9; text-transform: uppercase; text-align: center; color: var(--gold-soft); -webkit-text-stroke: .05em var(--choco); paint-order: stroke fill; text-shadow: .08em .08em 0 var(--choco); transform: rotate(-4deg); }
+.abhol__sticker { position: absolute; right: 4%; bottom: 8%; background: var(--gold); color: var(--choco); font-family: var(--display); font-size: clamp(1.1rem, 2.2vw, 1.6rem); padding: .35em .9em; border: 3px solid var(--choco); border-radius: 999px; box-shadow: 4px 4px 0 var(--choco); transform: rotate(6deg); animation: pop .5s cubic-bezier(.2, 1.5, .4, 1) both .3s; }
+.abhol__sticker--2 { right: auto; left: 2%; bottom: 2%; background: var(--paper); font-family: var(--body); font-weight: 800; font-size: 1rem; transform: rotate(-5deg); animation-delay: .5s; }
+@media (max-width: 860px) {
+  .abhol { grid-template-columns: 1fr; text-align: center; padding-bottom: 28px; }
+  .abhol__lead { margin-inline: auto; }
+  .abhol__punkte { grid-template-columns: 1fr; text-align: left; }
+  .abhol .slide__cta { justify-content: center; }
+  .abhol__art { min-height: 0; order: -1; display: flex; flex-direction: column; align-items: center; gap: .7rem; }
+  .abhol__pin { position: static; font-size: 2.6rem; animation: none; }
+  .abhol__stadt { transform: rotate(-3deg); margin: .2rem 0 .6rem; }
+  .abhol__sticker { position: static; transform: rotate(-2deg); }
+  .abhol__sticker--2 { transform: rotate(2deg); }
+  .topbar span:nth-child(n+3) { display: none; }
+}
+@media (max-width: 520px) { .abhol { border-radius: 20px; padding: 18px 16px 24px; } .abhol__art { min-height: 200px; } .abhol__stadt { font-size: 3.6rem; } }

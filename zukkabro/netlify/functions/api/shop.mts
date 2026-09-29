@@ -14,7 +14,7 @@ export interface ShopEinstellungen {
   hinweis: string;          // Text auf der Bestellbestätigung
 }
 export const STANDARD_EINSTELLUNGEN: ShopEinstellungen = {
-  versand: 590, versandfreiAb: 5000, abholung: true, abholort: "",
+  versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Heilbronn, Termin nach Absprache",
   bankInhaber: "", bankIban: "", bankName: "", paypal: "", hinweis: "",
 };
 
