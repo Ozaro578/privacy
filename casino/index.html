@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#07070d" />
+  <title>Titan's Vault: Ascension — HNX Studios</title>
+  <meta name="description" content="Titan's Vault: Ascension. HTML5-Slot-Demo von HNX Studios. 1024 Wege, Kaskaden, drei Schlüssel, Freispiele mit Wahl, Vault Rush. Spielgeld, kein Echtgeld." />
+  <link rel="icon" href="assets/icon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div id="app">
+  <div id="bg"></div>
+
+  <header id="top">
+    <div class="brand"><img src="assets/logo.png" alt="" id="logoImg" onerror="this.remove()"><span class="brandtxt">TITAN'S <b>VAULT</b><small>Ascension · HNX Studios</small></span></div>
+    <div class="clock" id="clock">00:00</div>
+    <button class="ico" id="menuBtn" aria-label="Menü">☰</button>
+  </header>
+
+  <main id="stage">
+    <div class="ladder" id="ladder"><span class="rung on">x1</span><span class="rung">x2</span><span class="rung">x3</span><span class="rung">x5</span></div>
+    <div class="fsbar hidden" id="fsbar"><span id="fsType">Sturm</span> · Freispiele: <b id="fsLeft">0</b> · Gewinn <b id="fsWin">0,00</b></div>
+    <div class="frame" id="frame">
+      <div class="grid rows4" id="grid"></div>
+      <div class="banner hidden" id="banner"></div>
+    </div>
+    <div class="msg" id="msg">Willkommen im Tresor der Titanen</div>
+  </main>
+
+  <footer id="panel">
+    <div class="stat"><small>Guthaben</small><b id="balance">1000,00</b></div>
+    <div class="stat win"><small>Gewinn</small><b id="win">0,00</b></div>
+    <div class="betctl">
+      <button class="sq" id="betMinus" aria-label="Einsatz verringern">−</button>
+      <div class="stat"><small>Einsatz</small><b id="bet">1,00</b></div>
+      <button class="sq" id="betPlus" aria-label="Einsatz erhöhen">+</button>
+    </div>
+    <button class="spin" id="spinBtn" aria-label="Drehen"><span id="spinLbl">DREHEN</span><span class="cd hidden" id="cd"></span></button>
+    <div class="side">
+      <button class="pill" id="autoBtn">AUTO</button>
+      <button class="pill" id="turboBtn">TURBO</button>
+    </div>
+  </footer>
+
+  <!-- Free-spin choice -->
+  <div class="overlay hidden" id="fsChoice">
+    <div class="dlg wide">
+      <h2>Der Tresor öffnet sich</h2>
+      <p>Wähle dein Schicksal für die Freispiele</p>
+      <div class="choices">
+        <button class="choice" data-fs="storm"><b>⚡ Sturm</b><span>28 Freispiele</span><small>Multiplikator x2 · x3 · x4 · x6</small></button>
+        <button class="choice" data-fs="warrior"><b>⚔️ Krieger</b><span>18 Freispiele</span><small>Multiplikator x3 · x5 · x8 · x12</small></button>
+        <button class="choice" data-fs="titan"><b>🔱 Titan</b><span>5 Freispiele</span><small>x3 · x6 · x9 · x15 + Ascension (5 Reihen)</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vault Rush -->
+  <div class="overlay hidden" id="vault">
+    <div class="vaultbox">
+      <h2>VAULT RUSH</h2>
+      <div class="vaulthud">Respins: <b id="vrSpins">3</b> · Münzen: <b id="vrCoins">0</b>/20</div>
+      <div class="vgrid" id="vgrid"></div>
+      <div class="prizes"><span>Mini 20x</span><span>Minor 50x</span><span>Major 100x</span><span class="grand">Voller Tresor 2500x</span></div>
+      <div class="vtotal" id="vrTotal"></div>
+      <button class="btn gold hidden" id="vrClose">EINSAMMELN</button>
+    </div>
+  </div>
+
+  <!-- Gamble -->
+  <div class="overlay hidden" id="gamble">
+    <div class="dlg">
+      <h2>Risikoleiter</h2>
+      <p>Gewinn <b id="gAmount">0,00</b> · Rot oder Schwarz?</p>
+      <div class="gcard" id="gCard">?</div>
+      <div class="row">
+        <button class="btn red" id="gRed">ROT</button>
+        <button class="btn black" id="gBlack">SCHWARZ</button>
+      </div>
+      <button class="btn gold" id="gTake">GEWINN NEHMEN</button>
+    </div>
+  </div>
+
+  <!-- Big win -->
+  <div class="overlay hidden" id="bigwin">
+    <div class="bigwinbox">
+      <div class="bwtitle" id="bwTitle">BIG WIN</div>
+      <div class="bwamount" id="bwAmount">0,00</div>
+      <button class="btn gold" id="bwOk">WEITER</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="overlay hidden" id="summary">
+    <div class="dlg">
+      <h2 id="sumTitle">Freispiele beendet</h2>
+      <div class="bwamount small" id="sumAmount">0,00</div>
+      <button class="btn gold" id="sumOk">WEITER</button>
+    </div>
+  </div>
+
+  <!-- Menu / rules -->
+  <div class="overlay hidden" id="menu">
+    <div class="dlg tall">
+      <div class="tabs">
+        <button class="tab on" data-tab="rules">Regeln</button>
+        <button class="tab" data-tab="pay">Gewinne</button>
+        <button class="tab" data-tab="set">Einstellungen</button>
+      </div>
+      <div class="tabpane" id="tab-rules">
+        <h3>So funktioniert's</h3>
+        <ul>
+          <li><b>1024 Wege</b> (5 Reihen: 3125): gleiche Symbole auf benachbarten Walzen von links, egal in welcher Reihe.</li>
+          <li><b>Kaskaden:</b> Gewinnsymbole verschwinden, neue fallen nach. Jede Kaskade erhöht den Titan‑Multiplikator: x1 · x2 · x3 · x5.</li>
+          <li><b>Wild</b> (Titan) ersetzt alle Symbole außer Tresor, Münze und Schlüssel.</li>
+          <li><b>🔑 Bronze:</b> Mystery, alle Symbole einer Sorte werden zu einem höheren Symbol. <b>Silber:</b> die ganze Walze wird Wild. <b>Gold:</b> Ascension, das Raster wächst für diesen Dreh auf 5 Reihen. Jeder Schlüssel wird selbst zum Wild.</li>
+          <li><b>3+ Tresore</b> zahlen 2x / 10x / 50x und starten Freispiele mit Wahl: Sturm, Krieger oder Titan. 3 Tresore in den Freispielen: +5 Spins.</li>
+          <li><b>6+ Münzen</b> starten Vault Rush: 3 Respins, Münzen bleiben kleben, jede neue Münze setzt die Respins zurück. Sammler‑Münze zahlt alle anderen Münzen noch einmal. Voller Tresor: 2500x.</li>
+          <li><b>Max‑Gewinn:</b> 5000x Einsatz pro Runde.</li>
+        </ul>
+        <div class="rtpbox" id="rtpbox"></div>
+      </div>
+      <div class="tabpane hidden" id="tab-pay"><div id="paytable"></div></div>
+      <div class="tabpane hidden" id="tab-set">
+        <label class="opt"><span>Deutschland‑Modus (GlüStV)</span><input type="checkbox" id="optDE"></label>
+        <p class="hint">Max. 1,00 € Einsatz, 5 Sekunden je Spiel, kein Autoplay, kein Turbo, keine Risikoleiter.</p>
+        <label class="opt"><span>Sound</span><input type="checkbox" id="optSound" checked></label>
+        <label class="opt"><span>Risikoleiter nach Gewinn anbieten</span><input type="checkbox" id="optGamble" checked></label>
+        <button class="btn ghost" id="optReset">Spielgeld auf 1000,00 zurücksetzen</button>
+        <p class="hint">Demo mit Spielgeld. Kein Echtgeld, keine Auszahlung. © HNX Studios</p>
+      </div>
+      <button class="btn gold" id="menuClose">SCHLIESSEN</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "spins": 2000000,
+  "seed": 12345,
+  "rtp": "95.67 %",
+  "rtp_base": "40.9 %",
+  "rtp_freespins": "31.26 %",
+  "rtp_vaultrush": "23.51 %",
+  "hit_frequency": "60.14 %",
+  "freespins_frequency": "1 in 131",
+  "vaultrush_frequency": "1 in 400",
+  "avg_freespins_win": "40.9x",
+  "avg_vaultrush_win": "94x",
+  "fs_by_type": {
+    "storm": {
+      "n": 5079,
+      "avg": "34.4x"
+    },
+    "warrior": {
+      "n": 5083,
+      "avg": "37.2x"
+    },
+    "titan": {
+      "n": 5108,
+      "avg": "51.2x"
+    }
+  },
+  "max_win_observed": "2505.876x",
+  "max_win_cap": "5000x",
+  "max_win_probability": "< 1 in 2000000",
+  "std_dev": 8.45,
+  "distribution": {
+    "0": 797137,
+    "<1x": 997328,
+    "1-5x": 163763,
+    "5-20x": 23350,
+    "20-100x": 15719,
+    "100-500x": 2682,
+    "500x+": 21
+  }
+}

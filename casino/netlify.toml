@@ -1,0 +1,11 @@
+# Web-Demo von Titan's Vault: Ascension. Statisch, kein Build nötig.
+[build]
+  publish = "."
+  command = "echo 'static site — nothing to build'"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
