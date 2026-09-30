@@ -52,7 +52,7 @@ function setLadder(step, ladder) {
 // ---------- grid rendering ----------
 function symHTML(id) {
   const d = SYMS[id];
-  if (hasImg[id]) return `<div class="sym"><img src="assets/sym/${id}.png" alt="${d.name}"></div>`;
+  if (hasImg[id]) return `<div class="sym"><img src="assets/sym/${id}.svg" alt="${d.name}" draggable="false"></div>`;
   return `<div class="sym${d.txt ? ' txt' : ''}">${d.e}</div>`;
 }
 function cellClass(id) { return 'cell ' + (['wild', 'scatter', 'coin', 'keyB', 'keyS', 'keyG'].includes(id) ? id : ''); }
@@ -76,11 +76,34 @@ function drawGrid(g, rows, opts = {}) {
 }
 const cellAt = (c, r) => grid.children[c] && grid.children[c].children[r];
 
+const ALL = Object.keys(SYMS);
+function stripHTML(rows) {
+  let h = '<div class="strip">';
+  for (let i = 0; i < rows * 3; i++) h += `<div class="cell blur">${symHTML(ALL[Math.floor(Math.random() * ALL.length)])}</div>`;
+  return h + '</div>';
+}
 async function animateInitial(g, rows) {
-  drawGrid(g, rows, { drop: true, stagger: true });
+  // Freeze the grid height so the scrolling strips can't stretch the layout.
+  if (currentRows === rows && grid.offsetHeight) grid.style.height = grid.offsetHeight + 'px';
+  else { grid.className = 'grid rows' + rows; grid.style.height = ''; drawGrid(g, rows); grid.style.height = grid.offsetHeight + 'px'; }
+  currentRows = rows;
+  grid.className = 'grid rows' + rows;
+  grid.innerHTML = '';
+  for (let c = 0; c < 5; c++) { const col = document.createElement('div'); col.className = 'col spinning'; col.innerHTML = stripHTML(rows); grid.appendChild(col); }
   sfx.reel();
-  for (let c = 0; c < 5; c++) { await wait(80); sfx.land(c); }
-  await wait(200);
+  const base = turbo && !S.de ? 120 : 380;
+  for (let c = 0; c < 5; c++) {
+    await wait(c === 0 ? base : 110);
+    const col = grid.children[c]; col.className = 'col'; col.innerHTML = '';
+    for (let r = 0; r < rows; r++) {
+      const id = g[c][r]; const cell = document.createElement('div');
+      cell.className = cellClass(id) + ' land'; cell.dataset.c = c; cell.dataset.r = r; cell.innerHTML = symHTML(id);
+      col.appendChild(cell);
+    }
+    sfx.land(c);
+  }
+  grid.style.height = '';
+  await wait(220);
 }
 
 // ---------- spin cycle playback ----------
@@ -207,6 +230,15 @@ async function playVault(v) {
   return v.total;
 }
 
+function coinRain(n) {
+  const layer = $('rain'); layer.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('img'); c.src = 'assets/sym/coin.svg'; c.className = 'raincoin';
+    c.style.left = Math.random() * 100 + '%'; c.style.animationDelay = Math.random() * 1.6 + 's'; c.style.animationDuration = 1.6 + Math.random() * 1.2 + 's';
+    c.style.width = 22 + Math.random() * 26 + 'px'; layer.appendChild(c);
+  }
+  setTimeout(() => { layer.innerHTML = ''; }, 3600);
+}
 function summary(title, amount) {
   return new Promise(r => { $('sumTitle').textContent = title; $('sumAmount').textContent = fmt(amount); $('summary').classList.remove('hidden');
     $('sumOk').onclick = () => { $('summary').classList.add('hidden'); sfx.click(); r(); }; });
@@ -214,7 +246,7 @@ function summary(title, amount) {
 function bigWin(amount, x) {
   return new Promise(r => {
     $('bwTitle').textContent = x >= 500 ? 'TITAN WIN' : x >= 100 ? 'MEGA WIN' : 'BIG WIN';
-    const el = $('bwAmount'); $('bigwin').classList.remove('hidden'); sfx.big();
+    const el = $('bwAmount'); $('bigwin').classList.remove('hidden'); sfx.big(); coinRain(x >= 100 ? 60 : 30);
     let t0 = performance.now(); const dur = 1800;
     const tick = now => { const p = Math.min(1, (now - t0) / dur); el.textContent = fmt(amount * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
@@ -340,8 +372,7 @@ function bindUI() {
 
 // Probe optional artwork (generated separately); fall back to emoji when missing.
 function probeArt() {
-  const bg = new Image(); bg.onload = () => $('bg').classList.add('img'); bg.src = 'assets/bg.jpg';
-  return Promise.all(Object.keys(SYMS).map(id => new Promise(r => { const im = new Image(); im.onload = () => { hasImg[id] = true; r(); }; im.onerror = () => r(); im.src = `assets/sym/${id}.png`; })));
+  return Promise.all(Object.keys(SYMS).map(id => new Promise(r => { const im = new Image(); im.onload = () => { hasImg[id] = true; r(); }; im.onerror = () => r(); im.src = `assets/sym/${id}.svg`; })));
 }
 
 // ---------- boot ----------
