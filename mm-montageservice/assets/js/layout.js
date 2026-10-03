@@ -8,6 +8,8 @@
   ];
   var tel = 'tel:' + (co.phone || '').replace(/\s/g, '');
   var wa = co.whatsapp ? 'https://wa.me/' + co.whatsapp.replace(/[^0-9]/g, '') : '';
+  /* Hintergrund-Ebenen, Intro, Progress, Cursor */
+  document.body.insertAdjacentHTML('afterbegin', '<div id="intro"><div class="im"><img src="assets/img/logo.png" alt="MM Montageservice"></div></div><div id="prog"></div><div class="bgflow"></div><canvas id="stars"></canvas><div class="grain"></div><div id="curR"></div><div id="curD"></div>');
   var header = document.getElementById('site-header');
   if (header) header.outerHTML =
     '<div class="topbar"><div class="container">' +
