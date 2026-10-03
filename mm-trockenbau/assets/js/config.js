@@ -1,30 +1,29 @@
 /* =========================================================
    MM Trockenbau – zentrale Konfiguration
    Hier Firmendaten, Fotos und (optional) Webhook eintragen.
-   Alle mit TODO markierten Werte vor dem Livegang ersetzen!
    ========================================================= */
 window.MM_CONFIG = {
   company: {
     name: "MM Trockenbau",
     shortName: "MM",
-    owner: "TODO Inhaber",                       // TODO: Vor- und Nachname des Inhabers
-    legalForm: "Einzelunternehmen",              // TODO: ggf. GbR / GmbH
-    street: "TODO Straße Hausnummer",            // TODO
-    zip: "00000",                                // TODO
-    city: "Heilbronn",                           // TODO
-    phone: "+49 000 0000000",                    // TODO: internationales Format
-    phoneDisplay: "0000 / 000 00 00",            // TODO
-    whatsapp: "",                                // z. B. "+4916012345678" – leer = WhatsApp-Buttons ausblenden
-    email: "info@mm-trockenbau.de",              // TODO
-    taxId: "",                                   // Steuernummer – TODO
+    owner: "Mustafa Özkan",
+    legalForm: "Einzelunternehmen",
+    street: "Klingenberger Straße 100",
+    zip: "74080",
+    city: "Heilbronn",
+    phone: "+49 160 92234091",
+    phoneDisplay: "0160 / 922 340 91",
+    whatsapp: "+4916092234091",         // leer lassen = WhatsApp-Buttons ausblenden
+    email: "info@mm-trockenbau.de",
+    taxId: "65306/40576",               // Steuernummer
     vatId: "",                                   // USt-IdNr. falls vorhanden
-    kleinunternehmer: false,                     // true = Kleinunternehmerregelung § 19 UStG (keine USt)
-    domain: "https://mm-trockenbau.de/",         // TODO: tatsächliche Domain
+    kleinunternehmer: true,              // Kleinunternehmerregelung § 19 UStG (keine USt)
+    domain: "https://mm-trockenbau.netlify.app/",
     openingHours: [
       ["Mo – Fr", "07:00 – 18:00 Uhr"],
       ["Sa", "nach Vereinbarung"]
     ],
-    /* Koordinaten des Firmensitzes (Heilbronn-Böckingen als Platzhalter) – TODO anpassen */
+    /* Koordinaten des Firmensitzes (Klingenberger Str. 100, Heilbronn-Böckingen) */
     lat: 49.1385,
     lng: 9.1862,
     serviceRadiusKm: 80
