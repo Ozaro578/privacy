@@ -23,6 +23,6 @@ Statische Website (HTML/CSS/JS, kein Build-Schritt). Gleiche Architektur wie tor
 ## Veröffentlichen
 Ordner `mm-montageservice/` z. B. bei Netlify als Site anlegen (Publish directory = dieser Ordner, kein Build-Befehl) und die Domain `mm-montageservice.de` verbinden. Die Domain zeigt derzeit per Frameset auf hexapolska.pl – das muss beim Domain-Anbieter umgestellt werden.
 
-## Vor dem Livegang prüfen
-- Steuernummer, Kleinunternehmer-Status (§ 19 UStG) und Schreibweise der Straße im Impressum
-- Hosting-Anbieter in der Datenschutzerklärung (aktuell: Netlify)
+## Status
+- Impressum-Daten (Inhaber, Anschrift, Steuernummer, Kleinunternehmer nach § 19 UStG) vom Inhaber bestätigt.
+- Live unter https://mm-montageservice.netlify.app (Netlify-Projekt `mm-montageservice`). Domain mm-montageservice.de noch auf Netlify umzustellen.
