@@ -63,6 +63,45 @@ window.MM_CONFIG = {
   reviews: [],
   googleReviewsUrl: "",                         // z. B. Link zum Google-Unternehmensprofil
 
+
+  /* =====================================================
+     Tor-Konfigurator – Preislogik (Richtwerte, unverbindlich)
+     MM Montageservice ist Kleinunternehmer (§ 19 UStG): keine Umsatzsteuer,
+     daher vat = 0 und Netto = Endpreis. Alle Beträge in Euro, jederzeit anpassbar.
+     "base" deckt eine Standardgröße (bis baseArea m²) ab, darüber perM2 je m².
+     "montage" = Montagepauschale je Tortyp inkl. Einstellung und Einweisung.
+     ===================================================== */
+  pricing: {
+    vat: 0,
+    types: {
+      sektional:        { label: "Sektionaltor Stahl",          base: 1390, baseArea: 5.4, perM2: 170, montage: 420 },
+      sektional_premium:{ label: "Sektionaltor Aluminium",      base: 2290, baseArea: 5.4, perM2: 240, montage: 460 },
+      rolltor:          { label: "Rolltor",                      base: 1590, baseArea: 5.4, perM2: 190, montage: 420 },
+      schwingtor:       { label: "Schwingtor",                   base: 890,  baseArea: 5.4, perM2: 110, montage: 340 },
+      seitensektional:  { label: "Seitensektionaltor",           base: 1890, baseArea: 5.4, perM2: 210, montage: 520 }
+    },
+    insulation: { "40": 0, "60": 0.15 },
+    surface:    { woodgrain: 0, silkgrain: 110, micrograin: 170, holzdekor: 270 },
+    sicke:      { gross: 0, mittel: 60, kassette: 130, glatt: 200 },
+    colorStandard: 0,
+    colorRal: 180,
+    colorSpecial: 370,
+    drive:      { none: 0, standard: 349, premium: 499, smart: 649 },
+    handsender: 39,
+    codetaster: 119,
+    smart: 139,
+    lichtschranke: 89,
+    fenster: 329,
+    schlupftuer: 850,
+    nebentuer: 1190,
+    lueftung: 69,
+    griff: 69,
+    sicherheit: 229,
+    demontage: 160,
+    /* Wenn der Kunde das Tor selbst stellt, entfällt der Torpreis – es bleibt die Montage */
+    ownDoorDiscount: true
+  },
+
   /* Optional: Endpoint, an den Anfragen zusätzlich per POST (JSON) gesendet werden –
      z. B. Formspree, Make, Zapier oder ein eigenes Script. Leer = nur E-Mail. */
   requestWebhook: ""

@@ -4,7 +4,7 @@
   var page = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
   var NAV = [
     ['index', 'Start'], ['leistungen', 'Leistungen'], ['referenzen', 'Referenzen'],
-    ['ueber-uns', 'Über uns'], ['kontakt', 'Kontakt']
+    ['konfigurator', 'Konfigurator'], ['ueber-uns', 'Über uns'], ['kontakt', 'Kontakt']
   ];
   var tel = 'tel:' + (co.phone || '').replace(/\s/g, '');
   var wa = co.whatsapp ? 'https://wa.me/' + co.whatsapp.replace(/[^0-9]/g, '') : '';
@@ -27,7 +27,7 @@
   if (footer) footer.outerHTML =
     '<footer class="site"><div class="container">' +
     '<div><div class="brand"><img src="assets/img/logo.png" alt="" width="150" height="75"></div><p>Montage, Demontage, Entsorgung und Gerüstbau: Sektionaltore, Garagentore und Haustüren fachgerecht montiert. Für Privatkunden, Bauträger und als Montagepartner für den Fachhandel – in Heilbronn und ganz Baden-Württemberg.</p></div>' +
-    '<div><h4>Leistungen</h4><ul><li><a href="leistungen.html#garagentore">Sektionaltore &amp; Garagentore</a></li><li><a href="leistungen.html#haustueren">Haustüren &amp; Nebentüren</a></li><li><a href="leistungen.html#demontage">Demontage &amp; Entsorgung</a></li><li><a href="leistungen.html#antriebe">Torantriebe &amp; Zubehör</a></li><li><a href="leistungen.html#reparatur">Reparatur &amp; Einstellung</a></li><li><a href="leistungen.html#geruestbau">Gerüstbau</a></li><li><a href="leistungen.html#fachhandel">Montagepartner Fachhandel</a></li></ul></div>' +
+    '<div><h4>Leistungen</h4><ul><li><a href="leistungen.html#garagentore">Sektionaltore &amp; Garagentore</a></li><li><a href="leistungen.html#haustueren">Haustüren &amp; Nebentüren</a></li><li><a href="leistungen.html#demontage">Demontage &amp; Entsorgung</a></li><li><a href="leistungen.html#antriebe">Torantriebe &amp; Zubehör</a></li><li><a href="leistungen.html#reparatur">Reparatur &amp; Einstellung</a></li><li><a href="leistungen.html#geruestbau">Gerüstbau</a></li><li><a href="leistungen.html#fachhandel">Montagepartner Fachhandel</a></li><li><a href="konfigurator.html">Tor-Konfigurator</a></li></ul></div>' +
     '<div><h4>Kontakt</h4><ul><li>' + co.name + '</li><li>' + co.owner + '</li><li>' + co.street + '</li><li>' + co.zip + ' ' + co.city + '</li><li><a href="' + tel + '">' + co.phoneDisplay + '</a></li>' + (wa ? '<li><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp schreiben</a></li>' : '') + '<li><a href="mailto:' + co.email + '">' + co.email + '</a></li></ul></div>' +
     '</div><div class="container footer-bottom" style="display:flex">' +
     '<span>© ' + new Date().getFullYear() + ' ' + co.name + ' · ' + co.city + '</span>' +
