@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<title>Montage anfragen – Festpreis in 24 Stunden | MM Montageservice Heilbronn</title>
+<meta name="description" content="Montage-Anfrage an MM Montageservice: Tor, Tür, Gerüst – Maße und Einbausituation angeben und innerhalb von 24 Stunden ein Festpreis-Angebot erhalten.">
+<link rel="canonical" href="https://mm-montageservice.de/anfrage.html">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Start</a> › Montage anfragen</div>
+  <span class="eyebrow">Montage-Anfrage</span>
+  <h1>Festpreis für Ihre Montage – <span class="hl">in 24 Stunden.</span></h1>
+  <p class="lead">Je genauer Ihre Angaben, desto schneller können wir einen verbindlichen Preis nennen. Fotos schicken Sie uns am einfachsten per WhatsApp hinterher.</p>
+</div></section>
+
+<section class="section"><div class="container anfrage-grid">
+  <div class="card">
+    <form id="anfrage-form" novalidate>
+      <fieldset>
+        <legend>1. Was soll gemacht werden?</legend>
+        <div class="row">
+          <div class="field"><label for="af-kind">Leistung *</label><select id="af-kind"><option>Sektionaltor / Garagentor montieren</option><option>Haustür / Nebentür montieren</option><option>Nur Demontage &amp; Entsorgung</option><option>Torantrieb montieren / nachrüsten</option><option>Reparatur / Einstellung</option><option>Gerüstbau</option><option>Sonstiges</option></select></div>
+          <div class="field"><label for="af-type">Ich bin …</label><select id="af-type"><option>Privatkunde</option><option>Fachhändler / Betrieb</option><option>Bauträger / Hausverwaltung</option></select></div>
+        </div>
+        <div id="af-size-wrap">
+          <div class="row">
+            <div class="field"><label for="af-count">Anzahl</label><select id="af-count"><option>1</option><option>2</option><option>3</option><option>4</option><option>mehr</option></select></div>
+            <div class="field"><label for="af-width">Breite (mm)</label><input id="af-width" type="number" min="500" max="9000" step="5" placeholder="z. B. 2500"></div>
+            <div class="field"><label for="af-height">Höhe (mm)</label><input id="af-height" type="number" min="500" max="4000" step="5" placeholder="z. B. 2125"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="af-brand">Hersteller / Produkt (falls bekannt)</label><input id="af-brand" placeholder="z. B. Hörmann RenoMatic, Novoferm iso 45 …"></div>
+            <div class="field"><label for="af-situation">Einbausituation</label><select id="af-situation"><option>Austausch eines alten Tores / einer alten Tür</option><option>Neubau / Rohbau</option><option>Sanierung / Umbau</option><option>Weiß ich nicht</option></select></div>
+          </div>
+          <label>Zusatzleistungen</label>
+          <div class="chips" style="margin-bottom:1rem">
+            <label class="chip"><input type="checkbox" id="af-demontage" checked> Demontage Alttor / -tür</label>
+            <label class="chip"><input type="checkbox" id="af-entsorgung" checked> Entsorgung</label>
+            <label class="chip"><input type="checkbox" id="af-antrieb"> Antrieb montieren</label>
+          </div>
+        </div>
+        <div id="af-geruest-wrap" hidden>
+          <div class="row">
+            <div class="field"><label for="af-geruest-len">Gerüstlänge (m)</label><input id="af-geruest-len" type="number" min="1" max="200" placeholder="z. B. 12"></div>
+            <div class="field"><label for="af-geruest-height">Arbeitshöhe (m)</label><input id="af-geruest-height" type="number" min="1" max="40" placeholder="z. B. 8"></div>
+            <div class="field"><label for="af-geruest-weeks">Standzeit (Wochen)</label><input id="af-geruest-weeks" type="number" min="1" max="52" placeholder="z. B. 2"></div>
+          </div>
+        </div>
+        <div class="field"><label for="af-date">Wunschtermin (optional)</label><input id="af-date" type="month"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Wo ist das Bauvorhaben?</legend>
+        <div class="field"><label for="af-street">Straße, Hausnummer</label><input id="af-street" autocomplete="street-address"></div>
+        <div class="row">
+          <div class="field"><label for="af-zip">PLZ</label><input id="af-zip" inputmode="numeric" autocomplete="postal-code"></div>
+          <div class="field"><label for="af-city">Ort *</label><input id="af-city" required autocomplete="address-level2"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Wie erreichen wir Sie?</legend>
+        <div class="row">
+          <div class="field"><label for="af-name">Name *</label><input id="af-name" required autocomplete="name"></div>
+          <div class="field"><label for="af-phone">Telefon *</label><input id="af-phone" type="tel" required autocomplete="tel"></div>
+        </div>
+        <div class="field"><label for="af-email">E-Mail</label><input id="af-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="af-msg">Nachricht</label><textarea id="af-msg" placeholder="Besonderheiten: Sturzhöhe, Seitenplatz, Zufahrt, Stockwerk, Parkmöglichkeit …"></textarea></div>
+      </fieldset>
+
+      <input class="honeypot" tabindex="-1" autocomplete="off" id="af-hp" name="website">
+      <label class="checkbox"><input type="checkbox" id="af-privacy" required> <span>Ich stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage gemäß <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> zu. *</span></label>
+      <div id="anfrage-msg" style="margin-top:1rem"></div>
+      <button class="btn btn-primary btn-lg" type="submit" style="margin-top:1rem">Anfrage senden</button>
+      <p class="hint">Das Formular öffnet Ihr E-Mail-Programm mit der fertigen Anfrage an uns. Es werden keine Daten auf dieser Website gespeichert.</p>
+    </form>
+  </div>
+
+  <aside class="side">
+    <div class="side-card">
+      <h3>Lieber direkt?</h3>
+      <p>Schicken Sie uns Fotos von der Einbausituation und die Maße – wir antworten mit einem Festpreis.</p>
+      <p><a class="btn btn-wa" href="#" data-wa-link data-wa-text="Hallo, ich hätte gern ein Festpreis-Angebot für eine Montage. Fotos und Maße schicke ich gleich mit." style="width:100%">WhatsApp öffnen</a></p>
+      <p><a class="btn btn-outline" href="#" data-phone-link style="width:100%">Telefon</a></p>
+    </div>
+    <div class="card">
+      <h3>So messen Sie richtig</h3>
+      <ul style="padding-left:1.1rem;color:var(--muted);line-height:1.8;margin:0">
+        <li><b>Breite:</b> lichte Öffnung von Mauer zu Mauer</li>
+        <li><b>Höhe:</b> vom fertigen Boden bis Sturzunterkante</li>
+        <li><b>Sturz:</b> Platz über der Öffnung bis zur Decke</li>
+        <li><b>Seitenplatz:</b> links und rechts neben der Öffnung</li>
+      </ul>
+      <p class="hint" style="margin-top:.8rem">Keine Sorge, wenn etwas fehlt: Vor der Montage prüfen wir alle Maße.</p>
+    </div>
+  </aside>
+</div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/config.js"></script><script src="assets/js/layout.js"></script><script src="assets/js/main.js"></script>
+</body></html>
