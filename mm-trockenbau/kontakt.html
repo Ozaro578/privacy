@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<title>Kontakt – MM Trockenbau</title>
+<meta name="description" content="Kontakt zu MM Trockenbau: Telefon, WhatsApp, E-Mail. Wir melden uns in der Regel noch am selben Werktag.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Start</a> › Kontakt</div>
+  <span class="eyebrow">Kontakt</span>
+  <h1>Sprechen Sie <span class="hl">mit uns.</span></h1>
+  <p class="lead">Rufen Sie an, schreiben Sie per WhatsApp oder nutzen Sie das Formular – wir melden uns in der Regel noch am selben Werktag.</p>
+</div></section>
+<section class="section"><div class="container contact-grid">
+  <div class="card contact-info">
+    <h3>MM Trockenbau</h3>
+    <p style="color:var(--muted)">Inhaber: <span data-owner></span></p>
+    <div class="contact-quick">
+      <a href="#" data-phone-link><i>📞</i><span>Anrufen<small>Mo–Fr 7–18 Uhr</small></span></a>
+      <a href="#" data-wa-link data-wa-text="Hallo, ich hätte gern ein Angebot für Trockenbauarbeiten."><i>💬</i><span>WhatsApp schreiben<small>Grundriss &amp; Fotos einfach mitschicken</small></span></a>
+      <a href="#" data-mail-link><i>✉️</i><span>E-Mail senden<small>Antwort am selben Werktag</small></span></a>
+    </div>
+    <dl>
+      <dt>Adresse</dt><dd><span data-street></span><br><span data-zipcity></span></dd>
+    </dl>
+    <h3 style="font-size:1rem">Erreichbarkeit</h3>
+    <dl id="opening-hours"></dl>
+    <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="#" data-route-link>Route planen ↗</a>
+  </div>
+  <div class="card">
+    <h3>Nachricht schreiben</h3>
+    <p class="hint" style="margin-bottom:1rem">Für ein konkretes Vorhaben nutzen Sie am besten die <a href="anfrage.html">Projekt-Anfrage</a> – dort können Sie Flächen und Leistungen direkt angeben.</p>
+    <form id="contact-form" novalidate>
+      <div class="row">
+        <div class="field"><label for="cf-name">Name *</label><input id="cf-name" required autocomplete="name"></div>
+        <div class="field"><label for="cf-phone">Telefon *</label><input id="cf-phone" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="field"><label for="cf-email">E-Mail</label><input id="cf-email" type="email" autocomplete="email"></div>
+      <div class="field"><label for="cf-topic">Anliegen</label><select id="cf-topic"><option>Trockenbauwände</option><option>Abgehängte Decke / Lichtdecke</option><option>Dachgeschossausbau</option><option>Spachtelarbeiten</option><option>Schall- / Brandschutz</option><option>Sanierung / Umbau</option><option>Nachunternehmer-Anfrage</option><option>Sonstiges</option></select></div>
+      <div class="field"><label for="cf-msg">Nachricht *</label><textarea id="cf-msg" required placeholder="Was soll gemacht werden? Ort, Fläche, Wunschtermin …"></textarea></div>
+      <input class="honeypot" tabindex="-1" autocomplete="off" id="cf-hp" name="website">
+      <label class="checkbox"><input type="checkbox" id="cf-privacy" required> <span>Ich stimme der Verarbeitung meiner Daten gemäß <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> zu. *</span></label>
+      <div id="contact-msg" style="margin-top:1rem"></div>
+      <button class="btn btn-primary" type="submit" style="margin-top:1rem">Nachricht senden</button>
+      <p class="hint">Das Formular öffnet Ihr E-Mail-Programm mit der fertigen Nachricht an uns. Es werden keine Daten auf dieser Website gespeichert.</p>
+    </form>
+  </div>
+</div></section>
+<section class="location" id="standort">
+  <div class="map-wrap">
+    <div id="map-standort" aria-label="Karte: Standort MM Trockenbau"></div>
+    <div class="map-card">
+      <span class="eyebrow">Unser Standort</span>
+      <h2>MM Trockenbau</h2>
+      <dl>
+        <dt>Adresse</dt><dd><span data-street></span><br><span data-zipcity></span></dd>
+        <dt>Telefon</dt><dd><a href="#" data-phone-link>Telefon</a></dd>
+        <dt>E-Mail</dt><dd><a href="#" data-mail-link>E-Mail</a></dd>
+        <dt>Einsatzgebiet</dt><dd><span data-city></span> und Umgebung – rund <span data-radius></span> km</dd>
+      </dl>
+      <div class="btns">
+        <a class="btn btn-primary btn-sm" target="_blank" rel="noopener" href="#" data-route-link>Route planen ↗</a>
+        <a class="btn btn-outline btn-sm" href="anfrage.html">Projekt anfragen</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="assets/js/config.js"></script><script src="assets/js/layout.js"></script><script src="assets/js/logo.js"></script><script src="assets/js/main.js"></script><script src="assets/js/effects.js"></script>
+</body></html>

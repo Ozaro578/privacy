@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<title>Über uns – MM Trockenbau</title>
+<meta name="description" content="MM Trockenbau ist ein inhabergeführter Trockenbaubetrieb: Ständerwände, Decken, Innenausbau und Spachtelarbeiten – sauber, termintreu, zum Festpreis.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Start</a> › Über uns</div>
+  <span class="eyebrow">Über MM Trockenbau</span>
+  <h1>Handwerk, das <span class="hl">gerade steht.</span></h1>
+  <p class="lead">MM Trockenbau ist ein inhabergeführter Fachbetrieb für Trockenbau und Innenausbau. Wer Ihnen das Angebot macht, steht später auch selbst auf der Baustelle.</p>
+</div></section>
+
+<section class="section"><div class="container grid grid-2" style="align-items:center">
+  <div class="reveal">
+    <span class="eyebrow">Warum MM</span>
+    <h2>Vier Gründe, die für uns sprechen.</h2>
+    <ul style="color:var(--muted);line-height:1.9;padding-left:1.1rem">
+      <li><b>Inhabergeführt</b> – ein Ansprechpartner von der Anfrage bis zur Abnahme.</li>
+      <li><b>Festpreis</b> – nach Aufmaß ein verbindliches Angebot, keine Nachträge ohne Absprache.</li>
+      <li><b>Systemgerecht</b> – wir bauen nach den Vorgaben von Knauf, Rigips und Fermacell, damit Schall- und Brandschutz auch halten.</li>
+      <li><b>Sauber</b> – Absaugung, Abdeckung, Staubschutztüren, besenreine Übergabe.</li>
+    </ul>
+    <a class="btn btn-primary" href="kontakt.html" style="margin-top:.6rem">Kontakt aufnehmen</a>
+  </div>
+  <div class="quote-card reveal d2">
+    <p>Eine Wand sieht man jeden Tag. Deshalb bauen wir sie so, dass man nach Jahren noch keine Fuge sieht.</p>
+    <footer><span data-owner></span>, Inhaber</footer>
+  </div>
+</div></section>
+
+<section class="section dark" id="ablauf"><div class="container">
+  <div class="center reveal"><span class="eyebrow">So läuft's ab</span><h2>In vier Schritten zum fertigen Raum</h2></div>
+  <div class="grid grid-4 steps" style="margin-top:2.5rem">
+    <div class="step reveal d1"><h3>Anfrage</h3><p>Grundriss, Fotos oder kurze Beschreibung reichen für den Anfang.</p></div>
+    <div class="step reveal d2"><h3>Aufmaß &amp; Festpreis</h3><p>Wir messen vor Ort auf und erstellen innerhalb von 48 Stunden ein verbindliches Angebot.</p></div>
+    <div class="step reveal d3"><h3>Ausführung</h3><p>Ständerwerk, Dämmung, Beplankung, Spachtelung – in der vereinbarten Zeit.</p></div>
+    <div class="step reveal d4"><h3>Übergabe</h3><p>Gemeinsame Abnahme, malerfertig und besenrein. Bezahlung nach Abnahme.</p></div>
+  </div>
+  <div class="stats">
+    <div class="stat reveal d1"><b data-count="48" data-suffix=" h">0</b><span>bis zum Angebot</span></div>
+    <div class="stat reveal d2"><b data-count="4" data-suffix="">0</b><span>Qualitätsstufen Q1–Q4</span></div>
+    <div class="stat reveal d3"><b data-count="80" data-suffix=" km">0</b><span>Einsatzradius</span></div>
+    <div class="stat reveal d4"><b data-count="3" data-suffix="">0</b><span>Systemhersteller: Knauf, Rigips, Fermacell</span></div>
+  </div>
+</div></section>
+
+<section class="section alt"><div class="container grid grid-2" style="align-items:start">
+  <div class="reveal">
+    <span class="eyebrow">Für wen wir arbeiten</span>
+    <h2>Privat, Gewerbe, Bauträger</h2>
+    <p class="lead">Vom einzelnen Zimmer bis zum Innenausbau ganzer Wohneinheiten – mit demselben Anspruch an gerade Wände und saubere Baustellen.</p>
+    <div class="grid grid-3" style="margin-top:1rem">
+      <div class="card"><div class="icon">🏡</div><h3>Privat</h3><p>Dachausbau, neue Decke, Badsanierung, Grundrissänderung.</p></div>
+      <div class="card steel"><div class="icon">🏢</div><h3>Gewerbe</h3><p>Büros, Praxen, Läden – mit Schallschutz und Brandschutz.</p></div>
+      <div class="card"><div class="icon">🤝</div><h3>Bauträger &amp; GU</h3><p>Trockenbau als Nachunternehmer, mehrere Einheiten, fester Zeitplan.</p></div>
+    </div>
+  </div>
+  <div class="card reveal d2"><h3>Einsatzgebiet</h3><p>Wir sind im Umkreis von rund <span data-radius></span> km um <span data-city></span> für Sie unterwegs.</p><div id="map-public" style="margin-top:1rem"></div></div>
+</div></section>
+<section class="cta-band"><div class="container">
+  <div><h2>Räume neu denken? Wir bauen sie.</h2><p>Grundriss oder Fotos schicken, Festpreis bekommen, Termin ausmachen. Sauber, staubarm, termintreu.</p></div>
+  <a class="btn btn-dark btn-lg" href="anfrage.html">Projekt anfragen →</a>
+</div></section>
+</main>
+<div id="site-footer"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="assets/js/config.js"></script><script src="assets/js/layout.js"></script><script src="assets/js/logo.js"></script><script src="assets/js/main.js"></script><script src="assets/js/effects.js"></script>
+</body></html>

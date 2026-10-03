@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<title>Projekt anfragen – Festpreis in 48 Stunden | MM Trockenbau</title>
+<meta name="description" content="Projekt-Anfrage an MM Trockenbau: Leistungen, Flächen und Objekt angeben und innerhalb von 48 Stunden ein Festpreis-Angebot erhalten.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<main>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Start</a> › Projekt anfragen</div>
+  <span class="eyebrow">Projekt-Anfrage</span>
+  <h1>Festpreis für Ihr Projekt – <span class="hl">in 48 Stunden.</span></h1>
+  <p class="lead">Je genauer Ihre Angaben, desto schneller können wir einen verbindlichen Preis nennen. Grundriss und Fotos schicken Sie uns am einfachsten per WhatsApp hinterher.</p>
+</div></section>
+
+<section class="section"><div class="container anfrage-grid">
+  <div class="card">
+    <form id="anfrage-form" novalidate>
+      <fieldset>
+        <legend>1. Was soll gemacht werden?</legend>
+        <label>Leistungen (Mehrfachauswahl)</label>
+        <div class="chips" style="margin-bottom:1rem">
+          <label class="chip"><input type="checkbox" name="leistung" value="Trockenbauwände"> Trockenbauwände</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Abgehängte Decke"> Abgehängte Decke</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Lichtdecke / LED-Voute"> Lichtdecke / LED-Voute</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Dachgeschossausbau"> Dachgeschossausbau</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Spachtelarbeiten"> Spachtelarbeiten</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Schallschutz"> Schallschutz</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Brandschutz"> Brandschutz</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Vorwandinstallation Bad"> Vorwandinstallation Bad</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Trockenestrich"> Trockenestrich</label>
+          <label class="chip"><input type="checkbox" name="leistung" value="Rückbau / Entsorgung"> Rückbau / Entsorgung</label>
+        </div>
+        <div class="row">
+          <div class="field"><label for="af-flaeche">Fläche gesamt (m², ca.)</label><input id="af-flaeche" type="number" min="1" max="5000" placeholder="z. B. 60"></div>
+          <div class="field"><label for="af-raeume">Anzahl Räume</label><input id="af-raeume" type="number" min="1" max="200" placeholder="z. B. 2"></div>
+          <div class="field"><label for="af-q">Oberflächenqualität</label><select id="af-q"><option>Q2 – Standard (Raufaser, Strukturputz)</option><option>Q3 – fein (Tapete, matter Anstrich)</option><option>Q4 – vollflächig (Streiflicht, Glanz)</option><option>Q1 – nur Grundverspachtelung</option><option>Weiß ich nicht – bitte beraten</option></select></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="af-objekt">Objektart</label><select id="af-objekt"><option>Einfamilienhaus</option><option>Wohnung</option><option>Mehrfamilienhaus</option><option>Büro / Praxis / Laden</option><option>Halle / Gewerbe</option></select></div>
+          <div class="field"><label for="af-zustand">Zustand</label><select id="af-zustand"><option>Neubau / Rohbau</option><option>Bestand / Sanierung</option><option>Bewohnt – Arbeiten im laufenden Betrieb</option></select></div>
+          <div class="field"><label for="af-type">Ich bin …</label><select id="af-type"><option>Privatkunde</option><option>Gewerbe</option><option>Bauträger / GU / Hausverwaltung</option></select></div>
+        </div>
+        <div class="field"><label for="af-date">Wunschtermin (optional)</label><input id="af-date" type="month"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Wo ist das Objekt?</legend>
+        <div class="field"><label for="af-street">Straße, Hausnummer</label><input id="af-street" autocomplete="street-address"></div>
+        <div class="row">
+          <div class="field"><label for="af-zip">PLZ</label><input id="af-zip" inputmode="numeric" autocomplete="postal-code"></div>
+          <div class="field"><label for="af-city">Ort *</label><input id="af-city" required autocomplete="address-level2"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Wie erreichen wir Sie?</legend>
+        <div class="row">
+          <div class="field"><label for="af-name">Name *</label><input id="af-name" required autocomplete="name"></div>
+          <div class="field"><label for="af-phone">Telefon *</label><input id="af-phone" type="tel" required autocomplete="tel"></div>
+        </div>
+        <div class="field"><label for="af-email">E-Mail</label><input id="af-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="af-msg">Nachricht</label><textarea id="af-msg" placeholder="Besonderheiten: Deckenhöhe, Dachschrägen, Leitungen, Zugang, Stockwerk, Parkmöglichkeit …"></textarea></div>
+      </fieldset>
+
+      <input class="honeypot" tabindex="-1" autocomplete="off" id="af-hp" name="website">
+      <label class="checkbox"><input type="checkbox" id="af-privacy" required> <span>Ich stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage gemäß <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> zu. *</span></label>
+      <div id="anfrage-msg" style="margin-top:1rem"></div>
+      <button class="btn btn-primary btn-lg" type="submit" style="margin-top:1rem">Anfrage senden</button>
+      <p class="hint">Das Formular öffnet Ihr E-Mail-Programm mit der fertigen Anfrage an uns. Es werden keine Daten auf dieser Website gespeichert.</p>
+    </form>
+  </div>
+
+  <aside class="side">
+    <div class="side-card">
+      <h3>Lieber direkt?</h3>
+      <p>Schicken Sie uns Grundriss oder Fotos und die ungefähren Maße – wir antworten mit einem Festpreis.</p>
+      <p><a class="btn btn-wa" href="#" data-wa-link data-wa-text="Hallo, ich hätte gern ein Festpreis-Angebot für Trockenbauarbeiten. Fotos und Maße schicke ich gleich mit." style="width:100%">WhatsApp öffnen</a></p>
+      <p><a class="btn btn-outline" href="#" data-phone-link style="width:100%">Telefon</a></p>
+    </div>
+    <div class="card">
+      <h3>Was wir wissen sollten</h3>
+      <ul style="padding-left:1.1rem;color:var(--muted);line-height:1.8;margin:0">
+        <li><b>Fläche:</b> Länge × Höhe der Wand oder Grundfläche der Decke</li>
+        <li><b>Deckenhöhe:</b> vom Boden bis zur Rohdecke</li>
+        <li><b>Oberfläche:</b> Was kommt später drauf – Farbe, Tapete, Fliesen?</li>
+        <li><b>Technik:</b> Leuchten, Steckdosen, Leitungen in der Wand?</li>
+      </ul>
+      <p class="hint" style="margin-top:.8rem">Keine Sorge, wenn etwas fehlt: Beim Aufmaß vor Ort klären wir alles.</p>
+    </div>
+  </aside>
+</div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/config.js"></script><script src="assets/js/layout.js"></script><script src="assets/js/logo.js"></script><script src="assets/js/main.js"></script><script src="assets/js/effects.js"></script>
+</body></html>
