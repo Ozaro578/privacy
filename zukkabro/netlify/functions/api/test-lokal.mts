@@ -55,6 +55,17 @@ r = await rufe("POST", "/admin/preise", { aenderungen: { "takis-fuego": { name: 
 assert.equal(r.status, 200); ok("Händlerpreise gespeichert");
 r = await rufe("GET", "/haendler/preise", undefined, haendler);
 assert.deepEqual(Object.keys(r.daten.preise), ["takis-fuego"]); ok("Händler sieht nur aktive Preise");
+// Staffelpreise
+r = await rufe("POST", "/admin/preise", { aenderungen: { "takis-fuego": { name: "Takis Fuego", preis: 150, ve: 20, mindest: 2, mwst: 7, staffel: [{ ab: 10, preis: 130 }, { ab: 5, preis: 140 }] } } }, admin);
+assert.equal(r.status, 200); assert.deepEqual(r.daten.preise["takis-fuego"].staffel, [{ ab: 5, preis: 140 }, { ab: 10, preis: 130 }]); ok("Staffelpreise gespeichert und nach Menge sortiert");
+r = await rufe("POST", "/admin/preise", { aenderungen: { "takis-fuego": { name: "Takis Fuego", preis: 150, ve: 20, mindest: 2, mwst: 7, staffel: [{ ab: 5, preis: 160 }] } } }, admin);
+assert.equal(r.status, 400); ok("Staffelpreis über dem Grundpreis abgelehnt");
+r = await rufe("GET", "/haendler/preise", undefined, haendler); assert.equal(r.daten.preise["takis-fuego"].staffel.length, 2); ok("Händler sieht die Staffel");
+r = await rufe("POST", "/haendler/bestellungen", { positionen: [{ produktId: "takis-fuego", anzahlVE: 10 }] }, haendler);
+assert.equal(r.status, 200); assert.equal(r.daten.bestellung.positionen[0].preis, 130); assert.equal(r.daten.bestellung.netto, 10 * 20 * 130); ok("Staffelpreis ab 10 VE: 1,30 € statt 1,50 € pro Stück");
+r = await rufe("POST", "/haendler/bestellungen", { positionen: [{ produktId: "takis-fuego", anzahlVE: 2 }] }, haendler);
+assert.equal(r.status, 200); assert.equal(r.daten.bestellung.positionen[0].preis, 150); ok("Unter der Staffel gilt der Grundpreis");
+r = await rufe("POST", "/admin/preise", { aenderungen: { "takis-fuego": { name: "Takis Fuego", preis: 150, ve: 20, mindest: 2, mwst: 7 } } }, admin); assert.equal(r.status, 200);
 r = await rufe("POST", "/haendler/bestellungen", { positionen: [{ produktId: "takis-fuego", anzahlVE: 1 }] }, haendler);
 assert.equal(r.status, 400); ok("Mindestmenge wird geprüft");
 r = await rufe("POST", "/haendler/bestellungen", { positionen: [{ produktId: "monster-x", anzahlVE: 3 }] }, haendler);
@@ -106,6 +117,21 @@ assert.equal(r.status, 409); assert.match(r.daten.fehler, /öffnet im November 2
 r = await rufe("GET", "/shop/laden"); assert.ok(r.daten.karte.length > 0); assert.ok(r.daten.karte.every((k: any) => k.preis === null)); ok("Eröffnungsmodus: Karte ohne Preise");
 r = await rufe("POST", "/admin/einstellungen", { ...EINST, vorverkauf: false, eroeffnung: "" }, admin); assert.equal(r.status, 200); assert.equal(r.daten.einstellungen.eroeffnung, "im November 2026");
 r = await rufe("GET", "/shop/daten"); assert.equal(r.daten.preise[essen], 249); assert.equal(r.daten.vorverkauf.aktiv, false); ok("Eröffnungsmodus aus: Preise wieder da");
+// Lieferung in Heilbronn (Kurier)
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, kurier: true, kurierKosten: 290, kurierAb: 2500, kurierFreiAb: 5000, kurierPlz: "74080, 74072" }, admin); assert.equal(r.status, 200);
+r = await rufe("GET", "/shop/daten"); assert.deepEqual(r.daten.versand.kurier, { aktiv: true, kosten: 290, ab: 2500, freiAb: 5000, plz: ["74080", "74072"] }); ok("Kurier-Daten öffentlich");
+const hn = { ...kunde, strasse: "Klingenberger Straße 5", plz: "74080", ort: "Heilbronn" };
+r = await rufe("POST", "/shop/bestellung", { kunde: hn, lieferart: "kurier", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 2 }] });
+assert.equal(r.status, 400); assert.match(r.daten.fehler, /erst ab einem Warenwert von 25,00/); ok("Kurier: Mindestbestellwert geprüft");
+r = await rufe("POST", "/shop/bestellung", { kunde: { ...hn, plz: "70173", ort: "Stuttgart" }, lieferart: "kurier", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 12 }] });
+assert.equal(r.status, 400); assert.match(r.daten.fehler, /nur in Heilbronn/); ok("Kurier: fremde PLZ abgelehnt");
+r = await rufe("POST", "/shop/bestellung", { kunde: hn, lieferart: "kurier", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 12 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.versand, 290); assert.equal(r.daten.brutto, 12 * 249 + 290); ok("Kurier: 2,90 € Liefergebühr ab 25 €");
+r = await rufe("POST", "/shop/bestellung", { kunde: hn, lieferart: "kurier", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 21 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.versand, 0); ok("Kurier: ab 50 € kostenlos");
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, kurier: false }, admin); assert.equal(r.status, 200);
+r = await rufe("POST", "/shop/bestellung", { kunde: hn, lieferart: "kurier", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 12 }] });
+assert.equal(r.status, 400); ok("Kurier abgeschaltet: nicht wählbar");
 r = await rufe("GET", "/shop/daten"); assert.equal(JSON.stringify(r.daten).includes("150"), false); ok("Händlerpreise bleiben geheim");
 const basis = { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true };
 r = await rufe("POST", "/shop/bestellung", { ...basis, agb: false, positionen: [{ produktId: essen, menge: 2 }] }); assert.equal(r.status, 400); ok("Ohne AGB-Häkchen keine Bestellung");
@@ -237,6 +263,20 @@ assert.equal(r.status, 200); assert.ok(r.daten.news.every((n: any) => /^N-/.test
 r = await rufe("GET", "/shop/news"); assert.equal(r.daten.news.length, 2); assert.equal(r.daten.news[0].titel, "Neu"); ok("News öffentlich: neueste zuerst, Entwurf versteckt");
 r = await rufe("POST", "/admin/news", { news: [{ id: newsIds[0], titel: "Alt geändert", datum: "2026-01-01" }] }, admin); assert.equal(r.daten.news[0].id, newsIds[0]); ok("News-Kennung bleibt beim Bearbeiten erhalten");
 r = await rufe("POST", "/admin/news", { news: [] }, admin);
+
+// Digitale Stempelkarte
+r = await rufe("POST", "/shop/stempel/neu", {}); assert.equal(r.status, 200); assert.match(r.daten.code, /^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/); assert.equal(r.daten.stempel, 0); assert.equal(r.daten.ziel, 10);
+const karteCode = r.daten.code; ok("Stempelkarte angelegt: " + karteCode);
+r = await rufe("GET", "/shop/stempel?code=ZB-XXXX-XXXX"); assert.equal(r.status, 404); ok("Unbekannte Karte: 404");
+r = await rufe("GET", "/shop/stempel?code=hallo"); assert.equal(r.status, 400); ok("Kaputter Code abgelehnt");
+r = await rufe("POST", "/admin/stempel", { code: karteCode, aktion: "stempel" }); assert.equal(r.status, 401); ok("Stempeln nur für Admins");
+for (let i = 0; i < 9; i++) { r = await rufe("POST", "/admin/stempel", { code: karteCode.toLowerCase(), aktion: "stempel" }, admin); assert.equal(r.status, 200); }
+assert.equal(r.daten.stempel, 9); assert.equal(r.daten.guthaben, 0); ok("9 Stempel vergeben (Code auch klein geschrieben)");
+r = await rufe("POST", "/admin/stempel", { code: karteCode, aktion: "stempel" }, admin); assert.equal(r.daten.stempel, 0); assert.equal(r.daten.guthaben, 1); ok("10. Stempel: Karte voll, 1 Gratis-Getränk frei");
+r = await rufe("GET", "/shop/stempel?code=" + karteCode); assert.equal(r.daten.guthaben, 1); ok("Kunde sieht das Guthaben");
+r = await rufe("POST", "/admin/stempel", { code: karteCode, aktion: "einloesen" }, admin); assert.equal(r.daten.guthaben, 0); assert.equal(r.daten.eingeloest, 1); ok("Gratis-Getränk eingelöst");
+r = await rufe("POST", "/admin/stempel", { code: karteCode, aktion: "einloesen" }, admin); assert.equal(r.status, 400); ok("Ohne Guthaben nichts einzulösen");
+r = await rufe("POST", "/admin/stempel", { code: karteCode, aktion: "stempel", anzahl: 3 }, admin); assert.equal(r.daten.stempel, 3); ok("Mehrere Stempel auf einmal (3 Bowls)");
 
 // Bremse gegen Passwort-Raten (gleiche IP)
 let letzte = 0;

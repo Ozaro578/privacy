@@ -217,7 +217,7 @@
       var kontakt;
       if (a === "kunde") {
         var k = b.kunde || {};
-        kontakt = "<p><strong>" + (b.lieferart === "abholung" ? "Abholung" : "Lieferadresse") + ":</strong> " + esc([k.vorname + " " + k.nachname, b.lieferart === "versand" ? k.strasse : "", b.lieferart === "versand" ? k.plz + " " + k.ort : ""].filter(Boolean).join(", ")) +
+        kontakt = "<p><strong>" + (b.lieferart === "abholung" ? "Abholung" : b.lieferart === "kurier" ? "🛵 Lieferung Heilbronn (Kurier)" : "Lieferadresse") + ":</strong> " + esc([k.vorname + " " + k.nachname, b.lieferart === "versand" ? k.strasse : "", b.lieferart === "versand" ? k.plz + " " + k.ort : ""].filter(Boolean).join(", ")) +
           " · " + esc(k.email) + (k.telefon ? " · " + esc(k.telefon) : "") + "<br><strong>Zahlung:</strong> " + esc(b.zahlart || "") + (b.stripe ? (b.stripe.status === "bezahlt" ? ' <span class="status status--bezahlt">✓ online bezahlt</span>' : ' <span class="status status--offen">Online-Zahlung offen</span>') : "") +
           (b.ab18 ? ' · <span class="status status--neu">🔞 18+ · geb. ' + ZB.datumDE(k.geburtsdatum) + " · Ausweis prüfen!</span>" : "") + "</p>";
       } else {
@@ -319,7 +319,7 @@
       return !q || (p.name + " " + p.marke).toLowerCase().indexOf(q) !== -1;
     });
     var sichtbar = liste.slice(0, preisZeige);
-    $("preisTabelle").innerHTML = '<thead><tr><th></th><th>Produkt</th><th class="num">🛒 Shop-Preis brutto (€)</th><th class="num">🏪 Händler netto/Stück (€)</th><th class="num">VE (Stück)</th><th class="num">Mindest-VE</th><th>MwSt</th><th>Händler aktiv</th></tr></thead><tbody>' +
+    $("preisTabelle").innerHTML = '<thead><tr><th></th><th>Produkt</th><th class="num">🛒 Shop-Preis brutto (€)</th><th class="num">🏪 Händler netto/Stück (€)</th><th class="num">VE (Stück)</th><th class="num">Mindest-VE</th><th>Staffel <small>ab VE: € netto</small></th><th>MwSt</th><th>Händler aktiv</th></tr></thead><tbody>' +
       sichtbar.map(function (p) {
         var e = preisEintrag(p.id) || {};
         var geaendert = preisAenderungen.hasOwnProperty(p.id) ? " geaendert" : "";
@@ -332,12 +332,24 @@
           '<td class="num"><input class="js-p' + geaendert + '" inputmode="decimal" value="' + ZB.centFeld(e.preis) + '" placeholder="–"></td>' +
           '<td class="num"><input class="js-ve' + geaendert + '" type="number" min="1" value="' + (e.ve || "") + '" placeholder="1"></td>' +
           '<td class="num"><input class="js-min' + geaendert + '" type="number" min="1" value="' + (e.mindest || "") + '" placeholder="1"></td>' +
+          '<td><input class="js-st' + geaendert + '" value="' + esc(staffelText(e.staffel)) + '" placeholder="5: 1,40; 10: 1,30" style="min-width:150px"></td>' +
           '<td><select class="js-mw">' + [19, 7, 0].map(function (s) { return '<option value="' + s + '"' + (s === mw ? " selected" : "") + ">" + s + " %</option>"; }).join("") + "</select></td>" +
           '<td><input class="js-aktiv" type="checkbox"' + (e.aktiv !== false ? " checked" : "") + "></td></tr>";
       }).join("") + "</tbody>";
     $("preisMehr").hidden = liste.length <= preisZeige;
     $("preisMehr").textContent = "Mehr anzeigen (" + (liste.length - sichtbar.length) + " weitere)";
     knopfZaehler();
+  }
+  /** Staffel als Text: "5: 1,40; 10: 1,30" */
+  function staffelText(st) { return (st || []).map(function (s) { return s.ab + ": " + ZB.centFeld(s.preis); }).join("; "); }
+  /** Text zurück in Staffelstufen, wirft bei Unsinn */
+  function staffelParse(str) {
+    return String(str || "").split(/[;\n]+/).map(function (t) { return t.trim(); }).filter(Boolean).map(function (t) {
+      var m = /^(\d+)\s*[:=]\s*(.+)$/.exec(t);
+      var c = m ? ZB.cent(m[2]) : NaN;
+      if (!m || isNaN(c) || c < 0 || parseInt(m[1], 10) < 2) throw new Error("Staffel bitte so eingeben: 5: 1,40; 10: 1,30 (ab VE: Preis).");
+      return { ab: parseInt(m[1], 10), preis: c };
+    });
   }
   function knopfZaehler() {
     var n = Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length;
@@ -372,14 +384,17 @@
     } else {
       var c = ZB.cent(roh);
       if (isNaN(c) || c < 0) { ZB.meldung("Ungültiger Preis bei " + p.name, "fehler"); return; }
+      var staffel;
+      try { staffel = staffelParse(tr.querySelector(".js-st").value); } catch (err) { ZB.meldung(err.message, "fehler"); return; }
+      if (staffel.some(function (s) { return s.preis >= c; })) { ZB.meldung("Staffelpreise müssen unter dem Grundpreis liegen (" + p.name + ").", "fehler"); return; }
       preisAenderungen[id] = {
-        name: p.name, marke: p.marke || "", preis: c,
+        name: p.name, marke: p.marke || "", preis: c, staffel: staffel,
         ve: Math.max(1, parseInt(tr.querySelector(".js-ve").value, 10) || 1),
         mindest: Math.max(1, parseInt(tr.querySelector(".js-min").value, 10) || 1),
         mwst: parseInt(tr.querySelector(".js-mw").value, 10), aktiv: tr.querySelector(".js-aktiv").checked,
       };
     }
-    tr.querySelectorAll(".js-p, .js-ve, .js-min").forEach(function (i) { i.classList.add("geaendert"); });
+    tr.querySelectorAll(".js-p, .js-ve, .js-min, .js-st").forEach(function (i) { i.classList.add("geaendert"); });
     knopfZaehler();
   });
   $("preiseSpeichern").addEventListener("click", async function () {
@@ -750,6 +765,27 @@
     if (!confirm("Tag abschließen? Danach sind keine Änderungen mehr möglich, die Verkäufe werden ins Journal gebucht.")) return;
     if (await kasseAktion("abschluss", { gezaehlt: c, notiz: f.notiz.value })) { f.reset(); ZB.meldung("Tag abgeschlossen und gebucht."); allesLaden(); kasseBerichteLaden(); }
   });
+  /* ---- Stempelkarte an der Theke ---- */
+  function stempelAnzeigen(r) {
+    $("stempelInfo").innerHTML = "Karte <b>" + esc(r.code) + "</b>: <b>" + r.stempel + " / " + r.ziel + "</b> Stempel · Gratis frei: <b>" + r.guthaben + "</b> · bisher eingelöst: " + r.eingeloest +
+      (r.letzter ? " · zuletzt " + ZB.zeitDE(r.letzter) : "");
+  }
+  async function stempelApi(m, pfad, daten) {
+    try { var r = await ZB.api(m, pfad, daten); stempelAnzeigen(r); return r; } catch (err) { ZB.meldung(err.message, "fehler"); return null; }
+  }
+  function stempelCodeWert() { return $("stempelCode").value.trim().toUpperCase(); }
+  $("stempelPruefen").addEventListener("click", function () { stempelApi("GET", "/admin/stempel?code=" + encodeURIComponent(stempelCodeWert())); });
+  $("stempelCode").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("stempelPruefen").click(); } });
+  $("stempelGeben").addEventListener("click", async function () {
+    var r = await stempelApi("POST", "/admin/stempel", { code: stempelCodeWert(), aktion: "stempel" });
+    if (r) ZB.meldung(r.stempel === 0 ? "🎉 Karte voll! Ein Gratis-Getränk ist frei." : "Stempel gegeben: " + r.stempel + " von " + r.ziel + ".");
+  });
+  $("stempelEinloesen").addEventListener("click", async function () {
+    if (!confirm("Gratis-Getränk jetzt einlösen?")) return;
+    var r = await stempelApi("POST", "/admin/stempel", { code: stempelCodeWert(), aktion: "einloesen" });
+    if (r) ZB.meldung("Eingelöst, viel Spaß!");
+  });
+
   async function kasseBerichteLaden() {
     try {
       var r = await ZB.api("GET", "/admin/kasse/berichte?monat=" + ($("kasseMonat").value || ZB.heute().slice(0, 7)));
@@ -786,6 +822,7 @@
     f.paypal.value = e.paypal || ""; f.hinweis.value = e.hinweis || ""; f.ohnePreisAusblenden.checked = !!e.ohnePreisAusblenden;
     f.mailAn.value = e.mailAn || ""; f.mailVon.value = e.mailVon || "";
     f.vorverkauf.checked = !!e.vorverkauf; f.eroeffnung.value = e.eroeffnung || "";
+    f.kurier.checked = !!e.kurier; f.kurierKosten.value = ZB.centFeld(e.kurierKosten); f.kurierAb.value = ZB.centFeld(e.kurierAb); f.kurierFreiAb.value = ZB.centFeld(e.kurierFreiAb); f.kurierPlz.value = e.kurierPlz || "";
   }
   $("einstForm").addEventListener("submit", async function (ev) {
     ev.preventDefault();
@@ -798,6 +835,7 @@
         bankInhaber: f.bankInhaber.value, bankIban: f.bankIban.value, bankName: f.bankName.value,
         paypal: f.paypal.value, hinweis: f.hinweis.value, ohnePreisAusblenden: f.ohnePreisAusblenden.checked,
         mailAn: f.mailAn.value, mailVon: f.mailVon.value, vorverkauf: f.vorverkauf.checked, eroeffnung: f.eroeffnung.value,
+        kurier: f.kurier.checked, kurierKosten: ZB.cent(f.kurierKosten.value) || 0, kurierAb: ZB.cent(f.kurierAb.value) || 0, kurierFreiAb: ZB.cent(f.kurierFreiAb.value) || 0, kurierPlz: f.kurierPlz.value,
       });
       daten.einstellungen = r.einstellungen; ZB.meldung("Einstellungen gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }

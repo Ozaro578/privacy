@@ -43,7 +43,7 @@ SEITEN = {  # Quelle -> Ziel (alles flach in einem Ordner)
     "index.html": "index.html", "sortiment.html": "sortiment.html", "vapes.html": "vapes.html",
     "produkt.html": "produkt.html", "pakete.html": "pakete.html", "paket.html": "paket.html",
     "warenkorb.html": "warenkorb.html", "ueber-uns.html": "ueber-uns.html", "kontakt.html": "kontakt.html",
-    "rechtliches.html": "rechtliches.html", "404.html": "404.html", "laden.html": "laden.html", "news.html": "news.html",
+    "rechtliches.html": "rechtliches.html", "404.html": "404.html", "laden.html": "laden.html", "news.html": "news.html", "stempelkarte.html": "stempelkarte.html",
     "haendler/index.html": "haendler.html", "admin/index.html": "admin.html",
 }
 

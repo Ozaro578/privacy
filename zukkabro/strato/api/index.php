@@ -16,6 +16,7 @@ const STANDARD_EINSTELLUNGEN = [
     'versand' => 590, 'versandfreiAb' => 5000, 'abholung' => true, 'abholort' => 'Klingenberger Straße 100, 74080 Heilbronn (zu den Öffnungszeiten)',
     'bankInhaber' => '', 'bankIban' => '', 'bankName' => '', 'paypal' => '', 'hinweis' => '', 'ohnePreisAusblenden' => false,
     'mailAn' => '', 'mailVon' => '', 'vorverkauf' => false, 'eroeffnung' => 'im November 2026',
+    'kurier' => true, 'kurierKosten' => 290, 'kurierAb' => 2500, 'kurierFreiAb' => 5000, 'kurierPlz' => '74072, 74074, 74076, 74078, 74080, 74081',
 ];
 
 final class Fehler extends Exception {
@@ -191,6 +192,87 @@ function mwst_pruefen(mixed $v): int {
     return $m;
 }
 
+/* =================== Digitale Stempelkarte (Laden) =================== */
+const STEMPEL_ZIEL = 10; // 10 Stempel = 1 Gratis-Getränk
+function stempel_code(): string {
+    $zeichen = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // ohne 0/O/1/I, damit man es an der Theke gut vorlesen kann
+    $c = '';
+    for ($i = 0; $i < 8; $i++) $c .= $zeichen[random_int(0, strlen($zeichen) - 1)];
+    return 'ZB-' . substr($c, 0, 4) . '-' . substr($c, 4);
+}
+function stempel_code_param(mixed $v): string {
+    $c = preg_replace('/\s/', '', strtoupper(text($v ?? '', 20)));
+    if (!preg_match('/^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/', $c)) throw new Fehler(400, 'Code bitte wie auf der Karte eingeben, z. B. ZB-AB12-CD34.');
+    return $c;
+}
+function stempel_lesen(string $code): array {
+    $k = lese('stempel/' . $code);
+    if (!is_array($k)) throw new Fehler(404, 'Diese Stempelkarte gibt es nicht.');
+    return $k;
+}
+function stempel_antwort(array $k, array $zusatz = []): never {
+    antwort(array_merge(['code' => $k['code'], 'stempel' => $k['stempel'], 'ziel' => STEMPEL_ZIEL, 'guthaben' => $k['guthaben'], 'eingeloest' => $k['eingeloest'],
+        'erstellt' => $k['erstellt'], 'letzter' => $k['letzter']], $zusatz));
+}
+function stempel_neu(string $ip): never {
+    bremse('stempel', $ip, 10, 60);
+    do { $code = stempel_code(); } while (lese('stempel/' . $code));
+    $k = ['code' => $code, 'stempel' => 0, 'guthaben' => 0, 'eingeloest' => 0, 'erstellt' => jetzt(), 'letzter' => '', 'verlauf' => []];
+    schreibe('stempel/' . $code, $k);
+    stempel_antwort($k);
+}
+function stempel_status(string $ip): never {
+    bremse('stempel-lesen', $ip, 60, 60);
+    stempel_antwort(stempel_lesen(stempel_code_param($_GET['code'] ?? '')));
+}
+/** Admin an der Theke: Stempel geben oder Gratis-Getränk einlösen */
+function stempel_aktion(array $s): never {
+    $b = body();
+    $code = stempel_code_param($b['code'] ?? '');
+    $k = stempel_lesen($code);
+    $aktion = ($b['aktion'] ?? '') === 'einloesen' ? 'einloesen' : 'stempel';
+    if ($aktion === 'stempel') {
+        $anzahl = ganz($b['anzahl'] ?? 1, 1, 5);
+        for ($i = 0; $i < $anzahl; $i++) {
+            $k['stempel']++;
+            if ($k['stempel'] >= STEMPEL_ZIEL) { $k['stempel'] = 0; $k['guthaben']++; }
+        }
+    } else {
+        if ($k['guthaben'] < 1) throw new Fehler(400, 'Auf dieser Karte ist noch kein Gratis-Getränk frei.');
+        $k['guthaben']--; $k['eingeloest']++;
+    }
+    $k['letzter'] = jetzt();
+    $k['verlauf'][] = ['was' => $aktion, 'am' => $k['letzter'], 'von' => $s['id']];
+    if (count($k['verlauf']) > 200) $k['verlauf'] = array_slice($k['verlauf'], -200);
+    schreibe('stempel/' . $code, $k);
+    stempel_antwort($k, ['ok' => true]);
+}
+
+/* =================== Staffelpreise (Händler) =================== */
+/** max. 5 Stufen, aufsteigend nach Menge, jede Stufe günstiger als der Grundpreis */
+function staffel_pruefen(mixed $roh, int $grundpreis): array {
+    if (!is_array($roh)) return [];
+    $stufen = [];
+    foreach (array_slice($roh, 0, 5) as $st) {
+        $ab = ganz($st['ab'] ?? null, 2, 10000); $preis = ganz($st['preis'] ?? null, 0, 10000000);
+        if ($preis >= $grundpreis) throw new Fehler(400, "Staffelpreis ab $ab VE muss unter dem Grundpreis liegen.");
+        foreach ($stufen as $x) if ($x['ab'] === $ab) throw new Fehler(400, 'Jede Staffelmenge nur einmal.');
+        $stufen[] = ['ab' => $ab, 'preis' => $preis];
+    }
+    usort($stufen, fn($a, $b) => $a['ab'] <=> $b['ab']);
+    return $stufen;
+}
+/** Gültiger Stückpreis für eine Menge (höchste erreichte Staffel) */
+function staffel_preis(array $p, int $anzahlVE): int {
+    $eff = (int) $p['preis'];
+    foreach ($p['staffel'] ?? [] as $st) if ($anzahlVE >= $st['ab']) $eff = (int) $st['preis'];
+    return $eff;
+}
+/** Postleitzahlen aus der Einstellung als Liste */
+function kurier_plz_liste(array $e): array {
+    return array_values(array_filter(preg_split('/[\s,;]+/', (string) $e['kurierPlz']), fn($p) => preg_match('/^\d{5}$/', $p)));
+}
+
 function preise_speichern(array $s): never {
     $b = body();
     $aend = is_array($b['aenderungen'] ?? null) ? $b['aenderungen'] : [];
@@ -204,6 +286,8 @@ function preise_speichern(array $s): never {
             'preis' => ganz($wert['preis'] ?? null, 0, 10000000), 've' => ganz($wert['ve'] ?? null, 1, 10000), 'mindest' => ganz($wert['mindest'] ?? null, 1, 10000),
             'mwst' => mwst_pruefen($wert['mwst'] ?? null), 'aktiv' => ($wert['aktiv'] ?? true) !== false,
         ];
+        $staffel = staffel_pruefen($wert['staffel'] ?? null, $liste[$pid]['preis']);
+        if ($staffel) $liste[$pid]['staffel'] = $staffel;
     }
     schreibe('preise/haendler', obj($liste));
     protokoll('preise-geaendert', $s['id'], ['anzahl' => count($aend)]);
@@ -234,7 +318,11 @@ function einstellungen_speichern(array $s): never {
         'paypal' => text($b['paypal'] ?? '', 200), 'hinweis' => text($b['hinweis'] ?? '', 1000), 'ohnePreisAusblenden' => ($b['ohnePreisAusblenden'] ?? null) === true,
         'mailAn' => strtolower(text($b['mailAn'] ?? '', 120)), 'mailVon' => strtolower(text($b['mailVon'] ?? '', 120)),
         'vorverkauf' => ($b['vorverkauf'] ?? null) === true, 'eroeffnung' => text($b['eroeffnung'] ?? '', 60) ?: STANDARD_EINSTELLUNGEN['eroeffnung'],
+        'kurier' => ($b['kurier'] ?? null) === true, 'kurierKosten' => ganz($b['kurierKosten'] ?? STANDARD_EINSTELLUNGEN['kurierKosten'], 0, 100000),
+        'kurierAb' => ganz($b['kurierAb'] ?? STANDARD_EINSTELLUNGEN['kurierAb'], 0, 10000000), 'kurierFreiAb' => ganz($b['kurierFreiAb'] ?? STANDARD_EINSTELLUNGEN['kurierFreiAb'], 0, 10000000),
+        'kurierPlz' => text($b['kurierPlz'] ?? '', 300) ?: STANDARD_EINSTELLUNGEN['kurierPlz'],
     ];
+    if ($e['kurier'] && !kurier_plz_liste($e)) throw new Fehler(400, 'Für die Lieferung in Heilbronn mindestens eine Postleitzahl angeben.');
     if ($e['mailAn'] !== '' && !email_ok($e['mailAn'])) throw new Fehler(400, 'Benachrichtigungs-E-Mail ist ungültig.');
     if ($e['mailVon'] !== '' && !email_ok($e['mailVon'])) throw new Fehler(400, 'Absender-E-Mail ist ungültig.');
     schreibe('einstellungen/shop', $e);
@@ -640,7 +728,8 @@ function shop_daten(): never {
     }
     antwort([
         'preise' => obj($nur), 'angebote' => $ang,
-        'versand' => ['kosten' => $e['versand'], 'freiAb' => $e['versandfreiAb'], 'abholung' => $e['abholung'], 'abholort' => $e['abholort']],
+        'versand' => ['kosten' => $e['versand'], 'freiAb' => $e['versandfreiAb'], 'abholung' => $e['abholung'], 'abholort' => $e['abholort'],
+            'kurier' => ['aktiv' => (bool) $e['kurier'], 'kosten' => $e['kurierKosten'], 'ab' => $e['kurierAb'], 'freiAb' => $e['kurierFreiAb'], 'plz' => kurier_plz_liste($e)]],
         'zahlarten' => $vv ? [] : zahlarten($e), 'ohnePreisAusblenden' => !$vv && (bool) $e['ohnePreisAusblenden'],
         'vorverkauf' => ['aktiv' => $vv, 'text' => $e['eroeffnung']], 'pakete' => $pk,
     ]);
@@ -656,11 +745,13 @@ function kasse(string $ip): never {
         'vorname' => text($k['vorname'] ?? '', 80), 'nachname' => text($k['nachname'] ?? '', 80), 'email' => strtolower(text($k['email'] ?? '', 120)),
         'telefon' => text($k['telefon'] ?? '', 40), 'strasse' => text($k['strasse'] ?? '', 120), 'plz' => text($k['plz'] ?? '', 10), 'ort' => text($k['ort'] ?? '', 80),
     ];
-    $lieferart = ($b['lieferart'] ?? '') === 'abholung' ? 'abholung' : 'versand';
+    $lieferart = ($b['lieferart'] ?? '') === 'abholung' ? 'abholung' : (($b['lieferart'] ?? '') === 'kurier' ? 'kurier' : 'versand');
     if ($lieferart === 'abholung' && !$e['abholung']) throw new Fehler(400, 'Abholung ist zurzeit nicht möglich.');
+    if ($lieferart === 'kurier' && !$e['kurier']) throw new Fehler(400, 'Lieferung in Heilbronn ist zurzeit nicht möglich.');
     if (!$kunde['vorname'] || !$kunde['nachname']) throw new Fehler(400, 'Bitte Vor- und Nachnamen angeben.');
     if (!email_ok($kunde['email'])) throw new Fehler(400, 'Bitte eine gültige E-Mail-Adresse angeben.');
-    if ($lieferart === 'versand' && (!$kunde['strasse'] || !$kunde['plz'] || !$kunde['ort'])) throw new Fehler(400, 'Bitte die vollständige Lieferadresse angeben.');
+    if ($lieferart !== 'abholung' && (!$kunde['strasse'] || !$kunde['plz'] || !$kunde['ort'])) throw new Fehler(400, 'Bitte die vollständige Lieferadresse angeben.');
+    if ($lieferart === 'kurier' && !in_array($kunde['plz'], kurier_plz_liste($e), true)) throw new Fehler(400, 'Lieferung per Kurier gibt es nur in Heilbronn (PLZ ' . implode(', ', kurier_plz_liste($e)) . '). Bitte Versand wählen.');
     $zahlart = text($b['zahlart'] ?? '', 40);
     if (!in_array($zahlart, zahlarten($e), true)) throw new Fehler(400, 'Bitte eine Zahlungsart wählen.');
     if ($zahlart === 'Bar bei Abholung' && $lieferart !== 'abholung') throw new Fehler(400, 'Barzahlung geht nur bei Abholung.');
@@ -699,7 +790,9 @@ function kasse(string $ip): never {
         $kunde['geburtsdatum'] = $gd;
     }
     $waren = array_sum(array_column($positionen, 'brutto'));
-    $versand = ($lieferart === 'versand' && !($e['versandfreiAb'] > 0 && $waren >= $e['versandfreiAb'])) ? (int) $e['versand'] : 0;
+    if ($lieferart === 'kurier' && $waren < $e['kurierAb']) throw new Fehler(400, 'Lieferung in Heilbronn erst ab einem Warenwert von ' . number_format($e['kurierAb'] / 100, 2, ',', '.') . ' €.');
+    $versand = $lieferart === 'versand' ? (($e['versandfreiAb'] > 0 && $waren >= $e['versandfreiAb']) ? 0 : (int) $e['versand'])
+        : ($lieferart === 'kurier' ? (($e['kurierFreiAb'] > 0 && $waren >= $e['kurierFreiAb']) ? 0 : (int) $e['kurierKosten']) : 0);
     $mwst = 0; foreach ($positionen as $p) $mwst += $p['brutto'] - $p['netto'];
     $mwst += mwst_aus_brutto($versand, 19);
     $brutto = $waren + $versand;
@@ -735,9 +828,9 @@ function bestellen(array $h): never {
         if (!$preis || !$preis['aktiv']) throw new Fehler(400, "Produkt nicht bestellbar: $pid");
         $anzahlVE = ganz($p['anzahlVE'] ?? null, 1, 10000);
         if ($anzahlVE < $preis['mindest']) throw new Fehler(400, "{$preis['name']}: Mindestens {$preis['mindest']} VE.");
-        $stueck = $anzahlVE * $preis['ve'];
+        $stueck = $anzahlVE * $preis['ve']; $stueckpreis = staffel_preis($preis, $anzahlVE);
         $positionen[] = ['produktId' => $pid, 'name' => $preis['name'], 've' => $preis['ve'], 'anzahlVE' => $anzahlVE, 'stueck' => $stueck,
-            'preis' => $preis['preis'], 'mwst' => $preis['mwst'], 'netto' => $stueck * $preis['preis']];
+            'preis' => $stueckpreis, 'mwst' => $preis['mwst'], 'netto' => $stueck * $stueckpreis];
     }
     if (!$positionen) throw new Fehler(400, 'Der Warenkorb ist leer.');
     $netto = array_sum(array_column($positionen, 'netto'));
@@ -877,6 +970,8 @@ function zb_api(): never {
         if ($m === 'POST' && $pfad === '/kontakt') kontakt($ip);
         if ($m === 'GET' && $pfad === '/shop/laden') laden_daten();
         if ($m === 'GET' && $pfad === '/shop/news') news_oeffentlich();
+        if ($m === 'GET' && $pfad === '/shop/stempel') stempel_status($ip);
+        if ($m === 'POST' && $pfad === '/shop/stempel/neu') stempel_neu($ip);
         if ($m === 'GET' && $pfad === '/shop/bestellung/status') stripe_bestell_status();
 
         if (str_starts_with($pfad, '/haendler/')) {
@@ -920,6 +1015,8 @@ function zb_api(): never {
             if ($m === 'POST' && $pfad === '/admin/laden') laden_speichern($a);
             if ($m === 'POST' && $pfad === '/admin/karte') karte_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/kasse') kasse_antwort(kassen_tag(kassen_tag_param($_GET['tag'] ?? '')));
+            if ($m === 'GET' && $pfad === '/admin/stempel') stempel_antwort(stempel_lesen(stempel_code_param($_GET['code'] ?? '')));
+            if ($m === 'POST' && $pfad === '/admin/stempel') stempel_aktion($a);
             if ($m === 'GET' && $pfad === '/admin/kasse/berichte') kasse_berichte();
             if ($m === 'POST' && $pfad === '/admin/kasse/verkauf') kasse_verkauf();
             if ($m === 'POST' && $pfad === '/admin/kasse/ausgabe') kasse_ausgabe();

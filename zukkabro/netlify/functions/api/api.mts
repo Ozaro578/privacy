@@ -7,12 +7,12 @@ import {
 } from "./sicherheit.mts";
 import { lese, leseAlle, schreibe } from "./daten.mts";
 import {
-  STANDARD_EINSTELLUNGEN, alter, mwstAusBrutto, mwstVorschlag, produkt,
+  STANDARD_EINSTELLUNGEN, alter, kurierPlzListe, mwstAusBrutto, mwstVorschlag, produkt,
   type ShopEinstellungen, type ShopPreise,
 } from "./shop.mts";
 import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
 import { LADEN_STANDARD, KARTE_VORLAGE, type LadenEinstellungen, type KarteEintrag } from "./laden-vorlage.mts";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 /* =================== Typen =================== */
 type HStatus = "offen" | "aktiv" | "gesperrt";
@@ -21,7 +21,8 @@ interface Haendler {
   strasse: string; plz: string; ort: string; ustId: string; passHash: string;
   status: HStatus; erstellt: string; geaendert?: string; notiz?: string;
 }
-interface Preis { name: string; marke?: string; preis: number; ve: number; mindest: number; mwst: number; aktiv: boolean }
+interface Staffel { ab: number; preis: number } // ab X VE gilt dieser Stückpreis (netto)
+interface Preis { name: string; marke?: string; preis: number; ve: number; mindest: number; mwst: number; aktiv: boolean; staffel?: Staffel[] }
 type Preisliste = Record<string, Preis>;
 type BStatus = "neu" | "bestaetigt" | "versendet" | "bezahlt" | "abgeschlossen" | "storniert";
 interface Position {
@@ -36,7 +37,7 @@ interface Bestellung {
   id: string; art?: BArt; haendlerId: string; firma: string; positionen: Position[];
   netto: number; mwst: number; brutto: number; notiz: string; status: BStatus;
   erstellt: string; verlauf: { status: BStatus; von: string; am: string }[]; gebucht?: boolean;
-  kunde?: Kunde; lieferart?: "versand" | "abholung"; zahlart?: string; versand?: number; ab18?: boolean;
+  kunde?: Kunde; lieferart?: "versand" | "abholung" | "kurier"; zahlart?: string; versand?: number; ab18?: boolean;
 }
 type BTyp = "einkauf" | "verkauf" | "ausgabe" | "einnahme" | "storno";
 interface Buchung {
@@ -187,10 +188,31 @@ async function preiseSpeichern(req: Request, s: Sitzung) {
       preis: ganz(wert.preis, 0, 10_000_000), ve: ganz(wert.ve, 1, 10_000), mindest: ganz(wert.mindest, 1, 10_000),
       mwst, aktiv: wert.aktiv !== false,
     };
+    const staffel = staffelPruefen(wert.staffel, liste[pid].preis);
+    if (staffel.length) liste[pid].staffel = staffel;
   }
   await schreibe("preise/haendler", liste);
   await protokoll("preise-geaendert", s.id, { anzahl: Object.keys(aenderungen).length });
   return json({ ok: true, preise: liste });
+}
+
+/** Staffelpreise prüfen: max. 5 Stufen, aufsteigend nach Menge, jede Stufe günstiger als der Grundpreis */
+function staffelPruefen(roh: unknown, grundpreis: number): Staffel[] {
+  if (!Array.isArray(roh)) return [];
+  const stufen: Staffel[] = [];
+  for (const st of roh.slice(0, 5)) {
+    const ab = ganz(st?.ab, 2, 10_000), preis = ganz(st?.preis, 0, 10_000_000);
+    if (preis >= grundpreis) throw new Fehler(400, `Staffelpreis ab ${ab} VE muss unter dem Grundpreis liegen.`);
+    if (stufen.some((x) => x.ab === ab)) throw new Fehler(400, "Jede Staffelmenge nur einmal.");
+    stufen.push({ ab, preis });
+  }
+  return stufen.sort((a, b) => a.ab - b.ab);
+}
+/** Gültiger Stückpreis für eine Menge (höchste erreichte Staffel) */
+function staffelPreis(p: Preis, anzahlVE: number): number {
+  let eff = p.preis;
+  for (const st of p.staffel || []) if (anzahlVE >= st.ab) eff = st.preis;
+  return eff;
 }
 
 /* =================== Bestellungen =================== */
@@ -206,7 +228,8 @@ async function bestellen(req: Request, h: Haendler) {
     const anzahlVE = ganz(p.anzahlVE, 1, 10_000);
     if (anzahlVE < preis.mindest) throw new Fehler(400, `${preis.name}: Mindestens ${preis.mindest} VE.`);
     const stueck = anzahlVE * preis.ve;
-    positionen.push({ produktId: pid, name: preis.name, ve: preis.ve, anzahlVE, stueck, preis: preis.preis, mwst: preis.mwst, netto: stueck * preis.preis });
+    const stueckpreis = staffelPreis(preis, anzahlVE);
+    positionen.push({ produktId: pid, name: preis.name, ve: preis.ve, anzahlVE, stueck, preis: stueckpreis, mwst: preis.mwst, netto: stueck * stueckpreis });
   }
   if (!positionen.length) throw new Fehler(400, "Der Warenkorb ist leer.");
   const netto = positionen.reduce((a, p) => a + p.netto, 0);
@@ -693,7 +716,10 @@ async function shopDaten() {
   return json({
     preise: nurPreise,
     angebote: vv ? [] : laufend.map((a) => ({ id: a.id, preis: a.preis, alt: a.alt, titel: a.titel, bis: a.bis })),
-    versand: { kosten: e.versand, freiAb: e.versandfreiAb, abholung: e.abholung, abholort: e.abholort },
+    versand: {
+      kosten: e.versand, freiAb: e.versandfreiAb, abholung: e.abholung, abholort: e.abholort,
+      kurier: { aktiv: e.kurier, kosten: e.kurierKosten, ab: e.kurierAb, freiAb: e.kurierFreiAb, plz: kurierPlzListe(e) },
+    },
     zahlarten: vv ? [] : zahlarten(e),
     ohnePreisAusblenden: !vv && !!e.ohnePreisAusblenden,
     vorverkauf: { aktiv: vv, text: e.eroeffnung },
@@ -721,11 +747,13 @@ async function kasse(req: Request, ip: string) {
     vorname: text(k.vorname, 80), nachname: text(k.nachname, 80), email: text(k.email, 120).toLowerCase(),
     telefon: text(k.telefon, 40), strasse: text(k.strasse, 120), plz: text(k.plz, 10), ort: text(k.ort, 80),
   };
-  const lieferart = b.lieferart === "abholung" ? "abholung" : "versand";
+  const lieferart = b.lieferart === "abholung" ? "abholung" : b.lieferart === "kurier" ? "kurier" : "versand";
   if (lieferart === "abholung" && !e.abholung) throw new Fehler(400, "Abholung ist zurzeit nicht möglich.");
+  if (lieferart === "kurier" && !e.kurier) throw new Fehler(400, "Lieferung in Heilbronn ist zurzeit nicht möglich.");
   if (!kunde.vorname || !kunde.nachname) throw new Fehler(400, "Bitte Vor- und Nachnamen angeben.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(kunde.email)) throw new Fehler(400, "Bitte eine gültige E-Mail-Adresse angeben.");
-  if (lieferart === "versand" && (!kunde.strasse || !kunde.plz || !kunde.ort)) throw new Fehler(400, "Bitte die vollständige Lieferadresse angeben.");
+  if (lieferart !== "abholung" && (!kunde.strasse || !kunde.plz || !kunde.ort)) throw new Fehler(400, "Bitte die vollständige Lieferadresse angeben.");
+  if (lieferart === "kurier" && !kurierPlzListe(e).includes(kunde.plz)) throw new Fehler(400, "Lieferung per Kurier gibt es nur in Heilbronn (PLZ " + kurierPlzListe(e).join(", ") + "). Bitte Versand wählen.");
   const zahlart = text(b.zahlart, 40);
   if (!zahlarten(e).includes(zahlart)) throw new Fehler(400, "Bitte eine Zahlungsart wählen.");
   if (zahlart === "Bar bei Abholung" && lieferart !== "abholung") throw new Fehler(400, "Barzahlung geht nur bei Abholung.");
@@ -766,7 +794,9 @@ async function kasse(req: Request, ip: string) {
     kunde.geburtsdatum = gd;
   }
   const warenwert = positionen.reduce((a, p) => a + (p.brutto || 0), 0);
-  const versand = lieferart === "versand" && !(e.versandfreiAb > 0 && warenwert >= e.versandfreiAb) ? e.versand : 0;
+  if (lieferart === "kurier" && warenwert < e.kurierAb) throw new Fehler(400, `Lieferung in Heilbronn erst ab einem Warenwert von ${(e.kurierAb / 100).toFixed(2).replace(".", ",")} €.`);
+  const versand = lieferart === "versand" ? (e.versandfreiAb > 0 && warenwert >= e.versandfreiAb ? 0 : e.versand)
+    : lieferart === "kurier" ? (e.kurierFreiAb > 0 && warenwert >= e.kurierFreiAb ? 0 : e.kurierKosten) : 0;
   const mwst = positionen.reduce((a, p) => a + ((p.brutto || 0) - p.netto), 0) + mwstAusBrutto(versand, 19);
   const brutto = warenwert + versand;
   const best: Bestellung = {
@@ -842,10 +872,72 @@ async function einstellungenSpeichern(req: Request, s: Sitzung) {
     paypal: text(b.paypal, 200), hinweis: text(b.hinweis, 1000), ohnePreisAusblenden: b.ohnePreisAusblenden === true,
     mailAn: text(b.mailAn, 120).toLowerCase(), mailVon: text(b.mailVon, 120).toLowerCase(),
     vorverkauf: b.vorverkauf === true, eroeffnung: text(b.eroeffnung, 60) || STANDARD_EINSTELLUNGEN.eroeffnung,
+    kurier: b.kurier === true, kurierKosten: ganz(b.kurierKosten ?? STANDARD_EINSTELLUNGEN.kurierKosten, 0, 100_000),
+    kurierAb: ganz(b.kurierAb ?? STANDARD_EINSTELLUNGEN.kurierAb, 0, 10_000_000), kurierFreiAb: ganz(b.kurierFreiAb ?? STANDARD_EINSTELLUNGEN.kurierFreiAb, 0, 10_000_000),
+    kurierPlz: text(b.kurierPlz, 300) || STANDARD_EINSTELLUNGEN.kurierPlz,
   };
+  if (e.kurier && !kurierPlzListe(e).length) throw new Fehler(400, "Für die Lieferung in Heilbronn mindestens eine Postleitzahl angeben.");
   await schreibe("einstellungen/shop", e);
   await protokoll("einstellungen-geaendert", s.id);
   return json({ ok: true, einstellungen: e });
+}
+
+/* =================== Digitale Stempelkarte (Laden) =================== */
+const STEMPEL_ZIEL = 10; // 10 Stempel = 1 Gratis-Getränk
+interface Stempelkarte { code: string; stempel: number; guthaben: number; eingeloest: number; erstellt: string; letzter: string; verlauf: { was: "stempel" | "einloesen"; am: string; von: string }[] }
+function stempelCode(): string {
+  const zeichen = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O/1/I, damit man es an der Theke gut vorlesen kann
+  const b = randomBytes(8);
+  let c = "";
+  for (let i = 0; i < 8; i++) c += zeichen[b[i] % zeichen.length];
+  return "ZB-" + c.slice(0, 4) + "-" + c.slice(4);
+}
+function stempelCodeParam(v: unknown): string {
+  const c = text(v, 20).toUpperCase().replace(/\s/g, "");
+  if (!/^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(c)) throw new Fehler(400, "Code bitte wie auf der Karte eingeben, z. B. ZB-AB12-CD34.");
+  return c;
+}
+async function stempelLesen(code: string): Promise<Stempelkarte> {
+  const k = await lese<Stempelkarte>(`stempel/${code}`);
+  if (!k) throw new Fehler(404, "Diese Stempelkarte gibt es nicht.");
+  return k;
+}
+function stempelAntwort(k: Stempelkarte, zusatz: Record<string, unknown> = {}) {
+  return json({ code: k.code, stempel: k.stempel, ziel: STEMPEL_ZIEL, guthaben: k.guthaben, eingeloest: k.eingeloest, erstellt: k.erstellt, letzter: k.letzter, ...zusatz });
+}
+async function stempelNeu(ip: string) {
+  await bremse("stempel", ip, 10, 60);
+  let code = stempelCode();
+  while (await lese(`stempel/${code}`)) code = stempelCode();
+  const k: Stempelkarte = { code, stempel: 0, guthaben: 0, eingeloest: 0, erstellt: jetzt(), letzter: "", verlauf: [] };
+  await schreibe(`stempel/${code}`, k);
+  return stempelAntwort(k);
+}
+async function stempelStatus(url: URL, ip: string) {
+  await bremse("stempel-lesen", ip, 60, 60);
+  return stempelAntwort(await stempelLesen(stempelCodeParam(url.searchParams.get("code"))));
+}
+/** Admin an der Theke: Stempel geben oder Gratis-Getränk einlösen */
+async function stempelAktion(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const code = stempelCodeParam(b.code);
+  const k = await stempelLesen(code);
+  const aktion = b.aktion === "einloesen" ? "einloesen" : "stempel";
+  if (aktion === "stempel") {
+    const anzahl = ganz(b.anzahl ?? 1, 1, 5);
+    for (let i = 0; i < anzahl; i++) {
+      k.stempel += 1;
+      if (k.stempel >= STEMPEL_ZIEL) { k.stempel = 0; k.guthaben += 1; }
+    }
+  } else {
+    if (k.guthaben < 1) throw new Fehler(400, "Auf dieser Karte ist noch kein Gratis-Getränk frei.");
+    k.guthaben -= 1; k.eingeloest += 1;
+  }
+  k.letzter = jetzt();
+  k.verlauf.push({ was: aktion, am: k.letzter, von: s.id });
+  if (k.verlauf.length > 200) k.verlauf = k.verlauf.slice(-200);
+  await schreibe(`stempel/${code}`, k);
+  return stempelAntwort(k, { ok: true });
 }
 
 /* =================== Router =================== */
@@ -870,6 +962,8 @@ export default async (req: Request, context: Context) => {
     if (m === "POST" && pfad === "/kontakt") return await kontakt(req, ip);
     if (m === "GET" && pfad === "/shop/laden") return await ladenDaten();
     if (m === "GET" && pfad === "/shop/news") return await newsOeffentlich();
+    if (m === "GET" && pfad === "/shop/stempel") return await stempelStatus(url, ip);
+    if (m === "POST" && pfad === "/shop/stempel/neu") return await stempelNeu(ip);
     if (m === "GET" && pfad === "/shop/bestellung/status") return await stripeBestellStatus(url);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
 
@@ -921,6 +1015,8 @@ export default async (req: Request, context: Context) => {
       if (m === "POST" && pfad === "/admin/laden") return await ladenSpeichern(req, a);
       if (m === "POST" && pfad === "/admin/karte") return await karteSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/kasse") return await kasseAntwort(await kassenTag(kassenTagParam(url.searchParams.get("tag"))));
+      if (m === "GET" && pfad === "/admin/stempel") return stempelAntwort(await stempelLesen(stempelCodeParam(url.searchParams.get("code"))));
+      if (m === "POST" && pfad === "/admin/stempel") return await stempelAktion(req, a);
       if (m === "GET" && pfad === "/admin/kasse/berichte") return await kasseBerichte(url);
       if (m === "POST" && pfad === "/admin/kasse/verkauf") return await kasseVerkauf(req);
       if (m === "POST" && pfad === "/admin/kasse/ausgabe") return await kasseAusgabe(req);

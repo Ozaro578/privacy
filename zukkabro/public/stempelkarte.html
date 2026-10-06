@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stempelkarte – ZUKKABRO</title>
+  <meta name="description" content="Digitale Stempelkarte von ZUKKABRO Heilbronn: 10 Stempel = 1 Matcha gratis. Kein Papier, immer auf dem Handy.">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="stempelkarte">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <div class="container">
+        <p class="eyebrow">Laden Heilbronn</p>
+        <h1>Deine <span class="drip">Stempelkarte</span></h1>
+        <p>Pro Matcha oder Açaí Bowl ein Stempel. 10 Stempel = 1 Matcha gratis. Kein Papier, nichts zu verlieren.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="stempel" id="stempel">
+          <p class="eyebrow" style="margin:0">Dein Code</p>
+          <p class="stempel__code" id="stempelCode">· · · ·</p>
+          <p class="stempel__stand" id="stempelStand">Karte wird geladen …</p>
+          <div class="stempel__felder" id="stempelFelder" aria-live="polite"></div>
+          <p class="stempel__frei" id="stempelFrei" hidden></p>
+          <p id="stempelFehler" class="hint hint--pruefen" hidden></p>
+          <div class="stempel__aktionen">
+            <button class="btn btn--pink" type="button" id="stempelNeuLaden">Aktualisieren</button>
+            <a class="btn btn--light" href="/laden.html">Zum Laden →</a>
+          </div>
+          <div class="stempel__wechsel">
+            <p>Karte schon auf einem anderen Handy? Code hier eingeben, dann läuft sie auch hier weiter.</p>
+            <form id="stempelWechsel" autocomplete="off">
+              <input name="code" placeholder="ZB-AB12-CD34" maxlength="12" aria-label="Code der Stempelkarte">
+              <button class="btn btn--light btn--klein" type="submit">Karte laden</button>
+            </form>
+          </div>
+        </div>
+        <ul class="stempel__regeln">
+          <li>🍵 Pro gekauftem Matcha-Drink oder Açaí Bowl gibt es an der Theke einen Stempel. Einfach den Code zeigen.</li>
+          <li>🎉 Bei 10 Stempeln ist ein Matcha Latte (oder ein Bowl-Topping) gratis. Danach geht die Karte von vorn los.</li>
+          <li>📲 Die Karte ist in deinem Browser gespeichert. Als App auf dem Startbildschirm hast du sie immer dabei. Den Code am besten notieren oder einen Screenshot machen.</li>
+          <li>🔒 Keine Anmeldung, keine Daten: Nur der Code und die Stempel werden gespeichert. Nicht übertragbar, kein Bargeldwert, nur im Laden in Heilbronn.</li>
+        </ul>
+        <div class="app-hinweis reveal is-visible" style="margin-top:2rem">
+          <div>
+            <h2>📲 Als App immer dabei</h2>
+            <p>Website zum Startbildschirm hinzufügen, dann liegt die Stempelkarte neben deinen anderen Apps.</p>
+            <p id="appAnleitung" class="app-hinweis__anleitung"></p>
+          </div>
+          <button class="btn btn--pink" type="button" id="appInstallieren" hidden>App installieren</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/stempelkarte.js"></script>
+</body>
+</html>

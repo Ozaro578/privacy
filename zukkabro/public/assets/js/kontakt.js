@@ -12,6 +12,13 @@
 
   function zeigeFehler(text) { fehler.textContent = text; fehler.hidden = false; }
 
+  // Vorbelegung über Link, z. B. /kontakt.html?betreff=abo (Mystery-Box-Abo)
+  var vorgabe = new URLSearchParams(location.search).get("betreff");
+  if (vorgabe === "abo") {
+    form.elements.betreff.value = "Mystery-Box-Abo vormerken";
+    form.elements.text.placeholder = "Ich will das Mystery-Box-Abo. Sagt mir Bescheid, wenn es startet!";
+  }
+
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     fehler.hidden = true;

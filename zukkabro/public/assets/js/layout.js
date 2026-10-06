@@ -77,7 +77,7 @@
           '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen oder Abholung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/stempelkarte.html">Stempelkarte</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
           '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +
@@ -318,9 +318,14 @@
     setLink("telLink", tel ? "tel:" + tel.replace(/[^\d+]/g, "") : "");
     setText("telefon", tel);
     setText("email", S.email); setText("address", S.address); setText("hours", S.hours); setText("shipping", S.shipping);
+    var kanal = (S.whatsappKanal || "").trim();
+    var kanalBox = document.getElementById("kanalBox");
+    if (kanalBox) kanalBox.hidden = !kanal;
+    setLink("kanalLink", kanal);
     var social = document.getElementById("footerSocial");
     if (social) {
       var s = [];
+      if (kanal) s.push('<a href="' + esc(kanal) + '" target="_blank" rel="noopener">WhatsApp-Kanal</a>');
       if (ig) s.push('<a href="https://instagram.com/' + ig + '" target="_blank" rel="noopener">Instagram</a>');
       if (tt) s.push('<a href="https://www.tiktok.com/@' + tt + '" target="_blank" rel="noopener">TikTok</a>');
       if (wa) s.push('<a href="https://wa.me/' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');

@@ -233,6 +233,17 @@
               </form>
             </div>
           </div>
+          <div class="karte" id="stempelKarte">
+            <h2>🎟️ Stempelkarte</h2>
+            <p class="hinweis">Kunde zeigt den Code aus der App (zukkabro.de/stempelkarte.html). Pro Matcha oder Bowl ein Stempel, <strong>10 Stempel = 1 Matcha gratis</strong>. Einlösen bucht nichts in die Kasse, der Gratis-Drink läuft als Werbung.</p>
+            <div class="leiste">
+              <label class="feld">Code<input id="stempelCode" placeholder="ZB-AB12-CD34" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"></label>
+              <button class="btn btn--light btn--klein" id="stempelPruefen" type="button">Prüfen</button>
+              <button class="btn btn--pink btn--klein" id="stempelGeben" type="button">+1 Stempel</button>
+              <button class="btn btn--gold btn--klein" id="stempelEinloesen" type="button">Gratis einlösen</button>
+            </div>
+            <p id="stempelInfo" class="hinweis" style="margin:0"></p>
+          </div>
           <div class="karte">
             <h2>Kassenberichte</h2>
             <div class="leiste">
@@ -260,6 +271,12 @@
             <label class="check-zeile voll"><input type="checkbox" name="ohnePreisAusblenden"><span>Produkte ohne Shop-Preis im Shop ausblenden</span></label>
             <label class="check-zeile voll"><input type="checkbox" name="vorverkauf"><span><b>Eröffnungsmodus:</b> Seite ist online, aber ohne Preise, Angebote und Online-Bestellung (bis zur Eröffnung)</span></label>
             <label class="feld">Eröffnungstext <small>steht oben auf jeder Seite</small><input name="eroeffnung" maxlength="60" placeholder="im November 2026"></label>
+            <h2 class="voll" style="margin-top:1rem">Lieferung in Heilbronn (eigener Kurier)</h2>
+            <label class="check-zeile voll"><input type="checkbox" name="kurier"><span>Lieferung in Heilbronn anbieten (am selben Tag, mit Rad oder Roller)</span></label>
+            <label class="feld">Liefergebühr (€)<input name="kurierKosten" inputmode="decimal" placeholder="2,90"></label>
+            <label class="feld">Mindestbestellwert (€)<input name="kurierAb" inputmode="decimal" placeholder="25,00"></label>
+            <label class="feld">Kostenlos ab (€) <small>0 = nie</small><input name="kurierFreiAb" inputmode="decimal" placeholder="50,00"></label>
+            <label class="feld">Postleitzahlen <small>mit Komma</small><input name="kurierPlz" placeholder="74072, 74074, 74076, 74078, 74080, 74081"></label>
             <h2 class="voll" style="margin-top:1rem">E-Mails (nur auf Strato)</h2>
             <label class="feld">Benachrichtigungen an <small>neue Bestellungen, Nachrichten, Händler</small><input name="mailAn" type="email" placeholder="info@zukkabro.de"></label>
             <label class="feld">Absender-Adresse <small>muss eine Adresse eurer Domain sein</small><input name="mailVon" type="email" placeholder="bestellung@zukkabro.de"></label>

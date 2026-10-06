@@ -1,7 +1,7 @@
 /* ZUKKABRO – Service Worker für die App (installierbar, offline-fähig).
    Seiten: erst Netz, bei Ausfall Cache, sonst Offline-Seite. Bilder, Schriften, Skripte: erst Cache, dann Netz.
    Bei jedem Update die Versionsnummer erhöhen, dann werden alte Caches gelöscht. */
-const VERSION = "zb-v2";
+const VERSION = "zb-v3";
 const KERN = ["/", "/offline.html", "/assets/css/style.css", "/assets/js/layout.js", "/assets/js/shop.js", "/assets/img/logo-quer.svg", "/assets/img/icon.svg",
   "/assets/fonts/titan-one-latin-400-normal.woff2", "/assets/fonts/fredoka-latin-400-normal.woff2", "/assets/fonts/fredoka-latin-600-normal.woff2", "/assets/fonts/fredoka-latin-700-normal.woff2", "/assets/fonts/rubik-wet-paint-latin-400-normal.woff2"];
 

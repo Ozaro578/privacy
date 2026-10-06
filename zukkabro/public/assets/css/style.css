@@ -968,3 +968,21 @@ a.news-karte:hover { transform: translate(-3px, -3px); box-shadow: var(--pop-lg)
 body.is-app { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
 body.is-app .wa-fab { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 body.is-app .footer { padding-bottom: 1rem; }
+
+/* ---------- Stempelkarte, Staffelpreise, Laden-Box gold ---------- */
+.laden-box--gold { background: var(--gold-soft); }
+.staffel { font-size: .85rem; color: var(--choco-2); margin: .2rem 0 0; }
+.stempel { max-width: 560px; margin: 0 auto; background: var(--paper); border: 3px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); padding: 1.6rem 1.4rem; text-align: center; }
+.stempel__code { font-family: var(--display); font-size: clamp(1.7rem, 7vw, 2.6rem); letter-spacing: .12em; color: var(--pink); margin: .3rem 0 .2rem; word-break: break-all; }
+.stempel__stand { font-weight: 800; margin: 0 0 1rem; }
+.stempel__felder { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; max-width: 360px; margin: 0 auto 1.2rem; }
+.stempel__feld { aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--choco); background: var(--cream); display: grid; place-items: center; font-size: 1.5rem; transition: transform .2s ease, background .2s ease; }
+.stempel__feld.is-voll { background: var(--pink); color: #fff; box-shadow: 3px 3px 0 var(--choco); transform: rotate(-8deg); }
+.stempel__feld.is-ziel { border-style: dashed; font-size: 1.1rem; }
+.stempel__frei { background: var(--gold); border: 3px solid var(--choco); border-radius: 14px; padding: .8rem 1rem; font-weight: 800; margin: 0 0 1rem; box-shadow: 3px 3px 0 var(--choco); }
+.stempel__aktionen { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; }
+.stempel__wechsel { margin-top: 1.4rem; padding-top: 1rem; border-top: 2px dashed var(--choco); font-size: .92rem; }
+.stempel__wechsel form { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: .5rem; }
+.stempel__wechsel input { font: inherit; padding: .55em .8em; border: 3px solid var(--choco); border-radius: 12px; text-transform: uppercase; letter-spacing: .08em; width: 170px; }
+.stempel__regeln { max-width: 560px; margin: 1.6rem auto 0; font-size: .92rem; }
+.stempel__regeln li { margin: .3rem 0; }

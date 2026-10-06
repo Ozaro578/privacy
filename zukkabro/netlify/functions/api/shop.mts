@@ -16,12 +16,22 @@ export interface ShopEinstellungen {
   mailAn: string; mailVon: string; // Benachrichtigungen (nur Strato)
   vorverkauf: boolean;      // Eröffnungsmodus: keine Preise, keine Angebote, keine Bestellung
   eroeffnung: string;       // z. B. "im November 2026"
+  kurier: boolean;          // Lieferung in Heilbronn (eigener Kurier) anbieten
+  kurierKosten: number;     // Liefergebühr brutto in Cent
+  kurierAb: number;         // Mindestbestellwert in Cent
+  kurierFreiAb: number;     // ab diesem Warenwert gratis, 0 = nie
+  kurierPlz: string;        // erlaubte Postleitzahlen, mit Komma getrennt
 }
 export const STANDARD_EINSTELLUNGEN: ShopEinstellungen = {
   versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Klingenberger Straße 100, 74080 Heilbronn (zu den Öffnungszeiten)",
   bankInhaber: "", bankIban: "", bankName: "", paypal: "", hinweis: "", ohnePreisAusblenden: false, mailAn: "", mailVon: "",
   vorverkauf: false, eroeffnung: "im November 2026",
+  kurier: true, kurierKosten: 290, kurierAb: 2500, kurierFreiAb: 5000, kurierPlz: "74072, 74074, 74076, 74078, 74080, 74081",
 };
+/** Postleitzahlen aus der Einstellung als Liste */
+export function kurierPlzListe(e: ShopEinstellungen): string[] {
+  return e.kurierPlz.split(/[\s,;]+/).map((p) => p.trim()).filter((p) => /^\d{5}$/.test(p));
+}
 
 const LEBENSMITTEL = ["susses", "snacks", "scharfes", "pipapo"];
 /** Vorschlag MwSt: Lebensmittel 7 %, Getränke/Vapes/Sonstiges 19 % (mit Steuerberater prüfen) */

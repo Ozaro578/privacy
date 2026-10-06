@@ -8,6 +8,7 @@
 const SHOP = {
   // Nur Ziffern, mit Ländervorwahl ohne "+" und ohne führende 0, z. B. "4915112345678"
   whatsapp: "",
+  whatsappKanal: "",  // Link zum WhatsApp-Kanal „ZUKKABRO – Neu im Regal“, z. B. "https://whatsapp.com/channel/…"
   telefon: "",        // Handynummer fürs Impressum und die Kontaktseite, z. B. "+49 151 12345678"
   instagram: "",      // nur der Name, z. B. "zukkabro"
   tiktok: "",         // nur der Name, z. B. "zukkabro"

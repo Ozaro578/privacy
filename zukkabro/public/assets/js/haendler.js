@@ -96,7 +96,8 @@
       var kopf = "<div><h3>" + esc(a.p.name) + "</h3><p>" + esc(a.p.marke) + (a.p.ab18 ? " · 18+" : "") + (a.p.aus ? " · gerade nicht lieferbar" : "") + "</p>";
       if (pr) {
         return '<div class="bestell-zeile" data-id="' + esc(a.id) + '">' + bild + kopf +
-          "<p><strong>" + euro(pr.preis) + "</strong> / Stück netto · VE " + pr.ve + " Stück = " + euro(pr.preis * pr.ve) + " · min. " + pr.mindest + " VE · " + pr.mwst + " % MwSt</p></div>" +
+          "<p><strong>" + euro(pr.preis) + "</strong> / Stück netto · VE " + pr.ve + " Stück = " + euro(pr.preis * pr.ve) + " · min. " + pr.mindest + " VE · " + pr.mwst + " % MwSt</p>" +
+          (pr.staffel && pr.staffel.length ? '<p class="staffel">📦 Staffelpreis: ' + pr.staffel.map(function (s) { return "ab " + s.ab + " VE <b>" + euro(s.preis) + "</b>/Stk."; }).join(" · ") + "</p>" : "") + "</div>" +
           '<div class="menge"><button type="button" data-schritt="-1" aria-label="Weniger">−</button>' +
           '<input type="number" min="0" step="1" value="' + (korb[a.id] || 0) + '" aria-label="Anzahl VE"><button type="button" data-schritt="1" aria-label="Mehr">+</button> <small>VE</small></div></div>';
       }
@@ -173,13 +174,15 @@
     knopf.disabled = false;
   });
 
+  /** Stückpreis für eine Menge: höchste erreichte Staffel, sonst Grundpreis */
+  function stueckpreis(pr, n) { var e = pr.preis; (pr.staffel || []).forEach(function (s) { if (n >= s.ab) e = s.preis; }); return e; }
   function korbZeichnen() {
     var ids = Object.keys(korb);
     var netto = 0, mwst = 0;
     var zeilen = ids.map(function (id) {
-      var pr = preise[id], n = korb[id], stueck = n * pr.ve, summe = stueck * pr.preis;
+      var pr = preise[id], n = korb[id], stueck = n * pr.ve, sp = stueckpreis(pr, n), summe = stueck * sp;
       netto += summe; mwst += Math.round(summe * pr.mwst / 100);
-      return '<div class="korb__zeile"><span>' + n + " VE × " + esc(pr.name) + " <small>(" + stueck + " Stk.)</small></span><strong>" + euro(summe) + "</strong></div>";
+      return '<div class="korb__zeile"><span>' + n + " VE × " + esc(pr.name) + " <small>(" + stueck + " Stk." + (sp < pr.preis ? " · Staffel " + euro(sp) : "") + ")</small></span><strong>" + euro(summe) + "</strong></div>";
     }).join("");
     $("korb").innerHTML = ids.length
       ? zeilen + '<div class="korb__summe"><span>Netto</span><span>' + euro(netto) + '</span></div><div class="korb__summe"><span>MwSt</span><span>' + euro(mwst) +

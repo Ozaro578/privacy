@@ -35,17 +35,24 @@
   function rechne(lieferart) {
     var pos = positionen().filter(function (x) { return x.kaufbar; });
     var waren = pos.reduce(function (a, x) { return a + x.menge * x.preis; }, 0);
-    var v = shop.versand || {};
-    var versand = lieferart === "abholung" || !pos.length ? 0 : (v.freiAb > 0 && waren >= v.freiAb ? 0 : v.kosten || 0);
-    return { pos: pos, waren: waren, versand: versand, gesamt: waren + versand, ab18: pos.some(function (x) { return x.p.ab18; }) };
+    var v = shop.versand || {}, ku = v.kurier || {};
+    var versand = !pos.length || lieferart === "abholung" ? 0
+      : lieferart === "kurier" ? (ku.freiAb > 0 && waren >= ku.freiAb ? 0 : ku.kosten || 0)
+      : (v.freiAb > 0 && waren >= v.freiAb ? 0 : v.kosten || 0);
+    return { pos: pos, waren: waren, versand: versand, gesamt: waren + versand, ab18: pos.some(function (x) { return x.p.ab18; }), lieferart: lieferart };
   }
   function summenHtml(r, mitArtikeln) {
     var v = shop.versand || {};
     var html = "";
     if (mitArtikeln) html += r.pos.map(function (x) { return '<div class="summe-zeile"><span>' + x.menge + " × " + esc(x.p.name) + "</span><span>" + euro(x.menge * x.preis) + "</span></div>"; }).join("");
     html += '<div class="summe-zeile"><span>Warenwert</span><span>' + euro(r.waren) + "</span></div>" +
-      '<div class="summe-zeile"><span>Versand</span><span>' + (r.versand ? euro(r.versand) : "kostenlos") + "</span></div>";
-    if (v.freiAb > 0 && r.versand && r.waren < v.freiAb) html += '<p class="hint hint--aus">Noch ' + euro(v.freiAb - r.waren) + " bis zum kostenlosen Versand!</p>";
+      '<div class="summe-zeile"><span>' + (r.lieferart === "kurier" ? "Lieferung Heilbronn" : "Versand") + "</span><span>" + (r.versand ? euro(r.versand) : "kostenlos") + "</span></div>";
+    if (r.lieferart === "versand" && v.freiAb > 0 && r.versand && r.waren < v.freiAb) html += '<p class="hint hint--aus">Noch ' + euro(v.freiAb - r.waren) + " bis zum kostenlosen Versand!</p>";
+    if (r.lieferart === "kurier") {
+      var ku = v.kurier || {};
+      if (r.waren < (ku.ab || 0)) html += '<p class="hint hint--pruefen">Lieferung in Heilbronn erst ab ' + euro(ku.ab) + " Warenwert. Noch " + euro(ku.ab - r.waren) + ".</p>";
+      else if (ku.freiAb > 0 && r.versand) html += '<p class="hint hint--aus">Noch ' + euro(ku.freiAb - r.waren) + " bis zur kostenlosen Lieferung!</p>";
+    }
     html += '<div class="summe-zeile summe-zeile--gross"><span>Gesamt</span><span>' + euro(r.gesamt) + "</span></div>";
     return html;
   }
@@ -106,7 +113,9 @@
   function kasseZeichnen() {
     var la = lieferart();
     var r = rechne(la);
-    $("adresse").hidden = la !== "versand";
+    $("adresse").hidden = la === "abholung";
+    var ku = (shop.versand || {}).kurier || {};
+    $("bestellen").disabled = la === "kurier" && r.waren < (ku.ab || 0);
     $("alterBox").hidden = !r.ab18;
     $("zahlTitel").textContent = (r.ab18 ? "4" : "3") + ". Zahlung";
     // Zahlarten passend zur Lieferart
@@ -144,6 +153,8 @@
       positionen: r.pos.map(function (x) { return { produktId: x.id, menge: x.menge }; }),
     };
     if (r.ab18) { daten.geburtsdatum = f.geburtsdatum.value; daten.ab18Bestaetigt = f.ab18.checked; }
+    var kuPlz = ((shop.versand || {}).kurier || {}).plz || [];
+    if (la === "kurier" && kuPlz.indexOf(f.plz.value.trim()) === -1) { fehler.textContent = "Lieferung per Kurier gibt es nur in Heilbronn (PLZ " + kuPlz.join(", ") + "). Bitte Versand wählen."; fehler.hidden = false; return; }
     var knopf = $("bestellen"); knopf.disabled = true; knopf.textContent = "Wird gesendet …";
     try {
       var res = await fetch("/api/shop/bestellung", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json", "x-zb": "1" }, body: JSON.stringify(daten) });
@@ -230,6 +241,9 @@
     $("versandText").textContent = (v.kosten ? euro(v.kosten) : "kostenlos") + (v.freiAb ? " · ab " + euro(v.freiAb) + " kostenlos" : "");
     $("abholungOption").hidden = !v.abholung;
     if (v.abholort) $("abholText").textContent = "kostenlos · " + v.abholort;
+    var ku = v.kurier || {};
+    $("kurierOption").hidden = !ku.aktiv;
+    if (ku.aktiv) $("kurierText").textContent = (ku.kosten ? euro(ku.kosten) : "kostenlos") + " · ab " + euro(ku.ab || 0) + (ku.freiAb ? " · ab " + euro(ku.freiAb) + " kostenlos" : "") + " · PLZ " + (ku.plz || []).join(", ");
     var params = new URLSearchParams(location.search);
     if (params.get("bezahlt") && params.get("s")) { history.replaceState(null, "", location.pathname); return stripeRueckkehr(params.get("bezahlt"), params.get("s")); }
     if (params.get("abgebrochen")) { history.replaceState(null, "", location.pathname); window.ZBToast("Zahlung abgebrochen. Dein Warenkorb ist noch da, du kannst es jederzeit erneut versuchen.", true); }

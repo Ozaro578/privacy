@@ -24,6 +24,7 @@ window.ZBB = function (p) {
     if (pfad === "/shop/daten") return antwort(SHOP);
     if (pfad === "/shop/laden") return antwort(LADEN);
     if (pfad === "/shop/news") return antwort(NEWS);
+    if (pfad === "/shop/stempel" || pfad === "/shop/stempel/neu") return antwort({ code: "ZB-DEMO-2026", stempel: 4, ziel: 10, guthaben: 1, eingeloest: 2, erstellt: "", letzter: "" });
     if (pfad === "/ich") return antwort({ angemeldet: false });
     return antwort({ fehler: NUR_VORSCHAU }, 503);
   };
