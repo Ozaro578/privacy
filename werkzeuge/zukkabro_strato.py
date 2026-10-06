@@ -79,7 +79,9 @@ def main():
     shutil.copy2(STRATO / "daten" / ".htaccess", paket / "daten" / ".htaccess")
     if zugang.get("vorverkauf", True):  # Eröffnungsmodus, bis der Admin ihn unter Shop-Einstellungen abschaltet
         (paket / "daten" / "einstellungen").mkdir()
-        (paket / "daten" / "einstellungen" / "shop.json").write_text(json.dumps({"vorverkauf": True, "eroeffnung": zugang.get("eroeffnung", "im November 2026")}, ensure_ascii=False), encoding="utf-8")
+        start = {"vorverkauf": True, "eroeffnung": zugang.get("eroeffnung", "im November 2026"),
+                 "mailAn": zugang.get("mailAn", "info@zukkabro.de"), "mailVon": zugang.get("mailVon", "info@zukkabro.de")}
+        (paket / "daten" / "einstellungen" / "shop.json").write_text(json.dumps(start, ensure_ascii=False), encoding="utf-8")
 
     # 2. Sortiment und Start-Pakete als JSON (gleiche Daten wie die Netlify-Version)
     sortiment = ts_json(API_TS / "sortiment.mts", "SORTIMENT", "};")
