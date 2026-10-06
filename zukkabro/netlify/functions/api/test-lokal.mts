@@ -264,6 +264,27 @@ r = await rufe("GET", "/shop/news"); assert.equal(r.daten.news.length, 2); asser
 r = await rufe("POST", "/admin/news", { news: [{ id: newsIds[0], titel: "Alt geändert", datum: "2026-01-01" }] }, admin); assert.equal(r.daten.news[0].id, newsIds[0]); ok("News-Kennung bleibt beim Bearbeiten erhalten");
 r = await rufe("POST", "/admin/news", { news: [] }, admin);
 
+// E-Mails über Brevo (Mock)
+process.env.BREVO_API_KEY = "test-schluessel";
+const mails: any[] = []; const fetchVorher = globalThis.fetch;
+globalThis.fetch = (async (url: any, init: any) => {
+  if (String(url).startsWith("https://api.brevo.com/")) { assert.equal(init.headers["api-key"], "test-schluessel"); mails.push(JSON.parse(init.body)); return new Response(JSON.stringify({ messageId: "m1" }), { status: 201 }); }
+  return fetchVorher(url, init);
+}) as any;
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, mailAn: "info@zukkabro.de", mailVon: "info@zukkabro.de" }, admin); assert.equal(r.status, 200);
+r = await rufe("POST", "/shop/bestellung", { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 2 }], notiz: "Bitte klingeln" });
+assert.equal(r.status, 200); assert.equal(mails.length, 2);
+assert.equal(mails[0].to[0].email, "max@test.de"); assert.equal(mails[0].sender.email, "info@zukkabro.de"); assert.match(mails[0].subject, /^Deine Bestellung ZK-/); assert.match(mails[0].textContent, /IBAN: DE00 1234/); assert.match(mails[0].textContent, /Gesamt: 10,88 €|Gesamt: 10,88/);
+assert.equal(mails[1].to[0].email, "info@zukkabro.de"); assert.match(mails[1].subject, /^Neue Bestellung ZK-/); assert.match(mails[1].textContent, /Notiz: Bitte klingeln/);
+ok("Bestellung: Bestätigung an Kunden und Hinweis ans Team per Brevo");
+r = await rufe("POST", "/kontakt", { name: "Tim", email: "tim@test.de", text: "Habt ihr Pocky?", datenschutz: true, betreff: "Frage" }); assert.equal(r.status, 200);
+assert.equal(mails.length, 3); assert.equal(mails[2].subject, "Neue Nachricht: Frage"); assert.match(mails[2].textContent, /Tim <tim@test.de>/); ok("Kontaktformular mailt ans Team");
+r = await rufe("POST", "/haendler/registrieren", { firma: "Kiosk Mail", ansprechpartner: "Ali", email: "mailtest@kiosk.de", telefon: "", strasse: "Weg 1", plz: "74080", ort: "Heilbronn", ustId: "", passwort: "sicheres-passwort-12", gewerbe: true, datenschutz: true });
+assert.equal(r.status, 200); assert.equal(mails.length, 4); assert.equal(mails[3].subject, "Neue Händler-Registrierung: Kiosk Mail"); ok("Händler-Registrierung mailt ans Team");
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, mailAn: "", mailVon: "" }, admin);
+r = await rufe("POST", "/kontakt", { name: "Tim", email: "tim@test.de", text: "Nochmal", datenschutz: true, betreff: "Frage" }); assert.equal(mails.length, 4); ok("Ohne Empfänger-Adresse keine Mail");
+globalThis.fetch = fetchVorher; delete process.env.BREVO_API_KEY;
+
 // Digitale Stempelkarte
 r = await rufe("POST", "/shop/stempel/neu", {}); assert.equal(r.status, 200); assert.match(r.daten.code, /^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/); assert.equal(r.daten.stempel, 0); assert.equal(r.daten.ziel, 10);
 const karteCode = r.daten.code; ok("Stempelkarte angelegt: " + karteCode);

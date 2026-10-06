@@ -13,6 +13,7 @@ import {
 import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
 import { LADEN_STANDARD, KARTE_VORLAGE, type LadenEinstellungen, type KarteEintrag } from "./laden-vorlage.mts";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { mailAktiv, mailSenden } from "./mail.mts";
 
 /* =================== Typen =================== */
 type HStatus = "offen" | "aktiv" | "gesperrt";
@@ -147,6 +148,12 @@ async function registrieren(req: Request, ip: string) {
   await schreibe(`haendler/${h.id}`, h);
   await schreibe(indexKey, h.id);
   await protokoll("haendler-registriert", h.id, { firma: h.firma });
+  await mailAnTeam("Neue Händler-Registrierung: " + h.firma, `Firma: ${h.firma}
+Ansprechpartner: ${h.ansprechpartner}
+E-Mail: ${h.email}
+Telefon: ${h.telefon}
+
+Bitte im Admin unter Händler freischalten: https://zukkabro.de/admin/`);
   return json({ ok: true, meldung: "Danke! Wir prüfen deine Angaben und schalten dein Konto frei." });
 }
 
@@ -449,6 +456,10 @@ async function stripeWebhook(req: Request) {
         await schreibe(`bestellungen/${id}`, best);
         if (!best.gebucht) await bucheBestellung(best, "Stripe", "stripe");
         await protokoll("stripe-bezahlt", id, { betrag: sitzung.amount_total });
+        await mailAnTeam("Online-Zahlung eingegangen: " + id, `Stripe hat die Zahlung für Bestellung ${id} bestätigt (${euroText(Number(sitzung.amount_total) || 0)}).
+Bitte packen und verschicken.
+
+Admin: https://zukkabro.de/admin/`);
       }
     }
   }
@@ -653,6 +664,11 @@ async function kontakt(req: Request, ip: string) {
   if (text(b.website, 10)) return json({ ok: true, id: n.id }); // Honigtopf: nur Bots füllen das versteckte Feld
   await schreibe("nachrichten/" + n.id, n);
   await protokoll("nachricht-neu", n.email, { id: n.id, betreff: n.betreff });
+  await mailAnTeam("Neue Nachricht: " + (n.betreff || "Kontaktformular"), `Von: ${n.name} <${n.email}>${n.telefon ? " · " + n.telefon : ""}
+
+${n.text}
+
+Admin: https://zukkabro.de/admin/`);
   return json({ ok: true, id: n.id });
 }
 async function nachrichtStatus(req: Request) {
@@ -820,6 +836,7 @@ async function kasse(req: Request, ip: string) {
   } else {
     zahlungsinfo = { art: "bar", betrag: brutto, abholort: e.abholort };
   }
+  await bestellMails(best, zahlungsinfo, e.hinweis);
   return json({ ok: true, nr: best.id, brutto, versand, zahlungsinfo, hinweis: e.hinweis, ab18 });
 }
 
@@ -880,6 +897,39 @@ async function einstellungenSpeichern(req: Request, s: Sitzung) {
   await schreibe("einstellungen/shop", e);
   await protokoll("einstellungen-geaendert", s.id);
   return json({ ok: true, einstellungen: e });
+}
+
+/* =================== E-Mails (Brevo, nur mit BREVO_API_KEY) =================== */
+function euroText(cent: number): string {
+  return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100);
+}
+async function mailAnKunde(an: string, betreff: string, text: string) {
+  const e = await einstellungen();
+  return mailSenden(an, betreff, text, e.mailVon || e.mailAn, e.mailAn);
+}
+async function mailAnTeam(betreff: string, text: string) {
+  const e = await einstellungen();
+  if (!e.mailAn) return false;
+  return mailSenden(e.mailAn, betreff, text, e.mailVon || e.mailAn, e.mailAn);
+}
+/** Bestellbestätigung an den Kunden und Hinweis ans Team (gleicher Text wie auf Strato) */
+async function bestellMails(best: Bestellung, info: Record<string, unknown>, hinweis: string) {
+  const k = best.kunde!;
+  const zeilen = best.positionen.map((p) => `${p.stueck} × ${p.name}  ${euroText(p.brutto || 0)}`);
+  if (best.versand) zeilen.push((best.lieferart === "kurier" ? "Lieferung Heilbronn  " : "Versand  ") + euroText(best.versand));
+  const art = String(info.art || "");
+  const zahlung = art === "ueberweisung"
+    ? `Bitte überweise ${euroText(best.brutto)} an:\n${info.inhaber || "ZUKKABRO"}\nIBAN: ${info.iban || "(folgt per E-Mail)"}${info.bank ? "\nBank: " + info.bank : ""}\nVerwendungszweck: ${best.id}`
+    : art === "paypal" ? `Bitte zahle ${euroText(best.brutto)} per PayPal an: ${info.ziel}\nVerwendungszweck: ${best.id}`
+    : art === "stripe" ? "Deine Zahlung läuft über Stripe. Du bekommst von Stripe eine eigene Zahlungsbestätigung."
+    : `Du zahlst ${euroText(best.brutto)} bar bei der Abholung${info.abholort ? " (" + info.abholort + ")" : ""}.`;
+  const adresse = best.lieferart === "abholung" ? "Abholung in Heilbronn"
+    : `${k.vorname} ${k.nachname}\n${k.strasse}\n${k.plz} ${k.ort}`.trim() + (best.lieferart === "kurier" ? "\n(Lieferung per Kurier in Heilbronn)" : "");
+  const text = `Hey ${k.vorname},\n\ndanke für deine Bestellung bei ZUKKABRO!\n\nBestellnummer: ${best.id}\n\n${zeilen.join("\n")}\nGesamt: ${euroText(best.brutto)} (inkl. MwSt.)\n\nLieferung: ${adresse}\n\nZahlung: ${zahlung}\n` +
+    (best.ab18 ? "\nDein Warenkorb enthält Artikel ab 18. Bitte halte bei der Übergabe deinen Ausweis bereit.\n" : "") + (hinweis ? `\n${hinweis}\n` : "") + "\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de";
+  await mailAnKunde(k.email, `Deine Bestellung ${best.id} bei ZUKKABRO`, text);
+  await mailAnTeam(`Neue Bestellung ${best.id} (${euroText(best.brutto)}, ${best.zahlart})`,
+    `Neue Kundenbestellung ${best.id}\n\n${zeilen.join("\n")}\nGesamt: ${euroText(best.brutto)}\n\nKunde: ${k.vorname} ${k.nachname}, ${k.email}${k.telefon ? ", " + k.telefon : ""}\n${adresse}\nZahlung: ${best.zahlart}\n${best.notiz ? "Notiz: " + best.notiz + "\n" : ""}\nAdmin: https://zukkabro.de/admin/`);
 }
 
 /* =================== Digitale Stempelkarte (Laden) =================== */
