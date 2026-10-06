@@ -123,6 +123,8 @@
     if (id === "einstellungen") einstellungenZeigen();
     if (id === "pakete") paketeLaden();
     if (id === "angebote") angeboteLaden();
+    if (id === "laden") ladenLaden();
+    if (id === "kasse") kasseLaden();
     if (id === "buchhaltung") journal();
     if (id === "bestand") bestand();
     if (id === "protokoll") protokoll();
@@ -215,7 +217,7 @@
       if (a === "kunde") {
         var k = b.kunde || {};
         kontakt = "<p><strong>" + (b.lieferart === "abholung" ? "Abholung" : "Lieferadresse") + ":</strong> " + esc([k.vorname + " " + k.nachname, b.lieferart === "versand" ? k.strasse : "", b.lieferart === "versand" ? k.plz + " " + k.ort : ""].filter(Boolean).join(", ")) +
-          " · " + esc(k.email) + (k.telefon ? " · " + esc(k.telefon) : "") + "<br><strong>Zahlung:</strong> " + esc(b.zahlart || "") +
+          " · " + esc(k.email) + (k.telefon ? " · " + esc(k.telefon) : "") + "<br><strong>Zahlung:</strong> " + esc(b.zahlart || "") + (b.stripe ? (b.stripe.status === "bezahlt" ? ' <span class="status status--bezahlt">✓ online bezahlt</span>' : ' <span class="status status--offen">Online-Zahlung offen</span>') : "") +
           (b.ab18 ? ' · <span class="status status--neu">🔞 18+ · geb. ' + ZB.datumDE(k.geburtsdatum) + " · Ausweis prüfen!</span>" : "") + "</p>";
       } else {
         var h = daten.haendler.find(function (x) { return x.id === b.haendlerId; }) || {};
@@ -392,7 +394,7 @@
       preise(); ZB.meldung("Preise gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
-  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert || karteGeaendert) { e.preventDefault(); e.returnValue = ""; } });
 
   /* ================= Pakete ================= */
   var paketListe = null, paketGeaendert = false;
@@ -546,6 +548,188 @@
       var r = await ZB.api("POST", "/admin/angebote", { angebote: liste });
       angebotListe = r.angebote; angebotGeaendert = false; angeboteZeichnen(); ZB.meldung("Angebote gespeichert. Der Slider auf der Startseite ist aktualisiert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
+
+
+  /* ================= Laden: Öffnungszeiten, Karte ================= */
+  var ladenDaten = null, karteGeaendert = false;
+  var ART_TEXT = { matcha: "🍵 Matcha", bowl: "🫐 Bowl", extra: "➕ Extra", sonstiges: "✨ Sonstiges" };
+  async function ladenLaden() {
+    if (ladenDaten) return ladenZeichnen();
+    try { ladenDaten = await ZB.api("GET", "/admin/laden"); ladenZeichnen(); } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  function ladenZeichnen() {
+    var f = $("ladenForm"), l = ladenDaten.laden;
+    f.name.value = l.name || ""; f.strasse.value = l.strasse || ""; f.plz.value = l.plz || ""; f.ort.value = l.ort || ""; f.hinweis.value = l.hinweis || ""; f.aktiv.checked = l.aktiv !== false;
+    $("zeitenTabelle").innerHTML = "<thead><tr><th>Tag</th><th>Geöffnet</th><th>Von</th><th>Bis</th></tr></thead><tbody>" + (l.zeiten || []).map(function (z) {
+      return '<tr data-tag="' + esc(z.tag) + '"><td><strong>' + esc(z.tag) + '</strong></td><td><input type="checkbox" data-zeit="offen"' + (z.offen ? " checked" : "") + '></td>' +
+        '<td><input type="time" data-zeit="von" value="' + esc(z.von) + '"></td><td><input type="time" data-zeit="bis" value="' + esc(z.bis) + '"></td></tr>';
+    }).join("") + "</tbody>";
+    karteZeichnen();
+  }
+  $("ladenForm").addEventListener("submit", async function (ev) {
+    ev.preventDefault(); var f = ev.target;
+    var zeiten = Array.prototype.map.call($("zeitenTabelle").querySelectorAll("tr[data-tag]"), function (tr) {
+      return { tag: tr.getAttribute("data-tag"), offen: tr.querySelector('[data-zeit="offen"]').checked, von: tr.querySelector('[data-zeit="von"]').value, bis: tr.querySelector('[data-zeit="bis"]').value };
+    });
+    try {
+      var r = await ZB.api("POST", "/admin/laden", { name: f.name.value, strasse: f.strasse.value, plz: f.plz.value, ort: f.ort.value, hinweis: f.hinweis.value, aktiv: f.aktiv.checked, zeiten: zeiten });
+      ladenDaten.laden = r.laden; ZB.meldung("Laden gespeichert.");
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
+  function karteZeichnen() {
+    $("karteTabelle").innerHTML = '<thead><tr><th>Name</th><th>Art</th><th class="num">Preis (€)</th><th>Beschreibung</th><th>Allergene</th><th>MwSt</th><th>Aktiv</th><th></th></tr></thead><tbody>' + ladenDaten.karte.map(function (e, i) {
+      return '<tr data-karte="' + i + '"><td><input data-kf="name" maxlength="80" value="' + esc(e.name) + '"></td>' +
+        '<td><select data-kf="art">' + Object.keys(ART_TEXT).map(function (a) { return '<option value="' + a + '"' + (a === e.art ? " selected" : "") + ">" + ART_TEXT[a] + "</option>"; }).join("") + "</select></td>" +
+        '<td class="num"><input data-kf="preis" inputmode="decimal" style="width:90px" value="' + (e._preisRoh !== undefined ? esc(e._preisRoh) : ZB.centFeld(e.preis)) + '" placeholder="Preis folgt"></td>' +
+        '<td><input data-kf="beschreibung" maxlength="200" value="' + esc(e.beschreibung || "") + '"></td>' +
+        '<td><input data-kf="allergene" list="allergenListe" value="' + esc((e.allergene || []).join(", ")) + '" placeholder="z. B. Milch, Gluten"></td>' +
+        '<td><select data-kf="mwst">' + [19, 7, 0].map(function (m) { return '<option value="' + m + '"' + (m === e.mwst ? " selected" : "") + ">" + m + " %</option>"; }).join("") + "</select></td>" +
+        '<td><input type="checkbox" data-kf="aktiv"' + (e.aktiv !== false ? " checked" : "") + "></td>" +
+        '<td><button class="btn btn--rot btn--klein" type="button" data-karte-weg="' + i + '" aria-label="Löschen">✕</button></td></tr>';
+    }).join("") + "</tbody>";
+    $("allergenListe").innerHTML = (ladenDaten.allergene || []).map(function (a) { return '<option value="' + esc(a) + '">'; }).join("");
+    $("karteSpeichern").textContent = karteGeaendert ? "Karte speichern (ungespeichert!)" : "Karte speichern";
+  }
+  function karteFeld(e) {
+    var tr = e.target.closest("[data-karte]"); if (!tr) return;
+    var k = ladenDaten.karte[+tr.getAttribute("data-karte")], f = e.target.getAttribute("data-kf"); if (!f) return;
+    if (f === "aktiv") k.aktiv = e.target.checked;
+    else if (f === "mwst") k.mwst = parseInt(e.target.value, 10);
+    else if (f === "preis") k._preisRoh = e.target.value;
+    else if (f === "allergene") k.allergene = e.target.value.split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+    else k[f] = e.target.value;
+    karteGeaendert = true; $("karteSpeichern").textContent = "Karte speichern (ungespeichert!)";
+  }
+  $("karteTabelle").addEventListener("input", karteFeld);
+  $("karteTabelle").addEventListener("change", karteFeld);
+  $("karteTabelle").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-karte-weg]"); if (!b) return;
+    ladenDaten.karte.splice(+b.getAttribute("data-karte-weg"), 1); karteGeaendert = true; karteZeichnen();
+  });
+  $("karteNeu").addEventListener("click", async function () {
+    if (!ladenDaten) await ladenLaden();
+    ladenDaten.karte.push({ id: "", name: "", art: "matcha", preis: null, _preisRoh: "", beschreibung: "", allergene: [], mwst: 19, aktiv: true });
+    karteGeaendert = true; karteZeichnen();
+  });
+  $("karteSpeichern").addEventListener("click", async function () {
+    try {
+      var liste = ladenDaten.karte.map(function (k) {
+        var preis = k.preis;
+        if (k._preisRoh !== undefined) {
+          preis = k._preisRoh.trim() ? ZB.cent(k._preisRoh) : null;
+          if (preis !== null && (isNaN(preis) || preis <= 0)) throw new Error("Ungültiger Preis bei " + (k.name || "neuem Eintrag"));
+        }
+        return { id: k.id, name: k.name, art: k.art, preis: preis, beschreibung: k.beschreibung, allergene: k.allergene, mwst: k.mwst, aktiv: k.aktiv !== false };
+      });
+      var r = await ZB.api("POST", "/admin/karte", { karte: liste });
+      ladenDaten.karte = r.karte; karteGeaendert = false; karteZeichnen(); ZB.meldung("Karte gespeichert.");
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
+
+  /* ================= Tageskasse (Laden) ================= */
+  var kasse = null;
+  function kasseTagWert() { return $("kasseTag").value || ZB.heute(); }
+  async function kasseLaden() {
+    if (!$("kasseTag").value) $("kasseTag").value = ZB.heute();
+    if (!$("kasseMonat").value) $("kasseMonat").value = ZB.heute().slice(0, 7);
+    try {
+      if (!ladenDaten) ladenDaten = await ZB.api("GET", "/admin/laden");
+      kasse = await ZB.api("GET", "/admin/kasse?tag=" + kasseTagWert());
+      kasseZeichnen(); await kasseBerichteLaden();
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  function kasseZeichnen() {
+    var t = kasse.tag, s = kasse.summe, zu = !!t.abschluss;
+    $("kasseAnfang").value = ZB.centFeld(t.anfang);
+    $("kasseKpis").innerHTML = [["Umsatz", euro(s.umsatz), "pink"], ["davon bar", euro(s.bar), "gold"], ["davon Karte", euro(s.karte), "blau"], ["Ausgaben", euro(s.ausgaben), "violett"], ["Soll-Bargeld", euro(s.soll), "gruen"]]
+      .map(function (k) { return '<div class="kpi kpi--' + k[2] + '"><div class="kpi__label">' + k[0] + '</div><div class="kpi__wert">' + k[1] + "</div></div>"; }).join("");
+    var karte = (ladenDaten.karte || []).filter(function (k) { return k.aktiv !== false && typeof k.preis === "number"; });
+    $("kasseKnoepfe").innerHTML = karte.map(function (k) {
+      return '<button type="button" class="kasse-knopf kasse-knopf--' + esc(k.art) + '" data-kasse-karte="' + esc(k.id) + '"' + (zu ? " disabled" : "") + "><span>" + esc(k.name) + "</span><b>" + euro(k.preis) + "</b></button>";
+    }).join("") || '<p class="leer">Keine Karteneinträge mit Preis. Unter „Laden“ anlegen.</p>';
+    var zeilen = t.verkaeufe.map(function (v) {
+      return '<tr class="' + (v.storno ? "ist-storno" : "") + '"><td>' + ZB.zeitDE(v.zeit).slice(-5) + "</td><td>" + esc(v.name) + '</td><td class="num">' + v.menge + '</td><td class="num">' + euro(v.betrag) + "</td><td>" + esc(v.zahlungsart) + "</td><td>" +
+        (zu || v.storno ? "" : '<button class="btn btn--light btn--klein" type="button" data-kasse-storno="verkauf:' + v.nr + '">Storno</button>') + "</td></tr>";
+    }).concat(t.ausgaben.map(function (a) {
+      return '<tr class="' + (a.storno ? "ist-storno" : "storno-zeile") + '"><td>' + ZB.zeitDE(a.zeit).slice(-5) + "</td><td>Ausgabe: " + esc(a.text) + '</td><td class="num">1</td><td class="num">−' + euro(a.betrag) + "</td><td>Bar</td><td>" +
+        (zu || a.storno ? "" : '<button class="btn btn--light btn--klein" type="button" data-kasse-storno="ausgabe:' + a.nr + '">Storno</button>') + "</td></tr>";
+    }));
+    $("kasseListe").innerHTML = '<thead><tr><th>Zeit</th><th>Artikel</th><th class="num">Menge</th><th class="num">Betrag</th><th>Zahlung</th><th></th></tr></thead><tbody>' + (zeilen.join("") || '<tr><td colspan="6" class="leer">Noch nichts verkauft.</td></tr>') + "</tbody>";
+    $("kasseAbschlussInfo").innerHTML = zu
+      ? '<p class="hinweis">✅ Abgeschlossen am ' + ZB.zeitDE(t.abschluss.am) + " von " + esc(t.abschluss.von) + ": gezählt " + euro(t.abschluss.gezaehlt) + ", Soll " + euro(t.abschluss.soll) + ", Differenz <strong>" + euro(t.abschluss.differenz) + "</strong>" + (t.abschluss.notiz ? " · " + esc(t.abschluss.notiz) : "") + "</p>"
+      : "<p>Anfangsbestand " + euro(t.anfang) + " + Bareinnahmen " + euro(s.bar) + " − Ausgaben " + euro(s.ausgaben) + " = <strong>Soll " + euro(s.soll) + "</strong>. Jetzt Bargeld zählen und eintragen.</p>";
+    $("kasseAbschlussForm").querySelector("button").disabled = zu;
+    $("kasseAnfangSetzen").disabled = zu;
+  }
+  async function kasseAktion(pfad, daten) {
+    try { kasse = await ZB.api("POST", "/admin/kasse/" + pfad, Object.assign({ tag: kasseTagWert() }, daten)); kasseZeichnen(); return true; }
+    catch (err) { ZB.meldung(err.message, "fehler"); return false; }
+  }
+  $("kasseTag").addEventListener("change", kasseLaden);
+  $("kasseKnoepfe").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-kasse-karte]"); if (!b) return;
+    var k = ladenDaten.karte.filter(function (x) { return x.id === b.getAttribute("data-kasse-karte"); })[0]; if (!k) return;
+    kasseAktion("verkauf", { id: k.id, name: k.name, menge: 1, preis: k.preis, mwst: k.mwst, zahlungsart: $("kasseZahlart").value });
+  });
+  $("kasseListe").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-kasse-storno]"); if (!b) return;
+    var t = b.getAttribute("data-kasse-storno").split(":");
+    if (!confirm("Diesen Eintrag stornieren?")) return;
+    kasseAktion("storno", { art: t[0], nr: +t[1] });
+  });
+  $("kasseAnfangSetzen").addEventListener("click", function () {
+    var c = ZB.cent($("kasseAnfang").value);
+    if (isNaN(c) || c < 0) return ZB.meldung("Bitte Betrag eingeben, z. B. 50,00.", "fehler");
+    kasseAktion("anfang", { anfang: c });
+  });
+  $("kasseProdukt").addEventListener("input", function () {
+    var id = nameZuId[$("kasseProdukt").value.toLowerCase()], p = id && daten.shop[id];
+    $("kasseProduktInfo").textContent = id ? (p ? "Shop-Preis " + euro(p.preis) : "Kein Shop-Preis hinterlegt (Reiter Preise)") : "";
+  });
+  $("kasseProduktHinzu").addEventListener("click", function () {
+    var id = nameZuId[$("kasseProdukt").value.toLowerCase()], p = id && daten.shop[id];
+    if (!id) return ZB.meldung("Bitte ein Produkt aus der Liste wählen.", "fehler");
+    if (!p) return ZB.meldung("Für dieses Produkt ist kein Shop-Preis hinterlegt (Reiter Preise).", "fehler");
+    kasseAktion("verkauf", { id: id, name: ZB.produkte[id].name, menge: 1, preis: p.preis, mwst: p.mwst, zahlungsart: $("kasseZahlart").value });
+    $("kasseProdukt").value = ""; $("kasseProduktInfo").textContent = "";
+  });
+  $("kasseAusgabeForm").addEventListener("submit", async function (ev) {
+    ev.preventDefault(); var f = ev.target, c = ZB.cent(f.betrag.value);
+    if (!f.text.value.trim() || isNaN(c) || c <= 0) return ZB.meldung("Bitte Text und Betrag angeben.", "fehler");
+    if (await kasseAktion("ausgabe", { text: f.text.value, betrag: c })) f.reset();
+  });
+  $("kasseAbschlussForm").addEventListener("submit", async function (ev) {
+    ev.preventDefault(); var f = ev.target, c = ZB.cent(f.gezaehlt.value);
+    if (isNaN(c) || c < 0) return ZB.meldung("Bitte den gezählten Bargeldbestand eingeben.", "fehler");
+    if (!confirm("Tag abschließen? Danach sind keine Änderungen mehr möglich, die Verkäufe werden ins Journal gebucht.")) return;
+    if (await kasseAktion("abschluss", { gezaehlt: c, notiz: f.notiz.value })) { f.reset(); ZB.meldung("Tag abgeschlossen und gebucht."); allesLaden(); kasseBerichteLaden(); }
+  });
+  async function kasseBerichteLaden() {
+    try {
+      var r = await ZB.api("GET", "/admin/kasse/berichte?monat=" + ($("kasseMonat").value || ZB.heute().slice(0, 7)));
+      $("kasseBerichte").innerHTML = '<thead><tr><th>Tag</th><th class="num">Anfang</th><th class="num">Umsatz</th><th class="num">Bar</th><th class="num">Karte</th><th class="num">Ausgaben</th><th class="num">Gezählt</th><th class="num">Differenz</th><th>Status</th></tr></thead><tbody>' +
+        (r.tage.map(function (t) {
+          var a = t.abschluss;
+          return "<tr><td>" + ZB.datumDE(t.datum) + '</td><td class="num">' + euro(t.anfang) + '</td><td class="num">' + euro(t.umsatz) + '</td><td class="num">' + euro(t.bar) + '</td><td class="num">' + euro(t.karte) + '</td><td class="num">' + euro(t.ausgaben) +
+            '</td><td class="num">' + (a ? euro(a.gezaehlt) : "–") + '</td><td class="num">' + (a ? euro(a.differenz) : "–") + "</td><td>" + (a ? '<span class="status status--abgeschlossen">Abgeschlossen</span>' : '<span class="status status--offen">Offen</span>') + "</td></tr>";
+        }).join("") || '<tr><td colspan="9" class="leer">Keine Kassentage in diesem Monat.</td></tr>') + "</tbody>";
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  $("kasseMonat").addEventListener("change", kasseBerichteLaden);
+  $("kasseBerichtDrucken").addEventListener("click", function () {
+    if (!kasse) return;
+    var t = kasse.tag, s = kasse.summe, w = window.open("", "_blank");
+    if (!w) return ZB.meldung("Pop-up blockiert. Bitte für diese Seite erlauben.", "fehler");
+    var zeilen = t.verkaeufe.filter(function (v) { return !v.storno; }).map(function (v) { return "<tr><td>" + esc(v.name) + "</td><td>" + v.menge + "</td><td>" + euro(v.preis) + "</td><td>" + euro(v.betrag) + "</td><td>" + v.zahlungsart + "</td><td>" + v.mwst + " %</td></tr>"; }).join("") +
+      t.ausgaben.filter(function (a) { return !a.storno; }).map(function (a) { return "<tr><td>Ausgabe: " + esc(a.text) + "</td><td></td><td></td><td>−" + euro(a.betrag) + "</td><td>Bar</td><td></td></tr>"; }).join("");
+    w.document.write('<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Kassenbericht ' + t.datum + '</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#222}h1{font-size:20px}table{border-collapse:collapse;width:100%;margin:12px 0}td,th{border:1px solid #999;padding:4px 6px;font-size:13px;text-align:left}td:nth-child(n+2){text-align:right}dl{display:grid;grid-template-columns:230px 1fr;gap:4px 12px;font-size:14px}dt{font-weight:bold}.unterschrift{margin-top:48px;border-top:1px solid #222;width:280px;padding-top:4px;font-size:12px}</style></head><body>' +
+      "<h1>ZUKKABRO Laden Heilbronn – Kassenbericht " + ZB.datumDE(t.datum) + "</h1>" +
+      "<table><tr><th>Artikel</th><th>Menge</th><th>Einzel</th><th>Betrag</th><th>Zahlung</th><th>MwSt</th></tr>" + zeilen + "</table>" +
+      "<dl><dt>Kassenanfangsbestand</dt><dd>" + euro(t.anfang) + "</dd><dt>+ Bareinnahmen</dt><dd>" + euro(s.bar) + "</dd><dt>− Barausgaben</dt><dd>" + euro(s.ausgaben) + "</dd><dt>= Soll-Kassenbestand</dt><dd>" + euro(s.soll) + "</dd>" +
+      (t.abschluss ? "<dt>Gezählter Kassenbestand</dt><dd>" + euro(t.abschluss.gezaehlt) + "</dd><dt>Differenz</dt><dd>" + euro(t.abschluss.differenz) + "</dd><dt>Kartenumsatz (separat)</dt><dd>" + euro(t.abschluss.karte) + "</dd><dt>Abgeschlossen</dt><dd>" + ZB.zeitDE(t.abschluss.am) + " von " + esc(t.abschluss.von) + "</dd>" : "<dt>Status</dt><dd>noch nicht abgeschlossen</dd>") +
+      '</dl><div class="unterschrift">Datum, Unterschrift</div><script>window.print()<\\/script></body></html>');
+    w.document.close();
   });
 
   /* ================= Shop-Einstellungen ================= */
@@ -703,7 +887,7 @@
   async function protokoll() {
     try {
       var r = await ZB.api("GET", "/admin/protokoll?monat=" + $("protokollMonat").value);
-      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert", "angebote-geaendert": "Angebote geändert" };
+      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert", "angebote-geaendert": "Angebote geändert", "laden-geaendert": "Laden geändert", "karte-geaendert": "Karte geändert", "kasse-abschluss": "Tageskasse abgeschlossen", "stripe-bezahlt": "Online-Zahlung eingegangen (Stripe)" };
       $("protokollTabelle").innerHTML = "<thead><tr><th>Zeit</th><th>Ereignis</th><th>Wer</th><th>Details</th></tr></thead><tbody>" +
         (r.protokoll.length ? r.protokoll.map(function (p) {
           var d = Object.keys(p).filter(function (k) { return ["am", "ereignis", "von"].indexOf(k) === -1; }).map(function (k) { return k + ": " + p[k]; }).join(", ");

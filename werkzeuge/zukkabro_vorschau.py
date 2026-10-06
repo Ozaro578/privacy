@@ -43,13 +43,13 @@ SEITEN = {  # Quelle -> Ziel (alles flach in einem Ordner)
     "index.html": "index.html", "sortiment.html": "sortiment.html", "vapes.html": "vapes.html",
     "produkt.html": "produkt.html", "pakete.html": "pakete.html", "paket.html": "paket.html",
     "warenkorb.html": "warenkorb.html", "ueber-uns.html": "ueber-uns.html", "kontakt.html": "kontakt.html",
-    "rechtliches.html": "rechtliches.html", "404.html": "404.html",
+    "rechtliches.html": "rechtliches.html", "404.html": "404.html", "laden.html": "laden.html",
     "haendler/index.html": "haendler.html", "admin/index.html": "admin.html",
 }
 
 
-def shop_daten() -> dict:
-    """Echte Antwort von /api/shop/daten mit leerem Speicher (gleiche Logik wie auf dem Server)."""
+def shop_daten(uri: str = "/api/shop/daten") -> dict:
+    """Echte Antwort der PHP-API mit leerem Speicher (gleiche Logik wie auf dem Server)."""
     with tempfile.TemporaryDirectory() as tmp:
         api = Path(tmp) / "api"
         shutil.copytree(STRATO / "api", api)
@@ -57,14 +57,15 @@ def shop_daten() -> dict:
         from zukkabro_strato import ts_json, API_TS
         (api / "sortiment.json").write_text(json.dumps(ts_json(API_TS / "sortiment.mts", "SORTIMENT", "};")), encoding="utf-8")
         (api / "pakete-vorlage.json").write_text(json.dumps(ts_json(API_TS / "pakete-vorlage.mts", "PAKETE_VORLAGE", "];")), encoding="utf-8")
+        (api / "laden-vorlage.json").write_text(json.dumps({"laden": ts_json(API_TS / "laden-vorlage.mts", "LADEN_STANDARD", "};"), "karte": ts_json(API_TS / "laden-vorlage.mts", "KARTE_VORLAGE", "];")}), encoding="utf-8")
         (Path(tmp) / "daten").mkdir()
         if BEISPIEL_ANGEBOTE:  # Beispiel-Angebote für den Slider, gleiche Logik wie auf dem Server
             (Path(tmp) / "daten" / "preise").mkdir()
             (Path(tmp) / "daten" / "angebote").mkdir()
             (Path(tmp) / "daten" / "preise" / "shop.json").write_text(json.dumps({a["id"]: {"preis": a["alt"], "mwst": 7} for a in BEISPIEL_ANGEBOTE}), encoding="utf-8")
             (Path(tmp) / "daten" / "angebote" / "alle.json").write_text(json.dumps([{"id": a["id"], "preis": a["preis"], "titel": a["titel"], "aktiv": True, "bis": a.get("bis", "")} for a in BEISPIEL_ANGEBOTE]), encoding="utf-8")
-        code = (f"const ZB_DATEN={json.dumps(tmp + '/daten')};const ZB_SESSION_SECRET='{'x' * 40}';const ZB_ADMIN_USERS=[];"
-                f"$_SERVER['REQUEST_URI']='/api/shop/daten';$_SERVER['REQUEST_METHOD']='GET';"
+        code = (f"const ZB_DATEN={json.dumps(tmp + '/daten')};const ZB_SESSION_SECRET='{'x' * 40}';const ZB_ADMIN_USERS=[];const ZB_STRIPE_SECRET='';const ZB_STRIPE_WEBHOOK='';"
+                f"$_SERVER['REQUEST_URI']={json.dumps(uri)};$_SERVER['REQUEST_METHOD']='GET';"
                 f"require {json.dumps(str(api / 'index.php'))};zb_api();")
         aus = subprocess.run(["php", "-r", code], capture_output=True, text=True, check=True).stdout
         return json.loads(aus)
@@ -141,6 +142,7 @@ def main():
     # API-Attrappe
     vorschau = (Path(__file__).parent / "zukkabro_vorschau.js").read_text(encoding="utf-8")
     vorschau = vorschau.replace("/*SHOP_DATEN*/null", json.dumps(shop_daten(), ensure_ascii=False))
+    vorschau = vorschau.replace("/*LADEN_DATEN*/null", json.dumps(shop_daten("/api/shop/laden"), ensure_ascii=False))
     (ziel / "assets" / "js" / "vorschau.js").write_text(vorschau, encoding="utf-8")
 
     # Seiten

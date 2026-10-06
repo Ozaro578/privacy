@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laden in Heilbronn – Matcha & Açaí Bowls – ZUKKABRO</title>
+  <meta name="description" content="ZUKKABRO Laden in Heilbronn: Matcha-Drinks und Açaí Bowls jedes Wochenende, Snacks und Drinks zum Mitnehmen, Abholung von Online-Bestellungen.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="laden">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern laden-kopf">
+      <span class="fl" style="left:6%;top:18%">🍵</span><span class="fl" style="right:7%;top:16%;animation-delay:-3s">🫐</span>
+      <div class="container">
+        <p class="eyebrow">Heilbronn</p>
+        <h1>Unser Laden: <span class="drip">Matcha &amp; Açaí</span></h1>
+        <p id="ladenHinweis">Matcha-Drinks und Açaí Bowls jedes Wochenende. Dazu Snacks, Drinks und die Abholung eurer Online-Bestellungen.</p>
+        <p class="laden-status" id="ladenStatus" hidden></p>
+      </div>
+    </section>
+
+    <section class="section section--cream">
+      <div class="container laden-info">
+        <div class="laden-box reveal">
+          <h2>🕒 Öffnungszeiten</h2>
+          <table class="zeiten" id="zeiten"></table>
+          <p class="laden-box__klein" id="zeitenHinweis">Zeiten können sich kurzfristig ändern. Schau vor dem Besuch kurz hier rein.</p>
+        </div>
+        <div class="laden-box reveal">
+          <h2>📍 Adresse</h2>
+          <p class="laden-adresse" id="adresse">Heilbronn</p>
+          <a class="btn btn--light" id="kartenLink" href="https://www.google.com/maps/search/?api=1&query=Heilbronn" target="_blank" rel="noopener">In Google Maps öffnen →</a>
+        </div>
+        <div class="laden-box laden-box--pink reveal">
+          <h2>📦 Abholung</h2>
+          <p>Online bestellen, an der Kasse <strong>„Abholung in Heilbronn“</strong> wählen und zu den Öffnungszeiten vorbeikommen. 0 € Versand, bar oder online zahlen.</p>
+          <a class="btn btn--pink" href="/sortiment.html">Jetzt bestellen →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--pink pattern" id="karte">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Unsere Karte</p>
+          <h2>Matcha &amp; <span class="drip">Açaí Bowls</span></h2>
+          <p>Frisch gemacht, jedes Wochenende. Alle Preise inkl. MwSt.</p>
+        </header>
+        <div class="speisekarte reveal" id="speisekarte"></div>
+        <p class="allergen-legende reveal" id="allergene"></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Auch im Laden</p>
+          <h2>Snacks, Drinks &amp; <span class="drip">mehr</span></h2>
+        </header>
+        <div class="laden-extras">
+          <a class="laden-extra reveal" href="/sortiment.html?kat=snacks"><span>🍿</span><strong>Snacks to go</strong><small>Chips, Candy, Süßes aus aller Welt</small></a>
+          <a class="laden-extra reveal" href="/sortiment.html?kat=getraenke"><span>🥤</span><strong>Drinks, gekühlt</strong><small>Energy, Limo, Tees aus USA, Japan, Korea</small></a>
+          <a class="laden-extra reveal" href="/pakete.html"><span>🎁</span><strong>Themen-Pakete</strong><small>Netflix Night, Gamer Paket &amp; Co.</small></a>
+          <a class="laden-extra laden-extra--18 reveal" href="/vapes.html"><span>💨</span><strong>Vapes 18+</strong><small>Nur mit Ausweis, Abgabe erst ab 18</small></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/laden.js"></script>
+</body>
+</html>

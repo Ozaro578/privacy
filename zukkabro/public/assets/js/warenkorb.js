@@ -105,7 +105,7 @@
     // Zahlarten passend zur Lieferart
     var gewaehlt = (form.querySelector("input[name=zahlart]:checked") || {}).value;
     var arten = (shop.zahlarten || []).filter(function (z) { return z !== "Bar bei Abholung" || la === "abholung"; });
-    var texte = { "Überweisung (Vorkasse)": "Du bekommst unsere Bankverbindung nach der Bestellung. Versand innerhalb von 3 Werktagen nach Zahlungseingang.", "PayPal": "Du bekommst unseren PayPal-Link nach der Bestellung.", "Bar bei Abholung": "Zahlung bei Abholung im Laden." };
+    var texte = { "Überweisung (Vorkasse)": "Du bekommst unsere Bankverbindung nach der Bestellung. Versand innerhalb von 3 Werktagen nach Zahlungseingang.", "PayPal": "Du bekommst unseren PayPal-Link nach der Bestellung.", "Bar bei Abholung": "Zahlung bei Abholung im Laden.", "Online bezahlen": "Karte, Apple Pay, Google Pay, Klarna oder PayPal, sicher über Stripe. Du wirst zur Zahlungsseite weitergeleitet." };
     $("zahlarten").innerHTML = arten.map(function (z, i) {
       var an = z === gewaehlt || (!arten.some(function (a) { return a === gewaehlt; }) && i === 0);
       return '<label><input type="radio" name="zahlart" value="' + esc(z) + '"' + (an ? " checked" : "") + "><span>" + esc(z) + "<small>" + esc(texte[z] || "") + "</small></span></label>";
@@ -142,6 +142,12 @@
       var res = await fetch("/api/shop/bestellung", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json", "x-zb": "1" }, body: JSON.stringify(daten) });
       var json = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(json.fehler || "Bestellung fehlgeschlagen.");
+      if (json.zahlungsinfo && json.zahlungsinfo.art === "stripe" && json.zahlungsinfo.url) {
+        // Weiter zur Stripe-Zahlungsseite; der Warenkorb bleibt, bis die Zahlung bestätigt ist
+        knopf.textContent = "Weiter zur Zahlung …";
+        location.href = json.zahlungsinfo.url;
+        return;
+      }
       // Bestellte Artikel aus dem Warenkorb nehmen
       var k = window.ZBKorb.alle();
       r.pos.forEach(function (x) { delete k[x.id]; });
@@ -180,12 +186,46 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  /* ================= Rückkehr von Stripe ================= */
+  function stripeDanke(nr, bezahlt, status, brutto) {
+    $("schrittKorb").hidden = true; form.hidden = true;
+    $("korbTitel").innerHTML = bezahlt ? 'Danke, <span class="drip">Bro!</span>' : 'Fast <span class="drip">geschafft</span>';
+    $("schrittDanke").hidden = false;
+    $("schrittDanke").innerHTML = '<svg class="danke__crown" aria-hidden="true"><use href="#crown"/></svg>' +
+      '<p class="danke__title">' + (bezahlt ? "Zahlung erhalten!" : "Zahlung wird bestätigt …") + "</p>" +
+      "<p>Deine Bestellnummer: <strong>" + esc(nr) + "</strong>" + (typeof brutto === "number" ? "<br>Gesamtbetrag: <strong>" + euro(brutto) + "</strong>" : "") + "</p>" +
+      (bezahlt ? "<p>Wir packen deine Bestellung ein. Du bekommst eine Bestätigung per E-Mail von Stripe.</p>"
+               : "<p>Stripe meldet uns die Zahlung in wenigen Sekunden. Du kannst diese Seite offen lassen oder später wiederkommen.</p>") +
+      '<p><a class="btn btn--pink" href="/sortiment.html">Weiter shoppen →</a></p>';
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  async function stripeRueckkehr(nr, sitzung) {
+    var versuch = 0;
+    async function pruefen() {
+      try {
+        var res = await fetch("/api/shop/bestellung/status?nr=" + encodeURIComponent(nr) + "&s=" + encodeURIComponent(sitzung), { credentials: "same-origin" });
+        var j = await res.json().catch(function () { return {}; });
+        if (!res.ok) throw new Error(j.fehler || "Bestellung nicht gefunden.");
+        if (j.bezahlt) { window.ZBKorb.leeren(); stripeDanke(nr, true, j.status, j.brutto); return; }
+        stripeDanke(nr, false, j.status, j.brutto);
+        if (++versuch < 8) setTimeout(pruefen, 2500);
+      } catch (err) {
+        $("schrittKorb").hidden = false; korbZeichnen();
+        window.ZBToast(err.message, true);
+      }
+    }
+    pruefen();
+  }
+
   window.ZBShop.daten().then(function (d) {
     shop = d;
     var v = d.versand || {};
     $("versandText").textContent = (v.kosten ? euro(v.kosten) : "kostenlos") + (v.freiAb ? " · ab " + euro(v.freiAb) + " kostenlos" : "");
     $("abholungOption").hidden = !v.abholung;
     if (v.abholort) $("abholText").textContent = "kostenlos · " + v.abholort;
+    var params = new URLSearchParams(location.search);
+    if (params.get("bezahlt") && params.get("s")) { history.replaceState(null, "", location.pathname); return stripeRueckkehr(params.get("bezahlt"), params.get("s")); }
+    if (params.get("abgebrochen")) { history.replaceState(null, "", location.pathname); window.ZBToast("Zahlung abgebrochen. Dein Warenkorb ist noch da, du kannst es jederzeit erneut versuchen.", true); }
     korbZeichnen();
   });
 })();

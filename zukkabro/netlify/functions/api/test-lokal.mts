@@ -164,6 +164,61 @@ r = await rufe("GET", "/admin/nachrichten", undefined, admin); assert.equal(r.da
 r = await rufe("GET", "/admin/nachrichten"); assert.equal(r.status, 401); ok("Nachrichten nur für Admins");
 r = await rufe("POST", "/admin/nachrichten/status", { id: nId, gelesen: true }, admin); assert.equal(r.daten.nachricht.gelesen, true); ok("Nachricht als gelesen markiert");
 
+// Laden: Öffnungszeiten, Karte, öffentliche Daten
+r = await rufe("GET", "/shop/laden"); assert.equal(r.daten.laden.ort, "Heilbronn"); assert.ok(r.daten.karte.length >= 8); ok("Laden-Daten öffentlich: Heilbronn, " + r.daten.karte.length + " Karteneinträge");
+r = await rufe("POST", "/admin/laden", { zeiten: [{ tag: "So", offen: true, von: "12:00", bis: "99:00" }] }, admin); assert.equal(r.status, 400); ok("Falsche Uhrzeit abgelehnt");
+r = await rufe("POST", "/admin/laden", { strasse: "Teststraße 1", plz: "74072", ort: "Heilbronn", zeiten: [{ tag: "Sa", offen: true, von: "11:00", bis: "18:00" }] }, admin);
+assert.equal(r.status, 200); assert.equal(r.daten.laden.zeiten.filter((z: any) => z.offen).length, 1); ok("Öffnungszeiten gespeichert (nur Samstag offen)");
+r = await rufe("GET", "/admin/laden", undefined, admin); const karteAlt = r.daten.karte;
+r = await rufe("POST", "/admin/karte", { karte: [...karteAlt, { name: "Matcha Latte", art: "matcha", preis: 500 }] }, admin); assert.equal(r.status, 400); ok("Doppelter Karteneintrag abgelehnt");
+r = await rufe("POST", "/admin/karte", { karte: [{ name: "Matcha Latte", art: "matcha", preis: 490, mwst: 19, allergene: ["Milch", "Quatsch"] }, { name: "Açaí Bowl", art: "bowl", preis: 890, aktiv: false }] }, admin);
+assert.equal(r.status, 200); assert.deepEqual(r.daten.karte[0].allergene, ["Milch"]); assert.equal(r.daten.karte[1].mwst, 7); assert.equal(r.daten.karte[1].id, "acai-bowl"); ok("Karte gespeichert: unbekanntes Allergen verworfen, Bowl 7 %, Kennung erzeugt");
+r = await rufe("GET", "/shop/laden"); assert.equal(r.daten.karte.length, 1); ok("Inaktiver Karteneintrag nicht öffentlich");
+
+// Tageskasse (offene Ladenkasse)
+r = await rufe("GET", "/admin/kasse?tag=2026-06-01", undefined, admin); assert.equal(r.daten.tag.anfang, 0); assert.equal(r.daten.summe.umsatz, 0); ok("Leerer Kassentag");
+r = await rufe("POST", "/admin/kasse/anfang", { tag: "2026-06-01", anfang: 5000 }, admin); assert.equal(r.daten.tag.anfang, 5000);
+r = await rufe("POST", "/admin/kasse/verkauf", { tag: "2026-06-01", id: "matcha-latte", name: "Matcha Latte", menge: 2, preis: 490, mwst: 19, zahlungsart: "Bar" }, admin); assert.equal(r.status, 200);
+r = await rufe("POST", "/admin/kasse/verkauf", { tag: "2026-06-01", id: "acai-bowl", name: "Açaí Bowl", menge: 1, preis: 890, mwst: 7, zahlungsart: "Karte" }, admin);
+r = await rufe("POST", "/admin/kasse/verkauf", { tag: "2026-06-01", id: "x", name: "Fehlbon", menge: 1, preis: 100, mwst: 19 }, admin);
+r = await rufe("POST", "/admin/kasse/storno", { tag: "2026-06-01", art: "verkauf", nr: 3 }, admin); assert.equal(r.daten.summe.umsatz, 980 + 890); ok("Verkäufe erfasst, Fehlbon storniert: Umsatz 18,70 €");
+r = await rufe("POST", "/admin/kasse/ausgabe", { tag: "2026-06-01", text: "Milch gekauft", betrag: 350 }, admin); assert.equal(r.daten.summe.soll, 5000 + 980 - 350); ok("Ausgabe erfasst, Soll-Bargeld 56,30 €");
+r = await rufe("POST", "/admin/kasse/abschluss", { tag: "2026-06-01", gezaehlt: 5600, notiz: "Test" }, admin); assert.equal(r.status, 200); assert.equal(r.daten.tag.abschluss.differenz, -30); ok("Tagesabschluss: Differenz −0,30 €");
+r = await rufe("POST", "/admin/kasse/verkauf", { tag: "2026-06-01", name: "Nachzügler", preis: 100 }, admin); assert.equal(r.status, 409); ok("Abgeschlossener Tag ist gesperrt");
+r = await rufe("GET", "/admin/buchungen?jahr=2026", undefined, admin);
+const kb = r.daten.buchungen.filter((x: any) => x.beleg === "KASSE-2026-06-01");
+assert.equal(kb.length, 3); assert.equal(kb.filter((x: any) => x.typ === "verkauf").reduce((a: number, x: any) => a + x.betrag, 0), 1870); ok("Abschluss hat 2 Verkäufe und 1 Ausgabe gebucht");
+r = await rufe("GET", "/admin/kasse?tag=2026-06-02", undefined, admin); assert.equal(r.daten.tag.anfang, 5600); ok("Nächster Tag startet mit dem gezählten Bestand");
+r = await rufe("GET", "/admin/kasse/berichte?monat=2026-06", undefined, admin); assert.equal(r.daten.tage.length, 1); ok("Monatsbericht listet den Tag");
+r = await rufe("GET", "/admin/kasse?tag=2026-06-01"); assert.equal(r.status, 401); ok("Kasse nur für Admins");
+
+// Stripe (Online-Zahlung) mit nachgebautem Stripe
+r = await rufe("GET", "/shop/daten"); assert.ok(!r.daten.zahlarten.includes("Online bezahlen")); ok("Ohne Stripe-Schlüssel keine Online-Zahlung");
+process.env.STRIPE_SECRET_KEY = "sk_test_x"; process.env.STRIPE_WEBHOOK_SECRET = "whsec_test";
+const echtFetch = globalThis.fetch; let stripeBody = "";
+globalThis.fetch = (async (url: any, init: any) => {
+  if (String(url).startsWith("https://api.stripe.com/")) { stripeBody = init.body; return new Response(JSON.stringify({ id: "cs_test_123", url: "https://checkout.stripe.com/c/pay/cs_test_123" }), { status: 200 }); }
+  return echtFetch(url, init);
+}) as any;
+r = await rufe("GET", "/shop/daten"); assert.ok(r.daten.zahlarten.includes("Online bezahlen")); ok("Mit Stripe-Schlüssel wird 'Online bezahlen' angeboten");
+r = await rufe("POST", "/shop/bestellung", { ...basis, zahlart: "Online bezahlen", positionen: [{ produktId: essen, menge: 2 }] });
+assert.equal(r.status, 200); assert.equal(r.daten.zahlungsinfo.art, "stripe"); assert.ok(r.daten.zahlungsinfo.url.startsWith("https://checkout.stripe.com/"));
+assert.ok(stripeBody.includes("unit_amount%5D=249") && stripeBody.includes("quantity%5D=2") && stripeBody.includes("unit_amount%5D=590"), stripeBody);
+const stripeNr = r.daten.nr; ok("Stripe-Checkout angelegt: 2 × 2,49 € + 5,90 € Versand, Beträge vom Server");
+const payload = JSON.stringify({ type: "checkout.session.completed", data: { object: { id: "cs_test_123", payment_status: "paid", payment_intent: "pi_1", amount_total: 1088, metadata: { bestellung: stripeNr } } } });
+const { createHmac } = await import("node:crypto");
+const ts = Math.floor(Date.now() / 1000);
+const sig = `t=${ts},v1=${createHmac("sha256", "whsec_test").update(ts + "." + payload).digest("hex")}`;
+const webhook = (signatur: string) => api(new Request("https://test.local/api/stripe/webhook", { method: "POST", headers: { "stripe-signature": signatur }, body: payload }), { ip: "1.1.1.1" } as any);
+assert.equal((await webhook("t=1,v1=abc")).status, 400); ok("Webhook mit falscher Signatur abgelehnt");
+assert.equal((await webhook(sig)).status, 200);
+r = await rufe("GET", `/shop/bestellung/status?nr=${stripeNr}&s=cs_test_123`); assert.equal(r.daten.bezahlt, true); assert.equal(r.daten.status, "bezahlt"); ok("Webhook: Bestellung auf bezahlt");
+r = await rufe("GET", `/shop/bestellung/status?nr=${stripeNr}&s=cs_falsch`); assert.equal(r.status, 404); ok("Status nur mit richtiger Sitzungs-Kennung");
+assert.equal((await webhook(sig)).status, 200);
+r = await rufe("GET", "/admin/buchungen?jahr=" + new Date().getFullYear(), undefined, admin);
+assert.equal(r.daten.buchungen.filter((x: any) => x.beleg === stripeNr && x.zahlungsart === "Stripe").length, 2); ok("Stripe-Zahlung automatisch gebucht (Ware + Versand), doppelter Webhook bucht nicht doppelt");
+globalThis.fetch = echtFetch; delete process.env.STRIPE_SECRET_KEY; delete process.env.STRIPE_WEBHOOK_SECRET;
+
 // Bremse gegen Passwort-Raten (gleiche IP)
 let letzte = 0;
 for (let i = 0; i < 12; i++) {

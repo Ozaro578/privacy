@@ -8,6 +8,7 @@ window.ZBB = function (p) {
 };
 (function () {
   var SHOP = /*SHOP_DATEN*/null;
+  var LADEN = /*LADEN_DATEN*/null;
   var NUR_VORSCHAU = "Das ist nur eine Vorschau. Bestellen und Login gehen erst auf der fertigen Seite.";
   var echt = window.fetch.bind(window);
 
@@ -20,6 +21,7 @@ window.ZBB = function (p) {
     if (!/^\/?api(\/|$|\?)/.test(u)) return echt(url, opt);
     var pfad = u.replace(/^\/?api/, "").split(/[?#]/)[0] || "/";
     if (pfad === "/shop/daten") return antwort(SHOP);
+    if (pfad === "/shop/laden") return antwort(LADEN);
     if (pfad === "/ich") return antwort({ angemeldet: false });
     return antwort({ fehler: NUR_VORSCHAU }, 503);
   };

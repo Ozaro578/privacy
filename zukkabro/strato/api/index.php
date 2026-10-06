@@ -272,7 +272,219 @@ function zahlarten(array $e): array {
     $z = ['Überweisung (Vorkasse)'];
     if ($e['paypal']) $z[] = 'PayPal';
     if ($e['abholung']) $z[] = 'Bar bei Abholung';
+    if (stripe_aktiv()) $z[] = 'Online bezahlen';
     return $z;
+}
+
+/* =================== Stripe (Online-Zahlung, Geld geht direkt auf euer Stripe-Konto) =================== */
+function stripe_aktiv(): bool { return defined('ZB_STRIPE_SECRET') && ZB_STRIPE_SECRET !== ''; }
+function stripe_anfrage(string $pfad, array $daten): array {
+    $ch = curl_init('https://api.stripe.com/v1' . $pfad);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_USERPWD => ZB_STRIPE_SECRET . ':',
+        CURLOPT_POSTFIELDS => http_build_query($daten), CURLOPT_TIMEOUT => 25]);
+    $roh = curl_exec($ch); $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE); curl_close($ch);
+    $j = json_decode((string) $roh, true);
+    if ($roh === false || $code >= 300 || !is_array($j)) {
+        error_log('Stripe-Fehler: ' . ($j['error']['message'] ?? ('HTTP ' . $code)));
+        throw new Fehler(502, 'Die Online-Zahlung ist gerade nicht erreichbar. Bitte eine andere Zahlungsart wählen.');
+    }
+    return $j;
+}
+/** Stripe-Checkout-Sitzung für eine Bestellung anlegen; Beträge kommen aus der Bestellung, nie vom Browser */
+function stripe_sitzung(array $best, string $email, string $origin): array {
+    $items = [];
+    foreach ($best['positionen'] as $p) {
+        $items[] = ['quantity' => $p['stueck'], 'price_data' => ['currency' => 'eur', 'unit_amount' => (int) round(($p['brutto'] ?? 0) / $p['stueck']), 'product_data' => ['name' => mb_substr($p['name'], 0, 120)]]];
+    }
+    if (!empty($best['versand'])) $items[] = ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => $best['versand'], 'product_data' => ['name' => 'Versand']]];
+    return stripe_anfrage('/checkout/sessions', [
+        'mode' => 'payment', 'locale' => 'de', 'customer_email' => $email, 'client_reference_id' => $best['id'],
+        'success_url' => $origin . '/warenkorb.html?bezahlt=' . $best['id'] . '&s={CHECKOUT_SESSION_ID}',
+        'cancel_url' => $origin . '/warenkorb.html?abgebrochen=' . $best['id'],
+        'line_items' => $items, 'metadata' => ['bestellung' => $best['id']],
+        'payment_intent_data' => ['description' => 'ZUKKABRO Bestellung ' . $best['id'], 'metadata' => ['bestellung' => $best['id']]],
+    ]);
+}
+/** Stripe meldet die Zahlung: Bestellung auf "bezahlt" setzen und automatisch buchen */
+function stripe_webhook(): never {
+    $geheim = defined('ZB_STRIPE_WEBHOOK') ? ZB_STRIPE_WEBHOOK : '';
+    if ($geheim === '') throw new Fehler(404, 'Nicht gefunden.');
+    $payload = (string) file_get_contents('php://input');
+    $teile = [];
+    foreach (explode(',', $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '') as $p) { $kv = explode('=', trim($p), 2); if (count($kv) === 2) $teile[$kv[0]] = $kv[1]; }
+    $erwartet = hash_hmac('sha256', ($teile['t'] ?? '') . '.' . $payload, $geheim);
+    if (empty($teile['t']) || empty($teile['v1']) || !hash_equals($erwartet, $teile['v1']) || abs(time() - (int) $teile['t']) > 600) throw new Fehler(400, 'Ungültige Signatur.');
+    $ev = json_decode($payload, true);
+    if (($ev['type'] ?? '') === 'checkout.session.completed') {
+        $s = $ev['data']['object'] ?? [];
+        $id = text((string) ($s['metadata']['bestellung'] ?? ($s['client_reference_id'] ?? '')), 40);
+        $bezahlt = in_array($s['payment_status'] ?? '', ['paid', 'no_payment_required'], true);
+        if ($bezahlt && preg_match('/^ZK-\d{8}-[0-9A-F]{8}$/', $id)) {
+            $best = lese('bestellungen/' . $id);
+            if ($best && (($best['stripe']['status'] ?? '') !== 'bezahlt')) {
+                $best['stripe'] = ['session' => (string) ($s['id'] ?? ''), 'status' => 'bezahlt', 'paymentIntent' => (string) ($s['payment_intent'] ?? ''), 'bezahltAm' => jetzt()];
+                $best['status'] = 'bezahlt';
+                $best['verlauf'][] = ['status' => 'bezahlt', 'von' => 'Stripe', 'am' => jetzt()];
+                schreibe('bestellungen/' . $id, $best);
+                if (empty($best['gebucht'])) buche_bestellung($best, 'Stripe', 'stripe');
+                protokoll('stripe-bezahlt', $id, ['betrag' => $s['amount_total'] ?? 0]);
+            }
+        }
+    }
+    antwort(['ok' => true]);
+}
+/** Danke-Seite nach Stripe: Status der Bestellung (nur mit passender Sitzungs-Kennung) */
+function stripe_bestell_status(): never {
+    $nr = text((string) ($_GET['nr'] ?? ''), 40); $sitzung = text((string) ($_GET['s'] ?? ''), 120);
+    if (!preg_match('/^ZK-\d{8}-[0-9A-F]{8}$/', $nr)) throw new Fehler(404, 'Bestellung nicht gefunden.');
+    $best = lese('bestellungen/' . $nr);
+    if (!$best || empty($best['stripe']['session']) || $sitzung === '' || $best['stripe']['session'] !== $sitzung) throw new Fehler(404, 'Bestellung nicht gefunden.');
+    antwort(['nr' => $nr, 'status' => $best['status'], 'bezahlt' => ($best['stripe']['status'] ?? '') === 'bezahlt', 'brutto' => $best['brutto'], 'lieferart' => $best['lieferart']]);
+}
+
+/* =================== Laden in Heilbronn: Öffnungszeiten, Karte, Tageskasse =================== */
+const ALLERGENE = ['Gluten', 'Krebstiere', 'Eier', 'Fisch', 'Erdnüsse', 'Soja', 'Milch', 'Schalenfrüchte', 'Sellerie', 'Senf', 'Sesam', 'Sulfite', 'Lupinen', 'Weichtiere'];
+const KARTE_ARTEN = ['matcha', 'bowl', 'extra', 'sonstiges'];
+const TAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+function laden_vorlage(): array {
+    static $v = null;
+    if ($v === null) $v = json_decode((string) file_get_contents(__DIR__ . '/laden-vorlage.json'), true) ?: ['laden' => [], 'karte' => []];
+    return $v;
+}
+function laden_einstellungen(): array { $l = lese('laden/einstellungen'); return array_merge(laden_vorlage()['laden'], is_array($l) ? $l : []); }
+function karte(): array { $k = lese('laden/karte'); return is_array($k) ? $k : laden_vorlage()['karte']; }
+function laden_daten(): never {
+    antwort(['laden' => laden_einstellungen(), 'karte' => array_values(array_filter(karte(), fn($x) => !empty($x['aktiv']))), 'allergene' => ALLERGENE]);
+}
+function uhrzeit(mixed $v): string {
+    $t = text($v ?? '', 5);
+    if ($t !== '' && !preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $t)) throw new Fehler(400, 'Uhrzeit bitte als HH:MM angeben.');
+    return $t;
+}
+function laden_speichern(array $s): never {
+    $b = body();
+    $roh = is_array($b['zeiten'] ?? null) ? $b['zeiten'] : [];
+    $zeiten = [];
+    foreach (TAGE as $tag) {
+        $z = [];
+        foreach ($roh as $x) if (is_array($x) && ($x['tag'] ?? '') === $tag) { $z = $x; break; }
+        $offen = ($z['offen'] ?? null) === true;
+        $von = $offen ? uhrzeit($z['von'] ?? '') : ''; $bis = $offen ? uhrzeit($z['bis'] ?? '') : '';
+        if ($offen && ($von === '' || $bis === '')) throw new Fehler(400, "Bitte Öffnungszeit für $tag angeben (von, bis).");
+        $zeiten[] = ['tag' => $tag, 'offen' => $offen, 'von' => $von, 'bis' => $bis];
+    }
+    $l = ['name' => text($b['name'] ?? '', 80) ?: laden_vorlage()['laden']['name'], 'strasse' => text($b['strasse'] ?? '', 120), 'plz' => text($b['plz'] ?? '', 10),
+        'ort' => text($b['ort'] ?? '', 80) ?: 'Heilbronn', 'hinweis' => text($b['hinweis'] ?? '', 400), 'aktiv' => ($b['aktiv'] ?? true) !== false, 'zeiten' => $zeiten];
+    schreibe('laden/einstellungen', $l);
+    protokoll('laden-geaendert', $s['id']);
+    antwort(['ok' => true, 'laden' => $l]);
+}
+function kennung(string $name): string {
+    $n = strtolower(strtr($name, ['ä' => 'a', 'ö' => 'o', 'ü' => 'u', 'Ä' => 'a', 'Ö' => 'o', 'Ü' => 'u', 'ß' => 'ss', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ã' => 'a', 'ç' => 'c', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'í' => 'i', 'ì' => 'i', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ú' => 'u', 'ù' => 'u', 'ñ' => 'n']));
+    return trim(preg_replace('/[^a-z0-9]+/', '-', $n), '-');
+}
+function karte_speichern(array $s): never {
+    $b = body();
+    $roh = is_array($b['karte'] ?? null) ? array_slice($b['karte'], 0, 80) : [];
+    $ids = []; $liste = [];
+    foreach ($roh as $r) {
+        if (!is_array($r)) continue;
+        $name = text($r['name'] ?? '', 80);
+        if ($name === '') throw new Fehler(400, 'Jeder Eintrag auf der Karte braucht einen Namen.');
+        $id = kennung(text($r['id'] ?? '', 60)) ?: kennung($name);
+        if ($id === '' || isset($ids[$id])) throw new Fehler(400, "$name ist doppelt auf der Karte.");
+        $ids[$id] = true;
+        $art = in_array($r['art'] ?? '', KARTE_ARTEN, true) ? $r['art'] : 'sonstiges';
+        $mwst = mwst_pruefen($r['mwst'] ?? ($art === 'bowl' ? 7 : 19));
+        $allergene = array_values(array_filter(is_array($r['allergene'] ?? null) ? $r['allergene'] : [], fn($a) => is_string($a) && in_array($a, ALLERGENE, true)));
+        $preis = ($r['preis'] ?? null) === null || ($r['preis'] ?? '') === '' ? null : ganz($r['preis'], 1, 1000000);
+        $liste[] = ['id' => $id, 'name' => $name, 'art' => $art, 'preis' => $preis, 'beschreibung' => text($r['beschreibung'] ?? '', 200), 'allergene' => $allergene, 'mwst' => $mwst, 'aktiv' => ($r['aktiv'] ?? true) !== false];
+    }
+    schreibe('laden/karte', $liste);
+    protokoll('karte-geaendert', $s['id'], ['anzahl' => count($liste)]);
+    antwort(['ok' => true, 'karte' => $liste]);
+}
+
+/* ---------- Tageskasse: Kassenbericht pro Tag (offene Ladenkasse), Abschluss bucht ins Journal ---------- */
+function kassen_tag_param(mixed $v): string { return datum($v ?: substr(jetzt(), 0, 10)); }
+function kassen_summe(array $t): array {
+    $bar = 0; $karte = 0; $ausgaben = 0; $n = 0;
+    foreach ($t['verkaeufe'] as $v) { if (!empty($v['storno'])) continue; $n++; if ($v['zahlungsart'] === 'Karte') $karte += $v['betrag']; else $bar += $v['betrag']; }
+    foreach ($t['ausgaben'] as $a) if (empty($a['storno'])) $ausgaben += $a['betrag'];
+    return ['bar' => $bar, 'karte' => $karte, 'umsatz' => $bar + $karte, 'ausgaben' => $ausgaben, 'soll' => $t['anfang'] + $bar - $ausgaben, 'verkaeufe' => $n];
+}
+function kassen_tag(string $tag): array {
+    $t = lese('kasse/' . $tag);
+    if (is_array($t)) return $t;
+    $anfang = 0;
+    foreach (lese_alle('kasse/') as $x) if (($x['datum'] ?? '') < $tag && !empty($x['abschluss'])) $anfang = (int) $x['abschluss']['gezaehlt'];
+    return ['datum' => $tag, 'anfang' => $anfang, 'verkaeufe' => [], 'ausgaben' => [], 'abschluss' => null];
+}
+function kassen_offen(array $t): void { if (!empty($t['abschluss'])) throw new Fehler(409, 'Dieser Tag ist schon abgeschlossen.'); }
+function kasse_antwort(array $t): never { antwort(['tag' => $t, 'summe' => kassen_summe($t)]); }
+function kasse_verkauf(): never {
+    $b = body(); $tag = kassen_tag_param($b['tag'] ?? ''); $t = kassen_tag($tag); kassen_offen($t);
+    $name = text($b['name'] ?? '', 120);
+    if ($name === '') throw new Fehler(400, 'Bitte einen Artikel angeben.');
+    $menge = ganz($b['menge'] ?? 1, 1, 999); $preis = ganz($b['preis'] ?? null, 0, 1000000); $mwst = mwst_pruefen($b['mwst'] ?? 19);
+    $t['verkaeufe'][] = ['nr' => count($t['verkaeufe']) + 1, 'zeit' => jetzt(), 'id' => text($b['id'] ?? '', 200), 'name' => $name, 'menge' => $menge, 'preis' => $preis,
+        'betrag' => $menge * $preis, 'mwst' => $mwst, 'zahlungsart' => ($b['zahlungsart'] ?? '') === 'Karte' ? 'Karte' : 'Bar', 'storno' => false];
+    schreibe('kasse/' . $tag, $t); kasse_antwort($t);
+}
+function kasse_ausgabe(): never {
+    $b = body(); $tag = kassen_tag_param($b['tag'] ?? ''); $t = kassen_tag($tag); kassen_offen($t);
+    $txt = text($b['text'] ?? '', 120);
+    if ($txt === '') throw new Fehler(400, 'Bitte angeben, wofür das Geld entnommen wurde.');
+    $t['ausgaben'][] = ['nr' => count($t['ausgaben']) + 1, 'zeit' => jetzt(), 'text' => $txt, 'betrag' => ganz($b['betrag'] ?? null, 1, 10000000), 'storno' => false];
+    schreibe('kasse/' . $tag, $t); kasse_antwort($t);
+}
+function kasse_storno(): never {
+    $b = body(); $tag = kassen_tag_param($b['tag'] ?? ''); $t = kassen_tag($tag); kassen_offen($t);
+    $liste = ($b['art'] ?? '') === 'ausgabe' ? 'ausgaben' : 'verkaeufe'; $nr = ganz($b['nr'] ?? null, 1, 100000); $ok = false;
+    foreach ($t[$liste] as &$e) if ($e['nr'] === $nr) { $e['storno'] = true; $ok = true; }
+    unset($e);
+    if (!$ok) throw new Fehler(404, 'Eintrag nicht gefunden.');
+    schreibe('kasse/' . $tag, $t); kasse_antwort($t);
+}
+function kasse_anfang(): never {
+    $b = body(); $tag = kassen_tag_param($b['tag'] ?? ''); $t = kassen_tag($tag); kassen_offen($t);
+    $t['anfang'] = ganz($b['anfang'] ?? null, 0, 100000000);
+    schreibe('kasse/' . $tag, $t); kasse_antwort($t);
+}
+function kasse_abschluss(array $s): never {
+    $b = body(); $tag = kassen_tag_param($b['tag'] ?? ''); $t = kassen_tag($tag); kassen_offen($t);
+    $gezaehlt = ganz($b['gezaehlt'] ?? null, 0, 100000000);
+    $summe = kassen_summe($t);
+    $gruppen = [];
+    foreach ($t['verkaeufe'] as $v) {
+        if (!empty($v['storno'])) continue;
+        $key = implode('|', [$v['id'], $v['name'], $v['preis'], $v['mwst'], $v['zahlungsart']]);
+        if (!isset($gruppen[$key])) $gruppen[$key] = ['id' => $v['id'], 'name' => $v['name'], 'preis' => $v['preis'], 'mwst' => $v['mwst'], 'zahlungsart' => $v['zahlungsart'], 'menge' => 0, 'betrag' => 0];
+        $gruppen[$key]['menge'] += $v['menge']; $gruppen[$key]['betrag'] += $v['betrag'];
+    }
+    foreach ($gruppen as $g) {
+        neue_buchung(['typ' => 'verkauf', 'datum' => $tag, 'produktId' => $g['id'], 'name' => $g['name'], 'menge' => $g['menge'], 'einzelpreis' => $g['preis'], 'betrag' => $g['betrag'],
+            'mwst' => $g['mwst'], 'zahlungsart' => $g['zahlungsart'], 'beleg' => 'KASSE-' . $tag, 'notiz' => 'Tageskasse Laden'], $s['id']);
+    }
+    foreach ($t['ausgaben'] as $a) {
+        if (!empty($a['storno'])) continue;
+        neue_buchung(['typ' => 'ausgabe', 'datum' => $tag, 'produktId' => '', 'name' => $a['text'], 'menge' => 1, 'einzelpreis' => $a['betrag'], 'betrag' => $a['betrag'],
+            'mwst' => 0, 'zahlungsart' => 'Bar', 'beleg' => 'KASSE-' . $tag, 'notiz' => 'Kassenentnahme Laden'], $s['id']);
+    }
+    $t['abschluss'] = ['gezaehlt' => $gezaehlt, 'soll' => $summe['soll'], 'differenz' => $gezaehlt - $summe['soll'], 'bar' => $summe['bar'], 'karte' => $summe['karte'],
+        'umsatz' => $summe['umsatz'], 'ausgaben' => $summe['ausgaben'], 'am' => jetzt(), 'von' => $s['id'], 'notiz' => text($b['notiz'] ?? '', 500)];
+    schreibe('kasse/' . $tag, $t);
+    protokoll('kasse-abschluss', $s['id'], ['tag' => $tag, 'umsatz' => $summe['umsatz'], 'differenz' => $t['abschluss']['differenz']]);
+    kasse_antwort($t);
+}
+function kasse_berichte(): never {
+    $monat = preg_match('/^\d{4}-\d{2}$/', (string) ($_GET['monat'] ?? '')) ? $_GET['monat'] : substr(jetzt(), 0, 7);
+    $tage = [];
+    foreach (lese_alle('kasse/') as $t) {
+        if (!str_starts_with($t['datum'] ?? '', $monat . '-')) continue;
+        $tage[] = array_merge(['datum' => $t['datum'], 'anfang' => $t['anfang']], kassen_summe($t), ['abschluss' => $t['abschluss']]);
+    }
+    antwort(['monat' => $monat, 'tage' => $tage]);
 }
 
 /* ---------- Kontaktformular ---------- */
@@ -424,7 +636,15 @@ function kasse(string $ip): never {
     ];
     schreibe('bestellungen/' . $best['id'], $best);
     protokoll('kundenbestellung-neu', $kunde['email'], ['bestellung' => $best['id'], 'brutto' => $brutto]);
-    if (str_starts_with($zahlart, 'Überweisung')) $info = ['art' => 'ueberweisung', 'inhaber' => $e['bankInhaber'], 'iban' => $e['bankIban'], 'bank' => $e['bankName'], 'betrag' => $brutto, 'verwendungszweck' => $best['id']];
+    if ($zahlart === 'Online bezahlen') {
+        // Stripe Checkout: Kunde zahlt auf der Stripe-Seite, Bestätigung kommt per Webhook
+        $origin = (ist_https() ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'zukkabro.de');
+        $sitzung = stripe_sitzung($best, $kunde['email'], $origin);
+        $best['stripe'] = ['session' => (string) ($sitzung['id'] ?? ''), 'status' => 'offen'];
+        schreibe('bestellungen/' . $best['id'], $best);
+        $info = ['art' => 'stripe', 'betrag' => $brutto, 'url' => (string) ($sitzung['url'] ?? '')];
+    }
+    elseif (str_starts_with($zahlart, 'Überweisung')) $info = ['art' => 'ueberweisung', 'inhaber' => $e['bankInhaber'], 'iban' => $e['bankIban'], 'bank' => $e['bankName'], 'betrag' => $brutto, 'verwendungszweck' => $best['id']];
     elseif ($zahlart === 'PayPal') $info = ['art' => 'paypal', 'ziel' => $e['paypal'], 'betrag' => $brutto, 'verwendungszweck' => $best['id']];
     else $info = ['art' => 'bar', 'betrag' => $brutto, 'abholort' => $e['abholort']];
     antwort(['ok' => true, 'nr' => $best['id'], 'brutto' => $brutto, 'versand' => $versand, 'zahlungsinfo' => $info, 'hinweis' => $e['hinweis'], 'ab18' => $ab18]);
@@ -496,6 +716,24 @@ function neue_buchung(array $d, string $von): array {
     return $b;
 }
 
+/** Verkauf einer Bestellung ins Journal buchen (Admin-Klick oder automatisch nach Online-Zahlung) */
+function buche_bestellung(array $best, string $zahlung, string $von): void {
+    $tag = substr(jetzt(), 0, 10);
+    $wer = (($best['art'] ?? '') === 'kunde' ? 'Kunde: ' : 'Händler: ') . $best['firma'];
+    foreach ($best['positionen'] as $p) {
+        $betrag = isset($p['brutto']) ? (int) $p['brutto'] : $p['netto'] + (int) round($p['netto'] * $p['mwst'] / 100);
+        neue_buchung(['typ' => 'verkauf', 'datum' => $tag, 'produktId' => $p['produktId'], 'name' => $p['name'], 'menge' => $p['stueck'],
+            'einzelpreis' => (int) round($betrag / $p['stueck']), 'betrag' => $betrag, 'mwst' => $p['mwst'], 'zahlungsart' => $zahlung,
+            'beleg' => $best['id'], 'notiz' => $wer], $von);
+    }
+    if (!empty($best['versand'])) {
+        neue_buchung(['typ' => 'einnahme', 'datum' => $tag, 'produktId' => '', 'name' => 'Versandkosten', 'menge' => 1, 'einzelpreis' => $best['versand'],
+            'betrag' => $best['versand'], 'mwst' => 19, 'zahlungsart' => $zahlung, 'beleg' => $best['id'], 'notiz' => $wer], $von);
+    }
+    $best['gebucht'] = true;
+    $best['verlauf'][] = ['status' => $best['status'], 'von' => $von . ' (gebucht)', 'am' => jetzt()];
+    schreibe('bestellungen/' . $best['id'], $best);
+}
 function bestellung_buchen(array $s): never {
     $b = body(); $id = bestell_id($b['id'] ?? '');
     $best = lese('bestellungen/' . $id);
@@ -503,23 +741,9 @@ function bestellung_buchen(array $s): never {
     if (!empty($best['gebucht'])) throw new Fehler(409, 'Diese Bestellung ist schon gebucht.');
     if ($best['status'] === 'storniert') throw new Fehler(400, 'Stornierte Bestellungen können nicht gebucht werden.');
     if (($best['art'] ?? '') === 'preisanfrage') throw new Fehler(400, 'Preisanfragen sind keine Verkäufe und werden nicht gebucht.');
-    $tag = substr(jetzt(), 0, 10);
     $zahlung = text($b['zahlungsart'] ?? '', 40) ?: ($best['zahlart'] ?? '') ?: 'Rechnung';
-    $wer = (($best['art'] ?? '') === 'kunde' ? 'Kunde: ' : 'Händler: ') . $best['firma'];
-    foreach ($best['positionen'] as $p) {
-        $betrag = isset($p['brutto']) ? (int) $p['brutto'] : $p['netto'] + (int) round($p['netto'] * $p['mwst'] / 100);
-        neue_buchung(['typ' => 'verkauf', 'datum' => $tag, 'produktId' => $p['produktId'], 'name' => $p['name'], 'menge' => $p['stueck'],
-            'einzelpreis' => (int) round($betrag / $p['stueck']), 'betrag' => $betrag, 'mwst' => $p['mwst'], 'zahlungsart' => $zahlung,
-            'beleg' => $best['id'], 'notiz' => $wer], $s['id']);
-    }
-    if (!empty($best['versand'])) {
-        neue_buchung(['typ' => 'einnahme', 'datum' => $tag, 'produktId' => '', 'name' => 'Versandkosten', 'menge' => 1, 'einzelpreis' => $best['versand'],
-            'betrag' => $best['versand'], 'mwst' => 19, 'zahlungsart' => $zahlung, 'beleg' => $best['id'], 'notiz' => $wer], $s['id']);
-    }
-    $best['gebucht'] = true;
-    $best['verlauf'][] = ['status' => $best['status'], 'von' => $s['id'] . ' (gebucht)', 'am' => jetzt()];
-    schreibe('bestellungen/' . $id, $best);
-    antwort(['ok' => true, 'bestellung' => $best]);
+    buche_bestellung($best, $zahlung, $s['id']);
+    antwort(['ok' => true, 'bestellung' => lese('bestellungen/' . $id)]);
 }
 
 function buchung_anlegen(array $s): never {
@@ -562,6 +786,8 @@ function zb_api(): never {
     $m = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'unbekannt';
     try {
+        // Stripe ruft den Webhook ohne unseren Header auf, die Signatur schützt ihn
+        if ($m === 'POST' && $pfad === '/stripe/webhook') stripe_webhook();
         // Schutz vor fremden Formularen: schreibende Anfragen brauchen unseren Header
         if ($m !== 'GET' && ($_SERVER['HTTP_X_ZB'] ?? '') !== '1') throw new Fehler(403, 'Anfrage abgelehnt.');
         $s = lese_sitzung();
@@ -573,6 +799,8 @@ function zb_api(): never {
         if ($m === 'GET' && $pfad === '/shop/daten') shop_daten();
         if ($m === 'POST' && $pfad === '/shop/bestellung') kasse($ip);
         if ($m === 'POST' && $pfad === '/kontakt') kontakt($ip);
+        if ($m === 'GET' && $pfad === '/shop/laden') laden_daten();
+        if ($m === 'GET' && $pfad === '/shop/bestellung/status') stripe_bestell_status();
 
         if (str_starts_with($pfad, '/haendler/')) {
             $h = aktiver_haendler($s);
@@ -609,6 +837,16 @@ function zb_api(): never {
             }
             if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen()]);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/laden') antwort(['laden' => laden_einstellungen(), 'karte' => karte(), 'allergene' => ALLERGENE, 'arten' => KARTE_ARTEN]);
+            if ($m === 'POST' && $pfad === '/admin/laden') laden_speichern($a);
+            if ($m === 'POST' && $pfad === '/admin/karte') karte_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/kasse') kasse_antwort(kassen_tag(kassen_tag_param($_GET['tag'] ?? '')));
+            if ($m === 'GET' && $pfad === '/admin/kasse/berichte') kasse_berichte();
+            if ($m === 'POST' && $pfad === '/admin/kasse/verkauf') kasse_verkauf();
+            if ($m === 'POST' && $pfad === '/admin/kasse/ausgabe') kasse_ausgabe();
+            if ($m === 'POST' && $pfad === '/admin/kasse/storno') kasse_storno();
+            if ($m === 'POST' && $pfad === '/admin/kasse/anfang') kasse_anfang();
+            if ($m === 'POST' && $pfad === '/admin/kasse/abschluss') kasse_abschluss($a);
             if ($m === 'GET' && $pfad === '/admin/nachrichten') antwort(['nachrichten' => array_reverse(lese_alle('nachrichten/'))]);
             if ($m === 'POST' && $pfad === '/admin/nachrichten/status') nachricht_status();
             if ($m === 'GET' && $pfad === '/admin/angebote') antwort(['angebote' => angebote()]);

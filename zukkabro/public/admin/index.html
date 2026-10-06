@@ -62,6 +62,8 @@
           <button data-tab="preise" role="tab">🏷️ Preise</button>
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
           <button data-tab="angebote" role="tab">🔥 Angebote</button>
+          <button data-tab="laden" role="tab">🏪 Laden</button>
+          <button data-tab="kasse" role="tab">💵 Kasse</button>
           <button data-tab="einstellungen" role="tab">⚙️ Shop-Einstellungen</button>
           <button data-tab="buchhaltung" role="tab">🧾 Buchhaltung</button>
           <button data-tab="bestand" role="tab">📈 Bestand &amp; Verkäufe</button>
@@ -142,6 +144,92 @@
             <button class="btn btn--pink" id="angeboteSpeichern" type="button">Angebote speichern</button>
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="angebotTabelle"></table></div>
+        </section>
+
+        <!-- Laden in Heilbronn -->
+        <section data-panel="laden" hidden>
+          <p class="hinweis">Öffnungszeiten, Adresse und Karte erscheinen auf <a href="/laden.html" target="_blank">zukkabro.de/laden</a>. Die Allergene stehen automatisch auf der Karte (Pflicht nach LMIV).</p>
+          <form class="karte form form--4" id="ladenForm">
+            <h2 class="voll">Laden</h2>
+            <label class="feld">Name<input name="name" maxlength="80"></label>
+            <label class="feld">Straße, Hausnummer<input name="strasse" maxlength="120" placeholder="noch offen"></label>
+            <label class="feld">PLZ<input name="plz" maxlength="10"></label>
+            <label class="feld">Ort<input name="ort" maxlength="80"></label>
+            <label class="feld voll">Hinweis oben auf der Laden-Seite<input name="hinweis" maxlength="400"></label>
+            <label class="check-zeile voll"><input type="checkbox" name="aktiv"><span>Laden-Seite anzeigen</span></label>
+            <div class="voll"><div class="tabelle-wrap"><table class="tabelle" id="zeitenTabelle"></table></div></div>
+            <div class="voll"><button class="btn btn--pink" type="submit">Laden speichern</button></div>
+          </form>
+          <div class="karte">
+            <h2>Karte: Matcha, Bowls, Extras</h2>
+            <p class="hinweis">Preis brutto. MwSt: Bowls und Essen zum Mitnehmen 7 %, Getränke 19 %, Verzehr vor Ort immer 19 %. Bitte mit dem Steuerberater festlegen. Allergene mit Komma trennen, nur die 14 Pflicht-Allergene zählen.</p>
+            <div class="leiste">
+              <button class="btn btn--light btn--klein" id="karteNeu" type="button">+ Neuer Eintrag</button>
+              <button class="btn btn--pink" id="karteSpeichern" type="button">Karte speichern</button>
+            </div>
+            <div class="tabelle-wrap"><table class="tabelle" id="karteTabelle"></table></div>
+            <datalist id="allergenListe"></datalist>
+          </div>
+          <div class="karte" id="checkliste">
+            <h2>Checkliste Ladeneröffnung (Heilbronn, Baden-Württemberg)</h2>
+            <p class="hinweis">Keine Rechtsberatung, aber die Punkte, die bei einem Laden mit Snacks, Vapes und zubereiteten Speisen üblicherweise anfallen. Vor dem Start mit Steuerberater und Ordnungsamt durchgehen.</p>
+            <ul class="checkliste">
+              <li><strong>Gewerbe:</strong> Gewerbeanmeldung bei der Stadt Heilbronn erweitern: Einzelhandel (Süßwaren, Getränke, E-Zigaretten) plus Abgabe von Speisen und Getränken zum Verzehr an Ort und Stelle.</li>
+              <li><strong>Gaststättenrecht BW:</strong> Ohne Alkohol erlaubnisfrei, aber der Betrieb muss beim Ordnungsamt <em>angezeigt</em> werden (mindestens 2 Wochen vor Eröffnung).</li>
+              <li><strong>Lebensmittel:</strong> Belehrung nach § 43 Infektionsschutzgesetz beim Gesundheitsamt für alle, die Bowls und Matcha zubereiten (vor dem ersten Arbeitstag). Betrieb beim Lebensmittelüberwachungsamt (Landratsamt Heilbronn) registrieren.</li>
+              <li><strong>Hygiene:</strong> Einfaches HACCP-Konzept: Açaí durchgehend bei −18 °C, Kühlkette dokumentieren, Reinigungsplan, Handwaschbecken mit Seife, Haare zusammen, keine Ringe. Schulung einmal jährlich dokumentieren.</li>
+              <li><strong>Allergene und Zusatzstoffe:</strong> Kennzeichnung auf der Karte (macht die Laden-Seite automatisch); im Laden eine ausgedruckte Karte mit Allergenen auslegen.</li>
+              <li><strong>Preise:</strong> Preisangabenverordnung: Preise inkl. MwSt sichtbar, bei abgepackten Lebensmitteln Grundpreis (z. B. €/100 g) am Regal.</li>
+              <li><strong>Kasse:</strong> Offene Ladenkasse → <em>täglicher</em> Kassenbericht (Reiter „Kasse“, Abschluss ausdrucken und abheften). Elektronische Registrierkasse → TSE-Pflicht, Belegausgabepflicht, Meldung ans Finanzamt. Belege 10 Jahre aufbewahren.</li>
+              <li><strong>Steuer:</strong> MwSt 7 % außer Haus, 19 % bei Verzehr vor Ort; Kleinunternehmerregelung prüfen. Mit dem Steuerberater klären, bevor die erste Bowl verkauft wird.</li>
+              <li><strong>Jugendschutz:</strong> Vapes, Liquids, Nikotinbeutel nur ab 18 mit Ausweiskontrolle. Aushang des Jugendschutzgesetzes (§ 11 JuSchG) im Laden. Keine Außenwerbung für E-Zigaretten (Tabakerzeugnisgesetz): nichts mit „Vapes“ ins Schaufenster.</li>
+              <li><strong>Sonntag:</strong> Ladenöffnungsgesetz BW: Einzelhandel darf sonntags nicht verkaufen. Matcha und Bowls zum Verzehr (Gastronomie) sind sonntags möglich, der Snack-Verkauf nicht. Vor dem ersten Sonntag mit dem Ordnungsamt klären, was genau erlaubt ist.</li>
+              <li><strong>Verpackung:</strong> Verpackungsgesetz: Registrierung bei LUCID für Versand- und To-go-Verpackungen, Lizenzierung über ein duales System. Mehrwegangebotspflicht für To-go-Becher und -Schalen prüfen (Ausnahme für kleine Läden, dann Hinweis „Wir befüllen deinen Mehrwegbehälter“).</li>
+              <li><strong>Versicherung &amp; Co.:</strong> Betriebshaftpflicht, Inhaltsversicherung, Rundfunkbeitrag für die Betriebsstätte, GEMA bei Musik im Laden.</li>
+              <li><strong>Aushänge:</strong> Öffnungszeiten, Name und Anschrift des Inhabers an der Tür, Impressum online fertig, AGB und Widerruf für den Online-Shop.</li>
+              <li><strong>Räume:</strong> Toilette fürs Personal, bei Sitzplätzen mit dem Ordnungsamt klären, ob ein Gäste-WC nötig ist. Fettabscheider nur bei Fritteusen (nicht nötig).</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Tageskasse Laden -->
+        <section data-panel="kasse" hidden>
+          <p class="hinweis">Tageskasse für den Laden (offene Ladenkasse): jeden Verkauf antippen, abends Bargeld zählen und abschließen. Der Abschluss bucht alles ins Journal. <strong>Wichtig:</strong> Das ist keine elektronische Registrierkasse mit TSE. Mit einer offenen Ladenkasse ist der tägliche Kassenbericht Pflicht, bitte ausdrucken und abheften.</p>
+          <div class="leiste">
+            <label class="feld">Tag<input type="date" id="kasseTag"></label>
+            <div class="feld"><span>Anfangsbestand (€)</span><div style="display:flex;gap:.4rem"><input id="kasseAnfang" inputmode="decimal" style="width:110px"><button class="btn btn--light btn--klein" id="kasseAnfangSetzen" type="button">Setzen</button></div></div>
+            <label class="feld">Zahlung<select id="kasseZahlart"><option>Bar</option><option>Karte</option></select></label>
+            <label class="feld feld--breit">Shop-Artikel verkaufen<input list="produktListe" id="kasseProdukt" placeholder="Produkt suchen (braucht Shop-Preis)"><small id="kasseProduktInfo"></small></label>
+            <button class="btn btn--gold btn--klein" id="kasseProduktHinzu" type="button">+ Verkaufen</button>
+          </div>
+          <div class="kpis" id="kasseKpis"></div>
+          <div class="kasse-layout">
+            <div class="karte"><h2>Karte antippen</h2><div class="kasse-knoepfe" id="kasseKnoepfe"></div></div>
+            <div class="karte">
+              <h2>Verkäufe des Tages</h2>
+              <div class="tabelle-wrap"><table class="tabelle" id="kasseListe"></table></div>
+              <form class="form form--2" id="kasseAusgabeForm" style="margin-top:1rem" autocomplete="off">
+                <label class="feld">Barentnahme / Ausgabe<input name="text" placeholder="z. B. Milch gekauft" maxlength="120"></label>
+                <label class="feld">Betrag (€)<input name="betrag" inputmode="decimal" placeholder="3,50"></label>
+                <div class="voll"><button class="btn btn--light btn--klein" type="submit">Ausgabe erfassen</button></div>
+              </form>
+              <form class="form form--2" id="kasseAbschlussForm" style="margin-top:1.2rem" autocomplete="off">
+                <h3 class="voll" style="margin:0">Tagesabschluss</h3>
+                <label class="feld">Gezählter Bargeldbestand (€)<input name="gezaehlt" inputmode="decimal" placeholder="z. B. 184,30"></label>
+                <label class="feld">Notiz<input name="notiz" maxlength="500"></label>
+                <div class="voll" id="kasseAbschlussInfo"></div>
+                <div class="voll"><button class="btn btn--pink" type="submit">Tag abschließen &amp; buchen</button></div>
+              </form>
+            </div>
+          </div>
+          <div class="karte">
+            <h2>Kassenberichte</h2>
+            <div class="leiste">
+              <label class="feld">Monat<input type="month" id="kasseMonat"></label>
+              <button class="btn btn--light btn--klein" id="kasseBerichtDrucken" type="button">🖨 Bericht des gewählten Tags drucken</button>
+            </div>
+            <div class="tabelle-wrap"><table class="tabelle" id="kasseBerichte"></table></div>
+          </div>
         </section>
 
         <!-- Shop-Einstellungen -->

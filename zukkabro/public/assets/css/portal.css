@@ -121,3 +121,18 @@ details.bestellung[open] summary { border-bottom: 2px solid #eadccd; background:
   .header, .footer, .reiter, .leiste, .btn, #toast, .age-gate, .loader { display: none !important; }
   .karte, .tabelle-wrap { box-shadow: none; }
 }
+
+/* Laden & Tageskasse */
+.checkliste { padding-left: 1.2rem; display: grid; gap: .55rem; font-size: .95rem; }
+.checkliste li::marker { color: var(--pink); }
+.kasse-layout { display: grid; grid-template-columns: 1fr 1.35fr; gap: 1.4rem; margin-bottom: 1.4rem; }
+.kasse-layout .karte + .karte { margin-top: 0; }
+.kasse-knoepfe { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .6rem; }
+.kasse-knopf { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; font: inherit; font-weight: 700; text-align: left; cursor: pointer; padding: .8rem .9rem; min-height: 78px; border: 3px solid var(--choco); border-radius: 16px; background: var(--paper); box-shadow: 3px 3px 0 var(--choco); transition: transform .1s ease; }
+.kasse-knopf:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--choco); }
+.kasse-knopf[disabled] { opacity: .5; cursor: default; }
+.kasse-knopf b { font-family: var(--display); font-weight: 400; font-size: 1.1rem; color: var(--pink-deep); }
+.kasse-knopf--matcha { background: #e4f5dc; }
+.kasse-knopf--bowl { background: #efe0ff; }
+.kasse-knopf--extra { background: var(--gold-soft); }
+@media (max-width: 900px) { .kasse-layout { grid-template-columns: 1fr; } }

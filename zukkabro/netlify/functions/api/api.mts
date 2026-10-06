@@ -11,6 +11,8 @@ import {
   type ShopEinstellungen, type ShopPreise,
 } from "./shop.mts";
 import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
+import { LADEN_STANDARD, KARTE_VORLAGE, type LadenEinstellungen, type KarteEintrag } from "./laden-vorlage.mts";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 /* =================== Typen =================== */
 type HStatus = "offen" | "aktiv" | "gesperrt";
@@ -30,6 +32,7 @@ interface Position {
 type BArt = "haendler" | "kunde" | "preisanfrage";
 interface Kunde { vorname: string; nachname: string; email: string; telefon: string; strasse: string; plz: string; ort: string; geburtsdatum?: string }
 interface Bestellung {
+  stripe?: { session: string; status: "offen" | "bezahlt"; paymentIntent?: string; bezahltAm?: string };
   id: string; art?: BArt; haendlerId: string; firma: string; positionen: Position[];
   netto: number; mwst: number; brutto: number; notiz: string; status: BStatus;
   erstellt: string; verlauf: { status: BStatus; von: string; am: string }[]; gebucht?: boolean;
@@ -231,16 +234,9 @@ async function bestellStatus(req: Request, s: Sitzung) {
 }
 
 /** Bestellung als Verkäufe in die Buchhaltung übernehmen (einmalig). */
-async function bestellungBuchen(req: Request, s: Sitzung) {
-  const b = await body(req);
-  const id = text(b.id, 40);
-  const best = await lese<Bestellung>(`bestellungen/${id}`);
-  if (!best) throw new Fehler(404, "Bestellung nicht gefunden.");
-  if (best.gebucht) throw new Fehler(409, "Diese Bestellung ist schon gebucht.");
-  if (best.status === "storniert") throw new Fehler(400, "Stornierte Bestellungen können nicht gebucht werden.");
-  if (best.art === "preisanfrage") throw new Fehler(400, "Preisanfragen sind keine Verkäufe und werden nicht gebucht.");
+/** Verkauf einer Bestellung ins Journal buchen (Admin-Klick oder automatisch nach Online-Zahlung) */
+async function bucheBestellung(best: Bestellung, zahlung: string, von: string) {
   const tag = jetzt().slice(0, 10);
-  const zahlung = text(b.zahlungsart, 40) || best.zahlart || "Rechnung";
   const wer = best.art === "kunde" ? `Kunde: ${best.firma}` : `Händler: ${best.firma}`;
   for (const p of best.positionen) {
     // Betrag = exakte Zeilensumme der Rechnung, kein gerundeter Stückpreis × Menge
@@ -249,17 +245,28 @@ async function bestellungBuchen(req: Request, s: Sitzung) {
       typ: "verkauf", datum: tag, produktId: p.produktId, name: p.name, menge: p.stueck,
       einzelpreis: Math.round(betrag / p.stueck), betrag, mwst: p.mwst, zahlungsart: zahlung,
       beleg: best.id, notiz: wer,
-    }, s.id);
+    }, von);
   }
   if (best.versand) {
     await neueBuchung({
       typ: "einnahme", datum: tag, produktId: "", name: "Versandkosten", menge: 1, einzelpreis: best.versand,
       betrag: best.versand, mwst: 19, zahlungsart: zahlung, beleg: best.id, notiz: wer,
-    }, s.id);
+    }, von);
   }
   best.gebucht = true;
-  best.verlauf.push({ status: best.status, von: s.id + " (gebucht)", am: jetzt() });
-  await schreibe(`bestellungen/${id}`, best);
+  best.verlauf.push({ status: best.status, von: von + " (gebucht)", am: jetzt() });
+  await schreibe(`bestellungen/${best.id}`, best);
+}
+async function bestellungBuchen(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const id = text(b.id, 40);
+  const best = await lese<Bestellung>(`bestellungen/${id}`);
+  if (!best) throw new Fehler(404, "Bestellung nicht gefunden.");
+  if (best.gebucht) throw new Fehler(409, "Diese Bestellung ist schon gebucht.");
+  if (best.status === "storniert") throw new Fehler(400, "Stornierte Bestellungen können nicht gebucht werden.");
+  if (best.art === "preisanfrage") throw new Fehler(400, "Preisanfragen sind keine Verkäufe und werden nicht gebucht.");
+  const zahlung = text(b.zahlungsart, 40) || best.zahlart || "Rechnung";
+  await bucheBestellung(best, zahlung, s.id);
   return json({ ok: true, bestellung: best });
 }
 
@@ -354,6 +361,234 @@ async function paketeSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, pakete: liste });
 }
 
+/* =================== Stripe (Online-Zahlung, Geld geht direkt auf euer Stripe-Konto) =================== */
+function stripeAktiv(): boolean { return !!process.env.STRIPE_SECRET_KEY; }
+/** Verschachtelte Objekte in Stripes Formular-Schreibweise: line_items[0][price_data][currency]=eur */
+function formKodieren(obj: Record<string, unknown>, praefix = "", out: string[] = []): string[] {
+  for (const [k, v] of Object.entries(obj)) {
+    const key = praefix ? `${praefix}[${k}]` : k;
+    if (v === undefined || v === null) continue;
+    if (typeof v === "object") formKodieren(v as Record<string, unknown>, key, out);
+    else out.push(encodeURIComponent(key) + "=" + encodeURIComponent(String(v)));
+  }
+  return out;
+}
+async function stripeAnfrage(pfad: string, daten: Record<string, unknown>): Promise<any> {
+  const res = await fetch("https://api.stripe.com/v1" + pfad, {
+    method: "POST",
+    headers: { Authorization: "Basic " + btoa(process.env.STRIPE_SECRET_KEY + ":"), "Content-Type": "application/x-www-form-urlencoded" },
+    body: formKodieren(daten).join("&"),
+  });
+  const j: any = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    console.error("Stripe-Fehler:", j?.error?.message || res.status);
+    throw new Fehler(502, "Die Online-Zahlung ist gerade nicht erreichbar. Bitte eine andere Zahlungsart wählen.");
+  }
+  return j;
+}
+/** Stripe-Checkout-Sitzung für eine Bestellung anlegen; Beträge kommen aus der Bestellung, nie vom Browser */
+async function stripeSitzung(best: Bestellung, email: string, origin: string): Promise<{ id: string; url: string }> {
+  const line_items: Record<string, unknown>[] = best.positionen.map((p) => ({
+    quantity: p.stueck,
+    price_data: { currency: "eur", unit_amount: Math.round((p.brutto || 0) / p.stueck), product_data: { name: p.name.slice(0, 120) } },
+  }));
+  if (best.versand) line_items.push({ quantity: 1, price_data: { currency: "eur", unit_amount: best.versand, product_data: { name: "Versand" } } });
+  return await stripeAnfrage("/checkout/sessions", {
+    mode: "payment", locale: "de", customer_email: email, client_reference_id: best.id,
+    success_url: `${origin}/warenkorb.html?bezahlt=${best.id}&s={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origin}/warenkorb.html?abgebrochen=${best.id}`,
+    line_items, metadata: { bestellung: best.id },
+    payment_intent_data: { description: `ZUKKABRO Bestellung ${best.id}`, metadata: { bestellung: best.id } },
+  });
+}
+/** Stripe meldet die Zahlung: Bestellung auf "bezahlt" setzen und automatisch buchen */
+async function stripeWebhook(req: Request) {
+  const geheim = process.env.STRIPE_WEBHOOK_SECRET || "";
+  if (!geheim) throw new Fehler(404, "Nicht gefunden.");
+  const payload = await req.text();
+  const teile: Record<string, string> = {};
+  (req.headers.get("stripe-signature") || "").split(",").forEach((p) => { const i = p.indexOf("="); if (i > 0) teile[p.slice(0, i).trim()] = p.slice(i + 1).trim(); });
+  const erwartet = createHmac("sha256", geheim).update(`${teile.t}.${payload}`).digest("hex");
+  const ok = !!teile.t && !!teile.v1 && erwartet.length === teile.v1.length && timingSafeEqual(Buffer.from(erwartet), Buffer.from(teile.v1))
+    && Math.abs(Date.now() / 1000 - Number(teile.t)) < 600;
+  if (!ok) throw new Fehler(400, "Ungültige Signatur.");
+  const ev = JSON.parse(payload);
+  if (ev?.type === "checkout.session.completed") {
+    const sitzung = ev.data?.object || {};
+    const id = text(sitzung.metadata?.bestellung || sitzung.client_reference_id, 40);
+    const bezahlt = sitzung.payment_status === "paid" || sitzung.payment_status === "no_payment_required";
+    if (bezahlt && /^ZK-\d{8}-[0-9A-F]{8}$/.test(id)) {
+      const best = await lese<Bestellung>(`bestellungen/${id}`);
+      if (best && best.stripe?.status !== "bezahlt") {
+        best.stripe = { session: String(sitzung.id || ""), status: "bezahlt", paymentIntent: String(sitzung.payment_intent || ""), bezahltAm: jetzt() };
+        best.status = "bezahlt";
+        best.verlauf.push({ status: "bezahlt", von: "Stripe", am: jetzt() });
+        await schreibe(`bestellungen/${id}`, best);
+        if (!best.gebucht) await bucheBestellung(best, "Stripe", "stripe");
+        await protokoll("stripe-bezahlt", id, { betrag: sitzung.amount_total });
+      }
+    }
+  }
+  return json({ ok: true });
+}
+/** Danke-Seite nach Stripe: Status der Bestellung (nur mit passender Sitzungs-Kennung) */
+async function stripeBestellStatus(url: URL) {
+  const nr = text(url.searchParams.get("nr"), 40), sitzung = text(url.searchParams.get("s"), 120);
+  if (!/^ZK-\d{8}-[0-9A-F]{8}$/.test(nr)) throw new Fehler(404, "Bestellung nicht gefunden.");
+  const best = await lese<Bestellung>(`bestellungen/${nr}`);
+  if (!best || !best.stripe || !sitzung || best.stripe.session !== sitzung) throw new Fehler(404, "Bestellung nicht gefunden.");
+  return json({ nr, status: best.status, bezahlt: best.stripe.status === "bezahlt", brutto: best.brutto, lieferart: best.lieferart });
+}
+
+/* =================== Laden in Heilbronn: Öffnungszeiten, Karte, Tageskasse =================== */
+const ALLERGENE = ["Gluten", "Krebstiere", "Eier", "Fisch", "Erdnüsse", "Soja", "Milch", "Schalenfrüchte", "Sellerie", "Senf", "Sesam", "Sulfite", "Lupinen", "Weichtiere"];
+const KARTE_ARTEN = ["matcha", "bowl", "extra", "sonstiges"];
+const TAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+async function ladenEinstellungen(): Promise<LadenEinstellungen> {
+  return { ...LADEN_STANDARD, ...((await lese<Partial<LadenEinstellungen>>("laden/einstellungen")) || {}) };
+}
+async function karte(): Promise<KarteEintrag[]> { return (await lese<KarteEintrag[]>("laden/karte")) || KARTE_VORLAGE; }
+async function ladenDaten() {
+  const [l, k] = await Promise.all([ladenEinstellungen(), karte()]);
+  return json({ laden: l, karte: k.filter((x) => x.aktiv), allergene: ALLERGENE });
+}
+function uhrzeit(v: unknown): string {
+  const t = text(v, 5);
+  if (t && !/^([01]\d|2[0-3]):[0-5]\d$/.test(t)) throw new Fehler(400, "Uhrzeit bitte als HH:MM angeben.");
+  return t;
+}
+async function ladenSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh: any[] = Array.isArray(b.zeiten) ? b.zeiten : [];
+  const zeiten = TAGE.map((tag) => {
+    const z = roh.find((x) => x && x.tag === tag) || {};
+    const offen = z.offen === true;
+    const von = offen ? uhrzeit(z.von) : "", bis = offen ? uhrzeit(z.bis) : "";
+    if (offen && (!von || !bis)) throw new Fehler(400, `Bitte Öffnungszeit für ${tag} angeben (von, bis).`);
+    return { tag, offen, von, bis };
+  });
+  const l: LadenEinstellungen = {
+    name: text(b.name, 80) || LADEN_STANDARD.name, strasse: text(b.strasse, 120), plz: text(b.plz, 10), ort: text(b.ort, 80) || "Heilbronn",
+    hinweis: text(b.hinweis, 400), aktiv: b.aktiv !== false, zeiten,
+  };
+  await schreibe("laden/einstellungen", l);
+  await protokoll("laden-geaendert", s.id);
+  return json({ ok: true, laden: l });
+}
+function kennung(name: string): string {
+  return name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+async function karteSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh: any[] = Array.isArray(b.karte) ? b.karte.slice(0, 80) : [];
+  const ids = new Set<string>();
+  const liste: KarteEintrag[] = roh.map((r) => {
+    const name = text(r?.name, 80);
+    if (!name) throw new Fehler(400, "Jeder Eintrag auf der Karte braucht einen Namen.");
+    const id = kennung(text(r?.id, 60)) || kennung(name);
+    if (!id || ids.has(id)) throw new Fehler(400, `${name} ist doppelt auf der Karte.`);
+    ids.add(id);
+    const art = KARTE_ARTEN.includes(r?.art) ? r.art : "sonstiges";
+    const mwst = ganz(r?.mwst ?? (art === "bowl" ? 7 : 19), 0, 19);
+    if (!MWST_SAETZE.includes(mwst)) throw new Fehler(400, "MwSt-Satz muss 0, 7 oder 19 sein.");
+    const allergene = Array.isArray(r?.allergene) ? r.allergene.filter((a: unknown) => typeof a === "string" && ALLERGENE.includes(a)) : [];
+    const preis = r?.preis === null || r?.preis === "" || r?.preis === undefined ? null : ganz(r.preis, 1, 1_000_000);
+    return { id, name, art, preis, beschreibung: text(r?.beschreibung, 200), allergene, mwst, aktiv: r?.aktiv !== false };
+  });
+  await schreibe("laden/karte", liste);
+  await protokoll("karte-geaendert", s.id, { anzahl: liste.length });
+  return json({ ok: true, karte: liste });
+}
+
+/* ---------- Tageskasse: Kassenbericht pro Tag (offene Ladenkasse), Abschluss bucht ins Journal ---------- */
+interface KassenVerkauf { nr: number; zeit: string; id: string; name: string; menge: number; preis: number; betrag: number; mwst: number; zahlungsart: "Bar" | "Karte"; storno: boolean }
+interface KassenAusgabe { nr: number; zeit: string; text: string; betrag: number; storno: boolean }
+interface KassenAbschluss { gezaehlt: number; soll: number; differenz: number; bar: number; karte: number; umsatz: number; ausgaben: number; am: string; von: string; notiz: string }
+interface KassenTag { datum: string; anfang: number; verkaeufe: KassenVerkauf[]; ausgaben: KassenAusgabe[]; abschluss: KassenAbschluss | null }
+function kassenTagParam(v: unknown): string { return datum(v || jetzt().slice(0, 10)); }
+function kassenSumme(t: KassenTag) {
+  const v = t.verkaeufe.filter((x) => !x.storno), a = t.ausgaben.filter((x) => !x.storno);
+  const bar = v.filter((x) => x.zahlungsart === "Bar").reduce((sum, x) => sum + x.betrag, 0);
+  const karteSumme = v.filter((x) => x.zahlungsart === "Karte").reduce((sum, x) => sum + x.betrag, 0);
+  const ausgaben = a.reduce((sum, x) => sum + x.betrag, 0);
+  return { bar, karte: karteSumme, umsatz: bar + karteSumme, ausgaben, soll: t.anfang + bar - ausgaben, verkaeufe: v.length };
+}
+async function kassenTag(tag: string): Promise<KassenTag> {
+  const t = await lese<KassenTag>(`kasse/${tag}`);
+  if (t) return t;
+  // Anfangsbestand = gezählter Endbestand des letzten abgeschlossenen Tages
+  const fruehere = (await leseAlle<KassenTag>("kasse/")).filter((x) => x.datum < tag && x.abschluss);
+  const letzter = fruehere[fruehere.length - 1];
+  return { datum: tag, anfang: letzter ? letzter.abschluss!.gezaehlt : 0, verkaeufe: [], ausgaben: [], abschluss: null };
+}
+function kassenOffen(t: KassenTag) { if (t.abschluss) throw new Fehler(409, "Dieser Tag ist schon abgeschlossen."); }
+async function kasseAntwort(t: KassenTag) { return json({ tag: t, summe: kassenSumme(t) }); }
+async function kasseVerkauf(req: Request) {
+  const b = await body(req);
+  const tag = kassenTagParam(b.tag); const t = await kassenTag(tag); kassenOffen(t);
+  const name = text(b.name, 120);
+  if (!name) throw new Fehler(400, "Bitte einen Artikel angeben.");
+  const menge = ganz(b.menge ?? 1, 1, 999), preis = ganz(b.preis, 0, 1_000_000), mwst = ganz(b.mwst ?? 19, 0, 19);
+  if (!MWST_SAETZE.includes(mwst)) throw new Fehler(400, "MwSt-Satz muss 0, 7 oder 19 sein.");
+  t.verkaeufe.push({ nr: t.verkaeufe.length + 1, zeit: jetzt(), id: text(b.id, 200), name, menge, preis, betrag: menge * preis, mwst, zahlungsart: b.zahlungsart === "Karte" ? "Karte" : "Bar", storno: false });
+  await schreibe(`kasse/${tag}`, t);
+  return kasseAntwort(t);
+}
+async function kasseAusgabe(req: Request) {
+  const b = await body(req);
+  const tag = kassenTagParam(b.tag); const t = await kassenTag(tag); kassenOffen(t);
+  const txt = text(b.text, 120);
+  if (!txt) throw new Fehler(400, "Bitte angeben, wofür das Geld entnommen wurde.");
+  t.ausgaben.push({ nr: t.ausgaben.length + 1, zeit: jetzt(), text: txt, betrag: ganz(b.betrag, 1, 10_000_000), storno: false });
+  await schreibe(`kasse/${tag}`, t);
+  return kasseAntwort(t);
+}
+async function kasseStorno(req: Request) {
+  const b = await body(req);
+  const tag = kassenTagParam(b.tag); const t = await kassenTag(tag); kassenOffen(t);
+  const liste: { nr: number; storno: boolean }[] = b.art === "ausgabe" ? t.ausgaben : t.verkaeufe;
+  const e = liste.find((x) => x.nr === ganz(b.nr, 1, 100_000));
+  if (!e) throw new Fehler(404, "Eintrag nicht gefunden.");
+  e.storno = true;
+  await schreibe(`kasse/${tag}`, t);
+  return kasseAntwort(t);
+}
+async function kasseAnfang(req: Request) {
+  const b = await body(req);
+  const tag = kassenTagParam(b.tag); const t = await kassenTag(tag); kassenOffen(t);
+  t.anfang = ganz(b.anfang, 0, 100_000_000);
+  await schreibe(`kasse/${tag}`, t);
+  return kasseAntwort(t);
+}
+async function kasseAbschluss(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const tag = kassenTagParam(b.tag); const t = await kassenTag(tag); kassenOffen(t);
+  const gezaehlt = ganz(b.gezaehlt, 0, 100_000_000);
+  const summe = kassenSumme(t);
+  // Verkäufe je Artikel, Preis, MwSt und Zahlungsart zusammengefasst ins Journal
+  const gruppen = new Map<string, { id: string; name: string; preis: number; mwst: number; zahlungsart: string; menge: number; betrag: number }>();
+  for (const v of t.verkaeufe.filter((x) => !x.storno)) {
+    const key = [v.id, v.name, v.preis, v.mwst, v.zahlungsart].join("|");
+    const g = gruppen.get(key) || { id: v.id, name: v.name, preis: v.preis, mwst: v.mwst, zahlungsart: v.zahlungsart, menge: 0, betrag: 0 };
+    g.menge += v.menge; g.betrag += v.betrag; gruppen.set(key, g);
+  }
+  for (const g of gruppen.values()) {
+    await neueBuchung({ typ: "verkauf", datum: tag, produktId: g.id, name: g.name, menge: g.menge, einzelpreis: g.preis, betrag: g.betrag, mwst: g.mwst, zahlungsart: g.zahlungsart, beleg: `KASSE-${tag}`, notiz: "Tageskasse Laden" }, s.id);
+  }
+  for (const a of t.ausgaben.filter((x) => !x.storno)) {
+    await neueBuchung({ typ: "ausgabe", datum: tag, produktId: "", name: a.text, menge: 1, einzelpreis: a.betrag, betrag: a.betrag, mwst: 0, zahlungsart: "Bar", beleg: `KASSE-${tag}`, notiz: "Kassenentnahme Laden" }, s.id);
+  }
+  t.abschluss = { gezaehlt, soll: summe.soll, differenz: gezaehlt - summe.soll, bar: summe.bar, karte: summe.karte, umsatz: summe.umsatz, ausgaben: summe.ausgaben, am: jetzt(), von: s.id, notiz: text(b.notiz, 500) };
+  await schreibe(`kasse/${tag}`, t);
+  await protokoll("kasse-abschluss", s.id, { tag, umsatz: summe.umsatz, differenz: t.abschluss.differenz });
+  return kasseAntwort(t);
+}
+async function kasseBerichte(url: URL) {
+  const monat = /^\d{4}-\d{2}$/.test(url.searchParams.get("monat") || "") ? url.searchParams.get("monat")! : jetzt().slice(0, 7);
+  const tage = await leseAlle<KassenTag>(`kasse/${monat}-`);
+  return json({ monat, tage: tage.map((t) => ({ datum: t.datum, anfang: t.anfang, ...kassenSumme(t), abschluss: t.abschluss })) });
+}
+
 /* ---------- Kontaktformular ---------- */
 interface Nachricht { id: string; name: string; email: string; telefon: string; betreff: string; text: string; erstellt: string; gelesen: boolean }
 async function kontakt(req: Request, ip: string) {
@@ -443,6 +678,7 @@ function zahlarten(e: ShopEinstellungen): string[] {
   const z = ["Überweisung (Vorkasse)"];
   if (e.paypal) z.push("PayPal");
   if (e.abholung) z.push("Bar bei Abholung");
+  if (stripeAktiv()) z.push("Online bezahlen");
   return z;
 }
 
@@ -510,10 +746,20 @@ async function kasse(req: Request, ip: string) {
   };
   await schreibe(`bestellungen/${best.id}`, best);
   await protokoll("kundenbestellung-neu", kunde.email, { bestellung: best.id, brutto });
-  const zahlungsinfo = zahlart.startsWith("Überweisung")
-    ? { art: "ueberweisung", inhaber: e.bankInhaber, iban: e.bankIban, bank: e.bankName, betrag: brutto, verwendungszweck: best.id }
-    : zahlart === "PayPal" ? { art: "paypal", ziel: e.paypal, betrag: brutto, verwendungszweck: best.id }
-    : { art: "bar", betrag: brutto, abholort: e.abholort };
+  let zahlungsinfo: Record<string, unknown>;
+  if (zahlart === "Online bezahlen") {
+    // Stripe Checkout: Kunde zahlt auf der Stripe-Seite, Bestätigung kommt per Webhook
+    const sitzung = await stripeSitzung(best, kunde.email, new URL(req.url).origin);
+    best.stripe = { session: sitzung.id, status: "offen" };
+    await schreibe(`bestellungen/${best.id}`, best);
+    zahlungsinfo = { art: "stripe", betrag: brutto, url: sitzung.url };
+  } else if (zahlart.startsWith("Überweisung")) {
+    zahlungsinfo = { art: "ueberweisung", inhaber: e.bankInhaber, iban: e.bankIban, bank: e.bankName, betrag: brutto, verwendungszweck: best.id };
+  } else if (zahlart === "PayPal") {
+    zahlungsinfo = { art: "paypal", ziel: e.paypal, betrag: brutto, verwendungszweck: best.id };
+  } else {
+    zahlungsinfo = { art: "bar", betrag: brutto, abholort: e.abholort };
+  }
   return json({ ok: true, nr: best.id, brutto, versand, zahlungsinfo, hinweis: e.hinweis, ab18 });
 }
 
@@ -578,6 +824,8 @@ export default async (req: Request, context: Context) => {
   const ip = context.ip || req.headers.get("x-nf-client-connection-ip") || "unbekannt";
 
   try {
+    // Stripe ruft den Webhook ohne unseren Header auf, die Signatur schützt ihn
+    if (m === "POST" && pfad === "/stripe/webhook") return await stripeWebhook(req);
     // Schutz vor fremden Formularen: schreibende Anfragen brauchen unseren Header
     if (m !== "GET" && req.headers.get("x-zb") !== "1") throw new Fehler(403, "Anfrage abgelehnt.");
     const s = leseSitzung(req);
@@ -588,6 +836,8 @@ export default async (req: Request, context: Context) => {
     if (m === "POST" && pfad === "/haendler/registrieren") return await registrieren(req, ip);
     if (m === "GET" && pfad === "/shop/daten") return await shopDaten();
     if (m === "POST" && pfad === "/kontakt") return await kontakt(req, ip);
+    if (m === "GET" && pfad === "/shop/laden") return await ladenDaten();
+    if (m === "GET" && pfad === "/shop/bestellung/status") return await stripeBestellStatus(url);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
 
     /* ---- Händler ---- */
@@ -632,6 +882,16 @@ export default async (req: Request, context: Context) => {
         return json({ preise, shop, einstellungen: e });
       }
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/laden") return json({ laden: await ladenEinstellungen(), karte: await karte(), allergene: ALLERGENE, arten: KARTE_ARTEN });
+      if (m === "POST" && pfad === "/admin/laden") return await ladenSpeichern(req, a);
+      if (m === "POST" && pfad === "/admin/karte") return await karteSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/kasse") return await kasseAntwort(await kassenTag(kassenTagParam(url.searchParams.get("tag"))));
+      if (m === "GET" && pfad === "/admin/kasse/berichte") return await kasseBerichte(url);
+      if (m === "POST" && pfad === "/admin/kasse/verkauf") return await kasseVerkauf(req);
+      if (m === "POST" && pfad === "/admin/kasse/ausgabe") return await kasseAusgabe(req);
+      if (m === "POST" && pfad === "/admin/kasse/storno") return await kasseStorno(req);
+      if (m === "POST" && pfad === "/admin/kasse/anfang") return await kasseAnfang(req);
+      if (m === "POST" && pfad === "/admin/kasse/abschluss") return await kasseAbschluss(req, a);
       if (m === "GET" && pfad === "/admin/nachrichten") return json({ nachrichten: (await leseAlle<Nachricht>("nachrichten/")).reverse() });
       if (m === "POST" && pfad === "/admin/nachrichten/status") return await nachrichtStatus(req);
       if (m === "GET" && pfad === "/admin/angebote") return json({ angebote: await angebote() });

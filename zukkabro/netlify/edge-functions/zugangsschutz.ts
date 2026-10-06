@@ -33,6 +33,10 @@ function withHeaders(res: Response): Response {
 }
 
 export default async (req: Request, context: Context) => {
+  // Stripe muss den Webhook auch hinter dem Team-Passwort erreichen (geschützt durch die Stripe-Signatur)
+  if (req.method === "POST" && new URL(req.url).pathname === "/api/stripe/webhook") {
+    return withHeaders(await context.next());
+  }
   const password = Netlify.env.get("SITE_PASSWORD");
 
   // Sicher scheitern: ohne gesetztes Passwort bleibt die Seite gesperrt.

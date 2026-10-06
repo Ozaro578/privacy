@@ -79,6 +79,12 @@ function tor_bremse(): bool {
     return $e['n'] <= 10;
 }
 
+// Stripe muss den Webhook auch hinter dem Team-Passwort erreichen (geschützt durch die Stripe-Signatur)
+if ($methode === 'POST' && $pfad === '/api/stripe/webhook') {
+    require __DIR__ . '/api/index.php';
+    zb_api();
+}
+
 if (!tor_offen()) {
     if ($methode === 'POST' && isset($_POST[TOR_FELD])) {
         if (!tor_bremse()) tor_seite('Zu viele Versuche. Bitte in 15 Minuten erneut probieren.');

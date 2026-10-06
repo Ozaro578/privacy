@@ -10,8 +10,8 @@
     { id: "start",     href: "/",                 text: "Start" },
     { id: "sortiment", href: "/sortiment.html",   text: "Sortiment" },
     { id: "pakete",    href: "/pakete.html",      text: "Pakete" },
+    { id: "laden",     href: "/laden.html",       text: "🍵 Laden" },
     { id: "vapes",     href: "/vapes.html",       text: "Vapes 18+" },
-    { id: "ueber-uns", href: "/ueber-uns.html",   text: "Über uns" },
     { id: "haendler",  href: "/haendler/",        text: "Für Händler" },
     { id: "kontakt",   href: "/kontakt.html",     text: "Kontakt", cta: true }
   ];
@@ -58,7 +58,7 @@
       "</div>" +
       '<div class="topbar"><div class="container topbar__inner">' +
         '<span>🚚 Versand in 3 Werktagen</span>' +
-        '<span>📍 Abholung in Heilbronn</span>' +
+        '<span>📍 Laden in Heilbronn: Matcha &amp; Açaí am Wochenende</span>' +
         '<span id="topbarFrei" hidden>📦 Versandkostenfrei ab <b data-versandfrei></b></span>' +
         '<span>🔞 Nur für Erwachsene ab 18</span>' +
       "</div></div>" +
@@ -76,7 +76,7 @@
           '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen oder Abholung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
           '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +

@@ -82,6 +82,8 @@ def main():
     pakete = ts_json(API_TS / "pakete-vorlage.mts", "PAKETE_VORLAGE", "];")
     (paket / "api" / "sortiment.json").write_text(json.dumps(sortiment, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (paket / "api" / "pakete-vorlage.json").write_text(json.dumps(pakete, ensure_ascii=False, indent=1), encoding="utf-8")
+    laden = {"laden": ts_json(API_TS / "laden-vorlage.mts", "LADEN_STANDARD", "};"), "karte": ts_json(API_TS / "laden-vorlage.mts", "KARTE_VORLAGE", "];")}
+    (paket / "api" / "laden-vorlage.json").write_text(json.dumps(laden, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 3. Webseite unverändert
     shutil.copytree(WURZEL / "public", paket / "public")
@@ -98,6 +100,9 @@ const ZB_TOR_HASH = {php_text(php_hash(zugang["seite"]) if zugang.get("seite") e
 const ZB_ADMIN_USERS = [
 {admins}
 ];
+// Stripe (Online-Zahlung). Leer = Online-Zahlung wird im Shop nicht angeboten.
+const ZB_STRIPE_SECRET = {php_text(zugang.get("stripeSecret", ""))};
+const ZB_STRIPE_WEBHOOK = {php_text(zugang.get("stripeWebhook", ""))};
 """
     (paket / "config.php").write_text(config, encoding="utf-8")
 
