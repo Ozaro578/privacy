@@ -43,7 +43,7 @@ SEITEN = {  # Quelle -> Ziel (alles flach in einem Ordner)
     "index.html": "index.html", "sortiment.html": "sortiment.html", "vapes.html": "vapes.html",
     "produkt.html": "produkt.html", "pakete.html": "pakete.html", "paket.html": "paket.html",
     "warenkorb.html": "warenkorb.html", "ueber-uns.html": "ueber-uns.html", "kontakt.html": "kontakt.html",
-    "rechtliches.html": "rechtliches.html", "404.html": "404.html", "laden.html": "laden.html",
+    "rechtliches.html": "rechtliches.html", "404.html": "404.html", "laden.html": "laden.html", "news.html": "news.html",
     "haendler/index.html": "haendler.html", "admin/index.html": "admin.html",
 }
 
@@ -143,6 +143,12 @@ def main():
     vorschau = (Path(__file__).parent / "zukkabro_vorschau.js").read_text(encoding="utf-8")
     vorschau = vorschau.replace("/*SHOP_DATEN*/null", json.dumps(shop_daten(), ensure_ascii=False))
     vorschau = vorschau.replace("/*LADEN_DATEN*/null", json.dumps(shop_daten("/api/shop/laden"), ensure_ascii=False))
+    beispiel_news = {"news": [
+        {"id": "N-1", "titel": "Laden in Heilbronn: Matcha & Açaí Bowls jedes Wochenende", "text": "Öffnungszeiten geben wir zur Eröffnung bekannt. Dazu Snacks, Drinks und Abholung eurer Online-Bestellungen.", "link": "/laden.html", "datum": "2026-10-04"},
+        {"id": "N-2", "titel": "Neu im Regal: Takis, Pringles China, Fanta Japan", "text": "Frisch aus dem Import. Solange der Vorrat reicht.", "link": "/sortiment.html?kat=neu", "datum": "2026-10-01"},
+        {"id": "N-3", "titel": "Themen-Pakete sind da", "text": "Netflix Night, Gamer Paket, Anime Night: fertig zusammengestellt, einfach bestellen.", "link": "/pakete.html", "datum": "2026-09-28"},
+    ]}
+    vorschau = vorschau.replace("/*NEWS_DATEN*/null", json.dumps(beispiel_news, ensure_ascii=False))
     (ziel / "assets" / "js" / "vorschau.js").write_text(vorschau, encoding="utf-8")
 
     # Seiten

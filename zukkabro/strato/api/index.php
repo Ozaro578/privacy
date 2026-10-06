@@ -13,8 +13,9 @@ const MWST_SAETZE = [0, 7, 19];
 const FARBEN = ['pink', 'gold', 'blue', 'orange', 'violet', 'green', 'gruen', 'dark', 'rot'];
 const LEBENSMITTEL = ['susses', 'snacks', 'scharfes', 'pipapo'];
 const STANDARD_EINSTELLUNGEN = [
-    'versand' => 590, 'versandfreiAb' => 5000, 'abholung' => true, 'abholort' => 'Heilbronn, Termin nach Absprache',
+    'versand' => 590, 'versandfreiAb' => 5000, 'abholung' => true, 'abholort' => 'Klingenberger Straße 100, 74080 Heilbronn (zu den Öffnungszeiten)',
     'bankInhaber' => '', 'bankIban' => '', 'bankName' => '', 'paypal' => '', 'hinweis' => '', 'ohnePreisAusblenden' => false,
+    'mailAn' => '', 'mailVon' => '', 'vorverkauf' => false, 'eroeffnung' => 'im November 2026',
 ];
 
 final class Fehler extends Exception {
@@ -158,6 +159,7 @@ function registrieren(string $ip): never {
     schreibe('haendler/' . $h['id'], $h);
     schreibe($index, $h['id']);
     protokoll('haendler-registriert', $h['id'], ['firma' => $h['firma']]);
+    mail_an_team('Neue Händler-Registrierung: ' . $h['firma'], "Firma: {$h['firma']}\nAnsprechpartner: {$h['ansprechpartner']}\nE-Mail: {$h['email']}\nTelefon: {$h['telefon']}\n\nBitte im Admin unter Händler freischalten: https://zukkabro.de/admin/");
     antwort(['ok' => true, 'meldung' => 'Danke! Wir prüfen deine Angaben und schalten dein Konto frei.']);
 }
 
@@ -230,7 +232,11 @@ function einstellungen_speichern(array $s): never {
         'abholung' => ($b['abholung'] ?? null) === true, 'abholort' => text($b['abholort'] ?? '', 200),
         'bankInhaber' => text($b['bankInhaber'] ?? '', 100), 'bankIban' => preg_replace('/\s+/', ' ', text($b['bankIban'] ?? '', 40)), 'bankName' => text($b['bankName'] ?? '', 100),
         'paypal' => text($b['paypal'] ?? '', 200), 'hinweis' => text($b['hinweis'] ?? '', 1000), 'ohnePreisAusblenden' => ($b['ohnePreisAusblenden'] ?? null) === true,
+        'mailAn' => strtolower(text($b['mailAn'] ?? '', 120)), 'mailVon' => strtolower(text($b['mailVon'] ?? '', 120)),
+        'vorverkauf' => ($b['vorverkauf'] ?? null) === true, 'eroeffnung' => text($b['eroeffnung'] ?? '', 60) ?: STANDARD_EINSTELLUNGEN['eroeffnung'],
     ];
+    if ($e['mailAn'] !== '' && !email_ok($e['mailAn'])) throw new Fehler(400, 'Benachrichtigungs-E-Mail ist ungültig.');
+    if ($e['mailVon'] !== '' && !email_ok($e['mailVon'])) throw new Fehler(400, 'Absender-E-Mail ist ungültig.');
     schreibe('einstellungen/shop', $e);
     protokoll('einstellungen-geaendert', $s['id']);
     antwort(['ok' => true, 'einstellungen' => $e]);
@@ -328,6 +334,7 @@ function stripe_webhook(): never {
                 schreibe('bestellungen/' . $id, $best);
                 if (empty($best['gebucht'])) buche_bestellung($best, 'Stripe', 'stripe');
                 protokoll('stripe-bezahlt', $id, ['betrag' => $s['amount_total'] ?? 0]);
+                mail_an_team('Online-Zahlung eingegangen: ' . $id, "Stripe hat die Zahlung für Bestellung $id bestätigt (" . euro_text((int) ($s['amount_total'] ?? 0)) . ").\nBitte packen und verschicken.\n\nAdmin: https://zukkabro.de/admin/");
             }
         }
     }
@@ -354,7 +361,10 @@ function laden_vorlage(): array {
 function laden_einstellungen(): array { $l = lese('laden/einstellungen'); return array_merge(laden_vorlage()['laden'], is_array($l) ? $l : []); }
 function karte(): array { $k = lese('laden/karte'); return is_array($k) ? $k : laden_vorlage()['karte']; }
 function laden_daten(): never {
-    antwort(['laden' => laden_einstellungen(), 'karte' => array_values(array_filter(karte(), fn($x) => !empty($x['aktiv']))), 'allergene' => ALLERGENE]);
+    $e = einstellungen(); $vv = (bool) $e['vorverkauf'];
+    $karte = array_values(array_filter(karte(), fn($x) => !empty($x['aktiv'])));
+    if ($vv) $karte = array_map(fn($x) => array_merge($x, ['preis' => null]), $karte);
+    antwort(['laden' => laden_einstellungen(), 'karte' => $karte, 'allergene' => ALLERGENE, 'vorverkauf' => ['aktiv' => $vv, 'text' => $e['eroeffnung']]]);
 }
 function uhrzeit(mixed $v): string {
     $t = text($v ?? '', 5);
@@ -487,6 +497,66 @@ function kasse_berichte(): never {
     antwort(['monat' => $monat, 'tage' => $tage]);
 }
 
+/* =================== E-Mails (Strato: PHP mail(), Absender muss eine Adresse eurer Domain sein) =================== */
+/** Schickt eine schlichte Text-Mail. Fehler werden nur protokolliert, damit keine Bestellung daran scheitert. */
+function mail_senden(string $an, string $betreff, string $text): void {
+    $e = einstellungen();
+    $von = $e['mailVon'] ?: ('noreply@' . preg_replace('/^www\./', '', $_SERVER['HTTP_HOST'] ?? 'zukkabro.de'));
+    if ($an === '' || !email_ok($an) || !email_ok($von)) return;
+    $kopf = "From: ZUKKABRO <$von>\r\nReply-To: " . ($e['mailAn'] ?: $von) . "\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
+    $betreff = '=?UTF-8?B?' . base64_encode($betreff) . '?=';
+    try { if (!@mail($an, $betreff, wordwrap($text, 78, "\n", false), $kopf, '-f' . $von)) error_log("ZUKKABRO Mail an $an nicht gesendet"); }
+    catch (Throwable $t) { error_log('ZUKKABRO Mail-Fehler: ' . $t->getMessage()); }
+}
+function mail_an_team(string $betreff, string $text): void { $an = einstellungen()['mailAn']; if ($an !== '') mail_senden($an, $betreff, $text); }
+function euro_text(int $cent): string { return number_format($cent / 100, 2, ',', '.') . ' €'; }
+/** Bestellbestätigung an den Kunden und Hinweis ans Team */
+function bestell_mails(array $best, array $info, string $hinweis): void {
+    $k = $best['kunde'];
+    $zeilen = [];
+    foreach ($best['positionen'] as $p) $zeilen[] = sprintf('%d × %s  %s', $p['stueck'], $p['name'], euro_text((int) ($p['brutto'] ?? 0)));
+    if (!empty($best['versand'])) $zeilen[] = 'Versand  ' . euro_text((int) $best['versand']);
+    $zahlung = match ($info['art'] ?? '') {
+        'ueberweisung' => "Bitte überweise " . euro_text($best['brutto']) . " an:\n" . ($info['inhaber'] ?: 'ZUKKABRO') . "\nIBAN: " . $info['iban'] . ($info['bank'] ? "\nBank: " . $info['bank'] : '') . "\nVerwendungszweck: " . $best['id'] . "\nVersand innerhalb von 3 Werktagen nach Zahlungseingang.",
+        'paypal' => "Bitte zahle " . euro_text($best['brutto']) . " per PayPal an: " . $info['ziel'] . "\nVerwendungszweck: " . $best['id'],
+        'stripe' => "Deine Zahlung läuft über Stripe. Du bekommst von Stripe eine eigene Zahlungsbestätigung.",
+        default => "Du zahlst " . euro_text($best['brutto']) . " bar bei der Abholung" . (!empty($info['abholort']) ? ' (' . $info['abholort'] . ')' : '') . '.',
+    };
+    $adresse = $best['lieferart'] === 'abholung' ? 'Abholung in Heilbronn' : trim($k['vorname'] . ' ' . $k['nachname'] . "\n" . $k['strasse'] . "\n" . $k['plz'] . ' ' . $k['ort']);
+    $text = "Hey {$k['vorname']},\n\ndanke für deine Bestellung bei ZUKKABRO!\n\nBestellnummer: {$best['id']}\n\n" . implode("\n", $zeilen) . "\nGesamt: " . euro_text($best['brutto']) . " (inkl. MwSt.)\n\nLieferung: $adresse\n\nZahlung: {$best['zahlart']}\n$zahlung\n" .
+        (!empty($best['ab18']) ? "\nDein Warenkorb enthält Artikel ab 18. Bitte halte bei der Übergabe deinen Ausweis bereit.\n" : '') . ($hinweis ? "\n$hinweis\n" : '') . "\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de";
+    mail_senden($k['email'], 'Deine Bestellung ' . $best['id'] . ' bei ZUKKABRO', $text);
+    mail_an_team('Neue Bestellung ' . $best['id'] . ' (' . euro_text($best['brutto']) . ', ' . $best['zahlart'] . ')',
+        "Neue Kundenbestellung {$best['id']}\n\n" . implode("\n", $zeilen) . "\nGesamt: " . euro_text($best['brutto']) . "\n\nKunde: {$k['vorname']} {$k['nachname']}, {$k['email']}" . ($k['telefon'] ? ', ' . $k['telefon'] : '') . "\n$adresse\nZahlung: {$best['zahlart']}\n" . ($best['notiz'] ? "Notiz: {$best['notiz']}\n" : '') . "\nAdmin: https://zukkabro.de/admin/");
+}
+
+/* =================== News (Startseite, News-Seite, App) =================== */
+function news(): array { $n = lese('news/alle'); return is_array($n) ? $n : []; }
+function news_oeffentlich(): never {
+    $alle = array_values(array_filter(news(), fn($n) => !empty($n['aktiv'])));
+    usort($alle, fn($a, $b) => strcmp($b['datum'], $a['datum']));
+    antwort(['news' => array_map(fn($n) => ['id' => $n['id'], 'titel' => $n['titel'], 'text' => $n['text'], 'link' => $n['link'], 'datum' => $n['datum']], array_slice($alle, 0, 20))]);
+}
+function news_speichern(array $s): never {
+    $b = body();
+    $roh = is_array($b['news'] ?? null) ? array_slice($b['news'], 0, 50) : [];
+    $alt = []; foreach (news() as $x) $alt[$x['id']] = $x;
+    $liste = [];
+    foreach ($roh as $r) {
+        if (!is_array($r)) continue;
+        $titel = text($r['titel'] ?? '', 120);
+        if ($titel === '') throw new Fehler(400, 'Jede News braucht eine Überschrift.');
+        $id = preg_match('/^N-[A-Za-z0-9-]{4,40}$/', (string) ($r['id'] ?? '')) ? (string) $r['id'] : neue_id('N-');
+        $link = text($r['link'] ?? '', 300);
+        if ($link !== '' && !preg_match('#^(https?://|/)#', $link)) throw new Fehler(400, 'Link bitte mit https:// oder / beginnen.');
+        $liste[] = ['id' => $id, 'titel' => $titel, 'text' => text($r['text'] ?? '', 1000), 'link' => $link, 'datum' => datum($r['datum'] ?? substr(jetzt(), 0, 10)),
+            'aktiv' => ($r['aktiv'] ?? true) !== false, 'erstellt' => $alt[$id]['erstellt'] ?? jetzt()];
+    }
+    schreibe('news/alle', $liste);
+    protokoll('news-geaendert', $s['id'], ['anzahl' => count($liste)]);
+    antwort(['ok' => true, 'news' => $liste]);
+}
+
 /* ---------- Kontaktformular ---------- */
 function kontakt(string $ip): never {
     bremse('kontakt', $ip, 5, 60);
@@ -501,6 +571,7 @@ function kontakt(string $ip): never {
     if (text($b['website'] ?? '', 10) !== '') antwort(['ok' => true, 'id' => $n['id']]); // Honigtopf: nur Bots füllen das versteckte Feld
     schreibe('nachrichten/' . $n['id'], $n);
     protokoll('nachricht-neu', $n['email'], ['id' => $n['id'], 'betreff' => $n['betreff']]);
+    mail_an_team('Neue Nachricht: ' . ($n['betreff'] ?: 'Kontaktformular'), "Von: {$n['name']} <{$n['email']}>" . ($n['telefon'] ? " · {$n['telefon']}" : '') . "\n\n{$n['text']}\n\nAdmin: https://zukkabro.de/admin/");
     antwort(['ok' => true, 'id' => $n['id']]);
 }
 function nachricht_status(): never {
@@ -556,19 +627,22 @@ function angebote_speichern(array $s): never {
 
 function shop_daten(): never {
     ['preise' => $preise, 'angebote' => $laufend] = effektive_preise(); $e = einstellungen();
+    // Eröffnungsmodus (Vorverkauf): Seite offen, aber Preise, Angebote und Bestellung bleiben bis zur Eröffnung weg
+    $vv = (bool) $e['vorverkauf'];
     $nur = [];
-    foreach ($preise as $id => $p) if (produkt((string) $id)) $nur[$id] = $p['preis'];
-    $ang = array_map(fn($a) => ['id' => $a['id'], 'preis' => $a['preis'], 'alt' => $a['alt'], 'titel' => $a['titel'], 'bis' => $a['bis']], $laufend);
+    if (!$vv) foreach ($preise as $id => $p) if (produkt((string) $id)) $nur[$id] = $p['preis'];
+    $ang = $vv ? [] : array_map(fn($a) => ['id' => $a['id'], 'preis' => $a['preis'], 'alt' => $a['alt'], 'titel' => $a['titel'], 'bis' => $a['bis']], $laufend);
     $pk = [];
     foreach (pakete() as $p) {
         if (!$p['aktiv']) continue;
         $pk[] = array_merge(['id' => $p['id'], 'name' => $p['name'], 'untertitel' => $p['untertitel'], 'emoji' => $p['emoji'], 'farbe' => $p['farbe'],
-            'inhalt' => $p['inhalt'], 'preis' => $p['preis']], paket_status($p));
+            'inhalt' => $p['inhalt'], 'preis' => $vv ? null : $p['preis']], paket_status($p));
     }
     antwort([
         'preise' => obj($nur), 'angebote' => $ang,
         'versand' => ['kosten' => $e['versand'], 'freiAb' => $e['versandfreiAb'], 'abholung' => $e['abholung'], 'abholort' => $e['abholort']],
-        'zahlarten' => zahlarten($e), 'ohnePreisAusblenden' => (bool) $e['ohnePreisAusblenden'], 'pakete' => $pk,
+        'zahlarten' => $vv ? [] : zahlarten($e), 'ohnePreisAusblenden' => !$vv && (bool) $e['ohnePreisAusblenden'],
+        'vorverkauf' => ['aktiv' => $vv, 'text' => $e['eroeffnung']], 'pakete' => $pk,
     ]);
 }
 
@@ -576,6 +650,7 @@ function kasse(string $ip): never {
     bremse('kasse', $ip, 10, 60);
     $b = body();
     $preise = effektive_preise()['preise']; $e = einstellungen(); $allePakete = pakete();
+    if ($e['vorverkauf']) throw new Fehler(409, 'Der Online-Shop öffnet ' . $e['eroeffnung'] . '. Bis dahin sind noch keine Bestellungen möglich.');
     $k = is_array($b['kunde'] ?? null) ? $b['kunde'] : [];
     $kunde = [
         'vorname' => text($k['vorname'] ?? '', 80), 'nachname' => text($k['nachname'] ?? '', 80), 'email' => strtolower(text($k['email'] ?? '', 120)),
@@ -647,6 +722,7 @@ function kasse(string $ip): never {
     elseif (str_starts_with($zahlart, 'Überweisung')) $info = ['art' => 'ueberweisung', 'inhaber' => $e['bankInhaber'], 'iban' => $e['bankIban'], 'bank' => $e['bankName'], 'betrag' => $brutto, 'verwendungszweck' => $best['id']];
     elseif ($zahlart === 'PayPal') $info = ['art' => 'paypal', 'ziel' => $e['paypal'], 'betrag' => $brutto, 'verwendungszweck' => $best['id']];
     else $info = ['art' => 'bar', 'betrag' => $brutto, 'abholort' => $e['abholort']];
+    bestell_mails($best, $info, (string) $e['hinweis']);
     antwort(['ok' => true, 'nr' => $best['id'], 'brutto' => $brutto, 'versand' => $versand, 'zahlungsinfo' => $info, 'hinweis' => $e['hinweis'], 'ab18' => $ab18]);
 }
 
@@ -800,6 +876,7 @@ function zb_api(): never {
         if ($m === 'POST' && $pfad === '/shop/bestellung') kasse($ip);
         if ($m === 'POST' && $pfad === '/kontakt') kontakt($ip);
         if ($m === 'GET' && $pfad === '/shop/laden') laden_daten();
+        if ($m === 'GET' && $pfad === '/shop/news') news_oeffentlich();
         if ($m === 'GET' && $pfad === '/shop/bestellung/status') stripe_bestell_status();
 
         if (str_starts_with($pfad, '/haendler/')) {
@@ -837,6 +914,8 @@ function zb_api(): never {
             }
             if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen()]);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/news') antwort(['news' => news()]);
+            if ($m === 'POST' && $pfad === '/admin/news') news_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/laden') antwort(['laden' => laden_einstellungen(), 'karte' => karte(), 'allergene' => ALLERGENE, 'arten' => KARTE_ARTEN]);
             if ($m === 'POST' && $pfad === '/admin/laden') laden_speichern($a);
             if ($m === 'POST' && $pfad === '/admin/karte') karte_speichern($a);

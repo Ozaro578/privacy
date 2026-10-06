@@ -1,9 +1,9 @@
 import type { Config, Context } from "@netlify/edge-functions";
 
-// Zugangsschutz für die gesamte Seite (HTTP Basic Auth).
-// Das Passwort steht NICHT im Code, sondern in der Netlify-Umgebungsvariable SITE_PASSWORD.
-// Benutzername: beliebig (z. B. "zukkabro"). Zum Abschalten die Variable löschen
-// oder diese Datei entfernen.
+// Zugangsschutz für die gesamte Seite (HTTP Basic Auth), nur für Umbauphasen.
+// Das Passwort steht NICHT im Code, sondern in der Netlify-Umgebungsvariable ZB_TEAM_PASSWORT.
+// Ist die Variable nicht gesetzt, ist die Seite offen (Normalfall seit dem Start).
+// Benutzername: beliebig (z. B. "zukkabro").
 
 const REALM = "ZUKKABRO - nur fuer das Team"; // nur ASCII-Zeichen erlaubt (HTTP-Header)
 
@@ -12,7 +12,6 @@ const SECURITY_HEADERS: Record<string, string> = {
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-  "X-Robots-Tag": "noindex, nofollow",
 };
 
 function safeEqual(a: string, b: string): boolean {
@@ -26,9 +25,10 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-function withHeaders(res: Response): Response {
+function withHeaders(res: Response, gesperrt = true): Response {
   const out = new Response(res.body, res);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+  if (gesperrt) out.headers.set("X-Robots-Tag", "noindex, nofollow"); // Baustelle nicht in Suchmaschinen
   return out;
 }
 
@@ -37,11 +37,11 @@ export default async (req: Request, context: Context) => {
   if (req.method === "POST" && new URL(req.url).pathname === "/api/stripe/webhook") {
     return withHeaders(await context.next());
   }
-  const password = Netlify.env.get("SITE_PASSWORD");
+  const password = Netlify.env.get("ZB_TEAM_PASSWORT");
 
-  // Sicher scheitern: ohne gesetztes Passwort bleibt die Seite gesperrt.
+  // Kein Passwort gesetzt: Seite ist offen für alle.
   if (!password) {
-    return withHeaders(new Response("Seite vorübergehend gesperrt.", { status: 503 }));
+    return withHeaders(await context.next(), false);
   }
 
   const auth = req.headers.get("authorization") ?? "";

@@ -15,6 +15,7 @@
   var PROD = {};
   (typeof PRODUKTE !== "undefined" ? PRODUKTE : []).forEach(function (p) { PROD[p.id] = p; });
   var euro = function (c) { return window.ZBShop.euro(c); };
+  var FOLGT = "Preis folgt";
 
   function collage(pk, max) {
     var bilder = pk.inhalt.map(function (i) { return PROD[i.id]; }).filter(function (p) { return p && p.bild; }).slice(0, max || 4);
@@ -28,7 +29,7 @@
   }
   function preisText(pk) {
     if (!pk.lieferbar) return '<span class="price price--folgt">Gerade nicht lieferbar</span>';
-    return pk.preis != null ? '<span class="price">' + euro(pk.preis) + "</span>" : '<span class="price price--folgt">Preis folgt</span>';
+    return pk.preis != null ? '<span class="price">' + euro(pk.preis) + "</span>" : '<span class="price price--folgt">' + FOLGT + "</span>";
   }
   function stueck(pk) { return pk.inhalt.reduce(function (a, i) { return a + i.menge; }, 0); }
 
@@ -58,10 +59,10 @@
           '<span class="paket-karte__emoji" aria-hidden="true">' + esc(pk.emoji) + "</span>" +
           '<h1 class="paket-karte__titel">' + esc(pk.name) + "</h1>" +
           '<p class="paket-karte__text">' + esc(pk.untertitel) + "</p>" +
-          '<p class="paket-hero__preis">' + (kaufbar ? euro(pk.preis) + "<small>inkl. MwSt., zzgl. Versand</small>" : pk.lieferbar ? "Preis folgt" : "Gerade nicht lieferbar") + "</p>" +
+          '<p class="paket-hero__preis">' + (kaufbar ? euro(pk.preis) + "<small>inkl. MwSt., zzgl. Versand</small>" : pk.lieferbar ? FOLGT : "Gerade nicht lieferbar") + "</p>" +
           '<div class="pdp__kaufen">' + (kaufbar
             ? '<div class="stepper"><button type="button" data-menge="-1" aria-label="Weniger">−</button><input id="menge" type="number" min="1" max="99" value="1" aria-label="Anzahl Pakete"><button type="button" data-menge="1" aria-label="Mehr">+</button></div><button class="btn btn--light" type="button" id="paketInKorb">🛒 Paket in den Warenkorb</button>'
-            : '<button class="btn btn--light" type="button" disabled>' + (pk.lieferbar ? "Preis folgt – bald bestellbar" : "Gerade nicht lieferbar") + "</button>") +
+            : '<button class="btn btn--light" type="button" disabled>' + (pk.lieferbar ? (FOLGT === "Preis folgt" ? "Preis folgt – bald bestellbar" : "Bestellbar ab der Eröffnung") : "Gerade nicht lieferbar") + "</button>") +
           "</div>" +
         "</div>" +
         collage(pk, 6) +
@@ -82,6 +83,7 @@
 
   function start() {
     window.ZBShop.daten().then(function (d) {
+      FOLGT = window.ZBShop.folgtText(d);
       var alle = d.pakete || [];
       document.querySelectorAll('[data-pakete="liste"]').forEach(function (box) {
         box.innerHTML = alle.length ? alle.map(karte).join("") : '<p class="leer">Bald gibt es hier unsere Pakete!</p>';

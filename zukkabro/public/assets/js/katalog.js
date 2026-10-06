@@ -12,6 +12,7 @@
   var PREIS = {};          // Endkundenpreise in Cent, kommen vom Server
   var ANGEBOT = {};        // laufende Angebote: id -> { preis, alt }
   var OHNE_PREIS_WEG = false;
+  var FOLGT = "Preis folgt";   // Text ohne Preis (vor der Eröffnung anders)
   var BEST = typeof BESTSELLER !== "undefined" && Array.isArray(BESTSELLER) ? BESTSELLER : [];
   var SEITE = 48;
   function euro(cent) { return window.ZBShop.euro(cent); }
@@ -43,8 +44,8 @@
     var hatPreis = typeof PREIS[p.id] === "number";
     var ang = ANGEBOT[p.id];
     var preis = hatPreis
-      ? '<span class="price' + (ang ? " price--angebot" : "") + '">' + euro(PREIS[p.id]) + (ang && ang.alt ? ' <s class="price__alt">' + euro(ang.alt) + "</s>" : "") + "</span>"
-      : '<span class="price price--folgt">Preis folgt</span>';
+      ? '<span class="price' + (ang ? " price--angebot" : "") + '">' + euro(PREIS[p.id]) + (ang && ang.alt ? ' <s class="price__alt">' + euro(ang.alt) + "</s>" : "") + window.ZBShop.grundpreis(p.name, PREIS[p.id]) + "</span>"
+      : '<span class="price price--folgt">' + FOLGT + "</span>";
     var badges = "";
     if (ang) badges += '<span class="badge badge--angebot">' + (ang.alt ? "−" + Math.round((1 - ang.preis / ang.alt) * 100) + " %" : "ANGEBOT") + "</span>";
     else if (istBest(p)) badges += '<span class="badge badge--bestseller">BESTSELLER</span>';
@@ -295,7 +296,7 @@
 
   function start() {
     window.ZBShop.daten().then(function (d) {
-      PREIS = d.preise || {}; OHNE_PREIS_WEG = !!d.ohnePreisAusblenden;
+      PREIS = d.preise || {}; OHNE_PREIS_WEG = !!d.ohnePreisAusblenden; FOLGT = window.ZBShop.folgtText(d);
       ANGEBOT = {}; (d.angebote || []).forEach(function (a) { ANGEBOT[a.id] = a; });
       zeichneAlles();
     });

@@ -24,16 +24,17 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
-header('X-Robots-Tag: noindex, nofollow, noarchive');
+$gesperrt = defined('ZB_TOR_HASH') && ZB_TOR_HASH !== '';
+if ($gesperrt) header('X-Robots-Tag: noindex, nofollow, noarchive');
 if (ist_https()) header('Strict-Transport-Security: max-age=31536000');
 
 $pfad = preg_replace('#[/\\\\]+#', '/', rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/'));
 $methode = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-// Suchmaschinen fernhalten – das darf auch ohne Passwort abgerufen werden
+// robots.txt: gesperrt, solange das Team-Passwort aktiv ist; nach dem Start offen (mit Sitemap)
 if ($pfad === '/robots.txt') {
     header('Content-Type: text/plain; charset=utf-8');
-    exit("User-agent: *\nDisallow: /\n");
+    exit($gesperrt ? "User-agent: *\nDisallow: /\n" : "User-agent: *\nDisallow: /admin/\nDisallow: /haendler/\nDisallow: /warenkorb.html\nDisallow: /api/\nSitemap: https://zukkabro.de/sitemap.xml\n");
 }
 
 /* =================== 1. Zugangsschutz =================== */

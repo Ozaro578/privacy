@@ -51,18 +51,24 @@
   }
 
   /* ================= Schritt 1: Warenkorb ================= */
+  function vorverkauf() { return !!(shop && shop.vorverkauf && shop.vorverkauf.aktiv); }
+  function vorverkaufHinweis() {
+    $("korbHinweis").hidden = false;
+    $("korbHinweis").textContent = "🎉 Der Online-Shop öffnet " + (shop.vorverkauf.text || "bald") + ". Bis dahin kannst du dir Artikel merken, bestellen geht noch nicht.";
+  }
   function korbZeichnen() {
     var alle = positionen();
     if (!alle.length) {
       $("korbListe").innerHTML = '<div class="karte leer">Dein Warenkorb ist noch leer. 🍬<br><br><a class="btn btn--pink" href="/sortiment.html">Zum Sortiment →</a></div>';
       $("summe1").innerHTML = summenHtml(rechne("versand"), false);
       $("zurKasse").disabled = true; $("korbHinweis").hidden = true;
+      if (vorverkauf()) vorverkaufHinweis();
       return;
     }
     $("korbListe").innerHTML = alle.map(function (x) {
       var p = x.p || { name: "Unbekannter Artikel", marke: "" };
       var bild = p.bild ? '<img src="/' + esc(p.bild) + '" alt="" loading="lazy">' : '<span style="font-size:2.6rem;text-align:center">🍬</span>';
-      var info = !x.p ? "Nicht mehr im Sortiment" : p.aus ? "Gerade nicht lieferbar" : !x.kaufbar ? "Preis folgt – noch nicht bestellbar" : euro(x.preis) + " / Stück";
+      var info = !x.p ? "Nicht mehr im Sortiment" : p.aus ? "Gerade nicht lieferbar" : !x.kaufbar ? (vorverkauf() ? "Bestellbar ab der Eröffnung" : "Preis folgt – noch nicht bestellbar") : euro(x.preis) + " / Stück";
       return '<div class="korb-artikel" data-id="' + esc(x.id) + '">' + bild +
         '<div><h3><a href="' + x.link + '">' + esc(p.name) + "</a></h3><p>" + esc(p.marke || "") + (p.ab18 ? " · 18+" : "") + "</p><p" + (x.kaufbar ? "" : ' style="color:#b25400"') + ">" + info + "</p></div>" +
         '<div class="korb-artikel__rechts"><div class="stepper"><button type="button" data-schritt="-1" aria-label="Weniger">−</button><input type="number" min="1" max="999" value="' + x.menge + '" aria-label="Menge"><button type="button" data-schritt="1" aria-label="Mehr">+</button></div>' +
@@ -74,6 +80,7 @@
     var nichtKaufbar = alle.filter(function (x) { return !x.kaufbar; }).length;
     $("korbHinweis").hidden = !nichtKaufbar;
     $("korbHinweis").textContent = nichtKaufbar ? nichtKaufbar + (nichtKaufbar === 1 ? " Artikel ist" : " Artikel sind") + " noch nicht bestellbar und wird bei der Bestellung nicht berücksichtigt." : "";
+    if (vorverkauf()) vorverkaufHinweis();
     $("zurKasse").disabled = !r.pos.length;
   }
 

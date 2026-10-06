@@ -8,11 +8,12 @@
 const SHOP = {
   // Nur Ziffern, mit Ländervorwahl ohne "+" und ohne führende 0, z. B. "4915112345678"
   whatsapp: "",
+  telefon: "",        // Handynummer fürs Impressum und die Kontaktseite, z. B. "+49 151 12345678"
   instagram: "",      // nur der Name, z. B. "zukkabro"
   tiktok: "",         // nur der Name, z. B. "zukkabro"
-  email: "",          // z. B. "info@zukkabro.de"
-  address: "",        // z. B. "Musterstraße 1, 12345 Musterstadt"
-  hours: "",          // z. B. "Mo–Sa 10–20 Uhr"
+  email: "info@zukkabro.de",
+  address: "Klingenberger Straße 100, 74080 Heilbronn (kostenlos, zu den Öffnungszeiten)",
+  hours: "Geben wir zur Eröffnung bekannt. Matcha & Açaí Bowls gibt es bei uns am Wochenende.",
   shipping: ""        // eigener Versandtext, leer lassen für Standardtext
 };
 

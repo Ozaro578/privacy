@@ -11,6 +11,7 @@
     });
   }
   var euro = function (c) { return window.ZBShop.euro(c); };
+  var FOLGT = "Preis folgt";
   var TAGE = { Mo: "Montag", Di: "Dienstag", Mi: "Mittwoch", Do: "Donnerstag", Fr: "Freitag", Sa: "Samstag", So: "Sonntag" };
   var ARTEN = [
     { id: "matcha", titel: "🍵 Matcha", text: "Zeremonieller Matcha, frisch aufgeschlagen" },
@@ -21,6 +22,13 @@
 
   function zeitenZeichnen(zeiten) {
     var jsTag = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][new Date().getDay()];
+    if (!zeiten.some(function (z) { return z.offen; })) {
+      // Noch keine festen Zeiten eingetragen (Admin → Laden): nur das Wochenende ankündigen
+      $("zeiten").innerHTML = '<tr><th>Sa + So</th><td>Matcha &amp; Açaí Bowls</td></tr><tr><th>Mo – Fr</th><td><span class="zu">online bestellen</span></td></tr>';
+      $("zeitenHinweis").textContent = "Die genauen Öffnungszeiten geben wir zur Eröffnung bekannt. Unter der Woche: online bestellen, wir verschicken innerhalb von 3 Werktagen.";
+      var s0 = $("ladenStatus"); s0.textContent = "🎉 Eröffnung bald · Öffnungszeiten folgen"; s0.className = "laden-status"; s0.hidden = false;
+      return;
+    }
     $("zeiten").innerHTML = zeiten.map(function (z) {
       return "<tr" + (z.tag === jsTag ? ' class="is-heute"' : "") + "><th>" + esc(TAGE[z.tag] || z.tag) + "</th><td>" +
         (z.offen ? esc(z.von) + " – " + esc(z.bis) + " Uhr" : '<span class="zu">geschlossen</span>') + "</td></tr>";
@@ -55,7 +63,7 @@
           var codes = (k.allergene || []).map(function (al) { var i = allergene.indexOf(al); if (i !== -1) genutzt[al] = String.fromCharCode(65 + i); return genutzt[al] || ""; }).filter(Boolean).join(", ");
           return '<div class="gericht"><div class="gericht__text"><strong>' + esc(k.name) + (codes ? ' <sup class="gericht__allergene">' + esc(codes) + "</sup>" : "") + "</strong>" +
             (k.beschreibung ? "<small>" + esc(k.beschreibung) + "</small>" : "") + "</div>" +
-            '<span class="gericht__preis">' + (typeof k.preis === "number" ? esc(euro(k.preis)) : "Preis folgt") + "</span></div>";
+            '<span class="gericht__preis">' + (typeof k.preis === "number" ? esc(euro(k.preis)) : FOLGT) + "</span></div>";
         }).join("") + "</div>";
     }).join("");
     $("speisekarte").innerHTML = html || '<p class="leer">Die Karte kommt bald.</p>';
@@ -67,6 +75,7 @@
     .then(function (r) { return r.ok ? r.json() : null; })
     .catch(function () { return null; })
     .then(function (d) {
+      FOLGT = window.ZBShop.folgtText(d);
       if (!d || !d.laden) { $("zeiten").innerHTML = "<tr><td>Öffnungszeiten folgen.</td></tr>"; return; }
       var l = d.laden;
       if (l.hinweis) $("ladenHinweis").textContent = l.hinweis;

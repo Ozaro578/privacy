@@ -12,10 +12,15 @@ export interface ShopEinstellungen {
   bankInhaber: string; bankIban: string; bankName: string;
   paypal: string;           // z. B. PayPal.me-Link oder E-Mail
   hinweis: string;          // Text auf der Bestellbestätigung
+  ohnePreisAusblenden: boolean; // Produkte ohne Shop-Preis im Shop verstecken
+  mailAn: string; mailVon: string; // Benachrichtigungen (nur Strato)
+  vorverkauf: boolean;      // Eröffnungsmodus: keine Preise, keine Angebote, keine Bestellung
+  eroeffnung: string;       // z. B. "im November 2026"
 }
 export const STANDARD_EINSTELLUNGEN: ShopEinstellungen = {
-  versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Heilbronn, Termin nach Absprache",
-  bankInhaber: "", bankIban: "", bankName: "", paypal: "", hinweis: "",
+  versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Klingenberger Straße 100, 74080 Heilbronn (zu den Öffnungszeiten)",
+  bankInhaber: "", bankIban: "", bankName: "", paypal: "", hinweis: "", ohnePreisAusblenden: false, mailAn: "", mailVon: "",
+  vorverkauf: false, eroeffnung: "im November 2026",
 };
 
 const LEBENSMITTEL = ["susses", "snacks", "scharfes", "pipapo"];

@@ -52,7 +52,7 @@
     document.querySelectorAll(".galerie__daumen button").forEach(function (b, n) { b.classList.toggle("is-active", n === aktiv); });
   }
 
-  function info(preis, ang) {
+  function info(preis, ang, vv) {
     var hatPreis = typeof preis === "number";
     var rabatt = ang && ang.alt ? Math.round((1 - ang.preis / ang.alt) * 100) : 0;
     var kats = p.kat.map(function (id) { var k = KATS[id]; return k ? '<a href="' + katLink(k) + '">' + esc(k.emoji + " " + k.name) + "</a>" : ""; }).join("");
@@ -60,7 +60,7 @@
       (p.pruefen ? '<p class="hint hint--pruefen">⚠️ Vor dem öffentlichen Start rechtlich prüfen</p>' : "");
     var kaufen;
     if (p.aus) kaufen = '<button class="btn btn--light" type="button" disabled>Gerade nicht lieferbar</button>';
-    else if (!hatPreis) kaufen = '<button class="btn btn--light" type="button" disabled>Preis folgt – bald bestellbar</button>';
+    else if (!hatPreis) kaufen = '<button class="btn btn--light" type="button" disabled>' + (vv ? "Bestellbar ab der Eröffnung " + esc(vv) : "Preis folgt – bald bestellbar") + "</button>";
     else kaufen =
       '<div class="stepper"><button type="button" data-menge="-1" aria-label="Weniger">−</button><input id="menge" type="number" min="1" max="999" value="1" aria-label="Menge"><button type="button" data-menge="1" aria-label="Mehr">+</button></div>' +
       '<button class="btn btn--pink" type="button" id="inKorb">🛒 In den Warenkorb</button>';
@@ -72,7 +72,8 @@
       "<h1>" + esc(p.name) + "</h1>" +
       '<div class="pdp__kats">' + kats + "</div>" + hinweise +
       (ang ? '<p class="pdp__angebot">' + esc(ang.titel || "🔥 Angebot") + (rabatt >= 5 ? ' · <b>−' + rabatt + " %</b>" : "") + (ang.bis ? " · nur bis " + esc(ang.bis.split("-").reverse().map(Number).slice(0, 2).join(".")) + "." : "") + "</p>" : "") +
-      (hatPreis ? '<p class="pdp__preis">' + window.ZBShop.euro(preis) + (ang && ang.alt ? ' <s class="pdp__alt">' + window.ZBShop.euro(ang.alt) + "</s>" : "") + '</p><p class="pdp__mwst">inkl. MwSt., zzgl. <a href="/kontakt.html#versand">Versand</a></p>'
+      (hatPreis ? '<p class="pdp__preis">' + window.ZBShop.euro(preis) + (ang && ang.alt ? ' <s class="pdp__alt">' + window.ZBShop.euro(ang.alt) + "</s>" : "") + window.ZBShop.grundpreis(p.name, preis) + '</p><p class="pdp__mwst">inkl. MwSt., zzgl. <a href="/kontakt.html#versand">Versand</a></p>'
+                : vv ? '<p class="pdp__preis" style="font-size:1.6rem;color:var(--gold-deep)">Preis folgt zur Eröffnung</p><p class="pdp__mwst">Wir eröffnen ' + esc(vv) + ". Dann gibt es hier Preise und den Warenkorb.</p>"
                 : '<p class="pdp__preis" style="font-size:1.6rem;color:var(--gold-deep)">Preis folgt</p><p class="pdp__mwst">Wir stellen die Preise gerade ein. Schau bald wieder vorbei!</p>') +
       '<div class="pdp__kaufen">' + kaufen + "</div>" +
       warnung +
@@ -83,7 +84,7 @@
   window.ZBShop.daten().then(function (d) {
     var preis = (d.preise || {})[p.id];
     var ang = (d.angebote || []).filter(function (a) { return a.id === p.id; })[0];
-    $("pdp").innerHTML = galerie() + info(preis, ang);
+    $("pdp").innerHTML = galerie() + info(preis, ang, d.vorverkauf && d.vorverkauf.aktiv ? (d.vorverkauf.text || "bald") : "");
 
     var haupt = $("galerieHaupt");
     haupt.addEventListener("click", function (e) {

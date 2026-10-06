@@ -97,6 +97,15 @@ r = await rufe("POST", "/admin/shoppreise", { aenderungen: { [essen]: { preis: 2
 r = await rufe("POST", "/admin/einstellungen", { versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Laden", bankInhaber: "ZUKKABRO", bankIban: "DE00 1234", bankName: "Bank", paypal: "", hinweis: "Danke!" }, admin); assert.equal(r.status, 200);
 ok("Shop-Preise und Einstellungen gespeichert");
 r = await rufe("GET", "/shop/daten"); assert.equal(r.daten.preise[essen], 249); assert.equal(r.daten.versand.kosten, 590); ok("Öffentliche Shop-Daten liefern Preise");
+const EINST = { versand: 590, versandfreiAb: 5000, abholung: true, abholort: "Laden", bankInhaber: "ZUKKABRO", bankIban: "DE00 1234", bankName: "Bank", paypal: "", hinweis: "Danke!" };
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, vorverkauf: true, eroeffnung: "im November 2026" }, admin); assert.equal(r.status, 200);
+r = await rufe("GET", "/shop/daten"); assert.deepEqual(r.daten.preise, {}); assert.deepEqual(r.daten.angebote, []); assert.deepEqual(r.daten.zahlarten, []); assert.equal(r.daten.vorverkauf.aktiv, true); assert.equal(r.daten.vorverkauf.text, "im November 2026");
+ok("Eröffnungsmodus: Preise, Angebote und Zahlarten bleiben weg");
+r = await rufe("POST", "/shop/bestellung", { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 1 }] });
+assert.equal(r.status, 409); assert.match(r.daten.fehler, /öffnet im November 2026/); ok("Eröffnungsmodus: Bestellung abgelehnt");
+r = await rufe("GET", "/shop/laden"); assert.ok(r.daten.karte.length > 0); assert.ok(r.daten.karte.every((k: any) => k.preis === null)); ok("Eröffnungsmodus: Karte ohne Preise");
+r = await rufe("POST", "/admin/einstellungen", { ...EINST, vorverkauf: false, eroeffnung: "" }, admin); assert.equal(r.status, 200); assert.equal(r.daten.einstellungen.eroeffnung, "im November 2026");
+r = await rufe("GET", "/shop/daten"); assert.equal(r.daten.preise[essen], 249); assert.equal(r.daten.vorverkauf.aktiv, false); ok("Eröffnungsmodus aus: Preise wieder da");
 r = await rufe("GET", "/shop/daten"); assert.equal(JSON.stringify(r.daten).includes("150"), false); ok("Händlerpreise bleiben geheim");
 const basis = { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true };
 r = await rufe("POST", "/shop/bestellung", { ...basis, agb: false, positionen: [{ produktId: essen, menge: 2 }] }); assert.equal(r.status, 400); ok("Ohne AGB-Häkchen keine Bestellung");
@@ -218,6 +227,16 @@ assert.equal((await webhook(sig)).status, 200);
 r = await rufe("GET", "/admin/buchungen?jahr=" + new Date().getFullYear(), undefined, admin);
 assert.equal(r.daten.buchungen.filter((x: any) => x.beleg === stripeNr && x.zahlungsart === "Stripe").length, 2); ok("Stripe-Zahlung automatisch gebucht (Ware + Versand), doppelter Webhook bucht nicht doppelt");
 globalThis.fetch = echtFetch; delete process.env.STRIPE_SECRET_KEY; delete process.env.STRIPE_WEBHOOK_SECRET;
+
+// News
+r = await rufe("GET", "/shop/news"); assert.deepEqual(r.daten.news, []); ok("Noch keine News");
+r = await rufe("POST", "/admin/news", { news: [{ titel: "", text: "x" }] }, admin); assert.equal(r.status, 400); ok("News ohne Überschrift abgelehnt");
+r = await rufe("POST", "/admin/news", { news: [{ titel: "Alt", datum: "2026-01-01", link: "javascript:alert(1)" }] }, admin); assert.equal(r.status, 400); ok("Unsicherer Link abgelehnt");
+r = await rufe("POST", "/admin/news", { news: [{ titel: "Alt", datum: "2026-01-01", link: "/pakete.html" }, { titel: "Neu", datum: "2026-02-01", text: "Hallo" }, { titel: "Entwurf", datum: "2026-03-01", aktiv: false }] }, admin);
+assert.equal(r.status, 200); assert.ok(r.daten.news.every((n: any) => /^N-/.test(n.id))); const newsIds = r.daten.news.map((n: any) => n.id);
+r = await rufe("GET", "/shop/news"); assert.equal(r.daten.news.length, 2); assert.equal(r.daten.news[0].titel, "Neu"); ok("News öffentlich: neueste zuerst, Entwurf versteckt");
+r = await rufe("POST", "/admin/news", { news: [{ id: newsIds[0], titel: "Alt geändert", datum: "2026-01-01" }] }, admin); assert.equal(r.daten.news[0].id, newsIds[0]); ok("News-Kennung bleibt beim Bearbeiten erhalten");
+r = await rufe("POST", "/admin/news", { news: [] }, admin);
 
 // Bremse gegen Passwort-Raten (gleiche IP)
 let letzte = 0;

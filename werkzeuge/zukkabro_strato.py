@@ -10,7 +10,8 @@ Aufruf:
   python3 werkzeuge/zukkabro_strato.py ZIELORDNER [--zugang zugang.json]
 
 zugang.json (optional, sonst werden neue Passwörter erzeugt):
-  {"seite": "Team-Passwort", "admins": {"admin1": "Passwort", "admin2": "Passwort"}}
+  {"seite": "Team-Passwort oder leer", "admins": {"admin1": "Passwort", "admin2": "Passwort"},
+   "vorverkauf": true}   (Eröffnungsmodus: Seite offen, aber ohne Preise und Bestellung)
 
 Braucht PHP auf dem Rechner (für password_hash).
 """
@@ -76,6 +77,9 @@ def main():
         shutil.copy2(STRATO / "api" / f, paket / "api" / f)
     (paket / "daten").mkdir()
     shutil.copy2(STRATO / "daten" / ".htaccess", paket / "daten" / ".htaccess")
+    if zugang.get("vorverkauf", True):  # Eröffnungsmodus, bis der Admin ihn unter Shop-Einstellungen abschaltet
+        (paket / "daten" / "einstellungen").mkdir()
+        (paket / "daten" / "einstellungen" / "shop.json").write_text(json.dumps({"vorverkauf": True, "eroeffnung": zugang.get("eroeffnung", "im November 2026")}, ensure_ascii=False), encoding="utf-8")
 
     # 2. Sortiment und Start-Pakete als JSON (gleiche Daten wie die Netlify-Version)
     sortiment = ts_json(API_TS / "sortiment.mts", "SORTIMENT", "};")

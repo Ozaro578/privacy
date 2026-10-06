@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin – ZUKKABRO</title>
-  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#ff2e98">
   <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="stylesheet" href="/assets/css/portal.css">
   <script>
@@ -62,6 +62,7 @@
           <button data-tab="preise" role="tab">🏷️ Preise</button>
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
           <button data-tab="angebote" role="tab">🔥 Angebote</button>
+          <button data-tab="news" role="tab">📣 News</button>
           <button data-tab="laden" role="tab">🏪 Laden</button>
           <button data-tab="kasse" role="tab">💵 Kasse</button>
           <button data-tab="einstellungen" role="tab">⚙️ Shop-Einstellungen</button>
@@ -144,6 +145,16 @@
             <button class="btn btn--pink" id="angeboteSpeichern" type="button">Angebote speichern</button>
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="angebotTabelle"></table></div>
+        </section>
+
+        <!-- News -->
+        <section data-panel="news" hidden>
+          <p class="hinweis">News erscheinen auf der Startseite (die letzten 3), auf <a href="/news.html" target="_blank">zukkabro.de/news</a> und in der App. Neueste zuerst. Link optional (z. B. zu einem Produkt, Paket oder Instagram-Post).</p>
+          <div class="leiste">
+            <button class="btn btn--light btn--klein" id="newsNeu" type="button">+ Neue News</button>
+            <button class="btn btn--pink" id="newsSpeichern" type="button">News speichern</button>
+          </div>
+          <div id="newsEditor"></div>
         </section>
 
         <!-- Laden in Heilbronn -->
@@ -247,6 +258,11 @@
             <label class="feld">PayPal (Link oder E-Mail) <small>leer = kein PayPal</small><input name="paypal" placeholder="https://paypal.me/…"></label>
             <h2 class="voll" style="margin-top:1rem">Shop</h2>
             <label class="check-zeile voll"><input type="checkbox" name="ohnePreisAusblenden"><span>Produkte ohne Shop-Preis im Shop ausblenden</span></label>
+            <label class="check-zeile voll"><input type="checkbox" name="vorverkauf"><span><b>Eröffnungsmodus:</b> Seite ist online, aber ohne Preise, Angebote und Online-Bestellung (bis zur Eröffnung)</span></label>
+            <label class="feld">Eröffnungstext <small>steht oben auf jeder Seite</small><input name="eroeffnung" maxlength="60" placeholder="im November 2026"></label>
+            <h2 class="voll" style="margin-top:1rem">E-Mails (nur auf Strato)</h2>
+            <label class="feld">Benachrichtigungen an <small>neue Bestellungen, Nachrichten, Händler</small><input name="mailAn" type="email" placeholder="info@zukkabro.de"></label>
+            <label class="feld">Absender-Adresse <small>muss eine Adresse eurer Domain sein</small><input name="mailVon" type="email" placeholder="bestellung@zukkabro.de"></label>
             <label class="feld voll">Text auf der Bestellbestätigung<textarea name="hinweis" rows="2" placeholder="z. B. Wir melden uns innerhalb von 24 Stunden."></textarea></label>
             <div class="voll"><button class="btn btn--pink" type="submit">Einstellungen speichern</button></div>
           </form>

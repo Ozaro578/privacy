@@ -449,8 +449,9 @@ async function ladenEinstellungen(): Promise<LadenEinstellungen> {
 }
 async function karte(): Promise<KarteEintrag[]> { return (await lese<KarteEintrag[]>("laden/karte")) || KARTE_VORLAGE; }
 async function ladenDaten() {
-  const [l, k] = await Promise.all([ladenEinstellungen(), karte()]);
-  return json({ laden: l, karte: k.filter((x) => x.aktiv), allergene: ALLERGENE });
+  const [l, k, e] = await Promise.all([ladenEinstellungen(), karte(), einstellungen()]);
+  const sichtbar = k.filter((x) => x.aktiv).map((x) => (e.vorverkauf ? { ...x, preis: null } : x));
+  return json({ laden: l, karte: sichtbar, allergene: ALLERGENE, vorverkauf: { aktiv: !!e.vorverkauf, text: e.eroeffnung } });
 }
 function uhrzeit(v: unknown): string {
   const t = text(v, 5);
@@ -589,6 +590,31 @@ async function kasseBerichte(url: URL) {
   return json({ monat, tage: tage.map((t) => ({ datum: t.datum, anfang: t.anfang, ...kassenSumme(t), abschluss: t.abschluss })) });
 }
 
+/* =================== News (Startseite, News-Seite, App) =================== */
+interface News { id: string; titel: string; text: string; link: string; datum: string; aktiv: boolean; erstellt: string }
+async function news(): Promise<News[]> { return (await lese<News[]>("news/alle")) || []; }
+async function newsOeffentlich() {
+  const alle = (await news()).filter((n) => n.aktiv).sort((a, b) => (a.datum < b.datum ? 1 : -1)).slice(0, 20);
+  return json({ news: alle.map((n) => ({ id: n.id, titel: n.titel, text: n.text, link: n.link, datum: n.datum })) });
+}
+async function newsSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh: any[] = Array.isArray(b.news) ? b.news.slice(0, 50) : [];
+  const alt = await news();
+  const liste: News[] = roh.map((r) => {
+    const titel = text(r?.titel, 120);
+    if (!titel) throw new Fehler(400, "Jede News braucht eine Überschrift.");
+    const id = /^N-[A-Za-z0-9-]{4,40}$/.test(String(r?.id || "")) ? String(r.id) : neueId("N-");
+    const vorher = alt.find((x) => x.id === id);
+    const link = text(r?.link, 300);
+    if (link && !/^(https?:\/\/|\/)/.test(link)) throw new Fehler(400, "Link bitte mit https:// oder / beginnen.");
+    return { id, titel, text: text(r?.text, 1000), link, datum: datum(r?.datum || jetzt().slice(0, 10)), aktiv: r?.aktiv !== false, erstellt: vorher?.erstellt || jetzt() };
+  });
+  await schreibe("news/alle", liste);
+  await protokoll("news-geaendert", s.id, { anzahl: liste.length });
+  return json({ ok: true, news: liste });
+}
+
 /* ---------- Kontaktformular ---------- */
 interface Nachricht { id: string; name: string; email: string; telefon: string; betreff: string; text: string; erstellt: string; gelesen: boolean }
 async function kontakt(req: Request, ip: string) {
@@ -661,16 +687,19 @@ async function angeboteSpeichern(req: Request, s: Sitzung) {
 async function shopDaten() {
   const [{ preise, angebote: laufend }, e, alle] = await Promise.all([effektivePreise(), einstellungen(), pakete()]);
   const nurPreise: Record<string, number> = {};
-  for (const [id, p] of Object.entries(preise)) if (produkt(id)) nurPreise[id] = p.preis;
+  // Eröffnungsmodus (Vorverkauf): die Seite ist offen, aber Preise, Angebote und Bestellung bleiben bis zur Eröffnung weg
+  const vv = !!e.vorverkauf;
+  if (!vv) for (const [id, p] of Object.entries(preise)) if (produkt(id)) nurPreise[id] = p.preis;
   return json({
     preise: nurPreise,
-    angebote: laufend.map((a) => ({ id: a.id, preis: a.preis, alt: a.alt, titel: a.titel, bis: a.bis })),
+    angebote: vv ? [] : laufend.map((a) => ({ id: a.id, preis: a.preis, alt: a.alt, titel: a.titel, bis: a.bis })),
     versand: { kosten: e.versand, freiAb: e.versandfreiAb, abholung: e.abholung, abholort: e.abholort },
-    zahlarten: zahlarten(e),
-    ohnePreisAusblenden: !!(e as any).ohnePreisAusblenden,
+    zahlarten: vv ? [] : zahlarten(e),
+    ohnePreisAusblenden: !vv && !!e.ohnePreisAusblenden,
+    vorverkauf: { aktiv: vv, text: e.eroeffnung },
     pakete: alle.filter((pk) => pk.aktiv).map((pk) => ({
       id: pk.id, name: pk.name, untertitel: pk.untertitel, emoji: pk.emoji, farbe: pk.farbe,
-      inhalt: pk.inhalt, preis: pk.preis, ...paketStatus(pk),
+      inhalt: pk.inhalt, preis: vv ? null : pk.preis, ...paketStatus(pk),
     })),
   });
 }
@@ -686,6 +715,7 @@ async function kasse(req: Request, ip: string) {
   await bremse("kasse", ip, 10, 60);
   const b = await body(req);
   const [{ preise }, e, allePakete] = await Promise.all([effektivePreise(), einstellungen(), pakete()]);
+  if (e.vorverkauf) throw new Fehler(409, `Der Online-Shop öffnet ${e.eroeffnung}. Bis dahin sind noch keine Bestellungen möglich.`);
   const k = b.kunde || {};
   const kunde: Kunde = {
     vorname: text(k.vorname, 80), nachname: text(k.nachname, 80), email: text(k.email, 120).toLowerCase(),
@@ -805,11 +835,13 @@ async function shopPreiseSpeichern(req: Request, s: Sitzung) {
 
 async function einstellungenSpeichern(req: Request, s: Sitzung) {
   const b = await body(req);
-  const e: ShopEinstellungen & { ohnePreisAusblenden: boolean } = {
+  const e: ShopEinstellungen = {
     versand: ganz(b.versand, 0, 100_000), versandfreiAb: ganz(b.versandfreiAb, 0, 10_000_000),
     abholung: b.abholung === true, abholort: text(b.abholort, 200),
     bankInhaber: text(b.bankInhaber, 100), bankIban: text(b.bankIban, 40).replace(/\s+/g, " "), bankName: text(b.bankName, 100),
     paypal: text(b.paypal, 200), hinweis: text(b.hinweis, 1000), ohnePreisAusblenden: b.ohnePreisAusblenden === true,
+    mailAn: text(b.mailAn, 120).toLowerCase(), mailVon: text(b.mailVon, 120).toLowerCase(),
+    vorverkauf: b.vorverkauf === true, eroeffnung: text(b.eroeffnung, 60) || STANDARD_EINSTELLUNGEN.eroeffnung,
   };
   await schreibe("einstellungen/shop", e);
   await protokoll("einstellungen-geaendert", s.id);
@@ -837,6 +869,7 @@ export default async (req: Request, context: Context) => {
     if (m === "GET" && pfad === "/shop/daten") return await shopDaten();
     if (m === "POST" && pfad === "/kontakt") return await kontakt(req, ip);
     if (m === "GET" && pfad === "/shop/laden") return await ladenDaten();
+    if (m === "GET" && pfad === "/shop/news") return await newsOeffentlich();
     if (m === "GET" && pfad === "/shop/bestellung/status") return await stripeBestellStatus(url);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
 
@@ -882,6 +915,8 @@ export default async (req: Request, context: Context) => {
         return json({ preise, shop, einstellungen: e });
       }
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/news") return json({ news: await news() });
+      if (m === "POST" && pfad === "/admin/news") return await newsSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/laden") return json({ laden: await ladenEinstellungen(), karte: await karte(), allergene: ALLERGENE, arten: KARTE_ARTEN });
       if (m === "POST" && pfad === "/admin/laden") return await ladenSpeichern(req, a);
       if (m === "POST" && pfad === "/admin/karte") return await karteSpeichern(req, a);

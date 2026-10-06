@@ -1,0 +1,26 @@
+{
+  "name": "ZUKKABRO – Snacks, Drinks & More",
+  "short_name": "ZUKKABRO",
+  "description": "Internationale Snacks, Candy, Drinks und mehr. Laden in Heilbronn mit Matcha & Açaí Bowls.",
+  "id": "/",
+  "start_url": "/?quelle=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf1e6",
+  "theme_color": "#ff2e98",
+  "lang": "de",
+  "categories": ["shopping", "food"],
+  "icons": [
+    { "src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/img/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Sortiment", "url": "/sortiment.html", "icons": [{ "src": "/assets/img/icon-192.png", "sizes": "192x192" }] },
+    { "name": "News", "url": "/news.html", "icons": [{ "src": "/assets/img/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Laden in Heilbronn", "url": "/laden.html", "icons": [{ "src": "/assets/img/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Warenkorb", "url": "/warenkorb.html", "icons": [{ "src": "/assets/img/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

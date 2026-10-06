@@ -124,6 +124,7 @@
     if (id === "pakete") paketeLaden();
     if (id === "angebote") angeboteLaden();
     if (id === "laden") ladenLaden();
+    if (id === "news") newsLaden();
     if (id === "kasse") kasseLaden();
     if (id === "buchhaltung") journal();
     if (id === "bestand") bestand();
@@ -394,7 +395,7 @@
       preise(); ZB.meldung("Preise gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
-  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert || karteGeaendert) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert || karteGeaendert || newsGeaendert) { e.preventDefault(); e.returnValue = ""; } });
 
   /* ================= Pakete ================= */
   var paketListe = null, paketGeaendert = false;
@@ -550,6 +551,50 @@
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
 
+
+  /* ================= News ================= */
+  var newsListe = null, newsGeaendert = false;
+  async function newsLaden() {
+    if (newsListe) return newsZeichnen();
+    try { newsListe = (await ZB.api("GET", "/admin/news")).news; newsZeichnen(); } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  function newsZeichnen() {
+    $("newsEditor").innerHTML = newsListe.map(function (n, i) {
+      return '<div class="karte" data-news="' + i + '"><div class="form form--4">' +
+        '<label class="feld" style="grid-column:span 2">Überschrift<input data-nf="titel" maxlength="120" value="' + esc(n.titel) + '"></label>' +
+        '<label class="feld">Datum<input type="date" data-nf="datum" value="' + esc(n.datum) + '"></label>' +
+        '<label class="check-zeile" style="align-self:end"><input type="checkbox" data-nf="aktiv"' + (n.aktiv !== false ? " checked" : "") + "><span>Veröffentlicht</span></label>" +
+        '<label class="feld voll">Text<textarea data-nf="text" rows="3" maxlength="1000">' + esc(n.text || "") + "</textarea></label>" +
+        '<label class="feld" style="grid-column:span 3">Link (optional)<input data-nf="link" maxlength="300" placeholder="/produkt.html?id=… oder https://…" value="' + esc(n.link || "") + '"></label>' +
+        '<div class="feld" style="align-self:end"><button class="btn btn--rot btn--klein" type="button" data-news-weg="' + i + '">Löschen</button></div>' +
+      "</div></div>";
+    }).join("") || '<p class="leer">Noch keine News. Oben „Neue News“ klicken.</p>';
+    $("newsSpeichern").textContent = newsGeaendert ? "News speichern (ungespeichert!)" : "News speichern";
+  }
+  function newsFeld(e) {
+    var box = e.target.closest("[data-news]"); if (!box) return;
+    var n = newsListe[+box.getAttribute("data-news")], f = e.target.getAttribute("data-nf"); if (!f) return;
+    if (f === "aktiv") n.aktiv = e.target.checked; else n[f] = e.target.value;
+    newsGeaendert = true; $("newsSpeichern").textContent = "News speichern (ungespeichert!)";
+  }
+  $("newsEditor").addEventListener("input", newsFeld);
+  $("newsEditor").addEventListener("change", newsFeld);
+  $("newsEditor").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-news-weg]"); if (!b) return;
+    if (!confirm("Diese News löschen?")) return;
+    newsListe.splice(+b.getAttribute("data-news-weg"), 1); newsGeaendert = true; newsZeichnen();
+  });
+  $("newsNeu").addEventListener("click", async function () {
+    if (!newsListe) await newsLaden();
+    newsListe.unshift({ id: "", titel: "", text: "", link: "", datum: ZB.heute(), aktiv: true });
+    newsGeaendert = true; newsZeichnen();
+  });
+  $("newsSpeichern").addEventListener("click", async function () {
+    try {
+      var r = await ZB.api("POST", "/admin/news", { news: newsListe.map(function (n) { return { id: n.id, titel: n.titel, text: n.text, link: n.link, datum: n.datum, aktiv: n.aktiv !== false }; }) });
+      newsListe = r.news; newsGeaendert = false; newsZeichnen(); ZB.meldung("News gespeichert.");
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
 
   /* ================= Laden: Öffnungszeiten, Karte ================= */
   var ladenDaten = null, karteGeaendert = false;
@@ -739,6 +784,8 @@
     f.abholung.checked = !!e.abholung; f.abholort.value = e.abholort || "";
     f.bankInhaber.value = e.bankInhaber || ""; f.bankIban.value = e.bankIban || ""; f.bankName.value = e.bankName || "";
     f.paypal.value = e.paypal || ""; f.hinweis.value = e.hinweis || ""; f.ohnePreisAusblenden.checked = !!e.ohnePreisAusblenden;
+    f.mailAn.value = e.mailAn || ""; f.mailVon.value = e.mailVon || "";
+    f.vorverkauf.checked = !!e.vorverkauf; f.eroeffnung.value = e.eroeffnung || "";
   }
   $("einstForm").addEventListener("submit", async function (ev) {
     ev.preventDefault();
@@ -750,6 +797,7 @@
         versand: versand, versandfreiAb: frei, abholung: f.abholung.checked, abholort: f.abholort.value,
         bankInhaber: f.bankInhaber.value, bankIban: f.bankIban.value, bankName: f.bankName.value,
         paypal: f.paypal.value, hinweis: f.hinweis.value, ohnePreisAusblenden: f.ohnePreisAusblenden.checked,
+        mailAn: f.mailAn.value, mailVon: f.mailVon.value, vorverkauf: f.vorverkauf.checked, eroeffnung: f.eroeffnung.value,
       });
       daten.einstellungen = r.einstellungen; ZB.meldung("Einstellungen gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
@@ -887,7 +935,7 @@
   async function protokoll() {
     try {
       var r = await ZB.api("GET", "/admin/protokoll?monat=" + $("protokollMonat").value);
-      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert", "angebote-geaendert": "Angebote geändert", "laden-geaendert": "Laden geändert", "karte-geaendert": "Karte geändert", "kasse-abschluss": "Tageskasse abgeschlossen", "stripe-bezahlt": "Online-Zahlung eingegangen (Stripe)" };
+      var namen = { "admin-login": "Admin angemeldet", "admin-login-fehlgeschlagen": "Admin-Login fehlgeschlagen", "haendler-login": "Händler angemeldet", "haendler-registriert": "Händler registriert", "haendler-status": "Händlerstatus geändert", "bestellung-neu": "Neue Händlerbestellung", "kundenbestellung-neu": "Neue Kundenbestellung", "preisanfrage-neu": "Neue Preisanfrage", "preise-geaendert": "Händlerpreise geändert", "shoppreise-geaendert": "Shop-Preise geändert", "einstellungen-geaendert": "Shop-Einstellungen geändert", "pakete-geaendert": "Pakete geändert", "angebote-geaendert": "Angebote geändert", "laden-geaendert": "Laden geändert", "karte-geaendert": "Karte geändert", "kasse-abschluss": "Tageskasse abgeschlossen", "news-geaendert": "News geändert", "stripe-bezahlt": "Online-Zahlung eingegangen (Stripe)" };
       $("protokollTabelle").innerHTML = "<thead><tr><th>Zeit</th><th>Ereignis</th><th>Wer</th><th>Details</th></tr></thead><tbody>" +
         (r.protokoll.length ? r.protokoll.map(function (p) {
           var d = Object.keys(p).filter(function (k) { return ["am", "ereignis", "von"].indexOf(k) === -1; }).map(function (k) { return k + ": " + p[k]; }).join(", ");

@@ -10,7 +10,7 @@
     { id: "start",     href: "/",                 text: "Start" },
     { id: "sortiment", href: "/sortiment.html",   text: "Sortiment" },
     { id: "pakete",    href: "/pakete.html",      text: "Pakete" },
-    { id: "laden",     href: "/laden.html",       text: "🍵 Laden" },
+    { id: "laden",     href: "/laden.html",       text: "🍵 Matcha & Açaí" },
     { id: "vapes",     href: "/vapes.html",       text: "Vapes 18+" },
     { id: "haendler",  href: "/haendler/",        text: "Für Händler" },
     { id: "kontakt",   href: "/kontakt.html",     text: "Kontakt", cta: true }
@@ -57,6 +57,7 @@
         "</div>" +
       "</div>" +
       '<div class="topbar"><div class="container topbar__inner">' +
+        '<span id="topbarVv" hidden>🎉 <b data-eroeffnung></b></span>' +
         '<span>🚚 Versand in 3 Werktagen</span>' +
         '<span>📍 Laden in Heilbronn: Matcha &amp; Açaí am Wochenende</span>' +
         '<span id="topbarFrei" hidden>📦 Versandkostenfrei ab <b data-versandfrei></b></span>' +
@@ -76,7 +77,7 @@
           '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen oder Abholung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
           '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +
@@ -84,6 +85,7 @@
         '<nav class="footer__spalte" aria-label="Rechtliches"><h3>Rechtliches</h3>' +
           '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a>' +
           '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
+          '<button type="button" class="linklike" id="appLink" hidden>📲 Als App installieren</button>' +
         "</nav></div>" +
         '<div class="container footer__unten">' +
           '<p class="footer__jugend">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p>' +
@@ -110,11 +112,25 @@
         shopVersprechen = fetch("/api/shop/daten", { credentials: "same-origin" })
           .then(function (r) { return r.ok ? r.json() : null; })
           .catch(function () { return null; })
-          .then(function (d) { return d || { preise: {}, versand: { kosten: 0, freiAb: 0, abholung: false }, zahlarten: [], ohnePreisAusblenden: false }; });
+          .then(function (d) { return d || { preise: {}, versand: { kosten: 0, freiAb: 0, abholung: false }, zahlarten: [], ohnePreisAusblenden: false, vorverkauf: { aktiv: false, text: "" } }; });
       }
       return shopVersprechen;
     },
-    euro: function (cent) { return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100); }
+    euro: function (cent) { return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100); },
+    /** Text statt Preis: vor der Eröffnung anders als bei einem einzelnen Artikel ohne Preis */
+    folgtText: function (d) { return d && d.vorverkauf && d.vorverkauf.aktiv ? "Preis folgt zur Eröffnung" : "Preis folgt"; },
+    /** Grundpreis nach Preisangabenverordnung aus dem Produktnamen ("… 50 g", "12 × 330 ml"), leer wenn keine Menge erkennbar */
+    grundpreis: function (name, cent) {
+      if (typeof cent !== "number" || !name) return "";
+      var m = /(?:(\d+)\s?[x×]\s?)?(\d+(?:[.,]\d+)?)\s?(kg|g|ml|l)\b/i.exec(name);
+      if (!m) return "";
+      var menge = parseFloat(m[2].replace(",", ".")) * (m[1] ? parseInt(m[1], 10) : 1), einheit = m[3].toLowerCase();
+      if (!(menge > 0)) return "";
+      if (einheit === "kg") { menge *= 1000; einheit = "g"; }
+      if (einheit === "l") { menge *= 1000; einheit = "ml"; }
+      var basis = menge > 250 ? 1000 : 100, label = basis === 1000 ? (einheit === "g" ? "1 kg" : "1 l") : "100 " + einheit;
+      return '<small class="grundpreis">(' + window.ZBShop.euro(Math.round(cent / menge * basis)) + "/" + label + ")</small>";
+    }
   };
 
   /* ---------- Mini-Warenkorb (Schublade rechts, öffnet sich beim "In den Korb") ---------- */
@@ -246,12 +262,36 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  /* ---------- App: Service Worker und Installation (PWA) ---------- */
+  var installPrompt = null;
+  var istApp = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  var istIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  if ("serviceWorker" in navigator && location.protocol === "https:" && seite !== "admin" && seite !== "haendler") {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () { /* ohne App-Funktionen weiter */ }); });
+  }
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); installPrompt = e; appKnoepfe(); });
+  window.addEventListener("appinstalled", function () { installPrompt = null; store.set("zb_app_installiert", "1"); appKnoepfe(); });
+  function appInstallieren() {
+    if (installPrompt) { installPrompt.prompt(); installPrompt.userChoice.then(function () { installPrompt = null; appKnoepfe(); }); return; }
+    window.ZBToast(istIos ? "Safari: Teilen-Symbol antippen → „Zum Home-Bildschirm“." : "Browser-Menü (⋮) öffnen → „App installieren“ oder „Zum Startbildschirm“.");
+  }
+  function appKnoepfe() {
+    var link = document.getElementById("appLink"), knopf = document.getElementById("appInstallieren"), anleitung = document.getElementById("appAnleitung");
+    var zeigen = !istApp && !store.get("zb_app_installiert");
+    if (link) link.hidden = !zeigen;
+    if (knopf) knopf.hidden = !zeigen;
+    if (anleitung) anleitung.textContent = istApp ? "✅ Du nutzt schon die App." : istIos ? "iPhone/iPad: In Safari auf „Teilen“ tippen, dann „Zum Home-Bildschirm“." : installPrompt ? "" : "Android/Chrome: Menü (⋮) öffnen, dann „App installieren“.";
+  }
+  window.ZBApp = { installieren: appInstallieren };
+
   /* ---------- Rest nach dem Laden der Seite ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     var unten = document.getElementById("layout-unten");
     if (unten) unten.outerHTML = fuss();
     document.getElementById("year").textContent = new Date().getFullYear();
     document.getElementById("resetAge").addEventListener("click", function () { store.del(AGE_KEY); lock(); });
+    appKnoepfe();
+    document.querySelectorAll("#appLink, #appInstallieren").forEach(function (el) { el.addEventListener("click", appInstallieren); });
 
     /* Kontaktdaten aus shop.js */
     var S = typeof SHOP === "object" ? SHOP : {};
@@ -274,6 +314,9 @@
     setLink("ttLink", tt ? "https://www.tiktok.com/@" + tt : "");
     setText("tiktokLabel", tt ? "@" + tt : "");
     setLink("mailLink", S.email ? "mailto:" + S.email : "");
+    var tel = (S.telefon || "").trim();
+    setLink("telLink", tel ? "tel:" + tel.replace(/[^\d+]/g, "") : "");
+    setText("telefon", tel);
     setText("email", S.email); setText("address", S.address); setText("hours", S.hours); setText("shipping", S.shipping);
     var social = document.getElementById("footerSocial");
     if (social) {
@@ -292,11 +335,33 @@
       document.body.appendChild(fab);
     }
 
-    /* Versandkostenfrei-Grenze in die obere Leiste */
+    /* Versandkostenfrei-Grenze und Eröffnungshinweis in die obere Leiste */
     window.ZBShop.daten().then(function (d) {
       var frei = d && d.versand && d.versand.freiAb, el = document.getElementById("topbarFrei");
-      if (el && frei > 0) { el.querySelector("[data-versandfrei]").textContent = window.ZBShop.euro(frei); el.hidden = false; }
+      var vv = d && d.vorverkauf && d.vorverkauf.aktiv, elVv = document.getElementById("topbarVv");
+      if (vv) {
+        document.body.classList.add("is-vorverkauf");
+        if (elVv) { elVv.querySelector("[data-eroeffnung]").textContent = "Eröffnung " + (d.vorverkauf.text || "bald") + " · Preise & Online-Bestellung folgen"; elVv.hidden = false; }
+      } else if (el && frei > 0) { el.querySelector("[data-versandfrei]").textContent = window.ZBShop.euro(frei); el.hidden = false; }
     });
+
+    /* App-Leiste unten, wenn die Seite als App (vom Startbildschirm) läuft: gleicher Shop, gleiche Bestellung, nur handlicher */
+    if (istApp && seite !== "admin" && seite !== "haendler") {
+      document.body.classList.add("is-app");
+      var leiste = document.createElement("nav");
+      leiste.className = "app-leiste"; leiste.setAttribute("aria-label", "App-Menü");
+      leiste.innerHTML = [
+        { id: "start", href: "/", icon: "🏠", text: "Start" }, { id: "sortiment", href: "/sortiment.html", icon: "🍬", text: "Shop" },
+        { id: "laden", href: "/laden.html", icon: "🍵", text: "Laden" }, { id: "news", href: "/news.html", icon: "📰", text: "News" },
+        { id: "warenkorb", href: "/warenkorb.html", icon: "🛒", text: "Korb", korb: true }
+      ].map(function (m) {
+        return '<a href="' + m.href + '"' + (m.id === seite ? ' class="is-active" aria-current="page"' : "") + '><span class="app-leiste__icon" aria-hidden="true">' + m.icon +
+          (m.korb ? '<span class="app-leiste__zahl" id="appKorbZahl" hidden>0</span>' : "") + "</span>" + m.text + "</a>";
+      }).join("");
+      document.body.appendChild(leiste);
+      var appZahl = function () { var n = window.ZBKorb.anzahl(), z = document.getElementById("appKorbZahl"); if (z) { z.textContent = n > 99 ? "99+" : n; z.hidden = !n; } };
+      window.addEventListener("zb-korb", appZahl); appZahl();
+    }
 
     /* Einblend-Animationen */
     var reveals = document.querySelectorAll(".reveal");

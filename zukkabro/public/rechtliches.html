@@ -3,18 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Impressum &amp; Datenschutz – ZUKKABRO</title>
-  <meta name="robots" content="noindex">
+  <title>Impressum, Datenschutz &amp; AGB – ZUKKABRO</title>
+  <meta name="description" content="Impressum, Datenschutzerklärung, Allgemeine Geschäftsbedingungen und Widerrufsbelehrung von ZUKKABRO, Heilbronn.">
+  <meta name="theme-color" content="#ff2e98">
   <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/assets/css/style.css">
   <style>
-    .legal { max-width: 820px; margin: 0 auto; padding: 40px var(--gutter) 80px; }
-    .legal h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 6vw, 3rem); margin: 1rem 0 .3em; }
-    .legal h2 { font-size: 1.5rem; margin-top: 2rem; }
-    .legal h3 { font-size: 1.15rem; margin-top: 1.6rem; }
-    .legal section { background: var(--paper); border: 3px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); padding: 1.6rem 1.8rem; margin-top: 2rem; }
-    .todo { background: var(--gold-soft); border: 2px dashed var(--gold); border-radius: 10px; padding: .1em .45em; font-weight: 600; }
-    .note { background: var(--pink-soft); border: 2px solid var(--pink); border-radius: 14px; padding: .9rem 1.1rem; font-weight: 600; }
+    .legal { max-width: 860px; margin: 0 auto; padding: 32px var(--gutter) 80px; }
+    .legal h1 { font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 6vw, 2.8rem); margin: .2em 0 .5em; }
+    .legal h2 { font-size: 1.35rem; margin-top: 2rem; }
+    .legal h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+    .legal section { background: var(--paper); border: 3px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); padding: 1.6rem 1.8rem; margin-top: 2rem; scroll-margin-top: 90px; }
+    .legal p, .legal li { line-height: 1.65; }
+    .legal ul { padding-left: 1.3rem; }
+    .legal address { font-style: normal; line-height: 1.7; }
+    .legal .stand { font-size: .9rem; opacity: .75; margin-top: 1.5rem; }
+    .legal .sprung { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 .5rem; }
+    .legal .sprung a { background: var(--paper); border: 3px solid var(--choco); border-radius: 999px; padding: .35em .9em; font-weight: 800; text-decoration: none; color: var(--choco); box-shadow: 3px 3px 0 var(--choco); }
+    .legal .sprung a:hover { background: var(--gold-soft); }
+    .legal .kasten { background: var(--pink-soft); border: 2px solid var(--pink); border-radius: 14px; padding: .9rem 1.1rem; }
+    .legal .formular { background: var(--cream); border: 2px dashed var(--choco); border-radius: 14px; padding: 1rem 1.2rem; }
+    .legal table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    .legal td, .legal th { text-align: left; vertical-align: top; padding: .45rem .5rem; border-bottom: 1px solid #e6d8c8; }
   </style>
   <script>
     window.addEventListener("error", function (e) {
@@ -28,86 +40,228 @@
   <div id="layout-oben"></div>
   <script src="/assets/js/layout.js"></script>
   <main class="legal">
-    <p class="note">Vorlage: Alle gelb markierten Stellen müsst ihr vor der Veröffentlichung ausfüllen. Diese Texte ersetzen keine Rechtsberatung. Lasst sie am besten einmal von einem Anwalt oder einem Generator wie eRecht24 prüfen.</p>
+    <p class="eyebrow">Rechtliches</p>
+    <nav class="sprung" aria-label="Abschnitte">
+      <a href="#impressum">Impressum</a><a href="#datenschutz">Datenschutz</a><a href="#agb">AGB</a><a href="#widerruf">Widerruf</a><a href="#batterien">Batterien &amp; Altgeräte</a>
+    </nav>
 
+    <!-- =============================== IMPRESSUM =============================== -->
     <section id="impressum">
       <h1>Impressum</h1>
-      <h3>Angaben gemäß § 5 DDG</h3>
-      <p>
-        <span class="todo">Vor- und Nachname bzw. Firmenname (z. B. „ZUKKABRO GbR, vertreten durch …“)</span><br>
-        <span class="todo">Straße und Hausnummer</span><br>
-        <span class="todo">PLZ und Ort</span>
-      </p>
+      <h2>Angaben gemäß § 5 DDG</h2>
+      <address>
+        <strong>ZUKKABRO</strong><br>
+        Inhaber: Harun Özkan<br>
+        Klingenberger Straße 100<br>
+        74080 Heilbronn<br>
+        Deutschland
+      </address>
       <h3>Kontakt</h3>
-      <p>
-        Telefon: <span class="todo">Telefonnummer</span><br>
-        E-Mail: <span class="todo">E-Mail-Adresse</span>
-      </p>
-      <h3>Umsatzsteuer-ID</h3>
-      <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: <span class="todo">falls vorhanden, sonst Abschnitt löschen</span></p>
-      <h3>Verantwortlich für den Inhalt</h3>
-      <p><span class="todo">Name und Anschrift</span></p>
+      <address>
+        Telefon: <a id="telLink" href="#impressum"><span data-shop="telefon">wird in Kürze ergänzt</span></a><br>
+        E-Mail: <a href="mailto:info@zukkabro.de">info@zukkabro.de</a><br>
+        Web: <a href="https://zukkabro.de">zukkabro.de</a>
+      </address>
+      <h3>Umsatzsteuer</h3>
+      <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: wird nach Erteilung durch das Finanzamt an dieser Stelle ergänzt.</p>
+      <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+      <p>Harun Özkan, Klingenberger Straße 100, 74080 Heilbronn</p>
       <h3>Verbraucherstreitbeilegung</h3>
-      <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+      <p>Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle im Sinne des Verbraucherstreitbeilegungsgesetzes (VSBG) teilzunehmen.</p>
       <h3>Jugendschutz</h3>
-      <p>Wir geben E-Zigaretten, Liquids und Tabakwaren ausschließlich an Personen ab 18 Jahren ab. Das Alter wird bei Abholung und Zustellung geprüft.</p>
+      <p>E-Zigaretten, Liquids, nikotinhaltige Produkte und Tabakwaren geben wir ausschließlich an Personen ab 18 Jahren ab (§ 10 JuSchG). Das Alter wird bei Abholung im Laden und bei der Zustellung durch den Paketdienst geprüft.</p>
+      <h3>Haftung für Links</h3>
+      <p>Unsere Website enthält Links zu externen Websites Dritter (z. B. WhatsApp, Instagram, TikTok), auf deren Inhalte wir keinen Einfluss haben. Für diese fremden Inhalte ist stets der jeweilige Anbieter verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden von Rechtsverletzungen entfernen wir derartige Links umgehend.</p>
+      <h3>Urheberrecht</h3>
+      <p>Die auf dieser Website veröffentlichten Inhalte, Texte, Grafiken und das ZUKKABRO-Logo unterliegen dem deutschen Urheberrecht. Produktabbildungen und Markennamen gehören den jeweiligen Herstellern und werden ausschließlich zur Beschreibung der angebotenen Waren verwendet.</p>
     </section>
 
+    <!-- =============================== DATENSCHUTZ =============================== -->
     <section id="datenschutz">
       <h1>Datenschutz&shy;erklärung</h1>
+      <p>Wir freuen uns über Ihren Besuch auf zukkabro.de. Der Schutz Ihrer persönlichen Daten ist uns wichtig. Nachfolgend informieren wir Sie gemäß Art. 13 und 14 der Datenschutz-Grundverordnung (DSGVO) darüber, welche Daten wir verarbeiten, zu welchem Zweck und welche Rechte Ihnen zustehen.</p>
 
       <h2>1. Verantwortlicher</h2>
-      <p><span class="todo">Name, Anschrift, E-Mail wie im Impressum</span></p>
+      <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br>
+      Harun Özkan, ZUKKABRO, Klingenberger Straße 100, 74080 Heilbronn, Deutschland<br>
+      E-Mail: <a href="mailto:info@zukkabro.de">info@zukkabro.de</a>, Telefon: <span data-shop="telefon">siehe Impressum</span></p>
+      <p>Ein Datenschutzbeauftragter ist nicht bestellt, da die gesetzlichen Voraussetzungen für eine Benennungspflicht nicht vorliegen.</p>
 
-      <h2>2. Hosting</h2>
-      <p>Diese Website wird bei <span class="todo">Name und Anschrift des Hosters, z. B. GitHub Pages oder Netlify</span> gehostet. Beim Aufruf der Seite verarbeitet der Hoster technisch notwendige Daten wie IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite und Browser-Informationen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse ist der sichere und stabile Betrieb der Website.</p>
+      <h2>2. Hosting und Server-Logdateien</h2>
+      <p>Diese Website wird bei der <strong>STRATO AG</strong>, Otto-Ostrowski-Straße 7, 10249 Berlin, auf Servern in Deutschland gehostet. Beim Aufruf der Seite verarbeitet der Hoster automatisch Daten, die Ihr Browser übermittelt: IP-Adresse, Datum und Uhrzeit der Anfrage, aufgerufene Seite, übertragene Datenmenge, Browsertyp und -version, Betriebssystem und die zuvor besuchte Seite (Referrer). Diese Daten sind technisch erforderlich, um die Website auszuliefern, und dienen der Sicherheit und Stabilität unserer Systeme. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb). Logdateien werden nach spätestens 14 Tagen gelöscht, sofern keine sicherheitsrelevante Auswertung erforderlich ist. Mit der STRATO AG besteht ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</p>
+      <p>Während der Aufbauphase kann die Website zusätzlich über <strong>Netlify, Inc.</strong>, 512 2nd Street, San Francisco, CA 94107, USA, ausgeliefert werden. Netlify ist nach dem EU-US Data Privacy Framework zertifiziert; ergänzend gelten die EU-Standardvertragsklauseln. Es werden dabei dieselben technisch notwendigen Zugriffsdaten verarbeitet.</p>
 
-      <h2>3. Schriftarten</h2>
-      <p>Alle Schriftarten sind lokal auf unserem Server gespeichert. Beim Aufruf der Seite wird keine Verbindung zu Google oder anderen Schriftanbietern hergestellt.</p>
+      <h2>3. Keine Cookies von Drittanbietern, kein Tracking</h2>
+      <p>Wir setzen keine Analyse-Tools, keine Werbe-Tracker und keine Cookies von Drittanbietern ein. Es gibt deshalb kein Cookie-Banner. Alle Schriftarten sind lokal auf unserem Server gespeichert; beim Aufruf der Seite wird keine Verbindung zu Google Fonts oder anderen Schriftanbietern hergestellt.</p>
 
-      <h2>4. Altersbestätigung</h2>
-      <p>Wenn du bestätigst, dass du 18 Jahre oder älter bist, speichern wir diese Angabe im lokalen Speicher deines Browsers (localStorage). So musst du die Abfrage nicht bei jedem Besuch wiederholen. Die Angabe wird nicht an uns übertragen. Du kannst sie jederzeit über den Link „Altersabfrage erneut anzeigen“ im Seitenfuß oder über die Browser-Einstellungen löschen. Die Speicherung ist für den von dir gewünschten Dienst unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG).</p>
+      <h2>4. Speicherung in Ihrem Browser (localStorage, Cache)</h2>
+      <p>Für den Betrieb des Shops speichern wir folgende Angaben ausschließlich in Ihrem Browser (localStorage / Cache), nicht auf unserem Server:</p>
+      <ul>
+        <li><strong>Altersbestätigung:</strong> ob Sie bestätigt haben, 18 Jahre oder älter zu sein, damit die Abfrage nicht bei jedem Besuch erscheint.</li>
+        <li><strong>Warenkorb:</strong> die Artikel und Mengen, die Sie in den Warenkorb gelegt haben, bis Sie bestellen oder den Warenkorb leeren.</li>
+        <li><strong>App-Funktion:</strong> wenn Sie ZUKKABRO zum Startbildschirm hinzufügen, legt der Browser Seiten, Bilder und Schriften in einem lokalen Cache ab, damit die App schneller lädt und offline eine Hinweisseite zeigt.</li>
+      </ul>
+      <p>Diese Speicherung ist für die von Ihnen ausdrücklich gewünschte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Sie können die Daten jederzeit über die Einstellungen Ihres Browsers oder über den Link „Altersabfrage erneut anzeigen“ im Seitenfuß löschen.</p>
 
-      <h2>5. Kontakt über WhatsApp, Instagram, TikTok und E-Mail</h2>
-      <p>Unsere Website enthält einfache Links zu WhatsApp, Instagram und TikTok. Es werden keine Inhalte dieser Dienste eingebettet und keine Daten an sie übertragen, solange du nicht auf einen Link klickst. Wenn du uns über einen dieser Dienste oder per E-Mail kontaktierst, verarbeiten wir deine Angaben zur Bearbeitung deiner Anfrage (Art. 6 Abs. 1 lit. b DSGVO). Für die Datenverarbeitung durch die jeweiligen Anbieter gelten deren Datenschutzerklärungen.</p>
+      <h2>5. Bestellungen im Online-Shop</h2>
+      <p>Wenn Sie bestellen, verarbeiten wir die Daten, die Sie im Bestellformular angeben: Vor- und Nachname, E-Mail-Adresse, Telefonnummer (freiwillig), Lieferadresse, gewählte Liefer- und Zahlungsart, Ihre Anmerkungen sowie die bestellten Artikel und Beträge. Bei Artikeln, die erst ab 18 Jahren abgegeben werden dürfen, verarbeiten wir zusätzlich Ihr Geburtsdatum und Ihre Bestätigung der Volljährigkeit.</p>
+      <p>Zwecke und Rechtsgrundlagen: Durchführung des Kaufvertrags einschließlich Lieferung, Zahlungsabwicklung, Bestellbestätigung und Kundenkommunikation (Art. 6 Abs. 1 lit. b DSGVO); gesetzlich vorgeschriebene Altersprüfung nach dem Jugendschutzgesetz (Art. 6 Abs. 1 lit. c DSGVO); Erfüllung handels- und steuerrechtlicher Aufbewahrungspflichten (Art. 6 Abs. 1 lit. c DSGVO).</p>
+      <p>Speicherdauer: Bestell- und Rechnungsdaten bewahren wir nach § 147 AO und § 257 HGB zwischen sechs und zehn Jahren auf. Danach werden sie gelöscht, sofern keine weiteren Aufbewahrungspflichten oder laufende Streitigkeiten entgegenstehen.</p>
 
-      <h2>6. Händlerkonten und Admin-Bereich</h2>
-      <p>Wenn du ein Händlerkonto beantragst, speichern wir Firmenname, Ansprechpartner, Anschrift, Telefon, E-Mail, USt-IdNr. und dein Passwort (nur als verschlüsselter Hash). Bestellungen speichern wir mit den bestellten Artikeln und Beträgen. Zweck ist die Prüfung deiner Händlereigenschaft, die Abwicklung von Bestellungen und unsere Buchhaltung (Art. 6 Abs. 1 lit. b und c DSGVO). Handels- und steuerrechtlich relevante Daten bewahren wir so lange auf, wie es das Gesetz verlangt (in der Regel 6 bis 10 Jahre). Die Daten liegen bei unserem Hoster <span class="todo">Netlify, Inc., USA (Datenübermittlung auf Basis der EU-Standardvertragsklauseln bzw. des EU-US Data Privacy Framework)</span>.</p>
-      <p><strong>Bestellungen im Shop:</strong> Für deine Bestellung speichern wir Name, E-Mail, Telefon (freiwillig), Lieferadresse, bei Artikeln ab 18 dein Geburtsdatum, die bestellten Artikel und Beträge. Zweck ist die Abwicklung der Bestellung, die gesetzlich vorgeschriebene Altersprüfung und unsere Buchhaltung (Art. 6 Abs. 1 lit. b und c DSGVO). Dein Warenkorb wird nur in deinem Browser gespeichert (localStorage), bis du bestellst oder ihn leerst.</p>
-      <p>Für die Anmeldung setzen wir ein technisch notwendiges Sitzungs-Cookie (§ 25 Abs. 2 Nr. 2 TDDDG). Es wird nach 8 Stunden oder beim Abmelden gelöscht.</p>
+      <h2>6. Zahlungsabwicklung</h2>
+      <h3>a) Online-Zahlung über Stripe</h3>
+      <p>Wenn Sie „Online bezahlen“ wählen, werden Sie auf eine Zahlungsseite der <strong>Stripe Payments Europe, Ltd.</strong>, 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, D02 H210, Irland, weitergeleitet. Stripe erhält von uns Ihre Bestellnummer, den Betrag, die bestellten Artikel und Ihre E-Mail-Adresse. Die Zahlungsdaten (Kartennummer, Apple Pay, Google Pay, Klarna, PayPal usw.) geben Sie direkt bei Stripe ein; wir erhalten keine vollständigen Kartendaten, sondern nur die Bestätigung der Zahlung. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Stripe verarbeitet Daten zum Teil in eigener Verantwortung, insbesondere zur Betrugsprävention, und kann Daten an Stripe, Inc. in den USA übermitteln; Stripe ist nach dem EU-US Data Privacy Framework zertifiziert. Informationen: <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener">stripe.com/de/privacy</a>.</p>
+      <h3>b) Überweisung (Vorkasse), PayPal, Barzahlung</h3>
+      <p>Bei Vorkasse erhalten Sie unsere Bankverbindung; Ihre Bank übermittelt uns Name und IBAN des Absenders. Bei Zahlung über einen PayPal-Link gelten die Datenschutzbestimmungen der PayPal (Europe) S.à r.l. et Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxemburg. Bei Barzahlung im Laden werden keine zusätzlichen Daten verarbeitet.</p>
 
-      <h2>7. Cookies und Tracking</h2>
-      <p>Außer dem Anmelde-Cookie verwenden wir keine Cookies, keine Analyse-Tools und keine Werbe-Tracker.</p>
+      <h2>7. Versand</h2>
+      <p>Zur Lieferung geben wir Ihren Namen, Ihre Lieferadresse und, soweit für die Zustellung oder die Altersprüfung erforderlich, Ihre E-Mail-Adresse oder Telefonnummer an das beauftragte Versandunternehmen (z. B. DHL Paket GmbH, Sträßchensweg 10, 53113 Bonn) weiter. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Bei Artikeln ab 18 nutzen wir Versandverfahren mit Alterssichtprüfung bei der Übergabe.</p>
 
-      <h2>8. Deine Rechte</h2>
-      <p>Du hast das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch (Art. 21). Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO).</p>
+      <h2>8. E-Mail-Benachrichtigungen</h2>
+      <p>Bestellbestätigungen, Hinweise zum Zahlungseingang und Antworten auf Ihre Anfragen senden wir per E-Mail über die Mailserver unseres Hosters (STRATO AG). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Newsletter oder Werbe-E-Mails versenden wir nur, wenn Sie ausdrücklich eingewilligt haben (Art. 6 Abs. 1 lit. a DSGVO); eine Einwilligung können Sie jederzeit widerrufen.</p>
 
-      <p><em>Stand: <span class="todo">Datum</span></em></p>
+      <h2>9. Kontaktformular, E-Mail, Telefon</h2>
+      <p>Wenn Sie uns über das Kontaktformular, per E-Mail oder telefonisch kontaktieren, verarbeiten wir Ihren Namen, Ihre Kontaktdaten und den Inhalt Ihrer Nachricht, um Ihre Anfrage zu bearbeiten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Anfragen) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen). Die Daten löschen wir, sobald Ihre Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten bestehen. Das Kontaktformular enthält einen unsichtbaren Spamschutz ohne Drittanbieter.</p>
+
+      <h2>10. WhatsApp, Instagram und TikTok</h2>
+      <p>Unsere Website enthält lediglich Links zu unseren Profilen bei WhatsApp (WhatsApp Ireland Ltd., 4 Grand Canal Square, Dublin 2, Irland), Instagram (Meta Platforms Ireland Ltd., Merrion Road, Dublin 4, Irland) und TikTok (TikTok Technology Ltd., 10 Earlsfort Terrace, Dublin, Irland). Es werden keine Inhalte dieser Dienste eingebettet und keine Daten an sie übertragen, solange Sie nicht auf einen Link klicken. Wenn Sie uns über einen dieser Dienste schreiben, verarbeiten wir Ihre Nachricht und Ihre dort hinterlegten Profildaten zur Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. b und f DSGVO). Für die Verarbeitung durch die jeweiligen Anbieter, auch in Drittländern wie den USA, gelten deren Datenschutzerklärungen.</p>
+
+      <h2>11. Händlerkonten (B2B)</h2>
+      <p>Wenn Sie ein Händlerkonto beantragen, speichern wir Firmenname, Ansprechpartner, Anschrift, Telefonnummer, E-Mail-Adresse, Umsatzsteuer-Identifikationsnummer und Ihr Passwort (ausschließlich als kryptografischen Hash). Zweck ist die Prüfung Ihrer Händlereigenschaft, die Abwicklung von Händlerbestellungen und unsere Buchhaltung (Art. 6 Abs. 1 lit. b und c DSGVO). Für die Anmeldung setzen wir ein technisch notwendiges Sitzungs-Cookie, das nach acht Stunden oder beim Abmelden gelöscht wird (§ 25 Abs. 2 Nr. 2 TDDDG).</p>
+
+      <h2>12. Sicherheit und Missbrauchsschutz</h2>
+      <p>Zum Schutz vor Missbrauch (z. B. automatisierten Bestellungen oder Login-Versuchen) speichern wir für kurze Zeit eine gekürzte, nicht rückrechenbare Prüfsumme der IP-Adresse zusammen mit der Anzahl der Anfragen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Website wird ausschließlich verschlüsselt (HTTPS/TLS) ausgeliefert.</p>
+
+      <h2>13. Empfänger und Drittlandübermittlung</h2>
+      <p>Empfänger Ihrer Daten sind nur die in dieser Erklärung genannten Dienstleister (Hosting, Zahlung, Versand) sowie, soweit gesetzlich erforderlich, Steuerberater und Behörden. Eine Übermittlung in Drittländer findet nur im Rahmen der oben genannten Dienste statt und stützt sich auf Angemessenheitsbeschlüsse der EU-Kommission (EU-US Data Privacy Framework) oder EU-Standardvertragsklauseln.</p>
+
+      <h2>14. Ihre Rechte</h2>
+      <p>Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:</p>
+      <ul>
+        <li>Recht auf Auskunft (Art. 15 DSGVO),</li>
+        <li>Recht auf Berichtigung (Art. 16 DSGVO),</li>
+        <li>Recht auf Löschung (Art. 17 DSGVO),</li>
+        <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO),</li>
+        <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO),</li>
+        <li>Recht auf Widerspruch gegen Verarbeitungen, die auf Art. 6 Abs. 1 lit. f DSGVO beruhen (Art. 21 DSGVO),</li>
+        <li>Recht, eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft zu widerrufen (Art. 7 Abs. 3 DSGVO).</li>
+      </ul>
+      <p>Zur Ausübung Ihrer Rechte genügt eine E-Mail an <a href="mailto:info@zukkabro.de">info@zukkabro.de</a>. Außerdem haben Sie das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO). Die für uns zuständige Aufsichtsbehörde ist der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg, Lautenschlagerstraße 20, 70173 Stuttgart, <a href="https://www.baden-wuerttemberg.datenschutz.de" target="_blank" rel="noopener">baden-wuerttemberg.datenschutz.de</a>.</p>
+
+      <h2>15. Pflicht zur Bereitstellung, automatisierte Entscheidungen</h2>
+      <p>Die Angabe Ihrer Daten ist weder gesetzlich noch vertraglich vorgeschrieben. Ohne die als Pflichtfelder gekennzeichneten Angaben können wir eine Bestellung oder Anfrage jedoch nicht bearbeiten. Eine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne von Art. 22 DSGVO findet nicht statt.</p>
+
+      <h2>16. Änderungen</h2>
+      <p>Wir passen diese Datenschutzerklärung an, wenn sich unsere Dienste oder die Rechtslage ändern. Es gilt die jeweils auf dieser Seite veröffentlichte Fassung.</p>
+      <p class="stand">Stand: Oktober 2026</p>
     </section>
+
+    <!-- =============================== AGB =============================== -->
     <section id="agb">
-      <h1>AGB</h1>
-      <p class="note">Vorlage: Allgemeine Geschäftsbedingungen für einen Onlineshop müsst ihr rechtssicher erstellen lassen, zum Beispiel über den Händlerbund, die IT-Recht Kanzlei oder einen Anwalt. Die folgenden Punkte sind nur ein Gerüst.</p>
-      <h3>1. Geltungsbereich und Vertragspartner</h3>
-      <p>Vertragspartner ist <span class="todo">Name und Anschrift wie im Impressum</span>. Diese AGB gelten für alle Bestellungen über zukkabro.de.</p>
-      <h3>2. Vertragsschluss</h3>
-      <p>Die Darstellung der Produkte ist kein bindendes Angebot. Mit dem Klick auf „Zahlungspflichtig bestellen“ gibst du ein verbindliches Angebot ab. Der Vertrag kommt zustande, wenn wir die Bestellung bestätigen oder die Ware versenden. <span class="todo">prüfen lassen</span></p>
-      <h3>3. Preise und Versandkosten</h3>
-      <p>Alle Preise enthalten die gesetzliche Mehrwertsteuer. Versandkosten werden im Warenkorb und an der Kasse angezeigt.</p>
-      <h3>4. Zahlung</h3>
-      <p>Überweisung (Vorkasse), PayPal oder Barzahlung bei Abholung, je nach Angebot an der Kasse.</p>
-      <h3>5. Altersbeschränkte Artikel</h3>
-      <p>E-Zigaretten, Liquids und weitere Artikel ab 18 verkaufen wir nur an Volljährige. Die Übergabe erfolgt nur nach Alterskontrolle (Ausweis bei Abholung, Altersprüfung durch den Zusteller beim Versand).</p>
-      <h3>6. Lieferung, Eigentumsvorbehalt, Gewährleistung</h3>
-      <p><span class="todo">Lieferzeiten, Liefergebiet, Eigentumsvorbehalt und Gewährleistung ergänzen</span></p>
+      <h1>Allgemeine Geschäfts&shy;bedingungen</h1>
+      <p>für Bestellungen über den Online-Shop zukkabro.de und für Käufe im Laden von ZUKKABRO, Inhaber Harun Özkan, Klingenberger Straße 100, 74080 Heilbronn (nachfolgend „ZUKKABRO“ oder „wir“).</p>
+
+      <h2>§ 1 Geltungsbereich</h2>
+      <p>(1) Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde“) mit ZUKKABRO über die im Online-Shop dargestellten Waren schließt. Abweichende Bedingungen des Kunden werden nicht anerkannt, es sei denn, wir stimmen ihrer Geltung ausdrücklich schriftlich zu.</p>
+      <p>(2) Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit zugerechnet werden können (§ 13 BGB). Unternehmer ist eine natürliche oder juristische Person oder eine rechtsfähige Personengesellschaft, die bei Abschluss eines Rechtsgeschäfts in Ausübung ihrer gewerblichen oder selbständigen beruflichen Tätigkeit handelt (§ 14 BGB).</p>
+      <p>(3) Für Bestellungen über den Händlerbereich (B2B) gelten ergänzend die dort hinterlegten Händlerkonditionen. Bei Widersprüchen gehen die Händlerkonditionen diesen AGB vor.</p>
+
+      <h2>§ 2 Vertragsschluss</h2>
+      <p>(1) Die Darstellung der Waren im Online-Shop ist kein rechtlich bindendes Angebot, sondern eine Aufforderung an den Kunden, ein Angebot abzugeben.</p>
+      <p>(2) Der Kunde kann Waren in den Warenkorb legen und dort Mengen ändern oder Artikel entfernen. Vor dem Absenden der Bestellung werden alle Angaben in einer Übersicht angezeigt; Eingabefehler können über die Schaltfläche „Zurück“ oder direkt in den Formularfeldern korrigiert werden. Mit dem Klick auf „Zahlungspflichtig bestellen“ gibt der Kunde ein verbindliches Angebot zum Kauf der im Warenkorb befindlichen Waren ab.</p>
+      <p>(3) Wir bestätigen den Eingang der Bestellung unmittelbar auf dem Bildschirm und per E-Mail (Eingangsbestätigung). Diese Eingangsbestätigung stellt noch keine Annahme des Angebots dar. Der Kaufvertrag kommt zustande, wenn wir die Annahme in einer gesonderten E-Mail (Auftragsbestätigung) erklären, die Ware versenden oder zur Abholung bereitstellen oder, bei Online-Zahlung über Stripe, den Zahlungsvorgang abschließen lassen. Maßgeblich ist das zuerst eintretende Ereignis. Nehmen wir das Angebot nicht innerhalb von fünf Werktagen an, gilt es als abgelehnt.</p>
+      <p>(4) Der Vertragstext wird von uns gespeichert und dem Kunden zusammen mit diesen AGB per E-Mail zugesandt. Die Vertragssprache ist Deutsch.</p>
+      <p>(5) Beim Kauf im Laden kommt der Vertrag mit Bezahlung an der Kasse zustande.</p>
+
+      <h2>§ 3 Preise und Versandkosten</h2>
+      <p>(1) Alle Preise sind Endpreise in Euro und enthalten die gesetzliche Umsatzsteuer. Bei Waren, die nach Gewicht oder Volumen angeboten werden, wird zusätzlich der Grundpreis angegeben.</p>
+      <p>(2) Zusätzlich zu den Preisen fallen Versandkosten an, die im Warenkorb und an der Kasse vor Abgabe der Bestellung ausgewiesen werden. Ab dem dort genannten Bestellwert liefern wir innerhalb Deutschlands versandkostenfrei. Die Abholung im Laden ist kostenlos.</p>
+      <p>(3) Angebote gelten nur für den angegebenen Zeitraum und nur solange der Vorrat reicht.</p>
+
+      <h2>§ 4 Zahlung</h2>
+      <p>(1) Wir bieten folgende Zahlungsarten an, soweit sie an der Kasse angezeigt werden: Überweisung (Vorkasse), Online-Zahlung über unseren Zahlungsdienstleister Stripe (Kreditkarte, Debitkarte, Apple Pay, Google Pay, Klarna, PayPal und weitere je nach Verfügbarkeit), Zahlung per PayPal-Link sowie Barzahlung bei Abholung im Laden.</p>
+      <p>(2) Bei Vorkasse ist der Kaufpreis innerhalb von sieben Tagen nach Bestellung auf das in der Bestellbestätigung genannte Konto zu zahlen. Geht die Zahlung nicht innerhalb dieser Frist ein, sind wir berechtigt, vom Vertrag zurückzutreten und die reservierte Ware anderweitig zu verkaufen.</p>
+      <p>(3) Bei Online-Zahlung über Stripe wird der Kunde nach Abgabe der Bestellung auf die Zahlungsseite von Stripe weitergeleitet. Der Kaufpreis wird mit Abschluss des Zahlungsvorgangs fällig und belastet. Wird die Zahlung abgebrochen, kommt kein Vertrag zustande; der Warenkorb bleibt erhalten.</p>
+      <p>(4) Bei Barzahlung ist der Kaufpreis bei Übergabe der Ware im Laden zu entrichten. Wird die Ware nicht innerhalb von sieben Tagen nach Bereitstellung abgeholt, können wir vom Vertrag zurücktreten.</p>
+      <p>(5) Ein Recht zur Aufrechnung steht dem Kunden nur zu, wenn seine Gegenansprüche rechtskräftig festgestellt oder von uns anerkannt sind.</p>
+
+      <h2>§ 5 Lieferung und Abholung</h2>
+      <p>(1) Wir liefern ausschließlich innerhalb Deutschlands. Alternativ kann der Kunde die Ware im Laden abholen: ZUKKABRO, Klingenberger Straße 100, 74080 Heilbronn, zu den auf der Website angegebenen Öffnungszeiten.</p>
+      <p>(2) Der Versand erfolgt innerhalb von drei Werktagen nach Zahlungseingang (bei Vorkasse und Online-Zahlung) bzw. nach Vertragsschluss. Werktage sind Montag bis Freitag mit Ausnahme gesetzlicher Feiertage in Baden-Württemberg. Die Lieferzeit beträgt in der Regel ein bis drei weitere Werktage. Bei Abholung informieren wir den Kunden per E-Mail, sobald die Ware bereitsteht.</p>
+      <p>(3) Ist die bestellte Ware nicht lieferbar, weil wir ohne eigenes Verschulden von unserem Lieferanten nicht beliefert werden, informieren wir den Kunden unverzüglich und erstatten bereits geleistete Zahlungen sofort zurück.</p>
+      <p>(4) Die Gefahr des zufälligen Untergangs und der zufälligen Verschlechterung der Ware geht bei Verbrauchern mit der Übergabe an den Verbraucher oder eine von ihm benannte Person über, bei Unternehmern mit der Übergabe an das Transportunternehmen.</p>
+
+      <h2>§ 6 Altersbeschränkte Waren (Jugendschutz)</h2>
+      <p>(1) E-Zigaretten, Liquids, nikotinhaltige Produkte, Tabakwaren und sonstige im Shop als „18+“ gekennzeichnete Waren verkaufen wir ausschließlich an Personen, die das 18. Lebensjahr vollendet haben (§ 10 JuSchG). Mit der Bestellung solcher Waren versichert der Kunde seine Volljährigkeit und gibt sein Geburtsdatum an.</p>
+      <p>(2) Die Übergabe erfolgt nur nach Alterskontrolle: im Laden durch Vorlage eines amtlichen Lichtbildausweises, beim Versand durch ein Versandverfahren mit Alterssichtprüfung, bei dem der Zusteller die Ware nur an volljährige Personen übergibt. Eine Übergabe an Minderjährige oder eine Ablage ohne Prüfung ist ausgeschlossen.</p>
+      <p>(3) Kann das Alter nicht nachgewiesen werden, wird die Ware nicht übergeben. In diesem Fall sind wir berechtigt, vom Vertrag zurückzutreten; bereits geleistete Zahlungen erstatten wir abzüglich der nachweislich entstandenen Versandkosten für den erfolglosen Zustellversuch, sofern der Kunde den Fehlschlag zu vertreten hat.</p>
+
+      <h2>§ 7 Eigentumsvorbehalt</h2>
+      <p>Die Ware bleibt bis zur vollständigen Bezahlung des Kaufpreises unser Eigentum.</p>
+
+      <h2>§ 8 Gewährleistung (Mängelhaftung)</h2>
+      <p>(1) Es gelten die gesetzlichen Gewährleistungsrechte. Gegenüber Verbrauchern beträgt die Verjährungsfrist für Mängelansprüche bei neuen Waren zwei Jahre ab Ablieferung.</p>
+      <p>(2) Bei Lebensmitteln ist das auf der Verpackung angegebene Mindesthaltbarkeits- oder Verbrauchsdatum zu beachten. Die Überschreitung des Mindesthaltbarkeitsdatums nach Ablieferung stellt keinen Mangel dar.</p>
+      <p>(3) Offensichtliche Transportschäden bitten wir, dem Zusteller und uns möglichst sofort zu melden. Die Unterlassung berührt die gesetzlichen Gewährleistungsrechte nicht.</p>
+
+      <h2>§ 9 Haftung</h2>
+      <p>(1) Wir haften unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit, bei Vorsatz und grober Fahrlässigkeit, bei arglistigem Verschweigen eines Mangels, bei Übernahme einer Garantie sowie nach dem Produkthaftungsgesetz.</p>
+      <p>(2) Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten (Pflichten, deren Erfüllung die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung der Kunde regelmäßig vertrauen darf) ist unsere Haftung auf den vorhersehbaren, vertragstypischen Schaden begrenzt. Im Übrigen ist die Haftung für leichte Fahrlässigkeit ausgeschlossen.</p>
+
+      <h2>§ 10 Besondere Hinweise zu Lebensmitteln und Importwaren</h2>
+      <p>(1) Ein Teil unseres Sortiments wird aus dem Ausland importiert. Zutaten, Allergene, Nährwerte, Mindesthaltbarkeitsdatum und Herkunft sind auf der Verpackung in deutscher Sprache gekennzeichnet; bei Importware kann die Originalverpackung zusätzlich fremdsprachige Angaben tragen. Bei Fragen zu Inhaltsstoffen oder Allergenen beraten wir vor dem Kauf gern per E-Mail oder WhatsApp.</p>
+      <p>(2) Lebensmittel sind nach Erhalt kühl, trocken und vor Sonnenlicht geschützt zu lagern. Gekühlte oder leicht verderbliche Waren bieten wir ausschließlich im Laden an.</p>
+      <p>(3) Für Produkte aus dem Laden (z. B. Matcha-Getränke, Açaí Bowls) sind die Allergene auf der Karte und an der Theke gekennzeichnet.</p>
+
+      <h2>§ 11 Widerrufsrecht</h2>
+      <p>Verbrauchern steht ein gesetzliches Widerrufsrecht zu. Einzelheiten, Ausnahmen und das Muster-Widerrufsformular finden Sie in der <a href="#widerruf">Widerrufsbelehrung</a>.</p>
+
+      <h2>§ 12 Streitbeilegung</h2>
+      <p>Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Bei Beanstandungen wenden Sie sich bitte direkt an uns; wir bemühen uns um eine einvernehmliche Lösung.</p>
+
+      <h2>§ 13 Schlussbestimmungen</h2>
+      <p>(1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Gegenüber Verbrauchern gilt diese Rechtswahl nur, soweit dem Verbraucher dadurch nicht der Schutz zwingender Bestimmungen des Rechts des Staates entzogen wird, in dem er seinen gewöhnlichen Aufenthalt hat.</p>
+      <p>(2) Ist der Kunde Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen, ist Heilbronn ausschließlicher Gerichtsstand für alle Streitigkeiten aus diesem Vertrag.</p>
+      <p>(3) Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
+      <p class="stand">Stand: Oktober 2026</p>
     </section>
 
+    <!-- =============================== WIDERRUF =============================== -->
     <section id="widerruf">
-      <h1>Widerrufsbelehrung</h1>
-      <p class="note">Vorlage: Verwendet die gesetzliche Muster-Widerrufsbelehrung (Anlage 1 zu Art. 246a EGBGB) mit euren Daten und das Muster-Widerrufsformular. Klärt, welche Ausnahmen gelten, zum Beispiel für schnell verderbliche Lebensmittel oder versiegelte Waren, deren Siegel entfernt wurde.</p>
-      <h3>Widerrufsrecht</h3>
-      <p>Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem du oder ein von dir benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen hast bzw. hat.</p>
-      <p>Um dein Widerrufsrecht auszuüben, musst du uns (<span class="todo">Name, Anschrift, E-Mail, Telefon</span>) mittels einer eindeutigen Erklärung (z. B. Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren.</p>
-      <p><span class="todo">Folgen des Widerrufs, Rücksendekosten und Ausnahmen aus der Mustervorlage übernehmen</span></p>
+      <h1>Widerrufs&shy;belehrung</h1>
+      <p>Das folgende Widerrufsrecht gilt für Verbraucher bei Verträgen, die über den Online-Shop (Fernabsatz) geschlossen werden.</p>
+      <h2>Widerrufsrecht</h2>
+      <p>Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben bzw. hat. Bei einer Bestellung mehrerer Waren, die getrennt geliefert werden, beginnt die Frist mit dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die letzte Ware in Besitz genommen haben bzw. hat.</p>
+      <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (ZUKKABRO, Harun Özkan, Klingenberger Straße 100, 74080 Heilbronn, E-Mail: info@zukkabro.de, Telefon: <span data-shop="telefon">siehe Impressum</span>) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
+      <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
+      <h2>Folgen des Widerrufs</h2>
+      <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p>
+      <p>Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.</p>
+      <p>Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen vierzehn Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an uns zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von vierzehn Tagen absenden. Sie tragen die unmittelbaren Kosten der Rücksendung der Waren.</p>
+      <p>Sie müssen für einen etwaigen Wertverlust der Waren nur aufkommen, wenn dieser Wertverlust auf einen zur Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise der Waren nicht notwendigen Umgang mit ihnen zurückzuführen ist.</p>
+      <h2>Ausschluss des Widerrufsrechts</h2>
+      <p>Das Widerrufsrecht besteht nicht bei Verträgen zur Lieferung von Waren, die schnell verderben können oder deren Verfallsdatum schnell überschritten würde (§ 312g Abs. 2 Nr. 2 BGB). Es erlischt vorzeitig bei Verträgen zur Lieferung versiegelter Waren, die aus Gründen des Gesundheitsschutzes oder der Hygiene nicht zur Rückgabe geeignet sind, wenn ihre Versiegelung nach der Lieferung entfernt wurde (§ 312g Abs. 2 Nr. 3 BGB). Das betrifft insbesondere geöffnete Lebensmittel und Getränke sowie geöffnete E-Zigaretten und Liquids.</p>
+      <h2>Muster-Widerrufsformular</h2>
+      <div class="formular">
+        <p>(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden Sie es zurück.)</p>
+        <p>An ZUKKABRO, Harun Özkan, Klingenberger Straße 100, 74080 Heilbronn, E-Mail: info@zukkabro.de</p>
+        <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*)</p>
+        <p>Bestellt am (*) / erhalten am (*): ____________________</p>
+        <p>Name des/der Verbraucher(s): ____________________</p>
+        <p>Anschrift des/der Verbraucher(s): ____________________</p>
+        <p>Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): ____________________</p>
+        <p>Datum: ____________________</p>
+        <p>(*) Unzutreffendes streichen.</p>
+      </div>
+    </section>
+
+    <!-- =============================== BATTERIEN / ELEKTROGERÄTE =============================== -->
+    <section id="batterien">
+      <h1>Batterien &amp; Elektro&shy;altgeräte</h1>
+      <h2>Hinweise nach dem Batteriegesetz (BattG)</h2>
+      <p>Einweg-E-Zigaretten und wiederaufladbare Vapes enthalten Lithium-Batterien. Batterien und Akkus dürfen nicht in den Hausmüll. Sie sind gesetzlich verpflichtet, Altbatterien zurückzugeben. Sie können Batterien nach Gebrauch unentgeltlich in unserem Laden (Klingenberger Straße 100, 74080 Heilbronn), bei kommunalen Sammelstellen oder im Handel vor Ort zurückgeben. Batterien, die Sie bei uns gekauft haben, nehmen wir auch per Post zurück; die Rücksendekosten übernehmen wir nicht. Bedeutung der Symbole: Die durchgestrichene Mülltonne bedeutet, dass die Batterie nicht in den Hausmüll gehört. „Pb“, „Cd“ und „Hg“ stehen für Blei, Cadmium bzw. Quecksilber, die über dem gesetzlichen Grenzwert enthalten sind.</p>
+      <h2>Hinweise nach dem Elektro- und Elektronikgerätegesetz (ElektroG)</h2>
+      <p>E-Zigaretten sind Elektrogeräte und mit dem Symbol der durchgestrichenen Mülltonne gekennzeichnet. Elektroaltgeräte dürfen nicht über den Hausmüll entsorgt werden. Besitzer von Altgeräten können diese bei den öffentlich-rechtlichen Entsorgungsträgern (Wertstoffhöfe) kostenlos abgeben. Kleine Altgeräte (keine Kante länger als 25 cm) können außerdem ohne Neukauf bei Händlern mit entsprechender Rücknahmepflicht abgegeben werden. Bitte entnehmen Sie, soweit möglich, Batterien und Akkus vor der Rückgabe und löschen Sie personenbezogene Daten. Wir sind beim Elektro-Altgeräte-Register (stiftung ear) registriert; die WEEE-Registrierungsnummer wird nach Erteilung hier ergänzt.</p>
     </section>
 
     <a href="/" class="btn btn--pink">← Zurück zum Shop</a>
