@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Glückskäfer Bande Logo">
+  <circle cx="60" cy="60" r="58" fill="#DCE5D8"/>
+  <!-- Blatt -->
+  <path d="M20 86c14-26 44-34 78-28-10 26-42 40-78 28z" fill="#8FA68C"/>
+  <path d="M24 84c20-12 44-20 70-24" stroke="#5F7A5E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Fühler -->
+  <path d="M50 34c-4-8-10-12-16-12M70 34c4-8 10-12 16-12" stroke="#3B3A35" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="33" cy="21" r="3.2" fill="#3B3A35"/><circle cx="87" cy="21" r="3.2" fill="#3B3A35"/>
+  <!-- Kopf -->
+  <circle cx="60" cy="42" r="12" fill="#3B3A35"/>
+  <!-- Körper -->
+  <path d="M26 60a34 34 0 0 1 68 0v6a34 34 0 0 1-68 0z" fill="#C97B5B"/>
+  <path d="M60 30v64" stroke="#3B3A35" stroke-width="3" stroke-linecap="round"/>
+  <!-- Punkte -->
+  <circle cx="45" cy="56" r="5.5" fill="#3B3A35"/><circle cx="75" cy="56" r="5.5" fill="#3B3A35"/>
+  <circle cx="40" cy="74" r="4.5" fill="#3B3A35"/><circle cx="80" cy="74" r="4.5" fill="#3B3A35"/>
+  <circle cx="52" cy="84" r="3.5" fill="#3B3A35"/><circle cx="68" cy="84" r="3.5" fill="#3B3A35"/>
+  <!-- Glanz -->
+  <ellipse cx="42" cy="46" rx="6" ry="3" fill="#fff" opacity=".35" transform="rotate(-25 42 46)"/>
+</svg>

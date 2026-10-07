@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.glueckskaefer-bande.de/sitemap.xml
