@@ -1054,3 +1054,36 @@ body.is-app .footer { padding-bottom: 1rem; }
   .slide--video::after { background: linear-gradient(180deg, rgba(43, 20, 10, .05) 0%, rgba(43, 20, 10, .55) 45%, rgba(43, 20, 10, .85) 100%); }
   .slide__text--video { flex: 1 1 100%; }
 }
+
+/* ---------- Design-Durchgang: Material sauber in den Karten-Stil eingepasst ---------- */
+/* Hero: Film nur als weiche Bewegung im Hintergrund */
+.hero__film video { filter: blur(3px) saturate(1.15); transform: scale(1.04); }
+.hero__film::after { background: linear-gradient(180deg, rgba(251, 241, 230, .72) 0%, rgba(251, 241, 230, .62) 60%, var(--cream) 100%); }
+/* Kategorie-Kacheln: Foto oben, Beschriftung als Leiste unten (wie die Clip-Karten) */
+.banner { aspect-ratio: auto; display: flex; flex-direction: column; background: var(--paper); }
+.banner__bg { position: static; width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover; }
+.banner__fb.banner__ueber { position: static; display: flex; flex-direction: row; align-items: center; gap: .9rem; padding: .85rem 1.1rem; background: var(--paper) !important; color: var(--choco); border-top: 3px solid var(--choco); }
+.banner__ueber .banner__title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); transform: none; -webkit-text-stroke: 0; text-shadow: none; color: var(--choco); text-transform: none; }
+.banner__ueber .banner__sub { margin: .15rem 0 0; font-size: .74rem; letter-spacing: .06em; opacity: .75; }
+.banner__ueber .banner__btn { margin-left: auto; white-space: nowrap; box-shadow: 3px 3px 0 var(--choco); }
+.banner__ueber .banner__deco { display: none; }
+.banner__ueber .banner__text { min-width: 0; display: flex; flex-direction: column; }
+.banner .banner__18 { z-index: 2; }
+/* Matcha & Açaí: Foto links, Textfeld rechts, kein Text auf dem Bild */
+.plakat { display: grid; grid-template-columns: 1.15fr 1fr; min-height: 0; background: var(--paper); }
+.plakat img { position: static; width: 100%; height: 100%; min-height: 240px; object-fit: cover; }
+.plakat__text, .plakat__text--links { position: static; width: auto; margin: 0; min-height: 0; padding: 1.5rem 1.6rem; justify-content: center; border-left: 3px solid var(--choco); }
+.plakat--acai { grid-template-columns: 1fr 1.15fr; }
+.plakat--acai img { order: 2; }
+.plakat--acai .plakat__text { border-left: 0; border-right: 3px solid var(--choco); }
+.plakat__text h3 { color: var(--choco); text-shadow: none; -webkit-text-stroke: 0; font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.plakat__text p { background: none; border: 0; padding: 0; font-weight: 600; font-size: .98rem; line-height: 1.45; }
+/* Logo-Animation als gerahmte Karte wie alle Medien */
+.about__video { border: 4px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); filter: none; }
+@media (max-width: 860px) {
+  .plakat, .plakat--acai { grid-template-columns: 1fr; }
+  .plakat img, .plakat--acai img { order: 0; min-height: 0; aspect-ratio: 16 / 9; height: auto; }
+  .plakat__text, .plakat__text--links, .plakat--acai .plakat__text { padding: 1.2rem 1.2rem 1.4rem; border: 0; border-top: 3px solid var(--choco); background: var(--paper); justify-content: flex-start; padding-top: 1.2rem; min-height: 0; }
+  .banner__fb.banner__ueber { flex-wrap: wrap; }
+  .banner__ueber .banner__btn { margin-left: 0; }
+}
