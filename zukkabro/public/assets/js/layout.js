@@ -313,6 +313,9 @@
     setText("instagramLabel", ig ? "@" + ig : "");
     setLink("ttLink", tt ? "https://www.tiktok.com/@" + tt : "");
     setText("tiktokLabel", tt ? "@" + tt : "");
+    var fb = (S.facebook || "").trim();
+    setLink("fbLink", fb);
+    setText("facebookLabel", fb ? "ZUKKABRO" : "");
     setLink("mailLink", S.email ? "mailto:" + S.email : "");
     var tel = (S.telefon || "").trim();
     setLink("telLink", tel ? "tel:" + tel.replace(/[^\d+]/g, "") : "");
@@ -328,6 +331,7 @@
       if (kanal) s.push('<a href="' + esc(kanal) + '" target="_blank" rel="noopener">WhatsApp-Kanal</a>');
       if (ig) s.push('<a href="https://instagram.com/' + ig + '" target="_blank" rel="noopener">Instagram</a>');
       if (tt) s.push('<a href="https://www.tiktok.com/@' + tt + '" target="_blank" rel="noopener">TikTok</a>');
+      if (fb) s.push('<a href="' + esc(fb) + '" target="_blank" rel="noopener">Facebook</a>');
       if (wa) s.push('<a href="https://wa.me/' + wa + '" target="_blank" rel="noopener">WhatsApp</a>');
       social.innerHTML = s.join("");
     }

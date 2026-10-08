@@ -10,8 +10,9 @@ const SHOP = {
   whatsapp: "",
   whatsappKanal: "",  // Link zum WhatsApp-Kanal „ZUKKABRO – Neu im Regal“, z. B. "https://whatsapp.com/channel/…"
   telefon: "+49 7131 5912230",  // Telefon fürs Impressum und die Kontaktseite
-  instagram: "",      // nur der Name, z. B. "zukkabro"
-  tiktok: "",         // nur der Name, z. B. "zukkabro"
+  instagram: "zukkabro.de",   // Instagram-Name ohne @
+  tiktok: "zukkabro.de",      // TikTok-Name ohne @
+  facebook: "https://www.facebook.com/profile.php?id=61594963992185",  // kompletter Link zur Facebook-Seite
   email: "info@zukkabro.de",
   address: "Klingenberger Straße 100, 74080 Heilbronn (kostenlos, zu den Öffnungszeiten)",
   hours: "Geben wir zur Eröffnung bekannt. Matcha & Açaí Bowls gibt es bei uns am Wochenende.",
