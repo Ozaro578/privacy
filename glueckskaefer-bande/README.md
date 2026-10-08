@@ -69,3 +69,10 @@ Der Ordner kann 1:1 auf jeden Webspace (IONOS, Strato, all-inkl …) hochgeladen
 oder kostenlos über GitHub Pages / Netlify bereitgestellt werden. Die Domain
 in `sitemap.xml`, `robots.txt` und den `<link rel="canonical">`-Tags ist auf
 `www.glueckskaefer-bande.de` eingestellt – bei einer anderen Domain anpassen.
+
+## Seiten neu generieren (optional)
+
+Header, Footer und Navigation aller Seiten kommen aus `build.py`. Nach einer
+Änderung dort einmal `python3 build.py` in diesem Ordner ausführen. Die Domain
+für Canonical-Links, Sitemap und Vorschaubild steht oben in `build.py`
+(`DOMAIN`) – aktuell die GitHub-Pages-Adresse, später die eigene Domain.
