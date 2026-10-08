@@ -277,11 +277,11 @@
             <label class="feld">Mindestbestellwert (€)<input name="kurierAb" inputmode="decimal" placeholder="25,00"></label>
             <label class="feld">Kostenlos ab (€) <small>0 = nie</small><input name="kurierFreiAb" inputmode="decimal" placeholder="50,00"></label>
             <label class="feld">Postleitzahlen <small>mit Komma</small><input name="kurierPlz" placeholder="74072, 74074, 74076, 74078, 74080, 74081"></label>
-            <h2 class="voll" style="margin-top:1rem">E-Mails <small>Strato: eigener Mailserver · Netlify: Brevo (Umgebungsvariable BREVO_API_KEY)</small></h2>
+            <h2 class="voll" style="margin-top:1rem">E-Mails <small id="mailStatus">Netlify: Strato-Postfach per SMTP (SMTP_PASSWORT) oder Brevo (BREVO_API_KEY)</small></h2>
             <label class="feld">Benachrichtigungen an <small>neue Bestellungen, Nachrichten, Händler</small><input name="mailAn" type="email" placeholder="info@zukkabro.de"></label>
             <label class="feld">Absender-Adresse <small>muss eine Adresse eurer Domain sein</small><input name="mailVon" type="email" placeholder="bestellung@zukkabro.de"></label>
             <label class="feld voll">Text auf der Bestellbestätigung<textarea name="hinweis" rows="2" placeholder="z. B. Wir melden uns innerhalb von 24 Stunden."></textarea></label>
-            <div class="voll"><button class="btn btn--pink" type="submit">Einstellungen speichern</button></div>
+            <div class="voll"><button class="btn btn--pink" type="submit">Einstellungen speichern</button> <button class="btn btn--gold" type="button" id="mailTest">Testmail senden</button></div>
           </form>
         </section>
 

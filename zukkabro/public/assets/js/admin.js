@@ -66,7 +66,7 @@
         ZB.api("GET", "/admin/nachrichten"),
       ]);
       daten.buchungen = r[0].buchungen; daten.bestellungen = r[1].bestellungen;
-      daten.haendler = r[2].haendler; daten.preise = r[3].preise; daten.shop = r[3].shop || {}; daten.einstellungen = r[3].einstellungen || {}; daten.alleBuchungen = null;
+      daten.haendler = r[2].haendler; daten.preise = r[3].preise; daten.shop = r[3].shop || {}; daten.einstellungen = r[3].einstellungen || {}; daten.mailAktiv = !!r[3].mailAktiv; daten.alleBuchungen = null;
       daten.nachrichten = r[4].nachrichten || [];
       zaehler();
       zeichneTab(aktuellerTab);
@@ -822,6 +822,7 @@
     f.paypal.value = e.paypal || ""; f.hinweis.value = e.hinweis || ""; f.ohnePreisAusblenden.checked = !!e.ohnePreisAusblenden;
     f.mailAn.value = e.mailAn || ""; f.mailVon.value = e.mailVon || "";
     f.vorverkauf.checked = !!e.vorverkauf; f.eroeffnung.value = e.eroeffnung || "";
+    if ($("mailStatus")) $("mailStatus").textContent = daten.mailAktiv ? "Versand eingerichtet ✓ – Testmail prüfen" : "Kein Versand eingerichtet: Netlify-Variable SMTP_PASSWORT (Strato-Postfach) oder BREVO_API_KEY fehlt";
     f.kurier.checked = !!e.kurier; f.kurierKosten.value = ZB.centFeld(e.kurierKosten); f.kurierAb.value = ZB.centFeld(e.kurierAb); f.kurierFreiAb.value = ZB.centFeld(e.kurierFreiAb); f.kurierPlz.value = e.kurierPlz || "";
   }
   $("einstForm").addEventListener("submit", async function (ev) {
@@ -839,6 +840,13 @@
       });
       daten.einstellungen = r.einstellungen; ZB.meldung("Einstellungen gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
+  });
+
+  if ($("mailTest")) $("mailTest").addEventListener("click", async function () {
+    var b = $("mailTest"); b.disabled = true;
+    try { var r = await ZB.api("POST", "/admin/mail-test", {}); ZB.meldung("Testmail an " + r.an + " gesendet. Schau ins Postfach (auch Spam)."); }
+    catch (err) { ZB.meldung(err.message, "fehler"); }
+    b.disabled = false;
   });
 
   /* ================= Buchhaltung ================= */

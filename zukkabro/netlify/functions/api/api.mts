@@ -899,7 +899,15 @@ async function einstellungenSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, einstellungen: e });
 }
 
-/* =================== E-Mails (Brevo, nur mit BREVO_API_KEY) =================== */
+/* =================== E-Mails (Strato-SMTP mit SMTP_PASSWORT oder Brevo mit BREVO_API_KEY) =================== */
+/** Testmail an die Benachrichtigungs-Adresse, damit man im Admin sieht, ob der Versand klappt */
+async function mailTest(a: Sitzung) {
+  const e = await einstellungen();
+  if (!mailAktiv()) return json({ ok: false, fehler: "Kein Mailversand eingerichtet (SMTP_PASSWORT oder BREVO_API_KEY fehlt)." }, 409);
+  if (!e.mailAn) return json({ ok: false, fehler: "Bitte zuerst eine Benachrichtigungs-Adresse speichern." }, 400);
+  const gesendet = await mailAnTeam("Testmail von ZUKKABRO", `Hey,\n\ndas ist eine Testmail aus dem Admin (${a.n}). Wenn du das liest, klappt der Mailversand.\n\nhttps://zukkabro.de/admin/`);
+  return json({ ok: gesendet, an: e.mailAn, fehler: gesendet ? "" : "Versand fehlgeschlagen, siehe Netlify-Protokoll der Funktion." }, gesendet ? 200 : 502);
+}
 function euroText(cent: number): string {
   return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100);
 }
@@ -1056,8 +1064,9 @@ export default async (req: Request, context: Context) => {
       }
       if (m === "GET" && pfad === "/admin/preise") {
         const [preise, shop, e] = await Promise.all([preisliste(), shopPreise(), einstellungen()]);
-        return json({ preise, shop, einstellungen: e });
+        return json({ preise, shop, einstellungen: e, mailAktiv: mailAktiv() });
       }
+      if (m === "POST" && pfad === "/admin/mail-test") return await mailTest(a);
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/news") return json({ news: await news() });
       if (m === "POST" && pfad === "/admin/news") return await newsSpeichern(req, a);

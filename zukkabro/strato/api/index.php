@@ -596,6 +596,13 @@ function mail_senden(string $an, string $betreff, string $text): void {
     try { if (!@mail($an, $betreff, wordwrap($text, 78, "\n", false), $kopf, '-f' . $von)) error_log("ZUKKABRO Mail an $an nicht gesendet"); }
     catch (Throwable $t) { error_log('ZUKKABRO Mail-Fehler: ' . $t->getMessage()); }
 }
+/** Testmail aus dem Admin an die Benachrichtigungs-Adresse */
+function mail_test(array $a): void {
+    $an = einstellungen()['mailAn'];
+    if ($an === '') throw new Fehler(400, 'Bitte zuerst eine Benachrichtigungs-Adresse speichern.');
+    mail_an_team('Testmail von ZUKKABRO', "Hey,\n\ndas ist eine Testmail aus dem Admin ({$a['n']}). Wenn du das liest, klappt der Mailversand.\n\nhttps://zukkabro.de/admin/");
+    antwort(['ok' => true, 'an' => $an]);
+}
 function mail_an_team(string $betreff, string $text): void { $an = einstellungen()['mailAn']; if ($an !== '') mail_senden($an, $betreff, $text); }
 function euro_text(int $cent): string { return number_format($cent / 100, 2, ',', '.') . ' €'; }
 /** Bestellbestätigung an den Kunden und Hinweis ans Team */
@@ -1007,7 +1014,8 @@ function zb_api(): never {
                 protokoll('haendler-status', $a['id'], ['haendler' => $h['id'], 'status' => $status]);
                 antwort(['ok' => true, 'haendler' => ohne_pass($h)]);
             }
-            if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen()]);
+            if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen(), 'mailAktiv' => true]);
+            if ($m === 'POST' && $pfad === '/admin/mail-test') mail_test($a);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/news') antwort(['news' => news()]);
             if ($m === 'POST' && $pfad === '/admin/news') news_speichern($a);

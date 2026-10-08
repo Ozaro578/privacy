@@ -63,9 +63,12 @@ Bei späteren Updates: alles außer `daten/` und `config.php` neu hochladen. `da
 ## 5. E-Mails
 
 Auf Strato gehen die Mails über den Strato-Mailserver (nichts einzurichten). Solange die Seite auf Netlify läuft,
-übernimmt **Brevo** (brevo.com, kostenlos bis 300 Mails/Tag): Konto anlegen, Absender info@zukkabro.de bestätigen,
-unter „SMTP & API“ einen API-Schlüssel erzeugen und in Netlify als Umgebungsvariable `BREVO_API_KEY` eintragen
-(Site configuration → Environment variables, danach einmal neu deployen).
+schickt Netlify die Mails über das **Strato-Postfach info@zukkabro.de** (SMTP, smtp.strato.de:465). Dafür in Netlify
+(Site configuration → Environment variables) die Variable `SMTP_PASSWORT` mit dem Passwort des Postfachs anlegen,
+danach einmal neu deployen. Optional: `SMTP_BENUTZER` (Standard: die Absender-Adresse), `SMTP_HOST`, `SMTP_PORT`.
+Strato signiert die Mails selbst (DKIM), es sind keine DNS-Änderungen nötig. Alternative ohne Strato-Postfach:
+Brevo-Konto, Domain dort authentifizieren und den API-Schlüssel als `BREVO_API_KEY` eintragen.
+Im Admin unter „E-Mails“ zeigt der Knopf **Testmail senden**, ob der Versand klappt.
 
 
 Admin → Shop-Einstellungen → „E-Mails“: Benachrichtigungs-Adresse (z. B. info@zukkabro.de) und Absender (muss eine Adresse

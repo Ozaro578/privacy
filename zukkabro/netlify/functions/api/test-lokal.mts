@@ -285,6 +285,53 @@ r = await rufe("POST", "/admin/einstellungen", { ...EINST, mailAn: "", mailVon: 
 r = await rufe("POST", "/kontakt", { name: "Tim", email: "tim@test.de", text: "Nochmal", datenschutz: true, betreff: "Frage" }); assert.equal(mails.length, 4); ok("Ohne Empfänger-Adresse keine Mail");
 globalThis.fetch = fetchVorher; delete process.env.BREVO_API_KEY;
 
+// E-Mails über das Strato-Postfach (SMTP, Mini-Server zum Testen, ohne TLS)
+{
+  const { createServer } = await import("node:net");
+  const empfangen: Array<{ von: string; an: string; daten: string; auth: string }> = [];
+  const server = createServer((c) => {
+    let puffer = "", inData = false, von = "", an = "", daten = "", auth = "";
+    c.write("220 test.local ESMTP\r\n");
+    c.on("data", (chunk) => {
+      puffer += chunk.toString("utf8");
+      let i: number;
+      while ((i = puffer.indexOf("\r\n")) >= 0) {
+        const zeile = puffer.slice(0, i); puffer = puffer.slice(i + 2);
+        if (inData) { if (zeile === ".") { inData = false; empfangen.push({ von, an, daten, auth }); c.write("250 OK queued\r\n"); } else daten += zeile.replace(/^\.\./, ".") + "\r\n"; continue; }
+        if (/^EHLO/i.test(zeile)) c.write("250-test.local\r\n250-AUTH PLAIN LOGIN\r\n250 8BITMIME\r\n");
+        else if (/^AUTH PLAIN /i.test(zeile)) { auth = Buffer.from(zeile.slice(11), "base64").toString("utf8"); c.write(auth === "\0info@zukkabro.de\0geheim-123" ? "235 ok\r\n" : "535 Authentication failed\r\n"); }
+        else if (/^MAIL FROM:/i.test(zeile)) { von = zeile.slice(10); c.write("250 ok\r\n"); }
+        else if (/^RCPT TO:/i.test(zeile)) { an = zeile.slice(8); c.write("250 ok\r\n"); }
+        else if (/^DATA/i.test(zeile)) { inData = true; daten = ""; c.write("354 go\r\n"); }
+        else if (/^QUIT/i.test(zeile)) { c.write("221 bye\r\n"); c.end(); }
+        else c.write("500 what\r\n");
+      }
+    });
+  });
+  await new Promise<void>((ok) => server.listen(0, "127.0.0.1", ok));
+  const port = (server.address() as any).port;
+  process.env.SMTP_HOST = "127.0.0.1"; process.env.SMTP_PORT = String(port); process.env.SMTP_PASSWORT = "geheim-123";
+  r = await rufe("POST", "/admin/einstellungen", { ...EINST, mailAn: "info@zukkabro.de", mailVon: "info@zukkabro.de" }, admin); assert.equal(r.status, 200);
+  r = await rufe("GET", "/admin/preise", undefined, admin); assert.equal(r.daten.mailAktiv, true);
+  r = await rufe("POST", "/admin/mail-test", {}, admin); assert.equal(r.status, 200, JSON.stringify(r.daten)); assert.equal(r.daten.an, "info@zukkabro.de");
+  assert.equal(empfangen.length, 1); assert.equal(empfangen[0].von, "<info@zukkabro.de>"); assert.equal(empfangen[0].an, "<info@zukkabro.de>");
+  const kopf = empfangen[0].daten.split("\r\n\r\n")[0], rumpf = empfangen[0].daten.split("\r\n\r\n")[1];
+  assert.match(kopf, /^Subject: Testmail von ZUKKABRO$/m); assert.match(kopf, /^From: ZUKKABRO <info@zukkabro.de>$/m); assert.match(kopf, /^Content-Transfer-Encoding: base64$/m);
+  assert.match(Buffer.from(rumpf.replace(/\r\n/g, ""), "base64").toString("utf8"), /Testmail aus dem Admin \(chef\)/);
+  ok("Testmail aus dem Admin geht per SMTP ans Team (Login, Absender, Betreff, Inhalt)");
+  r = await rufe("POST", "/shop/bestellung", { kunde, lieferart: "versand", zahlart: "Überweisung (Vorkasse)", agb: true, datenschutz: true, positionen: [{ produktId: essen, menge: 1 }] });
+  assert.equal(r.status, 200); assert.equal(empfangen.length, 3); assert.equal(empfangen[1].an, "<max@test.de>");
+  assert.match(empfangen[1].daten, /^Subject: Deine Bestellung ZK-[^\r\n]* bei ZUKKABRO$/m); const betreff = empfangen[2].daten.match(/^Subject: (.*)$/m)![1]; assert.match(betreff, /^=\?UTF-8\?B\?/); assert.match(Buffer.from(betreff.slice(10, -2), "base64").toString("utf8"), /^Neue Bestellung ZK-.*€, Überweisung/);
+  assert.match(Buffer.from(empfangen[1].daten.split("\r\n\r\n")[1].replace(/\r\n/g, ""), "base64").toString("utf8"), /Hey Max,\r\n\r\ndanke für deine Bestellung/);
+  ok("Bestellung per SMTP: Umlaute im Betreff kodiert, Kunde und Team bekommen Mail");
+  process.env.SMTP_PASSWORT = "falsch";
+  r = await rufe("POST", "/admin/mail-test", {}, admin); assert.equal(r.status, 502); assert.equal(empfangen.length, 3); ok("Falsches SMTP-Passwort: Fehler statt Absturz");
+  delete process.env.SMTP_HOST; delete process.env.SMTP_PORT; delete process.env.SMTP_PASSWORT;
+  r = await rufe("POST", "/admin/mail-test", {}, admin); assert.equal(r.status, 409); ok("Ohne Mailversand meldet der Admin-Test 409");
+  r = await rufe("POST", "/admin/einstellungen", { ...EINST, mailAn: "", mailVon: "" }, admin);
+  server.close();
+}
+
 // Digitale Stempelkarte
 r = await rufe("POST", "/shop/stempel/neu", {}); assert.equal(r.status, 200); assert.match(r.daten.code, /^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/); assert.equal(r.daten.stempel, 0); assert.equal(r.daten.ziel, 10);
 const karteCode = r.daten.code; ok("Stempelkarte angelegt: " + karteCode);
