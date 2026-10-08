@@ -267,7 +267,10 @@
   var istApp = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   var istIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
   if ("serviceWorker" in navigator && location.protocol === "https:" && seite !== "admin" && seite !== "haendler") {
-    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () { /* ohne App-Funktionen weiter */ }); });
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then(function (r) { r.update(); }).catch(function () { /* ohne App-Funktionen weiter */ }); });
+    // Neue Version übernommen: einmal neu laden, damit Styles und Skripte zusammenpassen
+    var hatteController = !!navigator.serviceWorker.controller, neuGeladen = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function () { if (hatteController && !neuGeladen) { neuGeladen = true; location.reload(); } });
   }
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); installPrompt = e; appKnoepfe(); });
   window.addEventListener("appinstalled", function () { installPrompt = null; store.set("zb_app_installiert", "1"); appKnoepfe(); });
