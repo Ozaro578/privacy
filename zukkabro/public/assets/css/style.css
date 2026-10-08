@@ -387,7 +387,7 @@ a:focus-visible, button:focus-visible { outline: 3px dashed var(--pink); outline
 .sticker--blue { background: var(--blue); color: #fff; }
 
 /* ---------- Kontakt ---------- */
-.contact { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 1.4rem; }
+.contact { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; margin-bottom: 1.4rem; }
 .contact__card { display: block; text-decoration: none; text-align: center; padding: 1.5rem 1rem; border: 3px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); background: var(--paper); transition: transform .2s ease, box-shadow .2s ease; }
 .contact__card:hover { transform: translate(-3px, -3px) rotate(1deg); box-shadow: var(--pop-lg); }
 .contact__card h3 { font-family: var(--display); font-weight: 400; font-size: 1.25rem; margin: .5rem 0 .2rem; }
@@ -397,6 +397,7 @@ a:focus-visible, button:focus-visible { outline: 3px dashed var(--pink); outline
 .contact__card--ig { border-bottom: 8px solid var(--pink); }
 .contact__card--tt { border-bottom: 8px solid var(--blue); }
 .contact__card--mail { border-bottom: 8px solid var(--gold); }
+.contact__card--tel { border-bottom: 8px solid var(--violet); }
 .contact__card.is-soon { cursor: default; }
 .info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; background: rgba(255, 255, 255, .15); border: 2px solid rgba(255, 255, 255, .6); border-radius: var(--radius); padding: 1.4rem 1.6rem; color: #fff; backdrop-filter: blur(8px); }
 .info h3 { font-size: 1.12rem; margin-bottom: .3rem; }
@@ -441,7 +442,7 @@ a:focus-visible, button:focus-visible { outline: 3px dashed var(--pink); outline
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
   .promos { grid-template-columns: repeat(2, 1fr); }
-  .contact { grid-template-columns: repeat(2, 1fr); }
+  .contact { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 860px) {
   .nav-toggle { display: block; }
