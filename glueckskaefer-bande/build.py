@@ -113,6 +113,7 @@ def layout(slug, title, desc, body, extra_head="", schema=None):
     </div>
   </div>
 </footer>
+<a class="whatsapp" href="https://wa.me/49000000000?text=Hallo%20Yasemin%2C%20ich%20interessiere%20mich%20f%C3%BCr%20einen%20Betreuungsplatz." target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.3-3.9-.3-.4a10.2 10.2 0 0 1-1.6-5.6C5.5 9.9 10.2 5.3 16 5.3s10.5 4.6 10.5 10.3S21.8 26 16 26zm5.8-7.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.8-1.8-2.1-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.6 4.9 2.1.9 2.9.9 3.9.8.6-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5l-.9-.5z"/></svg></a>
 <div class="sticky-cta" aria-label="Schnellkontakt">
   <a class="btn secondary" href="tel:+49000000000">Anrufen</a>
   <a class="btn" href="kontakt.html">Platz anfragen</a>
@@ -163,7 +164,9 @@ def img_src(slug):
 def photo(slug,label,extra=""):
     return f'<figure class="photo {extra}"><img src="{img_src(slug)}" alt="{label}" loading="lazy" width="800" height="600"><figcaption>{label}</figcaption></figure>'
 
-def tile(slug,title,text,href):
+def tile(slug,title,text,href,emoji="🐞",color="t-red"):
+    if img_src(slug).endswith(".svg"):
+        return f'<a class="tile solid {color} reveal" href="{href}"><span class="emoji" aria-hidden="true">{emoji}</span><span class="tile-text"><h3>{title}</h3><p>{text}</p><span class="tile-cta">Mehr erfahren →</span></span></a>'
     return f'<a class="tile reveal" href="{href}"><img src="{img_src(slug)}" alt="" loading="lazy"><span class="tile-text"><h3>{title}</h3><p>{text}</p><span class="tile-cta">Mehr erfahren →</span></span></a>'
 
 pages = {}
@@ -172,6 +175,7 @@ pages = {}
 TICKER_ITEMS = ["Kleine Gruppe – große Aufmerksamkeit","Betreuung im familiären Zuhause","Jeden Tag raus in die Natur",
                 "Eingewöhnung Schritt für Schritt","Qualifizierte Kindertagespflegeperson","Ostfildern-Kemnat","Jetzt freie Plätze anfragen"]
 ticker_html = "".join(f"<span>{t}</span>" for t in TICKER_ITEMS)
+ticker2 = "".join(f"<span>{t}</span>" for t in ["Geborgenheit","Respekt","Vertrauen","Selbstständigkeit","Bewegung","Natur","Kreativität","Miteinander","Spielen","Entdecken","Wachsen"])
 
 pages["index.html"] = dict(
  title="Glückskäfer Bande – Kindertagespflege in Ostfildern-Kemnat",
@@ -179,48 +183,49 @@ pages["index.html"] = dict(
  schema=BUSINESS,
  body=f'''
 <section class="hero hero-photo">
-  <div class="hero-inner">
-    <img class="hero-bg" src="{img_src("hero")}" alt="" fetchpriority="high">
+  <div class="hero-inner solid">
+    <div class="dots"></div>
     <div class="hero-shade"></div>
-    <div class="hero-badge">{HERO_LOGO if PNG_LOGO else ""}</div>
-    <div class="container">
+    <div class="container" style="position:relative;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:2rem">
       <div class="hero-content">
-        <div class="tagline"><span>klein</span><span>familiär</span><span>liebevoll</span></div>
-        <h1>Hier dürfen Kinder <em>Kinder</em> sein.</h1>
-        <p class="lead">Die Glückskäfer Bande ist eine kleine Kindertagespflege in Ostfildern-Kemnat – ein zweites Zuhause auf Zeit, in dem dein Kind geborgen aufwächst, spielt, entdeckt und in seinem eigenen Tempo groß wird.</p>
+        <span class="bubble">🐞 Freie Plätze in Ostfildern-Kemnat</span>
+        <h1>Hier dürfen Kinder <em style="color:var(--gold-soft)">Kinder</em> sein.</h1>
+        <p class="lead">Kleine Kindertagespflege, großes Herz: ein zweites Zuhause auf Zeit, in dem dein Kind geborgen spielt, entdeckt und in seinem eigenen Tempo groß wird.</p>
         <div class="btn-row">
-          <a class="btn" href="kontakt.html">Freie Plätze anfragen</a>
+          <a class="btn" style="background:var(--ink)" href="kontakt.html">Freie Plätze anfragen</a>
           <a class="btn secondary" href="#so-gehts">So läuft der Einstieg</a>
         </div>
       </div>
+      <div class="hero-badge big">{HERO_LOGO if PNG_LOGO else '<div class="frame" style="background:var(--paper);border-radius:50%;padding:2rem;box-shadow:var(--shadow)">'+LOGO+'</div>'}</div>
     </div>
   </div>
 </section>
 
 <div class="ticker" aria-hidden="true"><div class="ticker-track">{ticker_html}{ticker_html}</div></div>
+<div class="ticker olive" aria-hidden="true"><div class="ticker-track" style="animation-direction:reverse">{ticker2}{ticker2}</div></div>
 
 <section class="tight">
   <div class="container">
     <div class="facts">
-      <div class="fact reveal"><strong>max. 5</strong><span>Kinder in der Gruppe</span></div>
+      <div class="fact reveal"><strong data-count="5" data-prefix="max. ">max. 5</strong><span>Kinder in der Gruppe</span></div>
       <div class="fact reveal"><strong>1:5</strong><span>Betreuungsschlüssel – echte Zeit für jedes Kind</span></div>
-      <div class="fact reveal"><strong>3</strong><span>eigene Kinder – Familienalltag aus Erfahrung</span></div>
+      <div class="fact reveal"><strong data-count="3">3</strong><span>eigene Kinder – Familienalltag aus Erfahrung</span></div>
       <div class="fact reveal"><strong>täglich</strong><span>Zeit draußen an der frischen Luft</span></div>
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section class="gold-bg">
   <div class="container">
     <div class="center reveal">
       <span class="eyebrow">Was uns ausmacht</span>
       <h2>Vier Dinge, die dein Kind bei uns <em>jeden Tag</em> erlebt</h2>
     </div>
     <div class="tiles" style="margin-top:2.5rem">
-      {tile("tile-gruppe","Kleine Gruppe","Viel Nähe, viel Zeit, viel Aufmerksamkeit für jedes einzelne Kind.","betreuung.html")}
-      {tile("tile-natur","Bewegung & Natur","Laufen, klettern, balancieren – drinnen, im Garten und in der Natur.","betreuung.html")}
-      {tile("tile-kreativ","Kreativ sein","Malen, basteln, Musik, Geschichten – mit allen Sinnen entdecken.","raeume.html")}
-      {tile("tile-geborgen","Geborgenheit","Kuscheln, trösten, ausruhen – Sicherheit, die wachsen lässt.","tagesablauf.html")}
+      {tile("tile-gruppe","Kleine Gruppe","Viel Nähe, viel Zeit, viel Aufmerksamkeit für jedes einzelne Kind.","betreuung.html","🧸","t-red")}
+      {tile("tile-natur","Bewegung & Natur","Laufen, klettern, balancieren – drinnen, im Garten und in der Natur.","betreuung.html","🌳","t-olive")}
+      {tile("tile-kreativ","Kreativ sein","Malen, basteln, Musik, Geschichten – mit allen Sinnen entdecken.","raeume.html","🎨","t-gold")}
+      {tile("tile-geborgen","Geborgenheit","Kuscheln, trösten, ausruhen – Sicherheit, die wachsen lässt.","tagesablauf.html","🤍","t-rose")}
     </div>
   </div>
 </section>
@@ -228,7 +233,7 @@ pages["index.html"] = dict(
 <section>
   <div class="container">
     <div class="feature reveal">
-      <div class="feature-img"><img src="{img_src("yasemin")}" alt="Yasemin – Kindertagespflegeperson der Glückskäfer Bande" loading="lazy"></div>
+      <div class="feature-img"><img src="{img_src("yasemin")}" alt="Yasemin – Kindertagespflegeperson der Glückskäfer Bande" loading="lazy" style="height:100%"></div>
       <div class="feature-body">
         <span class="eyebrow">Über mich</span>
         <h2>Hallo, ich bin Yasemin.</h2>
@@ -256,7 +261,7 @@ pages["index.html"] = dict(
   </div>
 </section>
 
-<section id="so-gehts" class="alt">
+<section id="so-gehts" class="red-bg">
   <div class="container">
     <div class="center reveal">
       <span class="eyebrow">So einfach geht's</span>
@@ -274,7 +279,7 @@ pages["index.html"] = dict(
 <section>
   <div class="container">
     <div class="feature reverse reveal">
-      <div class="feature-img"><img src="{img_src("eingewoehnung")}" alt="Eingewöhnung: ein Kind kommt an der Hand eines Elternteils an" loading="lazy"></div>
+      <div class="feature-img t-olive" style="display:grid;place-items:center;font-size:7rem">👨‍👩‍👧</div>
       <div class="feature-body">
         <span class="eyebrow">Eingewöhnung</span>
         <h2>Vertrauen braucht Zeit – und die bekommt dein Kind.</h2>
@@ -304,7 +309,7 @@ pages["index.html"] = dict(
   </div>
 </section>
 
-<section class="alt">
+<section class="sage-bg">
   <div class="container">
     <div class="center reveal">
       <span class="eyebrow">Häufige Fragen</span>
