@@ -1087,3 +1087,32 @@ body.is-app .footer { padding-bottom: 1rem; }
   .banner__fb.banner__ueber { flex-wrap: wrap; }
   .banner__ueber .banner__btn { margin-left: 0; }
 }
+
+/* ---------- Kopfzeile: Menü als Pille, kräftigere Kanten, Logo etwas größer ---------- */
+.header { background: rgba(255, 250, 243, .94); border-bottom: 3px solid var(--choco); box-shadow: 0 3px 0 var(--gold); }
+.header.is-scrolled { box-shadow: 0 3px 0 var(--gold), 0 10px 24px rgba(43, 20, 10, .12); }
+.header__inner { height: 82px; }
+.logo img { height: 56px; }
+.korb-knopf { width: 50px; height: 46px; border-radius: 999px; }
+.korb-knopf:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--choco); }
+.nav-toggle { border-radius: 999px; }
+@media (min-width: 861px) {
+  .nav { gap: .15rem; padding: .3rem; background: var(--paper); border: 3px solid var(--choco); border-radius: 999px; box-shadow: 4px 4px 0 var(--choco); }
+  .nav a { border-radius: 999px; padding: .5em 1.05em; font-weight: 700; font-size: .98rem; line-height: 1.2; color: var(--choco); }
+  .nav a:hover { background: var(--gold-soft); color: var(--choco); }
+  .nav a.is-active:not(.nav__cta) { background: var(--pink); color: #fff; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
+  .nav a[href="/laden.html"]:hover { background: #d9f5df; }
+  .nav__cta { margin-left: .25rem; border-width: 2px; box-shadow: 2px 2px 0 var(--choco); padding: .5em 1.15em; }
+  .nav__cta:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--choco); }
+}
+@media (max-width: 1100px) and (min-width: 861px) {
+  .nav a { padding: .5em .7em; font-size: .9rem; }
+  .logo img { height: 48px; }
+}
+@media (max-width: 860px) {
+  .header__inner { height: 72px; }
+  .logo img { height: 46px; }
+  .nav { top: 72px; }
+  .nav a { border-radius: 14px; font-weight: 700; }
+  .nav a.is-active:not(.nav__cta) { background: var(--pink); color: #fff; }
+}
