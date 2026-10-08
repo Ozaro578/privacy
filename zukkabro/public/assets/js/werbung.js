@@ -1,10 +1,14 @@
-/* ZUKKABRO – Werbeclips: stumm, in Schleife, nur abspielen, wenn sie im Bild sind (spart Daten) */
+/* ZUKKABRO – Werbeclips und Hintergrund-Videos: stumm, in Schleife, datensparend */
 (function () {
   "use strict";
+  var sparsam = (navigator.connection && navigator.connection.saveData) || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // Hintergrund-Videos (Hero, Seitenkopf): bei Datensparmodus nur das Poster zeigen
+  document.querySelectorAll(".hero__video, .page-head__film video").forEach(function (v) {
+    if (sparsam) { v.removeAttribute("autoplay"); v.pause(); v.querySelectorAll("source").forEach(function (s) { s.remove(); }); v.load(); }
+  });
+  // Werbeclips: nur abspielen, wenn sie im Bild sind
   var clips = document.querySelectorAll("[data-werbung] video");
-  if (!clips.length) return;
-  var sparsam = navigator.connection && navigator.connection.saveData;
-  if (sparsam || !("IntersectionObserver" in window)) return; // Poster reicht
+  if (!clips.length || sparsam || !("IntersectionObserver" in window)) return;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       var v = e.target;

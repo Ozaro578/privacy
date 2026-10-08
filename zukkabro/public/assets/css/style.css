@@ -1019,3 +1019,38 @@ body.is-app .footer { padding-bottom: 1rem; }
   .laden-hero__bild { transform: none; }
 }
 .about__video { display: block; width: min(520px, 100%); margin: 0 auto; border-radius: 24px; filter: drop-shadow(0 12px 18px rgba(43, 20, 10, .18)); }
+
+/* ---------- Video-Hero, Kategorie-Bilder, Seitenkopf mit Film, Schoko-Drip ---------- */
+.hero { position: relative; overflow: hidden; }
+.hero__film { position: absolute; inset: 0; z-index: 0; background: var(--cream); }
+.hero__film video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero__film::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(251, 241, 230, .45) 0%, rgba(251, 241, 230, .25) 55%, var(--cream) 100%); }
+.hero > .container { position: relative; z-index: 1; }
+.banner { position: relative; overflow: hidden; }
+.banner__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.banner:hover .banner__bg { transform: scale(1.06); }
+.banner__fb.banner__ueber { display: flex; background: linear-gradient(100deg, rgba(43, 20, 10, .68) 0%, rgba(43, 20, 10, .3) 55%, rgba(43, 20, 10, .05) 100%) !important; }
+.banner__fb.banner__ueber::before { display: none; }
+.page-head--film { color: var(--choco); }
+.page-head__film, .page-head__bild { position: absolute; inset: 0; z-index: 0; }
+.page-head__film video, .page-head__bild { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page-head__film::after, .page-head--film .page-head__bild + .container::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(251, 241, 230, .72) 0%, rgba(251, 241, 230, .6) 100%); }
+.page-head--film > .container { position: relative; z-index: 1; }
+.page-head--film .page-head__bild + .container::before { z-index: -1; left: -100vw; right: -100vw; }
+.drip-oben { position: relative; }
+.drip-oben::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: clamp(18px, 3vw, 34px); z-index: 3; background: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 154 22%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M0,0 H154 V9 C146,9 144,16 138,16 C132,16 131,8 124,8 C117,8 118,14 111,14 C104,14 104,6 97,6 C90,6 90,12 83,12 C76,12 76,5 69,5 C62,5 62,13 55,13 C48,13 48,7 41,7 C34,7 34,15 27,15 C20,15 20,8 13,8 C7,8 5,11 0,11 Z%27 fill=%27%232b140a%27/%3E%3C/svg%3E") center top / 100% 100% no-repeat; pointer-events: none; }
+
+/* ---------- Video-Slides im Start-Slider ---------- */
+.slide--video { position: relative; padding-right: clamp(22px, 5vw, 72px); }
+.slide--video.slide--green, .slide--video.slide--pink, .slide--video.slide--violet, .slide--video.slide--blue { background: var(--choco); color: #fff; }
+.slide__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slide--video::after { content: ""; position: absolute; inset: 0; background: linear-gradient(95deg, rgba(43, 20, 10, .78) 0%, rgba(43, 20, 10, .45) 48%, rgba(43, 20, 10, .05) 100%); }
+.slide__text--video { position: relative; z-index: 1; flex: 0 1 58%; }
+.slide__text--video .slide__kicker { background: var(--gold); color: var(--choco); }
+.slide__text--video .slide__titel { color: #fff; text-shadow: 3px 3px 0 var(--choco); }
+.slide__sub--video { font-size: 1.02rem; opacity: 1; font-weight: 600; max-width: 42ch; text-shadow: 0 1px 2px rgba(0, 0, 0, .5); }
+@media (max-width: 760px) {
+  .slide--video { align-items: flex-end; min-height: 440px; }
+  .slide--video::after { background: linear-gradient(180deg, rgba(43, 20, 10, .05) 0%, rgba(43, 20, 10, .55) 45%, rgba(43, 20, 10, .85) 100%); }
+  .slide__text--video { flex: 1 1 100%; }
+}

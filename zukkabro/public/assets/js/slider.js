@@ -19,6 +19,14 @@
   LISTE.forEach(function (p) { PROD[p.id] = p; });
   var DAUER = 6000;
   var ruhig = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var sparsam = navigator.connection && navigator.connection.saveData;
+  /* Video-Slides (Clips aus assets/video), werden zwischen die Angebote gemischt */
+  var VIDEOS = [
+    { clip: "matcha", farbe: "green", kicker: "🍵 Neu in Heilbronn", titel: "Matcha & Açaí Bowls am Wochenende", text: "Eigene Kreationen, frisch gemacht an der Klingenberger Straße 100. Erstmal Sa + So.", href: "/laden.html", cta: "Zum Laden →" },
+    { clip: "snacks", farbe: "pink", kicker: "🌍 Aus aller Welt", titel: "Snacks, die es hier sonst nicht gibt", text: "USA, Japan, Korea, Mexiko, Dubai: über 500 Sorten, Versand in 3 Werktagen oder Abholung.", href: "/sortiment.html", cta: "Sortiment →" },
+    { clip: "acai", farbe: "violet", kicker: "🫐 Açaí Bowls", titel: "Classic, Choco oder Tropical", text: "Gefrorenes Açaí, frisches Obst, Granola, Kokos. Toppings nach Wahl, Stempel inklusive.", href: "/laden.html", cta: "Zur Karte →" },
+    { clip: "drinks", farbe: "blue", kicker: "🥤 Eiskalt", titel: "Drinks von Japan bis USA", text: "Ramune, Peach Pepsi, Dr Pepper Blackberry, Bubble Tea. Alles, was knallt.", href: "/sortiment.html?kat=getraenke", cta: "Drinks ansehen →" }
+  ];
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -62,6 +70,35 @@
       "</article>";
   }
 
+  function videoSlide(v, i) {
+    return '<article class="slide slide--video slide--' + esc(v.farbe) + '" aria-roledescription="Slide" aria-label="' + (i + 1) + ' von {n}">' +
+      '<video class="slide__video" muted loop playsinline preload="none" poster="/assets/img/werbung/' + esc(v.clip) + '-poster.jpg">' +
+        '<source src="/assets/video/' + esc(v.clip) + '.mp4" type="video/mp4"><source src="/assets/video/' + esc(v.clip) + '.webm" type="video/webm"></video>' +
+      '<div class="slide__text slide__text--video">' +
+        '<p class="slide__kicker">' + esc(v.kicker) + "</p>" +
+        '<h2 class="slide__titel"><a href="' + esc(v.href) + '">' + esc(v.titel) + "</a></h2>" +
+        '<p class="slide__sub slide__sub--video">' + esc(v.text) + "</p>" +
+        '<div class="slide__cta"><a class="btn btn--pink" href="' + esc(v.href) + '">' + esc(v.cta) + "</a></div>" +
+      "</div></article>";
+  }
+  /** Produkt-Slides und Video-Slides abwechseln: Video, Produkt, Video, Produkt … */
+  function mischen(produktHtml) {
+    var aus = [], vi = 0, pi = 0;
+    while (vi < VIDEOS.length || pi < produktHtml.length) {
+      if (vi < VIDEOS.length) aus.push(videoSlide(VIDEOS[vi], vi + pi + 1)), vi++;
+      if (pi < produktHtml.length) aus.push(produktHtml[pi]), pi++;
+    }
+    return aus.join("");
+  }
+  function videosSteuern() {
+    slides.forEach(function (s, i) {
+      var v = s.querySelector("video.slide__video");
+      if (!v) return;
+      if (i === aktiv && !ruhig && !sparsam) { if (v.preload === "none") v.preload = "auto"; var p = v.play(); if (p && p.catch) p.catch(function () { /* Poster bleibt */ }); }
+      else v.pause();
+    });
+  }
+
   function highlights() {
     var best = BEST.map(function (id) { return PROD[id]; }).filter(function (p) { return p && !p.aus && !p.pruefen; }).slice(0, 2)
       .map(function (p) { return { p: p, a: { highlight: "best" } }; });
@@ -80,6 +117,7 @@
       s.classList.toggle("is-links", richtung < 0 && i === aktiv);
       s.setAttribute("aria-hidden", i === aktiv ? "false" : "true");
     });
+    videosSteuern();
     punkte.querySelectorAll("button").forEach(function (b, i) {
       b.classList.toggle("is-active", i === aktiv);
       b.setAttribute("aria-current", i === aktiv ? "true" : "false");
@@ -97,7 +135,7 @@
   function start(daten) {
     var angebote = (daten.angebote || []).map(function (a) { return { p: PROD[a.id], a: a }; }).filter(function (x) { return x.p && !x.p.aus; });
     if (!angebote.length) angebote = highlights();
-    var html = angebote.map(function (x, i) { return slide(x.p, x.a, i + 1); }).join("");
+    var html = mischen(angebote.map(function (x, i) { return slide(x.p, x.a, i + 1); }));
     track.insertAdjacentHTML("beforeend", html);
     slides = Array.prototype.slice.call(track.querySelectorAll(".slide"));
     slides.forEach(function (s, i) { s.setAttribute("aria-label", (i + 1) + " von " + slides.length); });

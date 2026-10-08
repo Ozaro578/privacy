@@ -136,3 +136,4 @@ details.bestellung[open] summary { border-bottom: 2px solid #eadccd; background:
 .kasse-knopf--bowl { background: #efe0ff; }
 .kasse-knopf--extra { background: var(--gold-soft); }
 @media (max-width: 900px) { .kasse-layout { grid-template-columns: 1fr; } }
+.portal__banner { display: block; width: 100%; height: auto; max-height: 300px; object-fit: cover; border: 4px solid var(--choco); border-radius: var(--radius); box-shadow: var(--pop); margin: 0 0 2rem; }
