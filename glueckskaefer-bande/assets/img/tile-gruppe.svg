@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Platzhalter: Kleine Gruppe">
+<rect width="800" height="600" fill="#F9DCD6"/><circle cx="400" cy="270" r="70" fill="#fff" opacity=".55"/>
+<path d="M370 250a30 30 0 0 1 60 0v10a30 30 0 0 1-60 0z" fill="#D7402F"/><circle cx="400" cy="236" r="11" fill="#3A332E"/>
+<text x="400" y="392" font-family="Arial,sans-serif" font-weight="bold" font-size="30" fill="#3A332E" text-anchor="middle">Kleine Gruppe</text>
+<text x="400" y="428" font-family="Arial,sans-serif" font-size="17" fill="#6F655C" text-anchor="middle">Bild folgt</text></svg>

@@ -17,7 +17,7 @@ NAV = [
 PNG_LOGO = os.path.exists(os.path.join(OUT, "assets/logo.png"))
 if PNG_LOGO:
     LOGO = '<img src="assets/logo.png" alt="" width="44" height="44" class="logo-img">'
-    HERO_LOGO = '<img src="assets/logo.png" alt="Glückskäfer Bande – Kindertagespflege in Ostfildern-Kemnat" width="520" height="520" class="hero-logo">'
+    HERO_LOGO = '<img src="assets/logo.png" alt="Glückskäfer Bande – Kindertagespflege in Ostfildern-Kemnat" width="520" height="520">'
     FAVICON = 'assets/logo.png'
     FAVICON_TYPE = 'image/png'
     OG_IMAGE = 'assets/logo.png'
@@ -54,7 +54,7 @@ def layout(slug, title, desc, body, extra_head="", schema=None):
 <link rel="icon" href="{FAVICON}" type="{FAVICON_TYPE}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 {ld}{extra_head}
 </head>
@@ -113,6 +113,10 @@ def layout(slug, title, desc, body, extra_head="", schema=None):
     </div>
   </div>
 </footer>
+<div class="sticky-cta" aria-label="Schnellkontakt">
+  <a class="btn secondary" href="tel:+49000000000">Anrufen</a>
+  <a class="btn" href="kontakt.html">Platz anfragen</a>
+</div>
 <script src="assets/main.js" defer></script>
 </body>
 </html>
@@ -150,74 +154,133 @@ CTA = '''
   </div>
 </section>'''
 
+def img_src(slug):
+    for ext in ("jpg","jpeg","png","webp","svg"):
+        if os.path.exists(os.path.join(OUT,"assets","img",f"{slug}.{ext}")):
+            return f"assets/img/{slug}.{ext}"
+    return f"assets/img/{slug}.svg"
+
 def photo(slug,label,extra=""):
-    return f'<figure class="photo {extra}"><img src="assets/img/{slug}.svg" alt="{label}" loading="lazy" width="800" height="600"><figcaption>{label}</figcaption></figure>'
+    return f'<figure class="photo {extra}"><img src="{img_src(slug)}" alt="{label}" loading="lazy" width="800" height="600"><figcaption>{label}</figcaption></figure>'
+
+def tile(slug,title,text,href):
+    return f'<a class="tile reveal" href="{href}"><img src="{img_src(slug)}" alt="" loading="lazy"><span class="tile-text"><h3>{title}</h3><p>{text}</p><span class="tile-cta">Mehr erfahren →</span></span></a>'
 
 pages = {}
 
 # ---------------- START ----------------
+TICKER_ITEMS = ["Kleine Gruppe – große Aufmerksamkeit","Betreuung im familiären Zuhause","Jeden Tag raus in die Natur",
+                "Eingewöhnung Schritt für Schritt","Qualifizierte Kindertagespflegeperson","Ostfildern-Kemnat","Jetzt freie Plätze anfragen"]
+ticker_html = "".join(f"<span>{t}</span>" for t in TICKER_ITEMS)
+
 pages["index.html"] = dict(
  title="Glückskäfer Bande – Kindertagespflege in Ostfildern-Kemnat",
  desc="Kleine, familiäre Kindertagespflege in Ostfildern-Kemnat: liebevolle Betreuung in kleiner Gruppe, viel Bewegung, Natur und Kreativität. Jetzt freie Plätze anfragen.",
  schema=BUSINESS,
  body=f'''
-<section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <div class="tagline"><span>klein</span><span>familiär</span><span>liebevoll</span></div>
-      <h1>Ein kleiner Ort zum Wohlfühlen, Spielen, Entdecken und Wachsen.</h1>
-      <p class="lead">Herzlich willkommen bei der Glückskäfer Bande – der Kindertagespflege in Ostfildern-Kemnat. Hier dürfen Kinder Kinder sein: geborgen, in ihrem eigenen Tempo und mit Freude an der Welt.</p>
-      <div class="btn-row">
-        <a class="btn" href="kontakt.html">Freie Plätze anfragen</a>
-        <a class="btn secondary" href="betreuung.html">Mehr über die Betreuung</a>
+<section class="hero hero-photo">
+  <div class="hero-inner">
+    <img class="hero-bg" src="{img_src("hero")}" alt="" fetchpriority="high">
+    <div class="hero-shade"></div>
+    <div class="hero-badge">{HERO_LOGO if PNG_LOGO else ""}</div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="tagline"><span>klein</span><span>familiär</span><span>liebevoll</span></div>
+        <h1>Hier dürfen Kinder <em>Kinder</em> sein.</h1>
+        <p class="lead">Die Glückskäfer Bande ist eine kleine Kindertagespflege in Ostfildern-Kemnat – ein zweites Zuhause auf Zeit, in dem dein Kind geborgen aufwächst, spielt, entdeckt und in seinem eigenen Tempo groß wird.</p>
+        <div class="btn-row">
+          <a class="btn" href="kontakt.html">Freie Plätze anfragen</a>
+          <a class="btn secondary" href="#so-gehts">So läuft der Einstieg</a>
+        </div>
       </div>
     </div>
-    <div class="hero-art">
-      <div class="frame">{HERO_LOGO}</div>
-      <span class="floating one" aria-hidden="true">🌿</span>
-      <span class="floating two" aria-hidden="true">☀️</span>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-track">{ticker_html}{ticker_html}</div></div>
+
+<section class="tight">
+  <div class="container">
+    <div class="facts">
+      <div class="fact reveal"><strong>max. 5</strong><span>Kinder in der Gruppe</span></div>
+      <div class="fact reveal"><strong>1:5</strong><span>Betreuungsschlüssel – echte Zeit für jedes Kind</span></div>
+      <div class="fact reveal"><strong>3</strong><span>eigene Kinder – Familienalltag aus Erfahrung</span></div>
+      <div class="fact reveal"><strong>täglich</strong><span>Zeit draußen an der frischen Luft</span></div>
     </div>
   </div>
 </section>
 
 <section class="alt">
   <div class="container">
-    <div class="split reveal">
-      <div>
-        <span class="eyebrow">Herzlich willkommen</span>
-        <h2>Geborgen aufwachsen – in familiärer Atmosphäre</h2>
-        <p>In meiner Kindertagespflege möchte ich Kindern einen liebevollen, sicheren und familiären Ort bieten, an dem sie sich geborgen fühlen, in ihrem eigenen Tempo wachsen und mit Freude die Welt entdecken können.</p>
-        <p>Da die Betreuung bei mir zu Hause stattfindet, erleben die Kinder keine „Einrichtung“, sondern ein kleines zweites Zuhause auf Zeit.</p>
-        <a class="btn secondary" href="ueber-mich.html">Yasemin kennenlernen</a>
-      </div>
-      {photo("yasemin","Yasemin – Kindertagespflegeperson","tall")}
+    <div class="center reveal">
+      <span class="eyebrow">Was uns ausmacht</span>
+      <h2>Vier Dinge, die dein Kind bei uns <em>jeden Tag</em> erlebt</h2>
+    </div>
+    <div class="tiles" style="margin-top:2.5rem">
+      {tile("tile-gruppe","Kleine Gruppe","Viel Nähe, viel Zeit, viel Aufmerksamkeit für jedes einzelne Kind.","betreuung.html")}
+      {tile("tile-natur","Bewegung & Natur","Laufen, klettern, balancieren – drinnen, im Garten und in der Natur.","betreuung.html")}
+      {tile("tile-kreativ","Kreativ sein","Malen, basteln, Musik, Geschichten – mit allen Sinnen entdecken.","raeume.html")}
+      {tile("tile-geborgen","Geborgenheit","Kuscheln, trösten, ausruhen – Sicherheit, die wachsen lässt.","tagesablauf.html")}
     </div>
   </div>
 </section>
 
 <section>
   <div class="container">
-    <div class="center reveal">
-      <span class="eyebrow">Was uns ausmacht</span>
-      <h2>Kleine Gruppe – große Aufmerksamkeit</h2>
-      <p class="lead">Drei Dinge, die den Alltag bei der Glückskäfer Bande prägen.</p>
+    <div class="feature reveal">
+      <div class="feature-img"><img src="{img_src("yasemin")}" alt="Yasemin – Kindertagespflegeperson der Glückskäfer Bande" loading="lazy"></div>
+      <div class="feature-body">
+        <span class="eyebrow">Über mich</span>
+        <h2>Hallo, ich bin Yasemin.</h2>
+        <p>Ich bin qualifizierte Kindertagespflegeperson und selbst Mutter von drei Kindern. Ich weiß, wie wichtig es Eltern ist, ihr Kind in liebevollen und vertrauensvollen Händen zu wissen – und genau diese Sicherheit möchte ich euch geben.</p>
+        <p>Für mich ist Kindertagespflege mehr als Betreuung: Jedes Kind ist eine eigene Persönlichkeit, mit eigenem Tempo und eigenen Bedürfnissen.</p>
+        <a class="btn secondary" href="ueber-mich.html">Mehr über mich</a>
+      </div>
     </div>
-    <div class="grid cols-3" style="margin-top:2.5rem">
-      <article class="card reveal">
-        <div class="icon">🧸</div>
-        <h3>Familiär &amp; geborgen</h3>
-        <p>Eine kleine Gruppe, ein vertrautes Zuhause und viel Zeit für jedes einzelne Kind. Nähe, Sicherheit und Geborgenheit stehen an erster Stelle.</p>
-      </article>
-      <article class="card reveal">
-        <div class="icon terra">🌿</div>
-        <h3>Bewegung &amp; Natur</h3>
-        <p>Drinnen und draußen laufen, klettern, balancieren und die Natur entdecken. Denn Kinder lernen mit ihrem ganzen Körper.</p>
-      </article>
-      <article class="card reveal">
-        <div class="icon">🌸</div>
-        <h3>Individuell &amp; bedürfnisorientiert</h3>
-        <p>Jedes Kind hat sein eigenes Tempo. Ich beobachte, begleite und unterstütze dort, wo es gerade in seiner Entwicklung steht.</p>
-      </article>
+  </div>
+</section>
+
+<section class="sage-bg">
+  <div class="container">
+    <div class="center reveal">
+      <span class="eyebrow">Unsere Räume</span>
+      <h2>Ein kleines <em>zweites Zuhause</em> auf Zeit</h2>
+      <p class="lead">Kindgerecht, gemütlich und mit viel Liebe eingerichtet – mit Bereichen zum Kuscheln, Lesen, Basteln, Spielen, Bewegen und einem Garten zum Toben.</p>
+    </div>
+    <div class="gallery" style="margin-top:2.5rem">
+      <div class="reveal">{photo("kuschelecke","Kuschelecke")}</div>
+      <div class="reveal">{photo("basteln","Bastelbereich")}</div>
+      <div class="reveal">{photo("garten","Garten & Draußen")}</div>
+    </div>
+    <div class="center" style="margin-top:2rem"><a class="btn secondary" href="raeume.html">Alle Räume ansehen</a></div>
+  </div>
+</section>
+
+<section id="so-gehts" class="alt">
+  <div class="container">
+    <div class="center reveal">
+      <span class="eyebrow">So einfach geht's</span>
+      <h2>In drei Schritten zum Betreuungsplatz</h2>
+    </div>
+    <div class="steps" style="margin-top:3rem">
+      <div class="step reveal"><h3>Anfrage senden</h3><p>Schreib mir kurz, ab wann und an welchen Tagen du Betreuung brauchst. Ich melde mich zeitnah zurück.</p></div>
+      <div class="step reveal"><h3>Kennenlernen</h3><p>Wir treffen uns bei mir zu Hause. Du siehst die Räume, wir sprechen über dein Kind, eure Wünsche und alle Fragen.</p></div>
+      <div class="step reveal"><h3>Eingewöhnung</h3><p>Schritt für Schritt, im Tempo deines Kindes – bis aus dem neuen Ort ein vertrauter Ort geworden ist.</p></div>
+    </div>
+    <div class="center" style="margin-top:2.2rem"><a class="btn" href="kontakt.html">Jetzt Anfrage senden</a></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="feature reverse reveal">
+      <div class="feature-img"><img src="{img_src("eingewoehnung")}" alt="Eingewöhnung: ein Kind kommt an der Hand eines Elternteils an" loading="lazy"></div>
+      <div class="feature-body">
+        <span class="eyebrow">Eingewöhnung</span>
+        <h2>Vertrauen braucht Zeit – und die bekommt dein Kind.</h2>
+        <p>Der Start in die Kindertagespflege ist für jedes Kind anders. Deshalb gestalten wir die Eingewöhnung individuell und Schritt für Schritt. Auch ihr Eltern werdet in dieser Zeit eng begleitet.</p>
+        <a class="btn secondary" href="tagesablauf.html#eingewoehnung">Wie die Eingewöhnung abläuft</a>
+      </div>
     </div>
   </div>
 </section>
@@ -243,23 +306,23 @@ pages["index.html"] = dict(
 
 <section class="alt">
   <div class="container">
-    <div class="split reverse reveal">
-      <div>
-        <span class="eyebrow">Unsere Räume</span>
-        <h2>Ein zweites Zuhause auf Zeit</h2>
-        <p>Unsere Räume sind kindgerecht, gemütlich und mit viel Liebe eingerichtet – mit Bereichen zum Kuscheln, Lesen, Rollenspielen, Basteln, Spielen und Bewegen. Dazu kommt Zeit an der frischen Luft im Garten und in der Natur.</p>
-        <a class="btn secondary" href="raeume.html">Räume ansehen</a>
-      </div>
-      <div class="gallery" style="grid-template-columns:1fr 1fr">
-        {photo("kuschelecke","Kuschelecke")}
-        {photo("garten","Garten & Draußen")}
-      </div>
+    <div class="center reveal">
+      <span class="eyebrow">Häufige Fragen</span>
+      <h2>Was Eltern uns oft fragen</h2>
+    </div>
+    <div class="faq narrow" style="margin-top:2rem">
+      <details><summary>Ab welchem Alter betreust du Kinder?</summary><p>In der Regel ab [Alter, z. B. 12 Monaten] bis zum Kindergarteneintritt. Sprich mich gerne an – wir schauen gemeinsam, ob es passt.</p></details>
+      <details><summary>Was kostet die Betreuung?</summary><p>Kindertagespflege wird in Baden-Württemberg öffentlich gefördert. Die Eltern zahlen einen einkommensabhängigen Kostenbeitrag an das Jugendamt des Landkreises Esslingen, ähnlich wie bei einer Krippe. Ich erkläre dir gerne, wie der Antrag läuft.</p></details>
+      <details><summary>Wie läuft die Eingewöhnung ab?</summary><p>Individuell und in kleinen Schritten: erst gemeinsam mit Mama oder Papa, dann kurze Trennungen, die langsam länger werden – immer im Tempo deines Kindes.</p></details>
+      <details><summary>Was ist, wenn du krank bist oder Urlaub hast?</summary><p>Für Ausfallzeiten gibt es im Landkreis Esslingen ein Vertretungskonzept für die Kindertagespflege. Urlaubszeiten plane ich frühzeitig und spreche sie mit euch ab.</p></details>
+      <details><summary>Gibt es Essen bei dir?</summary><p>Ja, wir essen gemeinsam am Tisch. Frühstück, Mittagessen und Snacks werden frisch zubereitet – Unverträglichkeiten und Wünsche besprechen wir vorab.</p></details>
     </div>
   </div>
 </section>
 
 <section class="center">
   <div class="container">
+    <div class="divider">🐞</div>
     <blockquote class="quote reveal">„Kinder sind wie kleine Sonnen – sie bringen Licht in unser Leben.“<small>☀️ Glückskäfer Bande</small></blockquote>
   </div>
 </section>
@@ -337,7 +400,7 @@ pages["betreuung.html"] = dict(
 <section class="page-intro">
   <div class="container narrow center">
     <span class="eyebrow">Meine Betreuung</span>
-    <h1>Kleine Gruppe – große Aufmerksamkeit</h1>
+    <h1>Kleine Gruppe – <em>große</em> Aufmerksamkeit</h1>
     <p class="lead">Bei der Glückskäfer Bande betreue ich eine kleine Gruppe von Kindern. Dadurch bleibt genügend Zeit, jedes Kind individuell wahrzunehmen und auf seine Bedürfnisse einzugehen.</p>
   </div>
 </section>
@@ -520,7 +583,7 @@ pages["kontakt.html"] = dict(
 <section class="page-intro">
   <div class="container narrow center">
     <span class="eyebrow">Freie Plätze</span>
-    <h1>Interesse an einem Betreuungsplatz?</h1>
+    <h1>Interesse an einem <em>Betreuungsplatz</em>?</h1>
     <p class="lead">Du möchtest dein Kind in einer kleinen, liebevollen und familiären Kindertagespflege betreuen lassen? Dann melde dich gerne bei mir. Ich freue mich darauf, dich und dein Kind kennenzulernen. 🤍</p>
   </div>
 </section>
