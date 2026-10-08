@@ -18,6 +18,20 @@
 
   var seite = document.body.getAttribute("data-seite") || "";
 
+  /* Netlify-Plakette ("Powered by Netlify") ausblenden: Merker setzen, den das Netlify-Skript liest,
+     und falls das Rähmchen doch auftaucht, sofort entfernen. */
+  try { localStorage.setItem("nl-hud:public:v1", "hidden"); } catch (e) { /* egal */ }
+  function plaketteWeg() {
+    var r = document.getElementById("nl-badge-frame");
+    if (r && r.parentNode) r.parentNode.removeChild(r);
+    var s = document.querySelectorAll("script[data-nf-variant]");
+    for (var i = 0; i < s.length; i++) if (s[i].parentNode) s[i].parentNode.removeChild(s[i]);
+  }
+  plaketteWeg();
+  if (window.MutationObserver) {
+    new MutationObserver(plaketteWeg).observe(document.documentElement, { childList: true, subtree: true });
+  }
+
   var store = {
     get: function (k, s) { try { return (s ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
     set: function (k, v, s) { try { (s ? sessionStorage : localStorage).setItem(k, v); } catch (e) { /* egal */ } },
@@ -72,25 +86,36 @@
   }
 
   function fuss() {
-    return '<footer class="footer"><div class="container footer__inner">' +
+    return '<footer class="footer"><div class="footer__welle" aria-hidden="true"></div>' +
+      '<div class="container footer__inner">' +
         '<div class="footer__marke"><a href="/" class="footer__logo"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="220" height="58"></a>' +
-          '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen oder Abholung in Heilbronn.</p>' +
+          '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen, Abholung oder Lieferung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Laden in Heilbronn</a><a href="/stempelkarte.html">Stempelkarte</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Matcha &amp; Açaí</a><a href="/stempelkarte.html">Stempelkarte</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
           '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +
+          '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Rechtliches"><h3>Rechtliches</h3>' +
-          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a>' +
-          '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
-          '<button type="button" class="linklike" id="appLink" hidden>📲 Als App installieren</button>' +
-        "</nav></div>" +
-        '<div class="container footer__unten">' +
-          '<p class="footer__jugend">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p>' +
-          '<p class="footer__copy">© <span id="year">2026</span> ZUKKABRO. Alle Rechte vorbehalten. · <a href="/admin/">Admin</a></p>' +
-        "</div></footer>";
+          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a><a href="/rechtliches.html#batterien">Batterien &amp; Altgeräte</a>' +
+        "</nav>" +
+        '<div class="footer__kontakt"><h3>Laden &amp; Kontakt</h3>' +
+          '<p><span aria-hidden="true">📍</span><span>Klingenberger Straße 100<br>74080 Heilbronn</span></p>' +
+          '<p><span aria-hidden="true">🍵</span><span>Matcha &amp; Açaí am Wochenende<br><small>Öffnungszeiten folgen zur Eröffnung</small></span></p>' +
+          '<p><span aria-hidden="true">☎</span><a id="fussTel" href="/kontakt.html"><span data-shop="telefon">Telefon folgt</span></a></p>' +
+          '<p><span aria-hidden="true">✉</span><a id="fussMail" href="/kontakt.html"><span data-shop="email">E-Mail folgt</span></a></p>' +
+          '<button type="button" class="btn btn--pink footer__app" id="appLink" hidden>📲 Als App installieren</button>' +
+        "</div>" +
+      "</div>" +
+      '<div class="container footer__zahlung"><span class="footer__zahlung-titel">Sicher bezahlen</span>' +
+        ["Karte", "Apple Pay", "Google Pay", "Klarna", "PayPal", "Überweisung", "Bar im Laden"].map(function (z) { return "<span>" + z + "</span>"; }).join("") +
+        '<span class="footer__stripe">über Stripe</span></div>' +
+      '<div class="container footer__unten">' +
+        '<p class="footer__jugend">🔞 Diese Website richtet sich ausschließlich an Personen ab 18 Jahren. Keine Abgabe von E-Zigaretten, Liquids und Tabakwaren an Minderjährige.</p>' +
+        '<p class="footer__copy">© <span id="year">2026</span> ZUKKABRO · Heilbronn · <a href="/admin/">Admin</a></p>' +
+      "</div></footer>";
   }
 
   /* ---------- Warenkorb (im Browser gespeichert) ---------- */
@@ -322,6 +347,8 @@
     setLink("mailLink", S.email ? "mailto:" + S.email : "");
     var tel = (S.telefon || "").trim();
     setLink("telLink", tel ? "tel:" + tel.replace(/[^\d+]/g, "") : "");
+    setLink("fussTel", tel ? "tel:" + tel.replace(/[^\d+]/g, "") : "");
+    setLink("fussMail", S.email ? "mailto:" + S.email : "");
     setText("telefon", tel);
     setText("email", S.email); setText("address", S.address); setText("hours", S.hours); setText("shipping", S.shipping);
     var kanal = (S.whatsappKanal || "").trim();
