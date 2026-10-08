@@ -12,7 +12,21 @@ NAV = [
   ("kontakt.html","Kontakt"),
 ]
 
-LOGO = open(os.path.join(OUT,"assets/logo.svg"),encoding="utf-8").read().replace('<svg ','<svg aria-hidden="true" focusable="false" ',1).replace(' role="img" aria-label="Glückskäfer Bande Logo"','')
+# Logo: liegt assets/logo.png (das gemalte Glückskäfer-Logo) vor, wird es verwendet,
+# sonst das einfache SVG-Logo.
+PNG_LOGO = os.path.exists(os.path.join(OUT, "assets/logo.png"))
+if PNG_LOGO:
+    LOGO = '<img src="assets/logo.png" alt="" width="44" height="44" class="logo-img">'
+    HERO_LOGO = '<img src="assets/logo.png" alt="Glückskäfer Bande – Kindertagespflege in Ostfildern-Kemnat" width="520" height="520" class="hero-logo">'
+    FAVICON = 'assets/logo.png'
+    FAVICON_TYPE = 'image/png'
+    OG_IMAGE = 'assets/logo.png'
+else:
+    LOGO = open(os.path.join(OUT,"assets/logo.svg"),encoding="utf-8").read().replace('<svg ','<svg aria-hidden="true" focusable="false" ',1).replace(' role="img" aria-label="Glückskäfer Bande Logo"','')
+    HERO_LOGO = LOGO
+    FAVICON = 'assets/favicon.svg'
+    FAVICON_TYPE = 'image/svg+xml'
+    OG_IMAGE = 'assets/og-image.png'
 
 def layout(slug, title, desc, body, extra_head="", schema=None):
     nav = "\n".join(
@@ -35,9 +49,9 @@ def layout(slug, title, desc, body, extra_head="", schema=None):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{DOMAIN}/assets/og-image.png">
+<meta property="og:image" content="{DOMAIN}/{OG_IMAGE}">
 <meta name="theme-color" content="#F8F4EC">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{FAVICON}" type="{FAVICON_TYPE}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
@@ -110,7 +124,7 @@ BUSINESS = {
   "name":"Glückskäfer Bande – Kindertagespflege",
   "description":"Kleine, familiäre Kindertagespflege in Ostfildern-Kemnat. Liebevolle Betreuung in kleiner Gruppe mit viel Bewegung, Natur und Kreativität.",
   "url":DOMAIN+"/",
-  "image":DOMAIN+"/assets/og-image.png",
+  "image":DOMAIN+"/"+OG_IMAGE,
   "telephone":"[Telefonnummer]",
   "email":"hallo@glueckskaefer-bande.de",
   "address":{"@type":"PostalAddress","streetAddress":"[Straße Hausnummer]","postalCode":"73760","addressLocality":"Ostfildern","addressRegion":"Baden-Württemberg","addressCountry":"DE"},
@@ -159,7 +173,7 @@ pages["index.html"] = dict(
       </div>
     </div>
     <div class="hero-art">
-      <div class="frame">{LOGO}</div>
+      <div class="frame">{HERO_LOGO}</div>
       <span class="floating one" aria-hidden="true">🌿</span>
       <span class="floating two" aria-hidden="true">☀️</span>
     </div>

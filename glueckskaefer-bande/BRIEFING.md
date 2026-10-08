@@ -72,3 +72,47 @@ Eine andere Kindertagespflege mit dem Namen „Glückskäfer Bande“ wurde nich
 - [ ] Domain registrieren und in `sitemap.xml`, `robots.txt`, Canonical-Links prüfen
 - [ ] Google Unternehmensprofil (Maps) anlegen – wichtigster Kanal für lokale Suchanfragen
 - [ ] Beim Tageselternverein Kreis Esslingen / Stadt Ostfildern als Tagespflegeperson listen lassen
+
+## 4. Logo
+
+Das gemalte Glückskäfer-Logo (roter Käfer auf Blatt, goldener Ring, Schriftzug)
+wird verwendet, sobald es als `assets/logo.png` im Ordner liegt (quadratisch,
+ca. 1200 × 1200 px, möglichst mit transparentem oder cremefarbenem Hintergrund).
+Danach einmal `python3 build.py` ausführen: Header, Hero-Bereich, Favicon und
+das Vorschaubild für WhatsApp/Social Media nutzen dann automatisch das PNG.
+Bis dahin wird das einfache SVG-Logo gezeigt.
+
+## 5. Domain & Hosting über IONOS
+
+**Schritt 1 – Domain registrieren (IONOS):**
+`glueckskaefer-bande.de` (Empfehlung) und als Tippvariante `glueckskaeferbande.de`.
+Bei IONOS unter „Domains“ → Domain-Check → beide in den Warenkorb.
+Dazu eine E-Mail-Adresse `hallo@glueckskaefer-bande.de` einrichten (bei IONOS-Domains
+ist ein E-Mail-Postfach meist enthalten).
+
+**Schritt 2 – Website veröffentlichen.** Zwei Wege, beide funktionieren mit IONOS:
+
+*Variante A – IONOS Webspace (einfachste Pflege, kostet ca. 1–5 €/Monat):*
+1. Bei IONOS ein Hosting-Paket (z. B. „Webhosting Starter“) zur Domain buchen.
+2. Im IONOS-Kundencenter den „Datei-Manager“ (WebspaceExplorer) öffnen oder per SFTP verbinden.
+3. Den kompletten Inhalt des Ordners `glueckskaefer-bande/` in das Webroot-Verzeichnis hochladen
+   (`index.html` muss direkt im Hauptverzeichnis der Domain liegen).
+4. In `build.py` die Zeile `DOMAIN = …` auf `https://www.glueckskaefer-bande.de` ändern,
+   `python3 build.py` ausführen und die Seiten erneut hochladen.
+5. SSL-Zertifikat im IONOS-Kundencenter aktivieren (bei IONOS kostenlos enthalten).
+
+*Variante B – nur Domain bei IONOS, Hosting kostenlos über GitHub Pages:*
+1. Die Website in ein eigenes GitHub-Repository `glueckskaefer-bande` legen
+   (die Dateien müssen im Hauptverzeichnis liegen, nicht in einem Unterordner).
+2. In den Repository-Einstellungen → Pages → „Custom domain“: `www.glueckskaefer-bande.de`
+   eintragen und „Enforce HTTPS“ aktivieren.
+3. Bei IONOS unter Domains → DNS folgende Einträge setzen:
+   - `A`-Einträge für `@`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - `CNAME` für `www`: `ozaro578.github.io`
+4. Nach bis zu 24 Stunden ist die Seite unter der Domain erreichbar.
+
+**Empfehlung:** Variante A, wenn Yasemin die Seite später selbst pflegen soll
+(Fotos per Datei-Manager tauschen). Variante B, wenn ihr Bruder die Seite über GitHub
+pflegt und keine Hosting-Kosten anfallen sollen.
+
+**Vorschau jetzt schon:** https://ozaro578.github.io/privacy/glueckskaefer-bande/
