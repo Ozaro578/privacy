@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Platzhalter: Spielbereich">
+<rect width="800" height="600" fill="#DCE5D8"/>
+<circle cx="400" cy="270" r="70" fill="#fff" opacity=".55"/>
+<path d="M370 250a30 30 0 0 1 60 0v10a30 30 0 0 1-60 0z" fill="#C97B5B"/><circle cx="400" cy="236" r="11" fill="#3B3A35"/>
+<circle cx="388" cy="258" r="5" fill="#3B3A35"/><circle cx="412" cy="258" r="5" fill="#3B3A35"/><circle cx="394" cy="276" r="4" fill="#3B3A35"/><circle cx="406" cy="276" r="4" fill="#3B3A35"/>
+<text x="400" y="392" font-family="Georgia,serif" font-size="30" fill="#3B3A35" text-anchor="middle">Spielbereich</text>
+<text x="400" y="428" font-family="Arial,sans-serif" font-size="17" fill="#6E6B62" text-anchor="middle">Foto folgt – hier wird ein echtes Bild eingefügt</text>
+</svg>
