@@ -23,7 +23,7 @@ if PNG_LOGO:
     OG_IMAGE = 'assets/logo.png'
 else:
     LOGO = open(os.path.join(OUT,"assets/logo.svg"),encoding="utf-8").read().replace('<svg ','<svg aria-hidden="true" focusable="false" ',1).replace(' role="img" aria-label="Glückskäfer Bande Logo"','')
-    HERO_LOGO = LOGO
+    HERO_LOGO = open(os.path.join(OUT,"assets/logo-badge.svg"),encoding="utf-8").read()
     FAVICON = 'assets/favicon.svg'
     FAVICON_TYPE = 'image/svg+xml'
     OG_IMAGE = 'assets/og-image.png'
@@ -196,7 +196,7 @@ pages["index.html"] = dict(
           <a class="btn secondary" href="#so-gehts">So läuft der Einstieg</a>
         </div>
       </div>
-      <div class="hero-badge big">{HERO_LOGO if PNG_LOGO else '<div class="frame" style="background:var(--paper);border-radius:50%;padding:2rem;box-shadow:var(--shadow)">'+LOGO+'</div>'}</div>
+      <div class="hero-badge big">{HERO_LOGO}</div>
     </div>
   </div>
 </section>
