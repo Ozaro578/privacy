@@ -585,6 +585,21 @@ function kasse_berichte(): never {
     antwort(['monat' => $monat, 'tage' => $tage]);
 }
 
+/* =================== Produktinfos: Zutaten, Allergene, Hinweise je Artikel =================== */
+function mehrzeilig(mixed $v, int $max): string { return is_string($v) ? mb_substr(trim(str_replace("\r", '', $v)), 0, $max) : ''; }
+function produkt_info_id(mixed $v): string { $id = text($v, 200); if ($id === '' || !produkt($id)) throw new Fehler(404, 'Produkt nicht gefunden.'); return $id; }
+function produkt_info(string $id): array {
+    $i = lese('produktinfo/' . $id); $i = is_array($i) ? $i : [];
+    return ['id' => $id, 'zutaten' => (string) ($i['zutaten'] ?? ''), 'allergene' => array_values(is_array($i['allergene'] ?? null) ? $i['allergene'] : []), 'hinweis' => (string) ($i['hinweis'] ?? ''), 'info' => (string) ($i['info'] ?? ''), 'geaendert' => (string) ($i['geaendert'] ?? '')];
+}
+function produkt_info_speichern(array $s): never {
+    $b = body(); $id = produkt_info_id($b['id'] ?? '');
+    $allergene = array_values(array_unique(array_filter(is_array($b['allergene'] ?? null) ? $b['allergene'] : [], fn($a) => is_string($a) && in_array($a, ALLERGENE, true))));
+    schreibe('produktinfo/' . $id, ['zutaten' => mehrzeilig($b['zutaten'] ?? '', 2000), 'allergene' => $allergene, 'hinweis' => mehrzeilig($b['hinweis'] ?? '', 500), 'info' => mehrzeilig($b['info'] ?? '', 1500), 'geaendert' => jetzt()]);
+    protokoll('produktinfo-geaendert', $s['id'], ['id' => $id]);
+    antwort(array_merge(['ok' => true], produkt_info($id)));
+}
+
 /* =================== E-Mails (Strato: PHP mail(), Absender muss eine Adresse eurer Domain sein) =================== */
 /** Schickt eine schlichte Text-Mail. Fehler werden nur protokolliert, damit keine Bestellung daran scheitert. */
 function mail_senden(string $an, string $betreff, string $text): void {
@@ -978,6 +993,7 @@ function zb_api(): never {
         if ($m === 'GET' && $pfad === '/shop/laden') laden_daten();
         if ($m === 'GET' && $pfad === '/shop/news') news_oeffentlich();
         if ($m === 'GET' && $pfad === '/shop/stempel') stempel_status($ip);
+        if ($m === 'GET' && $pfad === '/shop/produktinfo') antwort(produkt_info(produkt_info_id($_GET['id'] ?? '')));
         if ($m === 'POST' && $pfad === '/shop/stempel/neu') stempel_neu($ip);
         if ($m === 'GET' && $pfad === '/shop/bestellung/status') stripe_bestell_status();
 
@@ -1025,6 +1041,7 @@ function zb_api(): never {
             if ($m === 'GET' && $pfad === '/admin/kasse') kasse_antwort(kassen_tag(kassen_tag_param($_GET['tag'] ?? '')));
             if ($m === 'GET' && $pfad === '/admin/stempel') stempel_antwort(stempel_lesen(stempel_code_param($_GET['code'] ?? '')));
             if ($m === 'POST' && $pfad === '/admin/stempel') stempel_aktion($a);
+            if ($m === 'POST' && $pfad === '/admin/produktinfo') produkt_info_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/kasse/berichte') kasse_berichte();
             if ($m === 'POST' && $pfad === '/admin/kasse/verkauf') kasse_verkauf();
             if ($m === 'POST' && $pfad === '/admin/kasse/ausgabe') kasse_ausgabe();

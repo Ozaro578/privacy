@@ -899,6 +899,30 @@ async function einstellungenSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, einstellungen: e });
 }
 
+/* =================== Produktinfos: Zutaten, Allergene, Hinweise je Artikel (Admin pflegt sie von der Verpackung ab) =================== */
+interface ProduktInfo { zutaten: string; allergene: string[]; hinweis: string; info: string; geaendert: string }
+function mehrzeilig(v: unknown, max: number): string {
+  return typeof v === "string" ? v.replace(/\r/g, "").trim().slice(0, max) : "";
+}
+function produktInfoId(v: unknown): string {
+  const id = text(v, 200);
+  if (!id || !produkt(id)) throw new Fehler(404, "Produkt nicht gefunden.");
+  return id;
+}
+async function produktInfo(id: string) {
+  const i = await lese<ProduktInfo>(`produktinfo/${id}`);
+  return { id, zutaten: i?.zutaten || "", allergene: Array.isArray(i?.allergene) ? i!.allergene : [], hinweis: i?.hinweis || "", info: i?.info || "", geaendert: i?.geaendert || "" };
+}
+async function produktInfoSpeichern(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const id = produktInfoId(b.id);
+  const allergene = Array.isArray(b.allergene) ? [...new Set(b.allergene.filter((a: unknown) => typeof a === "string" && ALLERGENE.includes(a)))] as string[] : [];
+  const e: ProduktInfo = { zutaten: mehrzeilig(b.zutaten, 2000), allergene, hinweis: mehrzeilig(b.hinweis, 500), info: mehrzeilig(b.info, 1500), geaendert: jetzt() };
+  await schreibe(`produktinfo/${id}`, e);
+  await protokoll("produktinfo-geaendert", s.id, { id });
+  return json({ ok: true, ...(await produktInfo(id)) });
+}
+
 /* =================== E-Mails (Strato-SMTP mit SMTP_PASSWORT oder Brevo mit BREVO_API_KEY) =================== */
 /** Testmail an die Benachrichtigungs-Adresse, damit man im Admin sieht, ob der Versand klappt */
 async function mailTest(a: Sitzung) {
@@ -1021,6 +1045,7 @@ export default async (req: Request, context: Context) => {
     if (m === "GET" && pfad === "/shop/laden") return await ladenDaten();
     if (m === "GET" && pfad === "/shop/news") return await newsOeffentlich();
     if (m === "GET" && pfad === "/shop/stempel") return await stempelStatus(url, ip);
+    if (m === "GET" && pfad === "/shop/produktinfo") return json(await produktInfo(produktInfoId(url.searchParams.get("id"))));
     if (m === "POST" && pfad === "/shop/stempel/neu") return await stempelNeu(ip);
     if (m === "GET" && pfad === "/shop/bestellung/status") return await stripeBestellStatus(url);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
@@ -1076,6 +1101,7 @@ export default async (req: Request, context: Context) => {
       if (m === "GET" && pfad === "/admin/kasse") return await kasseAntwort(await kassenTag(kassenTagParam(url.searchParams.get("tag"))));
       if (m === "GET" && pfad === "/admin/stempel") return stempelAntwort(await stempelLesen(stempelCodeParam(url.searchParams.get("code"))));
       if (m === "POST" && pfad === "/admin/stempel") return await stempelAktion(req, a);
+      if (m === "POST" && pfad === "/admin/produktinfo") return await produktInfoSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/kasse/berichte") return await kasseBerichte(url);
       if (m === "POST" && pfad === "/admin/kasse/verkauf") return await kasseVerkauf(req);
       if (m === "POST" && pfad === "/admin/kasse/ausgabe") return await kasseAusgabe(req);

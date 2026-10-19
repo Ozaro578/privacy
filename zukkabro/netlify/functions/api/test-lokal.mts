@@ -332,6 +332,15 @@ globalThis.fetch = fetchVorher; delete process.env.BREVO_API_KEY;
   server.close();
 }
 
+// Produktinfos: Zutaten, Allergene, Hinweis je Artikel
+r = await rufe("GET", "/shop/produktinfo?id=" + essen); assert.equal(r.status, 200); assert.equal(r.daten.zutaten, ""); assert.deepEqual(r.daten.allergene, []);
+r = await rufe("POST", "/admin/produktinfo", { id: essen, zutaten: "Maismehl, Öl,\nMILCHPULVER", allergene: ["Milch", "Gluten", "Quatsch", "Milch"], hinweis: "Sehr scharf", info: "" }, admin);
+assert.equal(r.status, 200); assert.deepEqual(r.daten.allergene, ["Milch", "Gluten"]); assert.equal(r.daten.zutaten, "Maismehl, Öl,\nMILCHPULVER");
+r = await rufe("GET", "/shop/produktinfo?id=" + essen); assert.equal(r.daten.hinweis, "Sehr scharf"); assert.ok(r.daten.geaendert); ok("Produktinfo speichern und öffentlich lesen");
+r = await rufe("POST", "/admin/produktinfo", { id: "gibt-es-nicht", zutaten: "x" }, admin); assert.equal(r.status, 404);
+r = await rufe("GET", "/shop/produktinfo?id=gibt-es-nicht"); assert.equal(r.status, 404);
+r = await rufe("POST", "/admin/produktinfo", { id: essen, zutaten: "x" }); assert.equal(r.status, 401); ok("Produktinfo: unbekanntes Produkt 404, ohne Login 401");
+
 // Digitale Stempelkarte
 r = await rufe("POST", "/shop/stempel/neu", {}); assert.equal(r.status, 200); assert.match(r.daten.code, /^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/); assert.equal(r.daten.stempel, 0); assert.equal(r.daten.ziel, 10);
 const karteCode = r.daten.code; ok("Stempelkarte angelegt: " + karteCode);

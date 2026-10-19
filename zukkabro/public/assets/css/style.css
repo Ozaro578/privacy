@@ -1146,3 +1146,18 @@ body.is-app .footer { padding-bottom: 1rem; }
 
 /* Netlify-Plakette nie anzeigen */
 #nl-badge-frame, iframe[title="Powered by Netlify"] { display: none !important; }
+
+/* Produktinfo (Beschreibung, Zutaten, Allergene, Hinweise) */
+.pdp-info { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.6rem; }
+.pdp-info__karte { background: #fff; border: 3px solid var(--choco); border-radius: 18px; padding: 1rem 1.2rem; box-shadow: 5px 5px 0 var(--choco); }
+.pdp-info__karte--breit { grid-column: 1 / -1; }
+.pdp-info__karte h2 { font-family: "Titan One", sans-serif; font-weight: 400; font-size: 1.15rem; margin: 0 0 .5rem; color: var(--pink); }
+.pdp-info__karte p { margin: 0; line-height: 1.5; }
+.pdp-info__zutaten { white-space: pre-wrap; }
+.pdp-info__leer { color: #6b4b3a; font-size: .95rem; }
+.pdp-info__klein { font-size: .85rem; color: #6b4b3a; margin-top: .5rem !important; }
+.allergene { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+.allergene li { font-size: .85rem; font-weight: 600; padding: .25em .7em; border-radius: 999px; background: #f6efe8; color: #8a7466; border: 2px solid transparent; }
+.allergene li.is-drin { background: #fff0c2; color: var(--choco); border-color: var(--gold); font-weight: 700; }
+.pdp-info__hinweise { margin: 0; padding-left: 1.2rem; line-height: 1.5; }
+@media (max-width: 640px) { .pdp-info { grid-template-columns: 1fr; } }

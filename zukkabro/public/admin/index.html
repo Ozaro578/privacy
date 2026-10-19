@@ -62,6 +62,7 @@
           <button data-tab="preise" role="tab">🏷️ Preise</button>
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
           <button data-tab="angebote" role="tab">🔥 Angebote</button>
+          <button data-tab="produktinfo" role="tab">🧾 Produktinfos</button>
           <button data-tab="news" role="tab">📣 News</button>
           <button data-tab="laden" role="tab">🏪 Laden</button>
           <button data-tab="kasse" role="tab">💵 Kasse</button>
@@ -145,6 +146,23 @@
             <button class="btn btn--pink" id="angeboteSpeichern" type="button">Angebote speichern</button>
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="angebotTabelle"></table></div>
+        </section>
+
+        <!-- Produktinfos -->
+        <section data-panel="produktinfo" hidden>
+          <p class="hinweis"><strong>Zutaten und Allergene</strong> von der Verpackung abtippen, dann stehen sie auf der Produktseite. Für Lebensmittel im Online-Verkauf ist das Pflicht (Lebensmittelinformations-Verordnung). Die Beschreibung ist automatisch da und kann hier überschrieben werden.</p>
+          <div class="leiste">
+            <label class="feld feld--breit">Produkt<input list="produktListe" id="infoProdukt" placeholder="Produkt suchen und auswählen" autocomplete="off"></label>
+            <button class="btn btn--light btn--klein" id="infoLaden" type="button">Laden</button>
+          </div>
+          <form class="form form--2" id="infoForm" autocomplete="off" hidden>
+            <p class="voll" id="infoTitel" style="font-weight:700"></p>
+            <label class="feld voll">Beschreibung <small>leer lassen = automatischer Text bleibt</small><textarea name="info" rows="3"></textarea></label>
+            <label class="feld voll">Zutaten <small>genau wie auf der Verpackung, Allergene in GROSSBUCHSTABEN</small><textarea name="zutaten" rows="4" placeholder="z. B. Maismehl, Pflanzenöl, Gewürzzubereitung (Salz, Zucker, MILCHPULVER, …)"></textarea></label>
+            <fieldset class="feld voll" style="border:0;padding:0;margin:0"><legend style="font-weight:700">Enthält Allergene <small>anklicken, was drin ist</small></legend><div id="infoAllergene" class="checks" style="display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-top:.4rem"></div></fieldset>
+            <label class="feld voll">Eigener Hinweis <small>z. B. „Enthält Koffein“, „Kann Spuren von Nüssen enthalten“</small><input name="hinweis" maxlength="500"></label>
+            <div class="voll"><button class="btn btn--pink" type="submit">Produktinfo speichern</button> <a class="btn btn--light" id="infoLink" href="#" target="_blank" rel="noopener">Produktseite ansehen</a> <small id="infoStand"></small></div>
+          </form>
         </section>
 
         <!-- News -->

@@ -121,6 +121,7 @@
     if (id === "nachrichten") nachrichten();
     if (id === "preise") preise();
     if (id === "einstellungen") einstellungenZeigen();
+    if (id === "produktinfo") produktInfoStart();
     if (id === "pakete") paketeLaden();
     if (id === "angebote") angeboteLaden();
     if (id === "laden") ladenLaden();
@@ -847,6 +848,45 @@
     try { var r = await ZB.api("POST", "/admin/mail-test", {}); ZB.meldung("Testmail an " + r.an + " gesendet. Schau ins Postfach (auch Spam)."); }
     catch (err) { ZB.meldung(err.message, "fehler"); }
     b.disabled = false;
+  });
+
+  /* ================= Produktinfos (Zutaten, Allergene, Hinweis) ================= */
+  var INFO_ALLERGENE = ["Gluten", "Krebstiere", "Eier", "Fisch", "Erdnüsse", "Soja", "Milch", "Schalenfrüchte", "Sellerie", "Senf", "Sesam", "Sulfite", "Lupinen", "Weichtiere"];
+  var infoId = "";
+  function produktInfoStart() {
+    if (!$("infoAllergene").children.length) {
+      $("infoAllergene").innerHTML = INFO_ALLERGENE.map(function (a) { return '<label style="display:flex;align-items:center;gap:.3rem;font-weight:600"><input type="checkbox" name="allergen" value="' + esc(a) + '"> ' + esc(a) + "</label>"; }).join("");
+    }
+  }
+  async function produktInfoLaden() {
+    var feld = $("infoProdukt"), id = nameZuId[(feld.value || "").toLowerCase()] || (ZB.produkte[feld.value] ? feld.value : "");
+    if (!id) return ZB.meldung("Bitte ein Produkt aus der Liste wählen.", "fehler");
+    try {
+      var r = await ZB.api("GET", "/shop/produktinfo?id=" + encodeURIComponent(id));
+      infoId = id;
+      var f = $("infoForm"), p = ZB.produkte[id];
+      $("infoTitel").textContent = p.name + (p.marke ? " · " + p.marke : "");
+      f.info.value = r.info || ""; f.zutaten.value = r.zutaten || ""; f.hinweis.value = r.hinweis || "";
+      f.querySelectorAll("[name=allergen]").forEach(function (c) { c.checked = (r.allergene || []).indexOf(c.value) >= 0; });
+      $("infoLink").href = "/produkt.html?id=" + encodeURIComponent(id);
+      $("infoStand").textContent = r.geaendert ? "Zuletzt gespeichert: " + new Date(r.geaendert).toLocaleString("de-DE") : "Noch keine Angaben gespeichert.";
+      f.hidden = false;
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  $("infoLaden").addEventListener("click", produktInfoLaden);
+  $("infoProdukt").addEventListener("change", produktInfoLaden);
+  $("infoForm").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    if (!infoId) return;
+    var f = ev.target;
+    try {
+      var r = await ZB.api("POST", "/admin/produktinfo", {
+        id: infoId, info: f.info.value, zutaten: f.zutaten.value, hinweis: f.hinweis.value,
+        allergene: Array.prototype.filter.call(f.querySelectorAll("[name=allergen]"), function (c) { return c.checked; }).map(function (c) { return c.value; }),
+      });
+      $("infoStand").textContent = "Gespeichert: " + new Date(r.geaendert).toLocaleString("de-DE");
+      ZB.meldung("Produktinfo gespeichert.");
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
 
   /* ================= Buchhaltung ================= */

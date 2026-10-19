@@ -81,10 +81,39 @@
       "</div>";
   }
 
+  /* Produktinfo: Beschreibung aus produktinfo.js, Zutaten/Allergene/Hinweis vom Server (Admin) haben Vorrang */
+  var ALLERGENE = ["Gluten", "Krebstiere", "Eier", "Fisch", "Erdnüsse", "Soja", "Milch", "Schalenfrüchte", "Sellerie", "Senf", "Sesam", "Sulfite", "Lupinen", "Weichtiere"];
+  var lebensmittel = p.kat.some(function (k) { return ["susses", "snacks", "scharfes", "getraenke", "pipapo", "zahnstocher"].indexOf(k) >= 0; });
+  function produktInfoHtml(stat, srv) {
+    stat = stat || {}; srv = srv || {};
+    var beschreibung = srv.info || stat.info || "";
+    var hinweise = (stat.hinweise || []).slice();
+    if (srv.hinweis) hinweise.unshift(srv.hinweis);
+    var hatAllergene = srv.allergene && srv.allergene.length;
+    var allergeneHtml = hatAllergene
+      ? '<ul class="allergene">' + ALLERGENE.map(function (a) { var drin = srv.allergene.indexOf(a) >= 0; return '<li class="' + (drin ? "is-drin" : "") + '">' + (drin ? "⚠️ " : "") + esc(a) + "</li>"; }).join("") + "</ul>"
+      : '<p class="pdp-info__leer">Die Allergen-Angaben tragen wir gerade ein. Bis dahin gilt die Verpackung. Fragen? <a href="tel:+4971315912230">07131 5912230</a></p>';
+    var zutatenHtml = srv.zutaten ? '<p class="pdp-info__zutaten">' + esc(srv.zutaten) + "</p>" : '<p class="pdp-info__leer">Zutaten laut Verpackung – wir ergänzen sie hier Schritt für Schritt.</p>';
+    return '<div class="pdp-info__karte pdp-info__karte--breit"><h2>Über das Produkt</h2><p>' + esc(beschreibung || p.name) + "</p></div>" +
+      (lebensmittel ? '<div class="pdp-info__karte"><h2>🧾 Zutaten</h2>' + zutatenHtml + "</div>" +
+        '<div class="pdp-info__karte"><h2>⚠️ Allergene</h2>' + allergeneHtml + (hatAllergene ? '<p class="pdp-info__klein">Enthält die markierten Allergene. Spuren anderer Allergene sind möglich.</p>' : "") + "</div>" : "") +
+      (hinweise.length ? '<div class="pdp-info__karte pdp-info__karte--breit"><h2>ℹ️ Hinweise</h2><ul class="pdp-info__hinweise">' + hinweise.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") + "</ul></div>" : "");
+  }
+  function produktInfoZeigen() {
+    var box = $("pdpInfo"); if (!box) return;
+    var stat = window.PRODUKTINFO && window.PRODUKTINFO[p.id];
+    box.innerHTML = produktInfoHtml(stat, null); box.hidden = false;
+    fetch("/api/shop/produktinfo?id=" + encodeURIComponent(p.id), { headers: { "x-zb": "1" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (srv) { if (srv) box.innerHTML = produktInfoHtml(stat, srv); })
+      .catch(function () { /* statische Info bleibt */ });
+  }
+
   window.ZBShop.daten().then(function (d) {
     var preis = (d.preise || {})[p.id];
     var ang = (d.angebote || []).filter(function (a) { return a.id === p.id; })[0];
     $("pdp").innerHTML = galerie() + info(preis, ang, d.vorverkauf && d.vorverkauf.aktiv ? (d.vorverkauf.text || "bald") : "");
+    produktInfoZeigen();
 
     var haupt = $("galerieHaupt");
     haupt.addEventListener("click", function (e) {
