@@ -122,6 +122,7 @@
     if (id === "preise") preise();
     if (id === "einstellungen") einstellungenZeigen();
     if (id === "produktinfo") produktInfoStart();
+    if (id === "gewinnspiel") gewinnspielLaden();
     if (id === "pakete") paketeLaden();
     if (id === "angebote") angeboteLaden();
     if (id === "laden") ladenLaden();
@@ -848,6 +849,39 @@
     try { var r = await ZB.api("POST", "/admin/mail-test", {}); ZB.meldung("Testmail an " + r.an + " gesendet. Schau ins Postfach (auch Spam)."); }
     catch (err) { ZB.meldung(err.message, "fehler"); }
     b.disabled = false;
+  });
+
+  /* ================= Gewinnspiel ================= */
+  var gs = null;
+  async function gewinnspielLaden() {
+    try {
+      gs = await ZB.api("GET", "/admin/gewinnspiel");
+      var ende = new Date(gs.ende).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" });
+      $("gsStatus").innerHTML = "<strong>" + gs.teilnehmer.length + " Teilnehmer, " + gs.lose + " Lose.</strong> Teilnahme " + (gs.offen ? "läuft bis " + ende : "beendet seit " + ende) + ". Ziehung: " + esc(gs.ziehung) + ". Preise: " + gs.preise.map(esc).join(" · ") + ". Vor der Ziehung pro Teilnehmer prüfen: folgt uns, hat den Beitrag geliked und geteilt. Wer nicht, bleibt in der Liste, gewinnt aber nicht (bei Bedarf nochmal ziehen).";
+      var erg = $("gsErgebnis");
+      if (gs.ergebnis) {
+        erg.hidden = false;
+        erg.innerHTML = "<h2>🏆 Ziehung vom " + new Date(gs.ergebnis.am).toLocaleString("de-DE") + " (" + esc(gs.ergebnis.von) + ", " + gs.ergebnis.teilnehmer + " Teilnehmer, " + gs.ergebnis.lose + " Lose)</h2><ol>" +
+          gs.ergebnis.gewinner.map(function (g) { return "<li><strong>" + esc(g.preis) + "</strong>: " + esc(g.name) + " · " + esc(g.email) + (g.instagram ? " · @" + esc(g.instagram) : "") + " · Los " + esc(g.id) + "</li>"; }).join("") + "</ol><p class=\"hinweis\">Gewinner per E-Mail benachrichtigen, Gutschein im Laden gegen Ausweis übergeben. Meldet sich jemand 14 Tage nicht, nochmal ziehen.</p>";
+      } else erg.hidden = true;
+      $("gsTabelle").innerHTML = "<thead><tr><th>#</th><th>Name</th><th>E-Mail</th><th>Instagram</th><th>Lose</th><th>News</th><th>Dabei seit</th></tr></thead><tbody>" +
+        gs.teilnehmer.map(function (t, i) { return "<tr><td>" + (i + 1) + "</td><td>" + esc(t.name) + "</td><td>" + esc(t.email) + "</td><td>" + (t.instagram ? "@" + esc(t.instagram) : "–") + "</td><td>" + t.lose + "</td><td>" + (t.news ? "✓" : "") + "</td><td>" + new Date(t.erstellt).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" }) + "</td></tr>"; }).join("") +
+        (gs.teilnehmer.length ? "" : "<tr><td colspan=\"7\">Noch keine Teilnehmer.</td></tr>") + "</tbody>";
+    } catch (err) { ZB.meldung(err.message, "fehler"); }
+  }
+  $("gsLaden").addEventListener("click", gewinnspielLaden);
+  $("gsExport").addEventListener("click", function () {
+    if (!gs) return;
+    var zeilen = [["Name", "E-Mail", "Instagram", "Lose", "News", "Dabei seit", "Los-Nummer"]].concat(gs.teilnehmer.map(function (t) { return [t.name, t.email, t.instagram, t.lose, t.news ? "ja" : "nein", t.erstellt, t.id]; }));
+    var csv = "\ufeff" + zeilen.map(function (z) { return z.map(function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }).join(";"); }).join("\r\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = "zukkabro-gewinnspiel.csv"; a.click();
+  });
+  $("gsZiehen").addEventListener("click", async function () {
+    if (!gs) return;
+    var nochmal = !!gs.ergebnis;
+    if (!confirm(nochmal ? "Es wurde schon gezogen. Wirklich NOCHMAL ziehen? Das alte Ergebnis wird überschrieben." : "Jetzt die 3 Gewinner unter " + gs.teilnehmer.length + " Teilnehmern (" + gs.lose + " Lose) ziehen?")) return;
+    try { await ZB.api("POST", "/admin/gewinnspiel/ziehen", { bestaetigt: true, nochmal: nochmal }); ZB.meldung("Gezogen! 🎉"); gewinnspielLaden(); }
+    catch (err) { ZB.meldung(err.message, "fehler"); }
   });
 
   /* ================= Produktinfos (Zutaten, Allergene, Hinweis) ================= */

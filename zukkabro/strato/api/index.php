@@ -585,6 +585,58 @@ function kasse_berichte(): never {
     antwort(['monat' => $monat, 'tage' => $tage]);
 }
 
+/* =================== Eröffnungs-Gewinnspiel =================== */
+const GEWINNSPIEL_ENDE = '2026-11-20T22:59:59Z';
+const GEWINNSPIEL_ZIEHUNG = 'Samstag, 21.11.2026 um 16 Uhr live im Laden';
+const GEWINNSPIEL_PREISE = ['200 € Gutschein', '100 € Gutschein', '50 € Gutschein'];
+function gewinnspiel_offen(): bool { return time() < strtotime(GEWINNSPIEL_ENDE); }
+function gewinnspiel_status(): never { antwort(['offen' => gewinnspiel_offen(), 'ende' => GEWINNSPIEL_ENDE, 'ziehung' => GEWINNSPIEL_ZIEHUNG, 'preise' => GEWINNSPIEL_PREISE]); }
+function gewinnspiel_teilnehmen(string $ip): never {
+    bremse('gewinnspiel', $ip, 5, 60);
+    $b = body();
+    if (text($b['website'] ?? '', 10) !== '') antwort(['ok' => true, 'id' => 'G-BOT']);
+    if (!gewinnspiel_offen()) throw new Fehler(410, 'Das Gewinnspiel ist beendet. Die Ziehung war ' . GEWINNSPIEL_ZIEHUNG . '.');
+    $name = text($b['name'] ?? '', 100); $email = strtolower(text($b['email'] ?? '', 120));
+    $instagram = preg_replace('/[^A-Za-z0-9._]/', '', ltrim(text($b['instagram'] ?? '', 60), '@'));
+    if ($name === '') throw new Fehler(400, 'Bitte deinen Namen angeben.');
+    if (!email_ok($email)) throw new Fehler(400, 'Bitte eine gültige E-Mail-Adresse angeben.');
+    if ($instagram === '') throw new Fehler(400, 'Bitte deinen Instagram- oder TikTok-Namen angeben, damit wir Folgen und Like prüfen können.');
+    if (($b['ab18'] ?? null) !== true) throw new Fehler(400, 'Mitmachen geht erst ab 18 Jahren.');
+    if (($b['social'] ?? null) !== true) throw new Fehler(400, 'Bitte bestätigen, dass du uns folgst und den Beitrag geliked und geteilt hast.');
+    if (($b['bedingungen'] ?? null) !== true) throw new Fehler(400, 'Bitte Teilnahmebedingungen und Datenschutzerklärung bestätigen.');
+    $key = 'gewinnspiel/teilnehmer/' . kurz_hash($email);
+    if (lese($key)) throw new Fehler(409, 'Mit dieser E-Mail-Adresse bist du schon dabei. Viel Glück!');
+    $t = ['id' => neue_id('G-'), 'name' => $name, 'email' => $email, 'instagram' => $instagram, 'news' => ($b['news'] ?? null) === true, 'lose' => 1, 'erstellt' => jetzt()];
+    schreibe($key, $t);
+    protokoll('gewinnspiel-teilnahme', $email, ['id' => $t['id']]);
+    mail_senden($email, 'Du bist dabei: ZUKKABRO Eröffnungs-Gewinnspiel', "Hey $name,\n\ndu bist beim Eröffnungs-Gewinnspiel dabei. Deine Los-Nummer: {$t['id']}\n\nPreise: 1. Platz " . GEWINNSPIEL_PREISE[0] . ", 2. Platz " . GEWINNSPIEL_PREISE[1] . ", 3. Platz " . GEWINNSPIEL_PREISE[2] . " – einlösbar bei ZUKKABRO, Klingenberger Straße 100, Heilbronn.\nZiehung: " . GEWINNSPIEL_ZIEHUNG . ". Gewinner bekommen eine E-Mail und holen den Gutschein im Laden ab.\n\nDein Los gilt, wenn @$instagram uns folgt und den Gewinnspiel-Beitrag geliked und geteilt hat. Das prüfen wir vor der Ziehung.\n\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de");
+    antwort(['ok' => true, 'id' => $t['id'], 'lose' => 1]);
+}
+function gewinnspiel_teilnehmer(): array { $t = lese_alle('gewinnspiel/teilnehmer/'); usort($t, fn($a, $b) => strcmp($a['erstellt'] ?? '', $b['erstellt'] ?? '')); return $t; }
+function gewinnspiel_admin(): never {
+    $t = gewinnspiel_teilnehmer(); $z = lese('gewinnspiel/ziehung');
+    antwort(['offen' => gewinnspiel_offen(), 'ende' => GEWINNSPIEL_ENDE, 'ziehung' => GEWINNSPIEL_ZIEHUNG, 'preise' => GEWINNSPIEL_PREISE, 'teilnehmer' => $t, 'lose' => array_sum(array_map(fn($x) => (int) ($x['lose'] ?? 1), $t)), 'ergebnis' => is_array($z) ? $z : null]);
+}
+function gewinnspiel_ziehen(array $s): never {
+    $b = body();
+    if (($b['bestaetigt'] ?? null) !== true) throw new Fehler(400, 'Bitte die Ziehung bestätigen.');
+    if (lese('gewinnspiel/ziehung') && ($b['nochmal'] ?? null) !== true) throw new Fehler(409, 'Es wurde schon gezogen. Zum Wiederholen „nochmal“ bestätigen.');
+    $t = gewinnspiel_teilnehmer();
+    if (!$t) throw new Fehler(400, 'Noch keine Teilnehmer.');
+    $topf = [];
+    foreach ($t as $x) for ($i = 0; $i < max(1, (int) ($x['lose'] ?? 1)); $i++) $topf[] = $x;
+    $gewinner = [];
+    while (count($gewinner) < count(GEWINNSPIEL_PREISE) && $topf) {
+        $g = $topf[random_int(0, count($topf) - 1)];
+        $gewinner[] = ['platz' => count($gewinner) + 1, 'preis' => GEWINNSPIEL_PREISE[count($gewinner)], 'id' => $g['id'], 'name' => $g['name'], 'email' => $g['email'], 'instagram' => $g['instagram'] ?? ''];
+        $topf = array_values(array_filter($topf, fn($x) => $x['id'] !== $g['id']));
+    }
+    $z = ['am' => jetzt(), 'von' => $s['n'], 'teilnehmer' => count($t), 'lose' => count($t), 'gewinner' => $gewinner];
+    schreibe('gewinnspiel/ziehung', $z);
+    protokoll('gewinnspiel-ziehung', $s['id'], ['teilnehmer' => count($t)]);
+    antwort(['ok' => true, 'ergebnis' => $z]);
+}
+
 /* =================== Produktinfos: Zutaten, Allergene, Hinweise je Artikel =================== */
 function mehrzeilig(mixed $v, int $max): string { return is_string($v) ? mb_substr(trim(str_replace("\r", '', $v)), 0, $max) : ''; }
 function produkt_info_id(mixed $v): string { $id = text($v, 200); if ($id === '' || !produkt($id)) throw new Fehler(404, 'Produkt nicht gefunden.'); return $id; }
@@ -994,6 +1046,8 @@ function zb_api(): never {
         if ($m === 'GET' && $pfad === '/shop/news') news_oeffentlich();
         if ($m === 'GET' && $pfad === '/shop/stempel') stempel_status($ip);
         if ($m === 'GET' && $pfad === '/shop/produktinfo') antwort(produkt_info(produkt_info_id($_GET['id'] ?? '')));
+        if ($m === 'GET' && $pfad === '/shop/gewinnspiel') gewinnspiel_status();
+        if ($m === 'POST' && $pfad === '/shop/gewinnspiel') gewinnspiel_teilnehmen($ip);
         if ($m === 'POST' && $pfad === '/shop/stempel/neu') stempel_neu($ip);
         if ($m === 'GET' && $pfad === '/shop/bestellung/status') stripe_bestell_status();
 
@@ -1042,6 +1096,8 @@ function zb_api(): never {
             if ($m === 'GET' && $pfad === '/admin/stempel') stempel_antwort(stempel_lesen(stempel_code_param($_GET['code'] ?? '')));
             if ($m === 'POST' && $pfad === '/admin/stempel') stempel_aktion($a);
             if ($m === 'POST' && $pfad === '/admin/produktinfo') produkt_info_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/gewinnspiel') gewinnspiel_admin();
+            if ($m === 'POST' && $pfad === '/admin/gewinnspiel/ziehen') gewinnspiel_ziehen($a);
             if ($m === 'GET' && $pfad === '/admin/kasse/berichte') kasse_berichte();
             if ($m === 'POST' && $pfad === '/admin/kasse/verkauf') kasse_verkauf();
             if ($m === 'POST' && $pfad === '/admin/kasse/ausgabe') kasse_ausgabe();

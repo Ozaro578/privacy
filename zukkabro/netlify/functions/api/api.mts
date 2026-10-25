@@ -12,7 +12,7 @@ import {
 } from "./shop.mts";
 import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
 import { LADEN_STANDARD, KARTE_VORLAGE, type LadenEinstellungen, type KarteEintrag } from "./laden-vorlage.mts";
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { mailAktiv, mailSenden } from "./mail.mts";
 
 /* =================== Typen =================== */
@@ -899,6 +899,66 @@ async function einstellungenSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, einstellungen: e });
 }
 
+/* =================== Eröffnungs-Gewinnspiel (Startseite): Teilnahme, Admin-Liste, Ziehung =================== */
+const GEWINNSPIEL = {
+  ende: process.env.GEWINNSPIEL_ENDE || "2026-11-20T22:59:59.000Z", // 20.11.2026, 23:59 Uhr deutscher Zeit
+  ziehung: "Samstag, 21.11.2026 um 16 Uhr live im Laden",
+  preise: ["200 € Gutschein", "100 € Gutschein", "50 € Gutschein"],
+};
+interface Teilnehmer { id: string; name: string; email: string; instagram: string; news: boolean; lose: number; erstellt: string }
+interface Ziehung { am: string; von: string; teilnehmer: number; lose: number; gewinner: { platz: number; preis: string; id: string; name: string; email: string; instagram: string }[] }
+function gewinnspielOffen(): boolean { return Date.now() < Date.parse(GEWINNSPIEL.ende); }
+function gewinnspielStatus() {
+  return json({ offen: gewinnspielOffen(), ende: GEWINNSPIEL.ende, ziehung: GEWINNSPIEL.ziehung, preise: GEWINNSPIEL.preise });
+}
+async function gewinnspielTeilnehmen(req: Request, ip: string) {
+  await bremse("gewinnspiel", ip, 5, 60);
+  const b = await body(req);
+  if (text(b.website, 10)) return json({ ok: true, id: "G-BOT" }); // Honigtopf
+  if (!gewinnspielOffen()) throw new Fehler(410, "Das Gewinnspiel ist beendet. Die Ziehung war " + GEWINNSPIEL.ziehung + ".");
+  const name = text(b.name, 100), email = text(b.email, 120).toLowerCase(), instagram = text(b.instagram, 60).replace(/^@+/, "").replace(/[^A-Za-z0-9._]/g, "");
+  if (!name) throw new Fehler(400, "Bitte deinen Namen angeben.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Fehler(400, "Bitte eine gültige E-Mail-Adresse angeben.");
+  if (!instagram) throw new Fehler(400, "Bitte deinen Instagram- oder TikTok-Namen angeben, damit wir Folgen und Like prüfen können.");
+  if (b.ab18 !== true) throw new Fehler(400, "Mitmachen geht erst ab 18 Jahren.");
+  if (b.social !== true) throw new Fehler(400, "Bitte bestätigen, dass du uns folgst und den Beitrag geliked und geteilt hast.");
+  if (b.bedingungen !== true) throw new Fehler(400, "Bitte Teilnahmebedingungen und Datenschutzerklärung bestätigen.");
+  const key = `gewinnspiel/teilnehmer/${kurzHash(email)}`;
+  if (await lese<Teilnehmer>(key)) throw new Fehler(409, "Mit dieser E-Mail-Adresse bist du schon dabei. Viel Glück!");
+  const t: Teilnehmer = { id: neueId("G-"), name, email, instagram, news: b.news === true, lose: 1, erstellt: jetzt() };
+  await schreibe(key, t);
+  await protokoll("gewinnspiel-teilnahme", email, { id: t.id, lose: t.lose });
+  await mailAnKunde(email, "Du bist dabei: ZUKKABRO Eröffnungs-Gewinnspiel",
+    `Hey ${name},\n\ndu bist beim Eröffnungs-Gewinnspiel dabei. Deine Los-Nummer: ${t.id}\n\nPreise: 1. Platz ${GEWINNSPIEL.preise[0]}, 2. Platz ${GEWINNSPIEL.preise[1]}, 3. Platz ${GEWINNSPIEL.preise[2]} – einlösbar bei ZUKKABRO, Klingenberger Straße 100, Heilbronn.\nZiehung: ${GEWINNSPIEL.ziehung}. Gewinner bekommen eine E-Mail und holen den Gutschein im Laden ab.\n` +
+    `\nDein Los gilt, wenn @${instagram} uns folgt und den Gewinnspiel-Beitrag geliked und geteilt hat. Das prüfen wir vor der Ziehung.\n` + "\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de");
+  return json({ ok: true, id: t.id, lose: t.lose });
+}
+async function gewinnspielTeilnehmer(): Promise<Teilnehmer[]> {
+  return (await leseAlle<Teilnehmer>("gewinnspiel/teilnehmer/")).filter(Boolean).sort((a, b) => a.erstellt < b.erstellt ? -1 : 1);
+}
+async function gewinnspielAdmin() {
+  const t = await gewinnspielTeilnehmer();
+  return json({ offen: gewinnspielOffen(), ende: GEWINNSPIEL.ende, ziehung: GEWINNSPIEL.ziehung, preise: GEWINNSPIEL.preise, teilnehmer: t, lose: t.reduce((n, x) => n + x.lose, 0), ergebnis: (await lese<Ziehung>("gewinnspiel/ziehung")) || null });
+}
+async function gewinnspielZiehen(req: Request, s: Sitzung) {
+  const b = await body(req);
+  if (b.bestaetigt !== true) throw new Fehler(400, "Bitte die Ziehung bestätigen.");
+  if (await lese<Ziehung>("gewinnspiel/ziehung") && b.nochmal !== true) throw new Fehler(409, "Es wurde schon gezogen. Zum Wiederholen „nochmal“ bestätigen.");
+  const t = await gewinnspielTeilnehmer();
+  if (!t.length) throw new Fehler(400, "Noch keine Teilnehmer.");
+  let topf = t.flatMap((x) => new Array(Math.max(1, x.lose)).fill(x) as Teilnehmer[]);
+  const gewinner: Ziehung["gewinner"] = [];
+  while (gewinner.length < GEWINNSPIEL.preise.length && topf.length) {
+    const g = topf[randomInt(topf.length)];
+    gewinner.push({ platz: gewinner.length + 1, preis: GEWINNSPIEL.preise[gewinner.length], id: g.id, name: g.name, email: g.email, instagram: g.instagram });
+    topf = topf.filter((x) => x.id !== g.id);
+  }
+  const z: Ziehung = { am: jetzt(), von: s.n, teilnehmer: t.length, lose: t.reduce((n, x) => n + x.lose, 0), gewinner };
+  await schreibe("gewinnspiel/ziehung", z);
+  await protokoll("gewinnspiel-ziehung", s.id, { teilnehmer: z.teilnehmer, gewinner: gewinner.map((g) => g.id) });
+  return json({ ok: true, ergebnis: z });
+}
+
 /* =================== Produktinfos: Zutaten, Allergene, Hinweise je Artikel (Admin pflegt sie von der Verpackung ab) =================== */
 interface ProduktInfo { zutaten: string; allergene: string[]; hinweis: string; info: string; geaendert: string }
 function mehrzeilig(v: unknown, max: number): string {
@@ -1046,6 +1106,8 @@ export default async (req: Request, context: Context) => {
     if (m === "GET" && pfad === "/shop/news") return await newsOeffentlich();
     if (m === "GET" && pfad === "/shop/stempel") return await stempelStatus(url, ip);
     if (m === "GET" && pfad === "/shop/produktinfo") return json(await produktInfo(produktInfoId(url.searchParams.get("id"))));
+    if (m === "GET" && pfad === "/shop/gewinnspiel") return gewinnspielStatus();
+    if (m === "POST" && pfad === "/shop/gewinnspiel") return await gewinnspielTeilnehmen(req, ip);
     if (m === "POST" && pfad === "/shop/stempel/neu") return await stempelNeu(ip);
     if (m === "GET" && pfad === "/shop/bestellung/status") return await stripeBestellStatus(url);
     if (m === "POST" && pfad === "/shop/bestellung") return await kasse(req, ip);
@@ -1102,6 +1164,8 @@ export default async (req: Request, context: Context) => {
       if (m === "GET" && pfad === "/admin/stempel") return stempelAntwort(await stempelLesen(stempelCodeParam(url.searchParams.get("code"))));
       if (m === "POST" && pfad === "/admin/stempel") return await stempelAktion(req, a);
       if (m === "POST" && pfad === "/admin/produktinfo") return await produktInfoSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/gewinnspiel") return await gewinnspielAdmin();
+      if (m === "POST" && pfad === "/admin/gewinnspiel/ziehen") return await gewinnspielZiehen(req, a);
       if (m === "GET" && pfad === "/admin/kasse/berichte") return await kasseBerichte(url);
       if (m === "POST" && pfad === "/admin/kasse/verkauf") return await kasseVerkauf(req);
       if (m === "POST" && pfad === "/admin/kasse/ausgabe") return await kasseAusgabe(req);

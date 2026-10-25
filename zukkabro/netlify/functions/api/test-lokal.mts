@@ -332,6 +332,21 @@ globalThis.fetch = fetchVorher; delete process.env.BREVO_API_KEY;
   server.close();
 }
 
+// Eröffnungs-Gewinnspiel
+r = await rufe("GET", "/shop/gewinnspiel"); assert.equal(r.status, 200); assert.equal(r.daten.offen, true); assert.equal(r.daten.preise.length, 3);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Lea", email: "lea@test.de", ab18: true, social: true, bedingungen: false, instagram: "lea" }); assert.equal(r.status, 400);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Lea", email: "lea@test.de", ab18: true, social: true, bedingungen: true }); assert.equal(r.status, 400);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Lea", email: "lea@test.de", ab18: true, social: true, bedingungen: true, instagram: "@lea.snackt!" }); assert.equal(r.status, 200); assert.match(r.daten.id, /^G-/); assert.equal(r.daten.lose, 1);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Lea 2", email: "LEA@test.de", ab18: true, social: true, bedingungen: true, instagram: "lea2" }); assert.equal(r.status, 409);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Tom", email: "tom@test.de", ab18: true, social: true, bedingungen: true, news: true, instagram: "tom.tok" }); assert.equal(r.status, 200); assert.equal(r.daten.lose, 1);
+r = await rufe("POST", "/shop/gewinnspiel", { name: "Bot", email: "bot@test.de", ab18: true, social: true, bedingungen: true, instagram: "bot", website: "spam" }); assert.equal(r.daten.id, "G-BOT");
+r = await rufe("GET", "/admin/gewinnspiel", undefined, admin); assert.equal(r.daten.teilnehmer.length, 2); assert.equal(r.daten.lose, 2); assert.equal(r.daten.teilnehmer[0].instagram, "lea.snackt"); assert.equal(r.daten.ergebnis, null); ok("Gewinnspiel: Teilnahme, Doppelte, Honigtopf, Admin-Liste");
+r = await rufe("POST", "/admin/gewinnspiel/ziehen", { bestaetigt: true }, admin); assert.equal(r.status, 200); assert.equal(r.daten.ergebnis.gewinner.length, 2); assert.notEqual(r.daten.ergebnis.gewinner[0].id, r.daten.ergebnis.gewinner[1].id); assert.equal(r.daten.ergebnis.gewinner[0].preis, "200 € Gutschein");
+r = await rufe("POST", "/admin/gewinnspiel/ziehen", { bestaetigt: true }, admin); assert.equal(r.status, 409);
+r = await rufe("POST", "/admin/gewinnspiel/ziehen", { bestaetigt: true, nochmal: true }, admin); assert.equal(r.status, 200);
+r = await rufe("GET", "/admin/gewinnspiel", undefined, admin); assert.ok(r.daten.ergebnis.am); ok("Gewinnspiel: Ziehung ohne Doppelgewinner, Wiederholung nur mit Bestätigung");
+r = await rufe("POST", "/admin/gewinnspiel/ziehen", { bestaetigt: true }); assert.equal(r.status, 401); ok("Gewinnspiel: Ziehung nur als Admin");
+
 // Produktinfos: Zutaten, Allergene, Hinweis je Artikel
 r = await rufe("GET", "/shop/produktinfo?id=" + essen); assert.equal(r.status, 200); assert.equal(r.daten.zutaten, ""); assert.deepEqual(r.daten.allergene, []);
 r = await rufe("POST", "/admin/produktinfo", { id: essen, zutaten: "Maismehl, Öl,\nMILCHPULVER", allergene: ["Milch", "Gluten", "Quatsch", "Milch"], hinweis: "Sehr scharf", info: "" }, admin);

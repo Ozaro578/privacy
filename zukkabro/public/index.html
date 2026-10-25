@@ -109,17 +109,50 @@
     </section>
 
     <!-- ============ WERBEVIDEOS ============ -->
-    <section class="section section--cream" id="werbung">
+    <!-- ============ GEWINNSPIEL ============ -->
+    <section class="section section--gewinnspiel drip-oben" id="gewinnspiel">
       <div class="container">
         <div class="section__head reveal">
-          <p class="eyebrow">Schau rein</p>
-          <h2>So sieht <span class="drip">ZUKKABRO</span> aus</h2>
+          <p class="eyebrow">Zur Eröffnung</p>
+          <h2>Das große <span class="drip">Gewinnspiel</span></h2>
+          <p class="section__lead">Gutscheine im Wert von 350 € zu gewinnen. Folgen, liken, teilen, eintragen. Kein Kauf nötig.</p>
         </div>
-        <div class="werbung" data-werbung>
-          <figure class="werbung__clip reveal"><video poster="/assets/img/werbung/matcha-poster.jpg" muted loop playsinline preload="none" aria-label="Matcha wird auf Eis gegossen"><source src="/assets/video/matcha.mp4" type="video/mp4"><source src="/assets/video/matcha.webm" type="video/webm"></video><figcaption>🍵 Matcha, frisch aufgegossen</figcaption></figure>
-          <figure class="werbung__clip reveal"><video poster="/assets/img/werbung/acai-poster.jpg" muted loop playsinline preload="none" aria-label="Açaí Bowl mit Toppings"><source src="/assets/video/acai.mp4" type="video/mp4"><source src="/assets/video/acai.webm" type="video/webm"></video><figcaption>🫐 Açaí Bowl, Topping für Topping</figcaption></figure>
-          <figure class="werbung__clip reveal"><video poster="/assets/img/werbung/snacks-poster.jpg" muted loop playsinline preload="none" aria-label="Snacks aus aller Welt"><source src="/assets/video/snacks.mp4" type="video/mp4"><source src="/assets/video/snacks.webm" type="video/webm"></video><figcaption>🍬 Snacks aus aller Welt</figcaption></figure>
-          <figure class="werbung__clip reveal"><video poster="/assets/img/werbung/drinks-poster.jpg" muted loop playsinline preload="none" aria-label="Eiskalte Drinks"><source src="/assets/video/drinks.mp4" type="video/mp4"><source src="/assets/video/drinks.webm" type="video/webm"></video><figcaption>🥤 Drinks, die es hier sonst nicht gibt</figcaption></figure>
+        <div class="gewinnspiel">
+          <div class="gewinnspiel__preise">
+            <div class="gutschein gutschein--1 reveal"><span class="gutschein__platz">1. Platz</span><span class="gutschein__wert">200 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span><span class="gutschein__krone" aria-hidden="true">👑</span></div>
+            <div class="gutschein gutschein--2 reveal"><span class="gutschein__platz">2. Platz</span><span class="gutschein__wert">100 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span></div>
+            <div class="gutschein gutschein--3 reveal"><span class="gutschein__platz">3. Platz</span><span class="gutschein__wert">50 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span></div>
+          </div>
+          <div class="kontaktform gewinnspiel__box reveal" id="gewinnspielBox">
+            <div class="kontaktform__kopf">
+              <h2>Jetzt <span class="drip">mitmachen</span></h2>
+              <p class="gewinnspiel__countdown" id="gsCountdown" data-ende="2026-11-20T23:59:59+01:00">Teilnahme bis 20.11.2026, 23:59 Uhr</p>
+            </div>
+            <ol class="gewinnspiel__schritte">
+              <li><span>1</span><p>Folge uns auf <a href="https://www.instagram.com/zukkabro.de/" target="_blank" rel="noopener">Instagram</a>, <a href="https://www.tiktok.com/@zukkabro.de" target="_blank" rel="noopener">TikTok</a> oder <a href="https://www.facebook.com/profile.php?id=61594963992185" target="_blank" rel="noopener">Facebook</a></p></li>
+              <li><span>2</span><p>Like den Gewinnspiel-Beitrag</p></li>
+              <li><span>3</span><p>Teile ihn in deiner Story oder mit Freunden</p></li>
+              <li><span>4</span><p>Trag dich hier ein, fertig</p></li>
+            </ol>
+            <form id="gsForm" novalidate>
+              <label>Dein Name<input name="name" required maxlength="100" autocomplete="name"></label>
+              <label>E-Mail<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+              <label class="voll">Dein Name bei Instagram oder TikTok <small>damit wir Folgen und Like zuordnen können</small><input name="instagram" required maxlength="60" placeholder="@deinname" autocomplete="off"></label>
+              <label class="kontaktform__hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="social" required><span>Ich folge ZUKKABRO und habe den Gewinnspiel-Beitrag geliked und geteilt.</span></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="ab18" required><span>Ich bin mindestens 18 Jahre alt.</span></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="bedingungen" required><span>Ich akzeptiere die <a href="/rechtliches.html#gewinnspiel">Teilnahmebedingungen</a> und habe die <a href="/rechtliches.html#datenschutz">Datenschutzerklärung</a> gelesen.</span></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="news"><span>Schickt mir News und Angebote per E-Mail (jederzeit abbestellbar).</span></label>
+              <p class="kontaktform__fehler voll" id="gsFehler" hidden></p>
+              <div class="voll"><button class="btn btn--pink" type="submit" id="gsSenden">🎁 Jetzt mitmachen</button></div>
+            </form>
+            <div class="kontaktform__danke" id="gsDanke" hidden>
+              <svg class="danke__crown" aria-hidden="true"><use href="#crown"/></svg>
+              <p class="danke__title">Du bist dabei!</p>
+              <p id="gsDankeText">Deine Los-Nummer steht gleich in deinem Postfach. Ziehung am 21.11.2026 um 16 Uhr live im Laden.</p>
+            </div>
+            <p class="gewinnspiel__klein">Ziehung am Eröffnungstag, Samstag 21.11.2026 um 16 Uhr, live im Laden und in unserer Instagram-Story. Teilnahme bis 20.11.2026, 23:59 Uhr, ab 18 Jahren, einmal pro Person, kein Kauf nötig. Voraussetzung: ZUKKABRO folgen, Gewinnspiel-Beitrag liken und teilen, das prüfen wir vor der Ziehung. Gewinner werden per E-Mail benachrichtigt, Gutscheine werden im Laden abgeholt. Keine Barauszahlung. Das Gewinnspiel steht in keiner Verbindung zu Instagram oder Meta.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -298,5 +331,6 @@
   <script src="/assets/js/slider.js"></script>
   <script src="/assets/js/news.js"></script>
   <script src="/assets/js/werbung.js"></script>
+  <script src="/assets/js/gewinnspiel.js"></script>
 </body>
 </html>

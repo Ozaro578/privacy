@@ -63,6 +63,7 @@
           <button data-tab="pakete" role="tab">🎁 Pakete</button>
           <button data-tab="angebote" role="tab">🔥 Angebote</button>
           <button data-tab="produktinfo" role="tab">🧾 Produktinfos</button>
+          <button data-tab="gewinnspiel" role="tab">🎁 Gewinnspiel</button>
           <button data-tab="news" role="tab">📣 News</button>
           <button data-tab="laden" role="tab">🏪 Laden</button>
           <button data-tab="kasse" role="tab">💵 Kasse</button>
@@ -146,6 +147,18 @@
             <button class="btn btn--pink" id="angeboteSpeichern" type="button">Angebote speichern</button>
           </div>
           <div class="tabelle-wrap"><table class="tabelle" id="angebotTabelle"></table></div>
+        </section>
+
+        <!-- Gewinnspiel -->
+        <section data-panel="gewinnspiel" hidden>
+          <p class="hinweis" id="gsStatus">Lade …</p>
+          <div class="leiste">
+            <button class="btn btn--light btn--klein" id="gsLaden" type="button">Aktualisieren</button>
+            <button class="btn btn--light btn--klein" id="gsExport" type="button">Excel/CSV exportieren</button>
+            <button class="btn btn--gold" id="gsZiehen" type="button">🎲 Gewinner ziehen</button>
+          </div>
+          <div class="karte" id="gsErgebnis" hidden></div>
+          <div class="tabelle-wrap"><table class="tabelle" id="gsTabelle"></table></div>
         </section>
 
         <!-- Produktinfos -->

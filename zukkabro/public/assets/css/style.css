@@ -1161,3 +1161,35 @@ body.is-app .footer { padding-bottom: 1rem; }
 .allergene li.is-drin { background: #fff0c2; color: var(--choco); border-color: var(--gold); font-weight: 700; }
 .pdp-info__hinweise { margin: 0; padding-left: 1.2rem; line-height: 1.5; }
 @media (max-width: 640px) { .pdp-info { grid-template-columns: 1fr; } }
+
+/* Eröffnungs-Gewinnspiel */
+.section--gewinnspiel { background: radial-gradient(circle at 20% 10%, #4a2412 0%, var(--choco) 55%); color: var(--cream); }
+.section--gewinnspiel .eyebrow { color: var(--gold); }
+.section--gewinnspiel .section__head h2 { color: #fff; }
+.section--gewinnspiel .section__lead { color: var(--cream); font-weight: 600; max-width: 640px; margin: .4rem auto 0; }
+.gewinnspiel { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(0, 1.4fr); gap: 1.6rem; align-items: start; margin-top: 1.8rem; }
+.gewinnspiel__preise { display: grid; gap: 1rem; }
+.gutschein { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 1rem; align-items: center; padding: 1rem 1.3rem; border-radius: 22px; border: 4px solid var(--choco); box-shadow: 6px 6px 0 rgba(0,0,0,.35); background: var(--cream); color: var(--choco); overflow: hidden; }
+.gutschein::before, .gutschein::after { content: ""; position: absolute; top: 50%; width: 26px; height: 26px; border-radius: 50%; background: var(--choco); transform: translateY(-50%); }
+.gutschein::before { left: -13px; } .gutschein::after { right: -13px; }
+.gutschein__platz { grid-row: 1 / span 2; font-family: "Titan One", sans-serif; font-size: .95rem; letter-spacing: .06em; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); border-right: 3px dashed var(--choco); padding-left: .5rem; }
+.gutschein__wert { font-family: "Titan One", sans-serif; font-size: clamp(2.2rem, 5vw, 3rem); line-height: 1; color: var(--pink); text-shadow: 3px 3px 0 var(--choco); -webkit-text-stroke: 1px var(--choco); }
+.gutschein__text { font-weight: 700; }
+.gutschein--1 { background: linear-gradient(135deg, #fff0c2, var(--gold)); transform: rotate(-1.5deg); }
+.gutschein--1 .gutschein__wert { font-size: clamp(2.8rem, 6vw, 3.8rem); }
+.gutschein--2 { transform: rotate(1deg); } .gutschein--3 { transform: rotate(-.5deg); }
+.gutschein__krone { position: absolute; right: .8rem; top: .4rem; font-size: 1.8rem; transform: rotate(12deg); }
+.gewinnspiel__box { margin: 0; max-width: none; }
+.gewinnspiel__countdown { margin: 0; font-weight: 700; color: var(--pink-deep); }
+.gewinnspiel__countdown b { font-family: "Titan One", sans-serif; font-weight: 400; }
+.gewinnspiel__klein { margin: 1rem 0 0; font-size: .8rem; line-height: 1.45; opacity: .8; }
+@media (max-width: 860px) { .gewinnspiel { grid-template-columns: 1fr; } .gewinnspiel__preise { grid-template-columns: repeat(3, 1fr); gap: .7rem; } .gutschein { grid-template-columns: 1fr; padding: .8rem .6rem; text-align: center; } .gutschein__platz { writing-mode: horizontal-tb; transform: none; border-right: 0; padding: 0; } .gutschein__text { font-size: .8rem; } .gutschein::before, .gutschein::after { display: none; } }
+@media (max-width: 480px) { .gewinnspiel__preise { grid-template-columns: 1fr; } }
+.gewinnspiel__schritte { list-style: none; margin: 0 0 1.2rem; padding: 0; display: grid; gap: .5rem; font-weight: 600; }
+.gewinnspiel__schritte li { display: flex; align-items: center; gap: .7rem; }
+.gewinnspiel__schritte span { flex: none; width: 1.9em; height: 1.9em; border-radius: 50%; background: var(--pink); color: #fff; font-family: "Titan One", sans-serif; display: grid; place-items: center; border: 2px solid var(--choco); box-shadow: 2px 2px 0 var(--choco); }
+.gewinnspiel__schritte a { color: var(--pink-deep); }
+.gewinnspiel__schritte p { margin: 0; }
+.gewinnspiel__box input:not([type=checkbox]) { min-width: 0; width: 100%; }
+@media (max-width: 860px) { .gewinnspiel { grid-template-columns: minmax(0, 1fr); } .gewinnspiel__box { min-width: 0; } }
+@media (max-width: 640px) { .gewinnspiel__box form { grid-template-columns: 1fr; } }
