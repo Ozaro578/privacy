@@ -23,6 +23,9 @@
     document.documentElement.classList.add("is-nativ");
     if (seite === "vapes") location.replace("/sortiment.html");
     // Bestellt wird nicht in der App, sondern im Browser auf zukkabro.de: Warenkorb wird per Link übergeben
+    // Logo-Variante ohne die Zeile „Snacks · Drinks · Vapes · More“
+    var logoTausch = function () { document.querySelectorAll('img[src$="/assets/img/logo.png"]').forEach(function (i) { i.src = "/assets/img/logo-app.png"; }); };
+    document.addEventListener("DOMContentLoaded", logoTausch); setTimeout(logoTausch, 0);
     window.ZBNativ = {
       bestellenExtern: function () {
         var k = window.ZBKorb ? window.ZBKorb.alle() : {};
