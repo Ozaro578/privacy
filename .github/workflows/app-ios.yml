@@ -27,12 +27,6 @@ jobs:
           npm ci
           npx cap sync ios
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: true
-          working-directory: app/ios/App
-
       - name: Xcode wählen
         run: sudo xcode-select -s /Applications/Xcode_16.2.app || sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | tail -1)"
 
@@ -47,7 +41,7 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           BUILD_NUMBER: ${{ github.run_number }}
           FASTLANE_SKIP_UPDATE_CHECK: "1"
-        run: bundle exec fastlane beta
+        run: fastlane beta
 
       - name: IPA als Artefakt sichern
         if: always()
