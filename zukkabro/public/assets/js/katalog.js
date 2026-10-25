@@ -93,8 +93,8 @@
     var filter = box.getAttribute("data-filter") || "alle";
     var limit = parseInt(box.getAttribute("data-limit") || "8", 10);
     var ohne = box.getAttribute("data-ohne") || "";
-    var items = LISTE.filter(function (p) { return p.id !== ohne && passt(p, filter) && !p.aus && !p.pruefen && sichtbarImShop(p); }).slice(0, limit);
-    if (!items.length) items = LISTE.filter(function (p) { return !p.aus; }).slice(0, limit);
+    var items = LISTE.filter(function (p) { return p.id !== ohne && !p.ab18 && passt(p, filter) && !p.aus && !p.pruefen && sichtbarImShop(p); }).slice(0, limit);
+    if (!items.length) items = LISTE.filter(function (p) { return !p.aus && !p.ab18; }).slice(0, limit);
     box.innerHTML = items.map(karte).join("");
   }
 
@@ -102,7 +102,8 @@
   function voll(box) {
     var erlaubt = (box.getAttribute("data-kats") || "").split(",").filter(Boolean);
     var shopListe = LISTE.filter(sichtbarImShop);
-    var basis = erlaubt.length ? shopListe.filter(function (p) { return p.kat.some(function (k) { return erlaubt.indexOf(k) !== -1; }); }) : shopListe;
+    // Ohne data-kats = normales Sortiment: alles ab 18 (Vapes, Liquids, Budz) bleibt draußen und lebt nur im 18+-Bereich
+    var basis = erlaubt.length ? shopListe.filter(function (p) { return p.kat.some(function (k) { return erlaubt.indexOf(k) !== -1; }); }) : shopListe.filter(function (p) { return !p.ab18; });
     var chipsBox = document.getElementById("filters");
     var suche = document.getElementById("suche");
     var sortierung = document.getElementById("sortierung");

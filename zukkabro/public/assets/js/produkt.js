@@ -15,6 +15,8 @@
   (typeof KATEGORIEN !== "undefined" ? KATEGORIEN : []).forEach(function (k) { KATS[k.id] = k; });
   var id = new URLSearchParams(location.search).get("id") || "";
   var p = LISTE.find(function (x) { return x.id === id; });
+  if (p && p.ab18 && /ZukkabroApp/.test(navigator.userAgent)) { location.replace("/sortiment.html"); return; }
+  if (p && p.ab18 && window.ZBAlter) window.ZBAlter.pruefen();
 
   if (!p) {
     $("pdp").innerHTML = '<div class="karte leer" style="grid-column:1/-1">Dieses Produkt gibt es nicht (mehr). <a href="/sortiment.html">Zum Sortiment →</a></div>';

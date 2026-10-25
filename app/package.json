@@ -1,0 +1,25 @@
+{
+  "name": "zukkabro-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ZUKKABRO – native App-Hülle (iOS/Android) für zukkabro.de",
+  "scripts": {
+    "sync": "cap sync",
+    "ios": "cap open ios",
+    "android": "cap open android",
+    "assets": "capacitor-assets generate --iconBackgroundColor '#fbf1e6' --iconBackgroundColorDark '#2b140a' --splashBackgroundColor '#fbf1e6' --splashBackgroundColorDark '#2b140a'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/browser": "^7.0.0",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/ios": "^7.4.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.4.0"
+  }
+}

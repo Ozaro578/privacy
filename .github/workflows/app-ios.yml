@@ -1,0 +1,61 @@
+name: App iOS (TestFlight)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, claude/beautiful-pascal-ycudtq]
+    paths: ["app/**", ".github/workflows/app-ios.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Web-Hülle und iOS-Projekt synchronisieren
+        run: |
+          npm ci
+          npx cap sync ios
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: app/ios/App
+
+      - name: Xcode wählen
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app || sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | tail -1)"
+
+      - name: Build und Upload zu TestFlight
+        working-directory: app/ios/App
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          MATCH_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          BUILD_NUMBER: ${{ github.run_number }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+        run: bundle exec fastlane beta
+
+      - name: IPA als Artefakt sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZUKKABRO-ios
+          path: app/ios/App/build/*.ipa
+          if-no-files-found: ignore

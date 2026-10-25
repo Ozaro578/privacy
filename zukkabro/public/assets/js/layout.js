@@ -11,12 +11,18 @@
     { id: "sortiment", href: "/sortiment.html",   text: "Sortiment" },
     { id: "pakete",    href: "/pakete.html",      text: "Pakete" },
     { id: "laden",     href: "/laden.html",       text: "🍵 Matcha & Açaí" },
-    { id: "vapes",     href: "/vapes.html",       text: "Vapes 18+" },
+    { id: "vapes",     href: "/vapes.html",       text: "Vapes & Budz 18+" },
     { id: "haendler",  href: "/haendler/",        text: "Für Händler" },
     { id: "kontakt",   href: "/kontakt.html",     text: "Kontakt", cta: true }
   ];
 
   var seite = document.body.getAttribute("data-seite") || "";
+  // Native App (iOS/Android-Hülle): erkennbar am User-Agent. Dort gibt es keinen Vape-Bereich (Vorgabe der App-Stores).
+  var istNativ = /ZukkabroApp/.test(navigator.userAgent);
+  if (istNativ) {
+    document.documentElement.classList.add("is-nativ");
+    if (seite === "vapes") location.replace("/sortiment.html");
+  }
 
   /* Netlify-Plakette ("Powered by Netlify") ausblenden: Merker setzen, den das Netlify-Skript liest,
      und falls das Rähmchen doch auftaucht, sofort entfernen. */
@@ -51,7 +57,7 @@
     '</symbol></defs></svg>';
 
   function kopf() {
-    var links = MENUE.map(function (m) {
+    var links = MENUE.filter(function (m) { return !(istNativ && m.id === "vapes"); }).map(function (m) {
       var cls = (m.cta ? "nav__cta" : "") + (m.id === seite ? " is-active" : "");
       return '<a href="' + m.href + '"' + (cls.trim() ? ' class="' + cls.trim() + '"' : "") + (m.id === seite ? ' aria-current="page"' : "") + ">" + m.text + "</a>";
     }).join("");
@@ -63,10 +69,10 @@
         '<div class="age-gate__card">' +
           '<img class="age-gate__logo" src="/assets/img/logo.png" data-fallback="/assets/img/logo.svg" alt="ZUKKABRO">' +
           '<div class="badge18 slot" data-slot-box><img data-slot src="/assets/img/badge-18.png" alt="Nur ab 18"><span class="slot__fallback badge18__fb" aria-hidden="true">18+</span></div>' +
-          '<h2 id="ageGateTitle">Bist du 18 Jahre oder älter?</h2>' +
+          '<h2 id="ageGateTitle">Dieser Bereich ist ab 18</h2>' +
           "<p>Unser Sortiment enthält Produkte, die laut Jugendschutzgesetz nur an Erwachsene abgegeben werden dürfen, zum Beispiel E-Zigaretten und Liquids.</p>" +
           '<div class="age-gate__actions"><button class="btn btn--pink" id="ageYes" type="button">Ja, ich bin 18+</button><button class="btn btn--light" id="ageNo" type="button">Nein</button></div>' +
-          '<p class="age-gate__denied" id="ageDenied" hidden>Sorry, Bro! Diese Seite ist nur für Erwachsene ab 18 Jahren. Komm wieder, wenn du volljährig bist. 👑</p>' +
+          '<p class="age-gate__denied" id="ageDenied" hidden>Sorry, Bro! Vapes und Co. gibt es nur für Erwachsene ab 18. Snacks, Drinks und Matcha warten trotzdem auf dich: <a href="/sortiment.html">zum Sortiment</a> 👑</p>' +
           '<p class="age-gate__small">Bei Abholung und Lieferung wird das Alter kontrolliert.</p>' +
         "</div>" +
       "</div>" +
@@ -75,7 +81,7 @@
         '<span>🚚 Versand in 3 Werktagen</span>' +
         '<span>📍 Laden in Heilbronn: Matcha &amp; Açaí am Wochenende</span>' +
         '<span id="topbarFrei" hidden>📦 Versandkostenfrei ab <b data-versandfrei></b></span>' +
-        '<span>🔞 Nur für Erwachsene ab 18</span>' +
+        '<a href="/vapes.html" class="topbar__ab18">🔞 Vapes &amp; Budz ab 18</a>' +
       "</div></div>" +
       '<header class="header" id="top"><div class="container header__inner">' +
         '<a href="/" class="logo" aria-label="ZUKKABRO Startseite"><img src="/assets/img/logo-klein.png" data-fallback="/assets/img/logo-quer.svg" alt="ZUKKABRO" width="190" height="50"></a>' +
@@ -92,7 +98,7 @@
           '<p class="footer__note">Internationale Snacks, Candy, Drinks und mehr. Versand in 3 Werktagen, Abholung oder Lieferung in Heilbronn.</p>' +
           '<div class="footer__social" id="footerSocial"></div></div>' +
         '<nav class="footer__spalte" aria-label="Shop"><h3>Shop</h3>' +
-          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Matcha &amp; Açaí</a><a href="/stempelkarte.html">Stempelkarte</a><a href="/news.html">News</a><a href="/vapes.html">Vapes 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
+          '<a href="/sortiment.html">Sortiment</a><a href="/sortiment.html?kat=neu">Neu im Regal</a><a href="/pakete.html">Themen-Pakete</a><a href="/laden.html">Matcha &amp; Açaí</a><a href="/stempelkarte.html">Stempelkarte</a><a href="/news.html">News</a><a href="/vapes.html">Vapes &amp; Budz 18+</a><a href="/warenkorb.html">Warenkorb</a>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Service"><h3>Service</h3>' +
           '<a href="/kontakt.html">Kontakt</a><a href="/kontakt.html#versand">Versand &amp; Abholung</a><a href="/haendler/">Für Händler</a><a href="/ueber-uns.html">Über uns</a>' +
@@ -258,7 +264,10 @@
     gate.classList.remove("is-hidden"); document.body.classList.add("gate-locked");
     document.getElementById("ageDenied").hidden = true; document.getElementById("ageYes").focus();
   }
-  if (store.get(AGE_KEY) === "1") unlock(); else document.body.classList.add("gate-locked");
+  // Die Abfrage kommt erst, wenn jemand in den 18+-Bereich geht (Vapes-Seite oder ein 18+-Produkt), nicht beim Betreten der Seite.
+  var brauchtAlter = seite === "vapes" || document.body.hasAttribute("data-ab18");
+  if (store.get(AGE_KEY) === "1" || !brauchtAlter) unlock(); else lock();
+  window.ZBAlter = { pruefen: function () { if (store.get(AGE_KEY) !== "1") lock(); }, ok: function () { return store.get(AGE_KEY) === "1"; } };
   document.getElementById("ageYes").addEventListener("click", function () { store.set(AGE_KEY, "1"); unlock(); });
   document.getElementById("ageNo").addEventListener("click", function () { document.getElementById("ageDenied").hidden = false; });
 
@@ -289,7 +298,7 @@
 
   /* ---------- App: Service Worker und Installation (PWA) ---------- */
   var installPrompt = null;
-  var istApp = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  var istApp = istNativ || window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   var istIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
   if ("serviceWorker" in navigator && location.protocol === "https:" && seite !== "admin" && seite !== "haendler") {
     window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then(function (r) { r.update(); }).catch(function () { /* ohne App-Funktionen weiter */ }); });

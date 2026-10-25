@@ -1193,3 +1193,9 @@ body.is-app .footer { padding-bottom: 1rem; }
 .gewinnspiel__box input:not([type=checkbox]) { min-width: 0; width: 100%; }
 @media (max-width: 860px) { .gewinnspiel { grid-template-columns: minmax(0, 1fr); } .gewinnspiel__box { min-width: 0; } }
 @media (max-width: 640px) { .gewinnspiel__box form { grid-template-columns: 1fr; } }
+
+/* Native App (iOS/Android): kein Vape-Bereich, keine Installations-Hinweise */
+.is-nativ .banner--vapes, .is-nativ .chip--vape, .is-nativ .kachel--18, .is-nativ a[href^="/vapes.html"], .is-nativ #appLink, .is-nativ #appInstallieren { display: none !important; }
+
+.topbar__ab18 { color: inherit; text-decoration: none; font-weight: 700; }
+.topbar__ab18:hover { text-decoration: underline; }
