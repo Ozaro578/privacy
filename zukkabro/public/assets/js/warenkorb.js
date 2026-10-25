@@ -89,6 +89,8 @@
     $("korbHinweis").textContent = nichtKaufbar ? nichtKaufbar + (nichtKaufbar === 1 ? " Artikel ist" : " Artikel sind") + " noch nicht bestellbar und wird bei der Bestellung nicht berücksichtigt." : "";
     if (vorverkauf()) vorverkaufHinweis();
     $("zurKasse").disabled = !r.pos.length;
+    if (window.ZBNativ && r.pos.length) { $("korbHinweis").hidden = false; $("korbHinweis").textContent = "🧾 Die Bestellung selbst machst du auf zukkabro.de im Browser. Dein Warenkorb wird automatisch übernommen."; $("zurKasse").textContent = "Auf zukkabro.de bestellen →"; }
+    if (kasseAuto && r.pos.length && !window.ZBNativ) { kasseAuto = false; setTimeout(function () { $("zurKasse").click(); }, 150); }
   }
 
   $("korbListe").addEventListener("click", function (e) {
@@ -130,7 +132,20 @@
   }
   form.addEventListener("change", function (e) { if (e.target.name === "lieferart") kasseZeichnen(); });
 
+  // Warenkorb aus der App übernehmen (?korb=…): die App schickt zum Bestellen in den Browser
+  var params = new URLSearchParams(location.search), uebergabe = params.get("korb");
+  if (uebergabe) {
+    try {
+      var roh = JSON.parse(decodeURIComponent(escape(atob(uebergabe)))), neu = {};
+      Object.keys(roh || {}).forEach(function (id) { var m = roh[id] | 0; if (m > 0 && m < 1000 && /^[a-z0-9:_-]{1,200}$/i.test(id)) neu[id] = m; });
+      if (Object.keys(neu).length) { window.ZBKorb.speichern(neu); if (window.ZBToast) window.ZBToast("Dein Warenkorb aus der App ist da. Weiter zur Kasse!"); }
+    } catch (e) { /* kaputter Link, normaler Warenkorb */ }
+    history.replaceState(null, "", location.pathname);
+  }
+  var kasseAuto = params.get("kasse") === "1";
+
   $("zurKasse").addEventListener("click", function () {
+    if (window.ZBNativ) { if (window.ZBToast) window.ZBToast("Deine Bestellung geht im Browser auf zukkabro.de weiter."); window.ZBNativ.bestellenExtern(); return; }
     $("schrittKorb").hidden = true; form.hidden = false;
     $("korbTitel").innerHTML = 'Zur <span class="drip">Kasse</span>';
     kasseZeichnen(); window.scrollTo({ top: 0, behavior: "smooth" });

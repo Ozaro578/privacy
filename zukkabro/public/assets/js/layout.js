@@ -22,6 +22,15 @@
   if (istNativ) {
     document.documentElement.classList.add("is-nativ");
     if (seite === "vapes") location.replace("/sortiment.html");
+    // Bestellt wird nicht in der App, sondern im Browser auf zukkabro.de: Warenkorb wird per Link übergeben
+    window.ZBNativ = {
+      bestellenExtern: function () {
+        var k = window.ZBKorb ? window.ZBKorb.alle() : {};
+        var url = "https://zukkabro.de/warenkorb.html?korb=" + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(k))))) + "&kasse=1&quelle=app";
+        var B = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser;
+        if (B && B.open) B.open({ url: url }); else window.open(url, "_blank");
+      }
+    };
   }
 
   /* Netlify-Plakette ("Powered by Netlify") ausblenden: Merker setzen, den das Netlify-Skript liest,
