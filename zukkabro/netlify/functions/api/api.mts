@@ -14,6 +14,7 @@ import { PAKETE_VORLAGE, type Paket } from "./pakete-vorlage.mts";
 import { LADEN_STANDARD, KARTE_VORLAGE, type LadenEinstellungen, type KarteEintrag } from "./laden-vorlage.mts";
 import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { mailAktiv, mailSenden } from "./mail.mts";
+import { auftragsbestaetigung, versandbestaetigung, abholbereit, versanddienst, type MailBestellung } from "./mailvorlagen.mts";
 
 /* =================== Typen =================== */
 type HStatus = "offen" | "aktiv" | "gesperrt";
@@ -25,7 +26,7 @@ interface Haendler {
 interface Staffel { ab: number; preis: number } // ab X VE gilt dieser Stückpreis (netto)
 interface Preis { name: string; marke?: string; preis: number; ve: number; mindest: number; mwst: number; aktiv: boolean; staffel?: Staffel[] }
 type Preisliste = Record<string, Preis>;
-type BStatus = "neu" | "bestaetigt" | "versendet" | "bezahlt" | "abgeschlossen" | "storniert";
+type BStatus = "neu" | "bestaetigt" | "versendet" | "abholbereit" | "bezahlt" | "abgeschlossen" | "storniert";
 interface Position {
   produktId: string; name: string; ve: number; anzahlVE: number; stueck: number;
   preis: number; mwst: number; netto: number;
@@ -39,6 +40,7 @@ interface Bestellung {
   netto: number; mwst: number; brutto: number; notiz: string; status: BStatus;
   erstellt: string; verlauf: { status: BStatus; von: string; am: string }[]; gebucht?: boolean;
   kunde?: Kunde; lieferart?: "versand" | "abholung" | "kurier"; zahlart?: string; versand?: number; ab18?: boolean;
+  sendung?: { dienst: string; nummer: string; am: string };
 }
 type BTyp = "einkauf" | "verkauf" | "ausgabe" | "einnahme" | "storno";
 interface Buchung {
@@ -47,7 +49,7 @@ interface Buchung {
   bezug?: string; erfasstVon: string; erfasstAm: string;
 }
 
-const BESTELL_STATUS: BStatus[] = ["neu", "bestaetigt", "versendet", "bezahlt", "abgeschlossen", "storniert"];
+const BESTELL_STATUS: BStatus[] = ["neu", "bestaetigt", "versendet", "abholbereit", "bezahlt", "abgeschlossen", "storniert"];
 const BUCH_TYPEN: BTyp[] = ["einkauf", "verkauf", "ausgabe", "einnahme"];
 const MWST_SAETZE = [0, 7, 19];
 
@@ -259,8 +261,22 @@ async function bestellStatus(req: Request, s: Sitzung) {
   if (!best) throw new Fehler(404, "Bestellung nicht gefunden.");
   best.status = status;
   best.verlauf.push({ status, von: s.id, am: jetzt() });
+  const dienst = text(b.dienst, 20).toLowerCase(), nummer = text(b.sendung, 60);
+  if (status === "versendet" && (dienst || nummer)) best.sendung = { dienst, nummer, am: jetzt() };
   await schreibe(`bestellungen/${id}`, best);
-  return json({ ok: true, bestellung: best });
+  // Kunden informieren: Ware ist raus bzw. liegt zur Abholung bereit
+  let mailGesendet = false;
+  if (best.kunde?.email && b.mail !== false && (status === "versendet" || status === "abholbereit")) {
+    const mb = mailBestellung(best);
+    const m = status === "versendet" ? versandbestaetigung(mb, best.sendung?.dienst || "", best.sendung?.nummer || "") : abholbereit(mb, (await einstellungen()).abholort);
+    mailGesendet = await mailAnKunde(best.kunde.email, m.betreff, m.text, m.html);
+  }
+  return json({ ok: true, bestellung: best, mailGesendet });
+}
+function mailBestellung(best: Bestellung): MailBestellung {
+  const k = best.kunde!;
+  return { id: best.id, positionen: best.positionen.map((p) => ({ stueck: p.stueck, name: p.name, brutto: p.brutto || 0 })), brutto: best.brutto, versand: best.versand, lieferart: best.lieferart, zahlart: best.zahlart, ab18: best.ab18,
+    kunde: { vorname: k.vorname, nachname: k.nachname, email: k.email, telefon: k.telefon, strasse: k.strasse, plz: k.plz, ort: k.ort } };
 }
 
 /** Bestellung als Verkäufe in die Buchhaltung übernehmen (einmalig). */
@@ -934,7 +950,7 @@ async function gewinnspielTeilnehmen(req: Request, ip: string) {
   return json({ ok: true, id: t.id, lose: t.lose });
 }
 async function gewinnspielTeilnehmer(): Promise<Teilnehmer[]> {
-  return (await leseAlle<Teilnehmer>("gewinnspiel/teilnehmer/")).filter(Boolean).sort((a, b) => a.erstellt < b.erstellt ? -1 : 1);
+  return (await leseAlle<Teilnehmer>("gewinnspiel/teilnehmer/")).filter(Boolean).sort((a, b) => a.erstellt < b.erstellt ? -1 : a.erstellt > b.erstellt ? 1 : a.id < b.id ? -1 : 1);
 }
 async function gewinnspielAdmin() {
   const t = await gewinnspielTeilnehmer();
@@ -995,9 +1011,9 @@ async function mailTest(a: Sitzung) {
 function euroText(cent: number): string {
   return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cent || 0) / 100);
 }
-async function mailAnKunde(an: string, betreff: string, text: string) {
+async function mailAnKunde(an: string, betreff: string, text: string, html = "") {
   const e = await einstellungen();
-  return mailSenden(an, betreff, text, e.mailVon || e.mailAn, e.mailAn);
+  return mailSenden(an, betreff, text, e.mailVon || e.mailAn, e.mailAn, html);
 }
 async function mailAnTeam(betreff: string, text: string) {
   const e = await einstellungen();
@@ -1019,7 +1035,7 @@ async function bestellMails(best: Bestellung, info: Record<string, unknown>, hin
     : `${k.vorname} ${k.nachname}\n${k.strasse}\n${k.plz} ${k.ort}`.trim() + (best.lieferart === "kurier" ? "\n(Lieferung per Kurier in Heilbronn)" : "");
   const text = `Hey ${k.vorname},\n\ndanke für deine Bestellung bei ZUKKABRO!\n\nBestellnummer: ${best.id}\n\n${zeilen.join("\n")}\nGesamt: ${euroText(best.brutto)} (inkl. MwSt.)\n\nLieferung: ${adresse}\n\nZahlung: ${zahlung}\n` +
     (best.ab18 ? "\nDein Warenkorb enthält Artikel ab 18. Bitte halte bei der Übergabe deinen Ausweis bereit.\n" : "") + (hinweis ? `\n${hinweis}\n` : "") + "\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de";
-  await mailAnKunde(k.email, `Deine Bestellung ${best.id} bei ZUKKABRO`, text);
+  await mailAnKunde(k.email, `Deine Bestellung ${best.id} bei ZUKKABRO`, text, auftragsbestaetigung(mailBestellung(best), info, hinweis));
   await mailAnTeam(`Neue Bestellung ${best.id} (${euroText(best.brutto)}, ${best.zahlart})`,
     `Neue Kundenbestellung ${best.id}\n\n${zeilen.join("\n")}\nGesamt: ${euroText(best.brutto)}\n\nKunde: ${k.vorname} ${k.nachname}, ${k.email}${k.telefon ? ", " + k.telefon : ""}\n${adresse}\nZahlung: ${best.zahlart}\n${best.notiz ? "Notiz: " + best.notiz + "\n" : ""}\nAdmin: https://zukkabro.de/admin/`);
 }

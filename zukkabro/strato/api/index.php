@@ -5,9 +5,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/speicher.php';
+require_once __DIR__ . '/mailvorlagen.php';
 require_once __DIR__ . '/sicherheit.php';
 
-const BESTELL_STATUS = ['neu', 'bestaetigt', 'versendet', 'bezahlt', 'abgeschlossen', 'storniert'];
+const BESTELL_STATUS = ['neu', 'bestaetigt', 'versendet', 'abholbereit', 'bezahlt', 'abgeschlossen', 'storniert'];
 const BUCH_TYPEN = ['einkauf', 'verkauf', 'ausgabe', 'einnahme'];
 const MWST_SAETZE = [0, 7, 19];
 const FARBEN = ['pink', 'gold', 'blue', 'orange', 'violet', 'green', 'gruen', 'dark', 'rot'];
@@ -654,13 +655,19 @@ function produkt_info_speichern(array $s): never {
 
 /* =================== E-Mails (Strato: PHP mail(), Absender muss eine Adresse eurer Domain sein) =================== */
 /** Schickt eine schlichte Text-Mail. Fehler werden nur protokolliert, damit keine Bestellung daran scheitert. */
-function mail_senden(string $an, string $betreff, string $text): void {
+function mail_senden(string $an, string $betreff, string $text, string $html = ''): void {
     $e = einstellungen();
     $von = $e['mailVon'] ?: ('noreply@' . preg_replace('/^www\./', '', $_SERVER['HTTP_HOST'] ?? 'zukkabro.de'));
     if ($an === '' || !email_ok($an) || !email_ok($von)) return;
-    $kopf = "From: ZUKKABRO <$von>\r\nReply-To: " . ($e['mailAn'] ?: $von) . "\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
+    $kopf = "From: ZUKKABRO <$von>\r\nReply-To: " . ($e['mailAn'] ?: $von) . "\r\nMIME-Version: 1.0\r\n";
+    if ($html === '') { $kopf .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit"; $body = wordwrap($text, 78, "\n", false); }
+    else {
+        $grenze = '=_zb_' . bin2hex(random_bytes(6));
+        $kopf .= "Content-Type: multipart/alternative; boundary=\"$grenze\"";
+        $body = "--$grenze\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($text)) . "\r\n--$grenze\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($html)) . "\r\n--$grenze--";
+    }
     $betreff = '=?UTF-8?B?' . base64_encode($betreff) . '?=';
-    try { if (!@mail($an, $betreff, wordwrap($text, 78, "\n", false), $kopf, '-f' . $von)) error_log("ZUKKABRO Mail an $an nicht gesendet"); }
+    try { if (!@mail($an, $betreff, $body, $kopf, '-f' . $von)) error_log("ZUKKABRO Mail an $an nicht gesendet"); }
     catch (Throwable $t) { error_log('ZUKKABRO Mail-Fehler: ' . $t->getMessage()); }
 }
 /** Testmail aus dem Admin an die Benachrichtigungs-Adresse */
@@ -687,7 +694,7 @@ function bestell_mails(array $best, array $info, string $hinweis): void {
     $adresse = $best['lieferart'] === 'abholung' ? 'Abholung in Heilbronn' : trim($k['vorname'] . ' ' . $k['nachname'] . "\n" . $k['strasse'] . "\n" . $k['plz'] . ' ' . $k['ort']);
     $text = "Hey {$k['vorname']},\n\ndanke für deine Bestellung bei ZUKKABRO!\n\nBestellnummer: {$best['id']}\n\n" . implode("\n", $zeilen) . "\nGesamt: " . euro_text($best['brutto']) . " (inkl. MwSt.)\n\nLieferung: $adresse\n\nZahlung: {$best['zahlart']}\n$zahlung\n" .
         (!empty($best['ab18']) ? "\nDein Warenkorb enthält Artikel ab 18. Bitte halte bei der Übergabe deinen Ausweis bereit.\n" : '') . ($hinweis ? "\n$hinweis\n" : '') . "\nBis bald,\ndein ZUKKABRO-Team\nhttps://zukkabro.de";
-    mail_senden($k['email'], 'Deine Bestellung ' . $best['id'] . ' bei ZUKKABRO', $text);
+    mail_senden($k['email'], 'Deine Bestellung ' . $best['id'] . ' bei ZUKKABRO', $text, mv_auftrag($best, $info, $hinweis));
     mail_an_team('Neue Bestellung ' . $best['id'] . ' (' . euro_text($best['brutto']) . ', ' . $best['zahlart'] . ')',
         "Neue Kundenbestellung {$best['id']}\n\n" . implode("\n", $zeilen) . "\nGesamt: " . euro_text($best['brutto']) . "\n\nKunde: {$k['vorname']} {$k['nachname']}, {$k['email']}" . ($k['telefon'] ? ', ' . $k['telefon'] : '') . "\n$adresse\nZahlung: {$best['zahlart']}\n" . ($best['notiz'] ? "Notiz: {$best['notiz']}\n" : '') . "\nAdmin: https://zukkabro.de/admin/");
 }
@@ -948,8 +955,15 @@ function bestell_status(array $s): never {
     if (!$best) throw new Fehler(404, 'Bestellung nicht gefunden.');
     $best['status'] = $status;
     $best['verlauf'][] = ['status' => $status, 'von' => $s['id'], 'am' => jetzt()];
+    $dienst = strtolower(text($b['dienst'] ?? '', 20)); $nummer = text($b['sendung'] ?? '', 60);
+    if ($status === 'versendet' && ($dienst !== '' || $nummer !== '')) $best['sendung'] = ['dienst' => $dienst, 'nummer' => $nummer, 'am' => jetzt()];
     schreibe('bestellungen/' . $id, $best);
-    antwort(['ok' => true, 'bestellung' => $best]);
+    $mailGesendet = false;
+    if (!empty($best['kunde']['email']) && ($b['mail'] ?? null) !== false && in_array($status, ['versendet', 'abholbereit'], true)) {
+        $m = $status === 'versendet' ? mv_versand($best, $best['sendung']['dienst'] ?? '', $best['sendung']['nummer'] ?? '') : mv_abholbereit($best, (string) (einstellungen()['abholort'] ?? ''));
+        mail_senden($best['kunde']['email'], $m['betreff'], $m['text'], $m['html']); $mailGesendet = true;
+    }
+    antwort(['ok' => true, 'bestellung' => $best, 'mailGesendet' => $mailGesendet]);
 }
 
 /* =================== Buchhaltung =================== */

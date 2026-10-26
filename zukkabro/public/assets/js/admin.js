@@ -7,7 +7,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var esc = ZB.esc, euro = ZB.euro;
   var MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
-  var STATUS_TEXT = { neu: "Neu", bestaetigt: "Bestätigt", versendet: "Versendet", bezahlt: "Bezahlt", abgeschlossen: "Abgeschlossen", storniert: "Storniert", offen: "Offen", aktiv: "Aktiv", gesperrt: "Gesperrt" };
+  var STATUS_TEXT = { neu: "Neu", bestaetigt: "Bestätigt", versendet: "Versendet", abholbereit: "Abholbereit", bezahlt: "Bezahlt", abgeschlossen: "Abgeschlossen", storniert: "Storniert", offen: "Offen", aktiv: "Aktiv", gesperrt: "Gesperrt" };
   var TYP_TEXT = { verkauf: "Verkauf", einkauf: "Wareneinkauf", ausgabe: "Ausgabe", einnahme: "Einnahme", storno: "Storno" };
 
   var daten = { buchungen: [], alleBuchungen: null, bestellungen: [], haendler: [], nachrichten: [], preise: {}, shop: {}, einstellungen: {} };
@@ -168,7 +168,7 @@
     var basis = wirksam(daten.buchungen);
     var liste = monat ? basis.filter(function (b) { return b.datum.slice(5, 7) === monat; }) : basis;
     var s = summen(liste);
-    var offeneBestellungen = daten.bestellungen.filter(function (b) { return ["neu", "bestaetigt", "versendet"].indexOf(b.status) !== -1; }).length;
+    var offeneBestellungen = daten.bestellungen.filter(function (b) { return ["neu", "bestaetigt", "versendet", "abholbereit"].indexOf(b.status) !== -1; }).length;
     var offeneHaendler = daten.haendler.filter(function (h) { return h.status === "offen"; }).length;
     var kpi = function (label, wert, farbe) { return '<div class="kpi kpi--' + farbe + '"><div class="kpi__label">' + label + '</div><div class="kpi__wert">' + wert + "</div></div>"; };
     $("kpis").innerHTML =
@@ -213,7 +213,7 @@
       }).join("");
       var fuss = anfrage ? "" : '<tfoot>' + (b.versand ? '<tr><td colspan="5">Versand</td><td class="num">' + euro(b.versand) + "</td></tr>" : "") +
         '<tr><td colspan="5">Netto</td><td class="num">' + euro(b.netto) + '</td></tr><tr><td colspan="5">MwSt</td><td class="num">' + euro(b.mwst) + '</td></tr><tr><td colspan="5">Gesamt brutto</td><td class="num">' + euro(b.brutto) + "</td></tr></tfoot>";
-      var optionen = ["neu", "bestaetigt", "versendet", "bezahlt", "abgeschlossen", "storniert"].map(function (s) {
+      var optionen = ["neu", "bestaetigt", "versendet", "abholbereit", "bezahlt", "abgeschlossen", "storniert"].map(function (s) {
         return '<option value="' + s + '"' + (s === b.status ? " selected" : "") + ">" + (anfrage && s === "abgeschlossen" ? "Beantwortet" : STATUS_TEXT[s]) + "</option>";
       }).join("");
       var kontakt;
@@ -236,7 +236,8 @@
           (anfrage ? '<p class="hinweis">Preisanfrage: Trag unter „Preise“ Händlerpreise für diese Artikel ein und melde dich beim Händler. Danach Status auf „Beantwortet“ setzen.</p>' : "") +
           '<div class="leiste" style="margin:0">' +
             '<label class="feld">Status<select class="js-status">' + optionen + "</select></label>" +
-            '<button class="btn btn--pink btn--klein js-status-speichern" type="button">Status speichern</button>' +
+            (b.kunde && b.lieferart !== "abholung" ? '<label class="feld">Versand mit<select class="js-dienst"><option value="">–</option>' + ["dhl:DHL", "hermes:Hermes", "dpd:DPD", "gls:GLS", "ups:UPS", "post:Deutsche Post", "kurier:Eigener Kurier"].map(function (d) { var t = d.split(":"); return '<option value="' + t[0] + '"' + (b.sendung && b.sendung.dienst === t[0] ? " selected" : "") + ">" + t[1] + "</option>"; }).join("") + '</select></label><label class="feld">Sendungsnummer<input class="js-sendung" value="' + esc(b.sendung ? b.sendung.nummer : "") + '" placeholder="z. B. 00340434…"></label>' : "") +
+            '<button class="btn btn--pink btn--klein js-status-speichern" type="button">Status speichern' + (b.kunde ? " + Mail" : "") + "</button>" +
             (buchbar ? '<button class="btn btn--gruen btn--klein js-buchen" type="button"' + (b.gebucht || b.status === "storniert" ? " disabled" : "") + ">" + (b.gebucht ? "✓ In Buchhaltung" : "In Buchhaltung übernehmen") + "</button>" : "") +
             '<button class="btn btn--light btn--klein js-drucken" type="button">🖨 Drucken</button>' +
           "</div>" +
@@ -252,8 +253,9 @@
     var id = box.getAttribute("data-id");
     try {
       if (e.target.closest(".js-status-speichern")) {
-        var r = await ZB.api("POST", "/admin/bestellungen/status", { id: id, status: box.querySelector(".js-status").value });
-        ersetzeBestellung(r.bestellung); ZB.meldung("Status gespeichert.");
+        var dienstFeld = box.querySelector(".js-dienst"), sendungFeld = box.querySelector(".js-sendung");
+        var r = await ZB.api("POST", "/admin/bestellungen/status", { id: id, status: box.querySelector(".js-status").value, dienst: dienstFeld ? dienstFeld.value : "", sendung: sendungFeld ? sendungFeld.value.trim() : "" });
+        ersetzeBestellung(r.bestellung); ZB.meldung(r.mailGesendet ? "Status gespeichert, Kunde per E-Mail informiert. ✉️" : "Status gespeichert.");
       }
       if (e.target.closest(".js-buchen")) {
         if (!confirm("Diese Bestellung als Verkauf in die Buchhaltung übernehmen? Das geht nur einmal.")) return;

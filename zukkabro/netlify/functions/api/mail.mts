@@ -16,12 +16,12 @@ function emailOk(s: string): boolean {
 }
 
 /** Eine Text-Mail senden. Wirft nie, damit eine Mail-Störung keine Bestellung kaputt macht. */
-export async function mailSenden(an: string, betreff: string, text: string, von: string, antwortAn = ""): Promise<boolean> {
+export async function mailSenden(an: string, betreff: string, text: string, von: string, antwortAn = "", html = ""): Promise<boolean> {
   if (!emailOk(an) || !emailOk(von)) return false;
   const antwort = emailOk(antwortAn) ? antwortAn : von;
   try {
-    if (process.env.SMTP_PASSWORT) return await perSmtp(an, betreff, text, von, antwort);
-    if (process.env.BREVO_API_KEY) return await perBrevo(an, betreff, text, von, antwort);
+    if (process.env.SMTP_PASSWORT) return await perSmtp(an, betreff, text, von, antwort, html);
+    if (process.env.BREVO_API_KEY) return await perBrevo(an, betreff, text, von, antwort, html);
     return false;
   } catch (err) {
     console.error("ZUKKABRO Mail-Fehler:", (err as Error).message);
@@ -29,7 +29,7 @@ export async function mailSenden(an: string, betreff: string, text: string, von:
   }
 }
 
-async function perBrevo(an: string, betreff: string, text: string, von: string, antwort: string): Promise<boolean> {
+async function perBrevo(an: string, betreff: string, text: string, von: string, antwort: string, html = ""): Promise<boolean> {
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: { "api-key": process.env.BREVO_API_KEY!, "content-type": "application/json", accept: "application/json" },
@@ -39,6 +39,7 @@ async function perBrevo(an: string, betreff: string, text: string, von: string, 
       replyTo: { email: antwort },
       subject: betreff,
       textContent: text,
+      ...(html ? { htmlContent: html } : {}),
     }),
     signal: AbortSignal.timeout(8000),
   });
@@ -52,11 +53,11 @@ function b64(s: string): string { return Buffer.from(s, "utf8").toString("base64
 function kopfWort(s: string): string { return /^[\x20-\x7e]*$/.test(s) ? s : `=?UTF-8?B?${b64(s)}?=`; }
 function adresseOk(s: string): boolean { return emailOk(s) && !/[\r\n<>]/.test(s); }
 
-/** Nachricht als RFC-5322-Text bauen (Body base64, damit Umlaute und lange Zeilen sicher ankommen) */
-export function smtpNachricht(an: string, betreff: string, text: string, von: string, antwort: string): string {
-  const body = b64(text.replace(/\r?\n/g, "\r\n")).replace(/(.{76})/g, "$1\r\n");
+/** Nachricht als RFC-5322-Text bauen (Body base64, damit Umlaute und lange Zeilen sicher ankommen); mit HTML als multipart/alternative */
+export function smtpNachricht(an: string, betreff: string, text: string, von: string, antwort: string, html = ""): string {
+  const b64Zeilen = (s: string) => b64(s.replace(/\r?\n/g, "\r\n")).replace(/(.{76})/g, "$1\r\n");
   const id = `${Date.now().toString(36)}.${Math.random().toString(36).slice(2, 10)}@${von.split("@")[1]}`;
-  return [
+  const kopf = [
     `From: ${kopfWort("ZUKKABRO")} <${von}>`,
     `To: <${an}>`,
     `Reply-To: <${antwort}>`,
@@ -64,20 +65,24 @@ export function smtpNachricht(an: string, betreff: string, text: string, von: st
     `Date: ${new Date().toUTCString().replace("GMT", "+0000")}`,
     `Message-ID: <${id}>`,
     "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=utf-8",
-    "Content-Transfer-Encoding: base64",
-    "",
-    body,
-  ].join("\r\n");
+  ];
+  if (!html) return kopf.concat(["Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", b64Zeilen(text)]).join("\r\n");
+  const grenze = "=_zb_" + Math.random().toString(36).slice(2, 14);
+  return kopf.concat([
+    `Content-Type: multipart/alternative; boundary="${grenze}"`, "",
+    `--${grenze}`, "Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", b64Zeilen(text), "",
+    `--${grenze}`, "Content-Type: text/html; charset=utf-8", "Content-Transfer-Encoding: base64", "", b64Zeilen(html), "",
+    `--${grenze}--`,
+  ]).join("\r\n");
 }
 
-async function perSmtp(an: string, betreff: string, text: string, von: string, antwort: string): Promise<boolean> {
+async function perSmtp(an: string, betreff: string, text: string, von: string, antwort: string, html = ""): Promise<boolean> {
   const host = process.env.SMTP_HOST || "smtp.strato.de";
   const port = Number(process.env.SMTP_PORT || 465);
   const benutzer = process.env.SMTP_BENUTZER || von;
   const passwort = process.env.SMTP_PASSWORT!;
   if (!adresseOk(an) || !adresseOk(von)) return false;
-  const fehler = await smtpSenden({ host, port, tls: port === 465 && !process.env.SMTP_OHNE_TLS, benutzer, passwort, von, an, daten: smtpNachricht(an, betreff, text, von, antwort) });
+  const fehler = await smtpSenden({ host, port, tls: port === 465 && !process.env.SMTP_OHNE_TLS, benutzer, passwort, von, an, daten: smtpNachricht(an, betreff, text, von, antwort, html) });
   if (fehler) console.error("ZUKKABRO Mail an", an, "nicht gesendet:", fehler);
   return !fehler;
 }
