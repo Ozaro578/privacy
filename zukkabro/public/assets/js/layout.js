@@ -412,7 +412,7 @@
       leiste.className = "app-leiste"; leiste.setAttribute("aria-label", "App-Menü");
       leiste.innerHTML = [
         { id: "start", href: "/", icon: "🏠", text: "Start" }, { id: "sortiment", href: "/sortiment.html", icon: "🍬", text: "Shop" },
-        { id: "laden", href: "/laden.html", icon: "🍵", text: "Laden" }, { id: "news", href: "/news.html", icon: "📰", text: "News" },
+        { id: "laden", href: "/laden.html", icon: "🍵", text: "Store" }, { id: "news", href: "/news.html", icon: "📰", text: "News" },
         { id: "warenkorb", href: "/warenkorb.html", icon: "🛒", text: "Korb", korb: true }
       ].map(function (m) {
         return '<a href="' + m.href + '"' + (m.id === seite ? ' class="is-active" aria-current="page"' : "") + '><span class="app-leiste__icon" aria-hidden="true">' + m.icon +
