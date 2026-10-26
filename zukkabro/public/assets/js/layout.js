@@ -27,11 +27,15 @@
     var logoTausch = function () { document.querySelectorAll('img[src$="/assets/img/logo.png"]').forEach(function (i) { i.src = "/assets/img/logo-app.png"; }); };
     document.addEventListener("DOMContentLoaded", logoTausch); setTimeout(logoTausch, 0);
     window.ZBNativ = {
-      bestellenExtern: function () {
-        var k = window.ZBKorb ? window.ZBKorb.alle() : {};
-        var url = "https://zukkabro.de/warenkorb.html?korb=" + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(k))))) + "&kasse=1&quelle=app";
+      oeffnen: function (url) {
         var B = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser;
         if (B && B.open) B.open({ url: url }); else window.open(url, "_blank");
+      },
+      bestellenExtern: function () {
+        var k = window.ZBKorb ? window.ZBKorb.alle() : {};
+        var stempel = store.get("zb_stempel") || "";
+        var url = "https://zukkabro.de/warenkorb.html?korb=" + encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(k))))) + "&kasse=1&quelle=app" + (stempel ? "&stempel=" + encodeURIComponent(stempel) : "");
+        this.oeffnen(url);
       }
     };
   }

@@ -143,6 +143,8 @@
     history.replaceState(null, "", location.pathname);
   }
   var kasseAuto = params.get("kasse") === "1";
+  var stempelParam = (params.get("stempel") || "").toUpperCase();
+  if (/^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(stempelParam)) { try { localStorage.setItem("zb_stempel", stempelParam); } catch (e) { /* egal */ } }
 
   $("zurKasse").addEventListener("click", function () {
     if (window.ZBNativ) { if (window.ZBToast) window.ZBToast("Deine Bestellung geht im Browser auf zukkabro.de weiter."); window.ZBNativ.bestellenExtern(); return; }

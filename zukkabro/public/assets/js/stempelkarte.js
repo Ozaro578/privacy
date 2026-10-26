@@ -53,5 +53,14 @@
     if (!/^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(code)) return fehler("Code bitte wie auf der Karte eingeben, z. B. ZB-AB12-CD34.");
     laden(code); e.target.reset();
   });
+  // Code per Link übernehmen (App → Browser, oder QR-Code): /stempelkarte.html?code=ZB-XXXX-XXXX
+  var codeParam = (new URLSearchParams(location.search).get("code") || "").trim().toUpperCase().replace(/\s/g, "");
+  if (/^ZB-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(codeParam)) { store.set(codeParam); history.replaceState(null, "", location.pathname); }
   laden(store.get());
+  // In der App: dieselbe Karte auch im Browser nutzen (Code wird per Link übergeben)
+  if (window.ZBNativ) {
+    var k = document.createElement("button"); k.type = "button"; k.className = "btn btn--light btn--klein"; k.style.marginTop = ".8rem"; k.textContent = "🌐 Diese Karte auch im Browser nutzen";
+    k.addEventListener("click", function () { window.ZBNativ.oeffnen("https://zukkabro.de/stempelkarte.html?code=" + encodeURIComponent(store.get())); });
+    var ziel = $("stempelFelder"); if (ziel && ziel.parentNode) ziel.parentNode.insertBefore(k, ziel.nextSibling);
+  }
 })();
