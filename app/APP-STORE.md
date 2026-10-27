@@ -52,12 +52,14 @@ Erste Version: Sortiment, Warenkorb, Laden-Infos, Stempelkarte und News.
 
 ## 2. Screenshots
 
-Liegen fertig in `app/store/screenshots/`:
-- `6.9-*.png` (1320 × 2868) für iPhone 6,9"
-- `6.7-*.png` (1290 × 2796) für iPhone 6,7"
+Fertig gestaltet (Marken-Hintergrund, Überschrift, iPhone-Rahmen) in `app/store/screenshots/`, sieben Motive:
+01 Start, 02 Sortiment, 03 Produkt-Infos, 04 Matcha & Açaí, 05 Stempelkarte, 06 Pakete, 07 Gewinnspiel.
+- `6.7-*.png` (1290 × 2796) für iPhone 6,7" (gilt in App Store Connect auch für 6,9")
 - `6.5-*.png` (1242 × 2688) für iPhone 6,5"
 
-In App Store Connect bei der Version unter „iPhone“ die Bilder je Größe hochladen (Reihenfolge 01 bis 06). Da die App nur für iPhone ist, sind keine iPad-Bilder nötig.
+Die Bilder werden per API hochgeladen (`asc-shots.cjs` im Arbeitsordner). Achtung: Nach „Zur Prüfung einreichen“ sind
+Screenshots gesperrt. Zum Austauschen die Einreichung unter App Store Connect → App → Version → „Aus Prüfung entfernen“
+zurückziehen, Bilder hochladen, erneut einreichen. Da die App nur für iPhone ist, sind keine iPad-Bilder nötig.
 
 ## 3. App-Datenschutz (Fragebogen „App-Datenschutz“)
 
