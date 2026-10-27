@@ -125,7 +125,7 @@
         "</nav>" +
         '<div class="footer__kontakt"><h3>Laden &amp; Kontakt</h3>' +
           '<p><span aria-hidden="true">📍</span><span>Klingenberger Straße 100<br>74080 Heilbronn</span></p>' +
-          '<p><span aria-hidden="true">🍵</span><span>Matcha &amp; Açaí am Wochenende<br><small>Öffnungszeiten folgen zur Eröffnung</small></span></p>' +
+          '<p><span aria-hidden="true">🕒</span><span>Mo – Fr 06:30 – 20:00 Uhr<br>Sa 11:00 – 18:00 Uhr<br><small>Matcha &amp; Açaí am Wochenende</small></span></p>' +
           '<p><span aria-hidden="true">☎</span><a id="fussTel" href="/kontakt.html"><span data-shop="telefon">Telefon folgt</span></a></p>' +
           '<p><span aria-hidden="true">✉</span><a id="fussMail" href="/kontakt.html"><span data-shop="email">E-Mail folgt</span></a></p>' +
           '<button type="button" class="btn btn--pink footer__app" id="appLink" hidden>📲 Als App installieren</button>' +

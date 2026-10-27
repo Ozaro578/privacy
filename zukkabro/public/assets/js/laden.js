@@ -44,6 +44,8 @@
       var z = zeiten.filter(function (x) { return x.tag === t; })[0];
       if (z && z.offen) naechster = z;
     }
+    var vorEroeffnung = jetzt < new Date(2026, 10, 21, 10, 0, 0);
+    if (vorEroeffnung) { st.textContent = "🎉 Eröffnung am Samstag, 21.11.2026 ab 10 Uhr"; st.className = "laden-status"; st.hidden = false; return; }
     if (offen) { st.textContent = "🟢 Jetzt geöffnet, bis " + heute.bis + " Uhr"; st.className = "laden-status laden-status--offen"; }
     else if (heute && heute.offen && hhmm < heute.von) { st.textContent = "🕒 Heute ab " + heute.von + " Uhr geöffnet"; st.className = "laden-status"; }
     else if (naechster) { st.textContent = "🔴 Gerade geschlossen · wieder " + TAGE[naechster.tag] + " ab " + naechster.von + " Uhr"; st.className = "laden-status laden-status--zu"; }
