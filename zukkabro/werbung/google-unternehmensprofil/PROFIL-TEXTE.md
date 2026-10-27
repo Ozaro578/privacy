@@ -88,7 +88,7 @@ Kommt vorbei, wir freuen uns auf euch!
 ### 2. Gewinnspiel
 - Typ: Neuigkeiten · Bild: `fotos/beitrag-gewinnspiel-1200x900.jpg` · Button: „Jetzt anmelden“ → https://zukkabro.de/#gewinnspiel
 ```
-Zur Eröffnung verlosen wir drei Gutscheine: 200 €, 100 € und 50 € zum Einlösen bei ZUKKABRO. So geht's: Folge uns auf Instagram, TikTok oder Facebook, like und teile den Gewinnspiel-Beitrag und trag dich auf zukkabro.de ein. Teilnahmeschluss ist der 21.11.2026 um 15 Uhr, die Ziehung findet um 16 Uhr live im Laden statt. Teilnahme ab 18, kein Kauf nötig. Teilnahmebedingungen auf zukkabro.de.
+Zur Eröffnung verlosen wir drei Gutscheine: 200 €, 100 € und 50 € zum Einlösen bei ZUKKABRO. So geht's: Folge uns auf Instagram, TikTok oder Facebook, like und teile den Gewinnspiel-Beitrag und trag dich auf zukkabro.de ein. Teilnahmeschluss ist Freitag, der 20.11.2026 um 23:59 Uhr, die Ziehung findet am Samstag, 21.11. um 16 Uhr live im Laden statt. Teilnahme ab 18, kein Kauf nötig. Teilnahmebedingungen auf zukkabro.de.
 ```
 
 ### 3. Matcha & Açaí
