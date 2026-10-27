@@ -18,19 +18,17 @@
 | Liefergebiet | Deutschland (Versand), Heilbronn 74072, 74074, 74076, 74078, 74080, 74081 (Kurier) |
 | Social-Links im Profil | Instagram https://instagram.com/zukkabro.de · TikTok https://tiktok.com/@zukkabro.de · Facebook https://facebook.com/profile.php?id=61594963992185 |
 
-## Öffnungszeiten (Vorschlag, bitte bestätigen oder ändern)
-
-Noch nicht festgelegt. Vorschlag, der zum Konzept passt (Laden unter der Woche, Matcha und Açaí am Wochenende):
+## Öffnungszeiten
 
 | Tag | Zeit |
 |---|---|
-| Montag bis Freitag | 11:00 bis 19:00 |
-| Samstag | 10:00 bis 19:00 |
+| Montag bis Freitag | 06:30 bis 20:00 |
+| Samstag | 11:00 bis 18:00 |
 | Sonntag | geschlossen |
 
-Sonderzeiten: **Samstag, 21.11.2026: 10:00 bis 19:00 (Eröffnung)**. Hinweis: Sonntagsöffnung ist für Einzelhandel in
-Baden-Württemberg nur in Ausnahmen erlaubt. Wenn Matcha und Açaí sonntags laufen sollen, muss das als Gastronomie angemeldet
-sein, bitte vorher klären. Sobald die Zeiten feststehen, trage ich sie auch auf zukkabro.de ein.
+Sonderzeiten eintragen: **Samstag, 21.11.2026: 10:00 bis 18:00 (Eröffnung)**. Feiertage (z. B. 24.12., 25.12., 26.12., 31.12., 01.01.)
+vorher als „geschlossen“ oder mit abweichender Zeit eintragen, sonst zeigt Google „Öffnungszeiten könnten abweichen“.
+Die Zeiten stehen genauso auf zukkabro.de/laden.html.
 
 ## Beschreibung (745 von 750 Zeichen)
 
@@ -75,7 +73,7 @@ Preise ergänzen, sobald sie feststehen. Google erlaubt „Preis ab“.
 ## Beiträge (unter „Beiträge“ anlegen, Reihenfolge wie hier)
 
 ### 1. Veranstaltung: Eröffnung
-- Typ: Veranstaltung · Titel: **Eröffnung ZUKKABRO Heilbronn** · Datum: 21.11.2026, 10:00 bis 19:00
+- Typ: Veranstaltung · Titel: **Eröffnung ZUKKABRO Heilbronn** · Datum: 21.11.2026, 10:00 bis 18:00
 - Bild: `fotos/beitrag-eroeffnung-1200x900.jpg` · Button: „Weitere Informationen“ → https://zukkabro.de
 ```
 Wir eröffnen! Am Samstag, 21. November 2026 ab 10 Uhr öffnet ZUKKABRO in der Klingenberger Straße 100 in Heilbronn-Böckingen: über 500 Snacks und Drinks aus Japan, Korea, USA, Mexiko und mehr, dazu Matcha Latte und Açaí Bowls frisch von der Theke.
@@ -121,7 +119,7 @@ Ja. Auf zukkabro.de bestellen, an der Kasse „Abholung in Heilbronn“ wählen 
 Ja, Versand in ganz Deutschland für 5,90 €, ab 50 € gratis. In Heilbronn liefern wir per Kurier für 2,90 €, ab 25 € Bestellwert.
 
 **Gibt es Matcha und Açaí jeden Tag?**
-Matcha Latte und Açaí Bowls gibt es am Wochenende. Die genauen Zeiten stehen auf zukkabro.de/laden.html.
+Matcha Latte und Açaí Bowls gibt es am Wochenende, samstags von 11 bis 18 Uhr. Unter der Woche haben wir von 6:30 bis 20 Uhr für Snacks und Drinks geöffnet.
 
 **Habt ihr Gutscheine?**
 Ja, Geschenkgutscheine gibt es im Laden in jedem Betrag.

@@ -35,7 +35,7 @@ Reihenfolge im Profil („Profil bearbeiten“):
 3. **Fotos**: Logo (`fotos/logo-quadrat-1080.png`), Titelbild (`fotos/titelbild-1920x1080.jpg`), dann die Beitragsbilder als
    „Fotos vom Unternehmen“. **Am Eröffnungstag echte Fotos nachlegen**: Ladenfront mit Schild, Regale, Matcha-Theke, Team.
    Echte Fotos bringen bei Google deutlich mehr als Grafiken.
-4. **Beiträge**: Erst den Beitrag „Eröffnung“ als **Veranstaltung** (Datum 21.11.2026, 10 bis 19 Uhr), dann Gewinnspiel, Matcha,
+4. **Beiträge**: Erst den Beitrag „Eröffnung“ als **Veranstaltung** (Datum 21.11.2026, 10 bis 18 Uhr), dann Gewinnspiel, Matcha,
    Stempelkarte als normale Beiträge, jeweils mit Bild aus `fotos/` und Button „Weitere Informationen“ zur passenden Seite.
 5. **Produkte**: Google hat einen eigenen Produktbereich. Dort die Kategorien aus PROFIL-TEXTE anlegen (mit Beitragsbildern),
    Preise erst, wenn sie feststehen.
