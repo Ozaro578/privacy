@@ -17,7 +17,7 @@
   ];
 
   var seite = document.body.getAttribute("data-seite") || "";
-  // Native App (iOS/Android-Hülle): erkennbar am User-Agent. Dort gibt es keinen Vape-Bereich (Vorgabe der App-Stores).
+  // Native App (iOS/Android-Hülle): erkennbar am User-Agent. Die App lädt die bereinigte App-Ausgabe der Seite (public/app).
   var istNativ = /ZukkabroApp/.test(navigator.userAgent);
   if (istNativ) {
     document.documentElement.classList.add("is-nativ");
@@ -27,10 +27,8 @@
     var logoTausch = function () { document.querySelectorAll('img[src$="/assets/img/logo.png"]').forEach(function (i) { i.src = "/assets/img/logo-app.png"; }); };
     document.addEventListener("DOMContentLoaded", logoTausch); setTimeout(logoTausch, 0);
     window.ZBNativ = {
-      oeffnen: function (url) {
-        var B = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser;
-        if (B && B.open) B.open({ url: url }); else window.open(url, "_blank");
-      },
+      // Immer im System-Browser (Safari/Chrome) öffnen, nie in einem In-App-Fenster: Bestellung und Browser-Stempelkarte laufen auf zukkabro.de
+      oeffnen: function (url) { window.open(url, "_blank"); },
       bestellenExtern: function () {
         var k = window.ZBKorb ? window.ZBKorb.alle() : {};
         var stempel = store.get("zb_stempel") || "";

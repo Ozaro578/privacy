@@ -1,0 +1,42 @@
+/* =========================================================
+   ZUKKABRO – HIER BEARBEITET IHR EURE ANGABEN
+   =========================================================
+   Das Sortiment selbst steht in produkte.js und wird automatisch
+   vom Großhändler übernommen. Diese Datei wird dabei NIE überschrieben.
+   ========================================================= */
+
+const SHOP = {
+  // Nur Ziffern, mit Ländervorwahl ohne "+" und ohne führende 0, z. B. "4915112345678"
+  whatsapp: "",
+  whatsappKanal: "",  // Link zum WhatsApp-Kanal „ZUKKABRO – Neu im Regal“, z. B. "https://whatsapp.com/channel/…"
+  telefon: "+49 7131 5912230",  // Telefon fürs Impressum und die Kontaktseite
+  instagram: "zukkabro.de",   // Instagram-Name ohne @
+  tiktok: "zukkabro.de",      // TikTok-Name ohne @
+  facebook: "https://www.facebook.com/profile.php?id=61594963992185",  // kompletter Link zur Facebook-Seite
+  email: "info@zukkabro.de",
+  address: "Klingenberger Straße 100, 74080 Heilbronn (kostenlos, zu den Öffnungszeiten)",
+  hours: "Geben wir zur Eröffnung bekannt. Matcha & Açaí Bowls gibt es bei uns am Wochenende.",
+  shipping: ""        // eigener Versandtext, leer lassen für Standardtext
+};
+
+/* Eigene Verkaufspreise in Euro, Schlüssel = Produkt-ID aus produkte.js.
+   Ohne Eintrag steht beim Produkt "Preis auf Anfrage".
+   Beispiel:
+     "ultra-icetea-naruto-330ml": 2.99,
+*/
+const PREISE = {
+};
+
+/* Eure Bestseller, als Liste von Produkt-IDs aus produkte.js.
+   Beispiel: ["ultra-icetea-naruto-330ml", "takis-fuego-90g"]
+*/
+const BESTSELLER = [
+];
+
+/* Echte Instagram/TikTok-Posts für die Startseite (bis zu 6). Leer = wechselnde Produktfotos.
+   Bild = Pfad im Ordner assets/img/social/, Link = Adresse des Posts.
+   Beispiel:
+     { bild: "assets/img/social/post-1.jpg", text: "Unboxing: Takis aus Mexiko", link: "https://www.instagram.com/p/xyz/" },
+*/
+const SOCIAL_POSTS = [
+];

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 – Bro, hier gibt's nichts. | ZUKKABRO</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+  <style>
+    .nf { min-height: 70vh; display: grid; place-items: center; padding: 32px var(--gutter); }
+    .nf__box { width: 100%; max-width: 900px; border: 4px solid var(--choco); border-radius: 30px; box-shadow: var(--pop-lg); background: var(--paper); }
+    .nf__box > img[data-slot] { aspect-ratio: 2.4 / 1; }
+    .nf__fb { align-items: center; gap: 1.5rem; padding: clamp(24px, 5vw, 56px); flex-wrap: wrap; justify-content: center; }
+    .nf__emoji { font-size: clamp(4rem, 14vw, 8rem); transform: rotate(-12deg); filter: drop-shadow(6px 8px 0 rgba(43, 20, 10, .25)); }
+    .nf__title { font-family: var(--display); font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.05; margin: 0 0 .4em; }
+    .nf__title .drip { display: block; }
+    .nf__actions { text-align: center; margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="pattern" data-seite="404">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+  <main class="nf">
+    <div>
+      <div class="nf__box slot" data-slot-box>
+        <img data-slot src="/assets/img/404.jpg" alt="Bro, hier gibt's nichts.">
+        <div class="slot__fallback nf__fb">
+          <span class="nf__emoji" aria-hidden="true">🍬</span>
+          <div>
+            <p class="nf__title">Bro,<span class="drip">hier gibt's nichts.</span></p>
+            <p>Die Seite wurde leider nicht gefunden. Vielleicht hat sie jemand aufgegessen.</p>
+          </div>
+        </div>
+      </div>
+      <p class="nf__actions"><a href="/" class="btn btn--pink">Zurück zum Shop →</a></p>
+    </div>
+  </main>
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+</body>
+</html>

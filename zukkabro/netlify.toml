@@ -26,3 +26,63 @@
   for = "/assets/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# ---- App-Adresse: bereinigte Kopie der Seite ohne 18+-Bereich (public/app, erzeugt von werkzeuge/zukkabro_app_variante.cjs) ----
+# Die native App (iOS/Android) lädt ausschließlich diese Adresse. Bilder, Videos, Schriften und die API werden geteilt.
+[[redirects]]
+  from = "https://zukkabro.netlify.app/api/*"
+  to = "/api/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://zukkabro.netlify.app/assets/img/*"
+  to = "/assets/img/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://zukkabro.netlify.app/assets/video/*"
+  to = "/assets/video/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://zukkabro.netlify.app/assets/fonts/*"
+  to = "/assets/fonts/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://zukkabro.netlify.app/*"
+  to = "/app/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://app.zukkabro.de/api/*"
+  to = "/api/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://app.zukkabro.de/assets/img/*"
+  to = "/assets/img/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://app.zukkabro.de/assets/video/*"
+  to = "/assets/video/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://app.zukkabro.de/assets/fonts/*"
+  to = "/assets/fonts/:splat"
+  status = 200
+  force = true
+[[redirects]]
+  from = "https://app.zukkabro.de/*"
+  to = "/app/:splat"
+  status = 200
+  force = true
+
+# Die bereinigte Kopie soll über die Hauptadresse nicht direkt aufgerufen werden
+[[redirects]]
+  from = "https://zukkabro.de/app/*"
+  to = "https://zukkabro.de/:splat"
+  status = 301

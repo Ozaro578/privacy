@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Über uns – ZUKKABRO</title>
+  <meta name="description" content="Was hinter ZUKKABRO steckt und was der Name bedeutet.">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="ueber-uns">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <span class="fl" style="left:8%;top:22%">👑</span><span class="fl" style="right:8%;top:20%;animation-delay:-3s">🍭</span>
+      <div class="container">
+        <p class="eyebrow">Über uns</p>
+        <h1>Zucker + Bro. <span class="drip">Das ist ZUKKABRO.</span></h1>
+      </div>
+    </section>
+    <section class="section section--cream">
+      <div class="container about">
+        <div class="about__art reveal" aria-hidden="true">
+          <img src="/assets/img/icon.png" data-fallback="/assets/img/icon.svg" alt="">
+        </div>
+        <div class="about__text reveal">
+          <h2>Was steckt <span class="drip">dahinter?</span></h2>
+          <p><strong>ZUKKABRO</strong> kommt von Zucker und Bro. Klingt gut, oder? Dahinter steckt kein großer Konzern, sondern echte Liebe zu Snacks, direkt aus Heilbronn: internationale Süßigkeiten, Chips, Drinks und mehr, die du sonst nirgends findest.</p>
+          <p>Und der Bro? Das bist du. Egal ob Candy-Fan, Snack-Sammler oder auf der Suche nach dem neuesten Trend-Drink: Hier bist du richtig.</p>
+          <p>Über unseren Großhändler bekommen wir laufend neue Ware, Trend-Produkte und Importe. Du suchst etwas Bestimmtes? Schreib uns, wir besorgen es.</p>
+          <div class="stickers">
+            <span class="sticker sticker--pink">Riesenauswahl</span>
+            <span class="sticker sticker--gold">Faire Preise</span>
+            <span class="sticker sticker--blue">Schnelle Antwort</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section pattern">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">So läuft's</p>
+          <h2>In 3 Schritten zu <span class="drip">deinen Snacks</span></h2>
+        </header>
+        <div class="steps">
+          <div class="step reveal"><h3>Aussuchen</h3><p>Stöber durch über 500 Produkte oder nimm eins unserer fertigen Themen-Pakete.</p></div>
+          <div class="step reveal"><h3>Bestellen</h3><p>In den Warenkorb, Adresse eingeben, per Überweisung oder bar bei Abholung zahlen.</p></div>
+          <div class="step reveal"><h3>Genießen</h3><p>Versand innerhalb von 3 Werktagen, oder du holst in Heilbronn ab. Bei 18+ Artikeln mit Ausweis.</p></div>
+        </div>
+        <p class="mehr-wrap"><a class="btn btn--pink" href="/sortiment.html">Zum Sortiment →</a></p>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+</body>
+</html>

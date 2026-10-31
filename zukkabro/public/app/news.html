@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>News – ZUKKABRO</title>
+  <meta name="description" content="Neuigkeiten von ZUKKABRO: neue Sorten, Angebote, Laden in Heilbronn, Events.">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="news">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <section class="page-head pattern">
+      <div class="container">
+        <p class="eyebrow">News</p>
+        <h1>Was gibt's <span class="drip">Neues?</span></h1>
+        <p>Neue Sorten, Angebote, Laden-News. Als App auf dem Handy bist du immer auf dem Laufenden.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="news-liste" data-news data-limit="50"></div>
+        <div class="app-hinweis reveal is-visible" id="kanalBox" hidden>
+          <div>
+            <h2>💬 WhatsApp-Kanal „Neu im Regal“</h2>
+            <p>Jede neue Sorte zuerst im Kanal, mit Link zum Produkt. Kein Gruppenchat, deine Nummer sieht niemand.</p>
+          </div>
+          <a class="btn btn--pink" id="kanalLink" href="#" target="_blank" rel="noopener">Kanal abonnieren</a>
+        </div>
+        <div class="app-hinweis reveal is-visible" id="appHinweis">
+          <div>
+            <h2>📲 ZUKKABRO als App</h2>
+            <p>Kostenlos, ohne App-Store: Website öffnen, zum Startbildschirm hinzufügen, fertig. Dann ist ZUKKABRO wie eine App auf deinem Handy, mit Sortiment, Warenkorb, News und dem Laden in Heilbronn.</p>
+            <p id="appAnleitung" class="app-hinweis__anleitung"></p>
+          </div>
+          <button class="btn btn--pink" type="button" id="appInstallieren" hidden>App installieren</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/news.js"></script>
+</body>
+</html>

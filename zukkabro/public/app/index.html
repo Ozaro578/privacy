@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZUKKABRO – Snacks, Drinks & More</title>
+  <meta name="description" content="ZUKKABRO – internationale Snacks, Candy, Drinks und mehr. Deine Cravings. Unser Job.">
+  <meta name="theme-color" content="#ff2e98">
+  <link rel="icon" type="image/svg+xml" href="/assets/img/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/img/icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/assets/fonts/titan-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    /* Bildplätze: fehlt ein Bild, wird die nachgebaute Version gezeigt */
+    window.addEventListener("error", function (e) {
+      var t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      if (t.dataset.fallback && t.src.indexOf(t.dataset.fallback) === -1) { t.src = t.dataset.fallback; return; }
+      if (t.hasAttribute("data-slot")) { var b = t.closest("[data-slot-box]"); if (b) b.classList.add("no-img"); t.remove(); }
+    }, true);
+  </script>
+</head>
+<body data-seite="start">
+  <div id="layout-oben"></div>
+  <script src="/assets/js/layout.js"></script>
+
+  <main>
+    <!-- ============ HERO: SLIDER MIT ANGEBOTEN ============ -->
+    <section class="hero pattern">
+      <div class="hero__film" aria-hidden="true"><video class="hero__video" autoplay muted loop playsinline poster="/assets/img/werbung/hero-poster.jpg"><source src="/assets/video/hero.mp4" type="video/mp4"><source src="/assets/video/hero.webm" type="video/webm"></video></div>
+      <div class="container">
+        <h1 class="sr-only">ZUKKABRO – Snacks, Drinks &amp; More</h1>
+        <div class="slider" id="slider" tabindex="0" aria-roledescription="Karussell" aria-label="Angebote und Highlights">
+          <div class="slider__track">
+            <article class="slide slide--marke is-active" aria-roledescription="Slide" aria-label="1 von 1">
+              <div class="slide__text">
+                <p class="slide__kicker">👑 Good snacks. Good mood.</p>
+                <p class="hero__title"><span>Deine Cravings.</span><span class="drip">Unser Job.</span></p>
+                <p class="hero__lead">Über <span data-produktzahl>500</span> internationale Snacks, Drinks &amp; mehr. Direkt zu dir.</p>
+                <div class="slide__cta"><a class="btn btn--pink" href="/sortiment.html">Jetzt shoppen →</a><a class="btn btn--light" href="/pakete.html">🎁 Pakete</a></div>
+              </div>
+              <div class="hero__art" aria-hidden="true">
+                <img src="/assets/img/logo-app.png" data-fallback="/assets/img/logo-app.png" alt="">
+                <span class="fl" style="--x:4%;--y:6%;--d:0s">🍫</span>
+                <span class="fl" style="--x:84%;--y:0%;--d:-2s">🥤</span>
+                <span class="fl" style="--x:88%;--y:66%;--d:-4s">🐻</span>
+                <span class="fl" style="--x:2%;--y:70%;--d:-1s">🍬</span>
+                <span class="fl" style="--x:46%;--y:80%;--d:-3s">🍭</span>
+              </div>
+            </article>
+          </div>
+          <button class="slider__pfeil slider__pfeil--l" type="button" data-richtung="-1" aria-label="Vorheriges Angebot">‹</button>
+          <button class="slider__pfeil slider__pfeil--r" type="button" data-richtung="1" aria-label="Nächstes Angebot">›</button>
+          <div class="slider__punkte" role="tablist" aria-label="Slide wählen"></div>
+        </div>
+
+        <ul class="usp reveal is-visible" aria-label="Unsere Versprechen">
+          <li><span class="usp__icon" aria-hidden="true">🚚</span><span><strong>Versand in 3 Werktagen</strong><small>sicher verpackt, aus Deutschland</small></span></li>
+          <li><span class="usp__icon" aria-hidden="true">📍</span><span><strong>Abholung in Heilbronn</strong><small>kostenlos, bar zahlen möglich</small></span></li>
+          <li><span class="usp__icon" aria-hidden="true">🏪</span><span><strong>Händler willkommen</strong><small>Großmengen auf Anfrage</small></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ LAUFBAND ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Snacks</span><i></i><span>Drinks</span><i></i><span>Matcha &amp; Açaí am Wochenende</span><i></i><span>Abholung in Heilbronn</span><i class="nur-web"></i><span>Candy</span><i></i><span>Versand in 3 Tagen</span><i></i><span>Mystery Packs</span><i></i>
+        <span>Snacks</span><i></i><span>Drinks</span><i></i><span>Matcha &amp; Açaí am Wochenende</span><i></i><span>Abholung in Heilbronn</span><i class="nur-web"></i><span>Candy</span><i></i><span>Versand in 3 Tagen</span><i></i><span>Mystery Packs</span><i></i>
+      </div>
+    </div>
+
+    <!-- ============ MATCHA & AÇAÍ (Laden Heilbronn) ============ -->
+    <section class="section section--matcha drip-oben" id="matcha">
+      <div class="container">
+        <div class="matcha-kopf reveal">
+          <p class="eyebrow">Neu in Heilbronn · eigene Kreationen</p>
+          <h2>Matcha &amp; Açaí Bowls <span class="drip">am Wochenende</span></h2>
+          <p>Frisch gemacht bei uns an der Klingenberger Straße 100, nach eigenen Rezepten. Erstmal nur samstags und sonntags. Wenn ihr es feiert, vielleicht bald jeden Tag.</p>
+        </div>
+        <div class="plakate">
+          <a class="plakat plakat--matcha reveal" href="/laden.html">
+            <img src="/assets/img/werbung/matcha-banner.webp" alt="Iced Matcha Latte mit Matcha-Pulver und Bambusbesen" loading="lazy" decoding="async" width="1600" height="895">
+            <div class="plakat__text">
+              <span class="plakat__badge">🍵 Sa + So</span>
+              <h3>Iced Matcha Latte</h3>
+              <p>Zeremonieller Matcha mit Haferdrink oder Milch, auf Eis. Auch als Strawberry Matcha und Matcha Lemonade.</p>
+              <span class="btn btn--pink">Zur Karte →</span>
+            </div>
+          </a>
+          <a class="plakat plakat--acai reveal" href="/laden.html">
+            <img src="/assets/img/werbung/acai-banner.webp" alt="Açaí Bowl mit Banane, Beeren, Granola und Erdnussbutter" loading="lazy" decoding="async" width="1600" height="895">
+            <div class="plakat__text plakat__text--links">
+              <span class="plakat__badge">🫐 Sa + So</span>
+              <h3>Açaí Bowls</h3>
+              <p>Gefrorenes Açaí, frisches Obst, Granola, Kokos. Classic, Choco oder Tropical, Toppings nach Wahl.</p>
+              <span class="btn btn--pink">Zur Karte →</span>
+            </div>
+          </a>
+        </div>
+        <div class="matcha-leiste reveal">
+          <span>🕒 Erstmal nur am Wochenende, später vielleicht täglich</span>
+          <span>🎟️ 10 Stempel = 1 Matcha gratis · <a href="/stempelkarte.html">Stempelkarte</a></span>
+          <span>📍 Klingenberger Straße 100, Heilbronn · <a href="/laden.html">Öffnungszeiten</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WERBEVIDEOS ============ -->
+    <!-- ============ GEWINNSPIEL ============ -->
+    <section class="section section--gewinnspiel drip-oben" id="gewinnspiel">
+      <div class="container">
+        <div class="section__head reveal">
+          <p class="eyebrow">Zur Eröffnung</p>
+          <h2>Das große <span class="drip">Gewinnspiel</span></h2>
+          <p class="section__lead">Gutscheine im Wert von 350 € zu gewinnen. Folgen, liken, teilen, eintragen. Kein Kauf nötig.</p>
+        </div>
+        <div class="gewinnspiel">
+          <div class="gewinnspiel__preise">
+            <div class="gutschein gutschein--1 reveal"><span class="gutschein__platz">1. Platz</span><span class="gutschein__wert">200 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span><span class="gutschein__krone" aria-hidden="true">👑</span></div>
+            <div class="gutschein gutschein--2 reveal"><span class="gutschein__platz">2. Platz</span><span class="gutschein__wert">100 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span></div>
+            <div class="gutschein gutschein--3 reveal"><span class="gutschein__platz">3. Platz</span><span class="gutschein__wert">50 €</span><span class="gutschein__text">Gutschein bei ZUKKABRO</span></div>
+          </div>
+          <div class="kontaktform gewinnspiel__box reveal" id="gewinnspielBox">
+            <div class="kontaktform__kopf">
+              <h2>Jetzt <span class="drip">mitmachen</span></h2>
+              <p class="gewinnspiel__countdown" id="gsCountdown" data-ende="2026-11-20T23:59:59+01:00">Teilnahme bis 20.11.2026, 23:59 Uhr</p>
+            </div>
+            <ol class="gewinnspiel__schritte">
+              <li><span>1</span><p>Folge uns auf <a href="https://www.instagram.com/zukkabro.de/" target="_blank" rel="noopener">Instagram</a>, <a href="https://www.tiktok.com/@zukkabro.de" target="_blank" rel="noopener">TikTok</a> oder <a href="https://www.facebook.com/profile.php?id=61594963992185" target="_blank" rel="noopener">Facebook</a></p></li>
+              <li><span>2</span><p>Like den Gewinnspiel-Beitrag</p></li>
+              <li><span>3</span><p>Teile ihn in deiner Story oder mit Freunden</p></li>
+              <li><span>4</span><p>Trag dich hier ein, fertig</p></li>
+            </ol>
+            <form id="gsForm" novalidate>
+              <label>Dein Name<input name="name" required maxlength="100" autocomplete="name"></label>
+              <label>E-Mail<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+              <label class="voll">Dein Name bei Instagram oder TikTok <small>damit wir Folgen und Like zuordnen können</small><input name="instagram" required maxlength="60" placeholder="@deinname" autocomplete="off"></label>
+              <label class="kontaktform__hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="social" required><span>Ich folge ZUKKABRO und habe den Gewinnspiel-Beitrag geliked und geteilt.</span></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="ab18" required><span>Ich bin mindestens 18 Jahre alt.</span></label>
+              <label class="voll kontaktform__check"><input type="checkbox" name="bedingungen" required><span>Ich akzeptiere die <a href="/rechtliches.html#gewinnspiel">Teilnahmebedingungen</a> und habe die <a href="/rechtliches.html#datenschutz">Datenschutzerklärung</a> gelesen.</span></label>
+              <p class="voll kontaktform__klein gewinnspiel__apple">Veranstalter ist ausschließlich ZUKKABRO. Apple ist in keiner Weise Sponsor oder Beteiligter dieses Gewinnspiels. <a href="/rechtliches.html#gewinnspiel">Vollständige Teilnahmebedingungen</a></p>
+              <label class="voll kontaktform__check"><input type="checkbox" name="news"><span>Schickt mir News und Angebote per E-Mail (jederzeit abbestellbar).</span></label>
+              <p class="kontaktform__fehler voll" id="gsFehler" hidden></p>
+              <div class="voll"><button class="btn btn--pink" type="submit" id="gsSenden">🎁 Jetzt mitmachen</button></div>
+            </form>
+            <div class="kontaktform__danke" id="gsDanke" hidden>
+              <svg class="danke__crown" aria-hidden="true"><use href="#crown"/></svg>
+              <p class="danke__title">Du bist dabei!</p>
+              <p id="gsDankeText">Deine Los-Nummer steht gleich in deinem Postfach. Ziehung am 21.11.2026 um 16 Uhr live im Laden.</p>
+            </div>
+            <p class="gewinnspiel__klein">Ziehung am Eröffnungstag, Samstag 21.11.2026 um 16 Uhr, live im Laden und in unserer Instagram-Story. Teilnahme bis 20.11.2026, 23:59 Uhr, ab 18 Jahren, einmal pro Person, kein Kauf nötig. Voraussetzung: ZUKKABRO folgen, Gewinnspiel-Beitrag liken und teilen, das prüfen wir vor der Ziehung. Gewinner werden per E-Mail benachrichtigt, Gutscheine werden im Laden abgeholt. Keine Barauszahlung. Das Gewinnspiel steht in keiner Verbindung zu Instagram oder Meta.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KATEGORIEN ============ -->
+    <section class="section" id="kategorien">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Kategorien</p>
+          <h2>Was geht <span class="drip">heute?</span></h2>
+        </header>
+        <div class="banners">
+          <a href="/sortiment.html?kat=susses" class="banner banner--candy reveal">
+            <img class="banner__bg" src="/assets/img/banner-candy.jpg" alt="Candy – Süßigkeiten aus der ganzen Welt. Jetzt entdecken." loading="lazy">
+            <span class="banner__fb banner__ueber">
+              <span class="banner__text"><span class="banner__title">Candy</span><span class="banner__sub">Süßigkeiten aus der ganzen Welt</span></span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🐻🍬🍭</span>
+            </span>
+          </a>
+          <a href="/sortiment.html?kat=snacks" class="banner banner--snacks reveal">
+            <img class="banner__bg" src="/assets/img/banner-snacks.jpg" alt="Snacks – internationale Snacks. Jetzt entdecken." loading="lazy">
+            <span class="banner__fb banner__ueber">
+              <span class="banner__text"><span class="banner__title">Snacks</span><span class="banner__sub">Internationale Snacks</span></span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🌶️🥔🍿</span>
+            </span>
+          </a>
+          <a href="/sortiment.html?kat=getraenke" class="banner banner--drinks reveal">
+            <img class="banner__bg" src="/assets/img/banner-drinks.jpg" alt="Drinks – coole Drinks für jeden Geschmack. Jetzt entdecken." loading="lazy">
+            <span class="banner__fb banner__ueber">
+              <span class="banner__text"><span class="banner__title">Drinks</span><span class="banner__sub">Coole Drinks für jeden Geschmack</span></span>
+              <span class="banner__btn">Jetzt entdecken →</span>
+              <span class="banner__deco" aria-hidden="true">🥤⚡🧊</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="promos">
+          <a href="/sortiment.html?kat=neu" class="promo promo--neu slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/neu.jpg" alt="Neu eingetroffen. Jetzt shoppen." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Neu <small>eingetroffen</small></span><span class="promo__btn">Jetzt shoppen →</span><span class="promo__deco" aria-hidden="true">📦</span><span data-rotor-kat="neu"></span></span>
+          </a>
+          <a href="/sortiment.html?kat=bestseller" class="promo promo--best slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/bestseller.jpg" alt="Bestseller – unsere Top-Produkte. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Bestseller <small>unsere Top-Produkte</small></span><span class="promo__btn">Jetzt entdecken →</span><span class="promo__deco" aria-hidden="true">🍫</span><span data-rotor-kat="bestseller"></span></span>
+          </a>
+          <a href="/sortiment.html?kat=mystery" class="promo promo--mystery slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/mystery-box.jpg" alt="Mystery Box. Jetzt entdecken." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Mystery <small>Packs</small></span><span class="promo__btn">Jetzt entdecken →</span><span class="promo__deco" aria-hidden="true">🎁</span><span data-rotor-kat="mystery"></span></span>
+          </a>
+          <a href="/kontakt.html#versand" class="promo promo--versand slot reveal" data-slot-box>
+            <img data-slot src="/assets/img/versand.jpg" alt="Versand in 3 Werktagen oder Abholung in Heilbronn." loading="lazy">
+            <span class="slot__fallback promo__fb"><span class="promo__title">Versand in 3 Tagen <small>oder Abholung in Heilbronn</small></span><span class="promo__deco" aria-hidden="true">🚚</span></span>
+          </a>
+        </div>
+
+        <div class="kacheln" data-kat-kacheln></div>
+      </div>
+    </section>
+
+    <!-- ============ ABHOLUNG IN HEILBRONN ============ -->
+    <section class="section section--abhol pattern" id="abholung">
+      <div class="container">
+        <div class="abhol reveal">
+          <div class="abhol__text">
+            <p class="eyebrow">Für alle aus der Region</p>
+            <h2>Du bist aus <span class="drip drip--white">Heilbronn?</span><br>Hol's dir einfach ab.</h2>
+            <p class="abhol__lead">Online bestellen, in Heilbronn abholen, bar oder vorab bezahlen. Kein Versand, kein Warten auf den Paketboten.</p>
+            <ul class="abhol__punkte">
+              <li>✅ 0 € Versandkosten</li>
+              <li>💵 Bar bei der Abholung zahlen</li>
+              <li>📍 Klingenberger Straße 100, zu den Öffnungszeiten</li>
+            </ul>
+            <div class="slide__cta">
+              <a class="btn btn--pink" href="/sortiment.html">Jetzt aussuchen →</a>
+              <a class="btn btn--light" href="/kontakt.html#versand">So läuft die Abholung</a>
+            </div>
+          </div>
+          <div class="abhol__art" aria-hidden="true">
+            <span class="abhol__pin">📍</span>
+            <span class="abhol__stadt">Heil<br>bronn</span>
+            <span class="abhol__sticker">0 € Versand</span>
+            <span class="abhol__sticker abhol__sticker--2">🚚 sonst in 3 Tagen</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NEU EINGETROFFEN ============ -->
+    <section class="section section--pink pattern">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Frisch reingekommen</p>
+          <h2>Neu im <span class="drip">Regal</span></h2>
+          <p>Jede Woche neue Sorten aus den USA, Japan, Korea und dem Rest der Welt.</p>
+        </header>
+        <div class="products" data-katalog="vorschau" data-filter="neu" data-limit="8"></div>
+        <p class="mehr-wrap"><a class="btn btn--pink" href="/sortiment.html">Ganzes Sortiment ansehen (<span data-produktzahl>500</span> Produkte) →</a></p>
+      </div>
+    </section>
+
+    <!-- ============ PAKETE ============ -->
+    <section class="section">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Themen-Pakete</p>
+          <h2>Fertig gepackt für <span class="drip">deinen Abend</span></h2>
+          <p>Netflix Night, Filmabend, Gamer-Session oder Challenge: Wir haben die Snacks schon zusammengestellt.</p>
+        </header>
+        <div class="pakete" data-pakete="start"></div>
+        <p class="mehr-wrap"><a class="btn btn--pink" href="/pakete.html">Alle Pakete ansehen →</a></p>
+      </div>
+    </section>
+
+    <!-- ============ NEWS ============ -->
+    <section class="section section--cream" data-news-abschnitt>
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">News</p>
+          <h2>Was gibt's <span class="drip">Neues?</span></h2>
+        </header>
+        <div class="news-liste news-liste--start reveal is-visible" data-news data-limit="3"></div>
+        <p class="mehr-wrap"><a class="btn btn--light" href="/news.html">Alle News →</a></p>
+      </div>
+    </section>
+
+    <!-- ============ INSTAGRAM & TIKTOK ============ -->
+    <section class="section section--social drip-oben">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow">Community</p>
+          <h2>Auf <span class="drip">Insta &amp; TikTok</span></h2>
+          <p>Neue Sorten, Unboxings, Challenges. Folg uns, damit du nichts verpasst.</p>
+        </header>
+        <div class="social-wand reveal" data-social></div>
+        <div class="social-knoepfe reveal">
+          <a class="btn btn--pink" id="igFolgen" href="#" target="_blank" rel="noopener" hidden>Instagram</a>
+          <a class="btn btn--light" id="ttFolgen" href="#" target="_blank" rel="noopener" hidden>TikTok</a>
+          <p class="social-bald" id="socialBald">Unsere Accounts starten bald. Bis dahin: <a href="/sortiment.html?kat=neu">Neuheiten ansehen →</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ÜBER UNS (KURZ) ============ -->
+    <section class="section section--cream">
+      <div class="container about">
+        <div class="about__art reveal" data-werbung aria-hidden="true">
+          <video class="about__video" poster="/assets/img/werbung/logo-poster.jpg" muted loop playsinline preload="none"><source src="/assets/video/logo.mp4" type="video/mp4"><source src="/assets/video/logo.webm" type="video/webm"></video>
+        </div>
+        <div class="about__text reveal">
+          <p class="eyebrow">Über uns</p>
+          <h2>Zucker + Bro. <span class="drip">Das ist ZUKKABRO.</span></h2>
+          <p><strong>ZUKKABRO</strong> steht für alles, was knallt: internationale Snacks, Candy, Drinks und mehr, die du sonst nirgends findest. Und der Bro? Das bist du. 👑</p>
+          <a class="btn btn--light" href="/ueber-uns.html">Mehr über uns →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="layout-unten"></div>
+  <script src="/assets/js/shop.js"></script>
+  <script src="/assets/js/produkte.js"></script>
+  <script src="/assets/js/katalog.js"></script>
+  <script src="/assets/js/pakete.js"></script>
+  <script src="/assets/js/slider.js"></script>
+  <script src="/assets/js/news.js"></script>
+  <script src="/assets/js/werbung.js"></script>
+  <script src="/assets/js/gewinnspiel.js"></script>
+</body>
+</html>

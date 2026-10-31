@@ -1,0 +1,171 @@
+/* =========================================================
+   ZUKKABRO – Produktseite (produkt.html?id=...)
+   Galerie, Preis, Menge, Warenkorb, ähnliche Produkte
+   ========================================================= */
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var LISTE = typeof PRODUKTE !== "undefined" ? PRODUKTE : [];
+  var KATS = {};
+  (typeof KATEGORIEN !== "undefined" ? KATEGORIEN : []).forEach(function (k) { KATS[k.id] = k; });
+  var id = new URLSearchParams(location.search).get("id") || "";
+  var p = LISTE.find(function (x) { return x.id === id; });
+  if (p && p.ab18 && /ZukkabroApp/.test(navigator.userAgent)) { location.replace("/sortiment.html"); return; }
+  if (p && p.ab18 && window.ZBAlter) window.ZBAlter.pruefen();
+
+  if (!p) {
+    $("pdp").innerHTML = '<div class="karte leer" style="grid-column:1/-1">Dieses Produkt gibt es nicht (mehr). <a href="/sortiment.html">Zum Sortiment →</a></div>';
+    return;
+  }
+
+  var k0 = KATS[p.kat[0]] || { name: "Sortiment", emoji: "🍬", id: "" };
+  document.title = p.name + " – ZUKKABRO";
+  var katLink = function (k) { return (k.ab18 ? "/sortiment.html?kat=" : "/sortiment.html?kat=") + encodeURIComponent(k.id); };
+  $("brotkrumen").innerHTML = '<a href="/sortiment.html">Sortiment</a> › <a href="' + katLink(k0) + '">' + esc(k0.name) + "</a> › " + esc(p.name);
+
+  var bilder = p.bilder && p.bilder.length ? p.bilder : p.bild ? [p.bild] : [];
+  var aktiv = 0;
+
+  function galerie() {
+    var badges = (p.neu ? '<span class="badge badge--neu">NEU</span>' : "") + (p.ab18 ? '<span class="badge badge--18">18+</span>' : "");
+    var haupt = bilder.length
+      ? '<img id="hauptbild" src="/' + esc(bilder[0]) + '" alt="' + esc(p.name) + '">'
+      : '<span class="product__emoji" aria-hidden="true">' + esc(k0.emoji) + "</span>";
+    var pfeile = bilder.length > 1
+      ? '<button class="galerie__pfeil galerie__pfeil--l" type="button" data-schritt="-1" aria-label="Vorheriges Bild">‹</button><button class="galerie__pfeil galerie__pfeil--r" type="button" data-schritt="1" aria-label="Nächstes Bild">›</button>'
+      : "";
+    var daumen = bilder.length > 1
+      ? '<div class="galerie__daumen">' + bilder.map(function (b, i) {
+          return '<button type="button" data-bild="' + i + '"' + (i === 0 ? ' class="is-active"' : "") + ' aria-label="Bild ' + (i + 1) + '"><img src="/' + esc(b) + '" alt="" loading="lazy"></button>';
+        }).join("") + "</div>"
+      : "";
+    return '<div class="galerie"><div class="galerie__haupt" id="galerieHaupt">' + haupt + badges + pfeile + "</div>" + daumen + "</div>";
+  }
+
+  function zeigeBild(i) {
+    aktiv = (i + bilder.length) % bilder.length;
+    var img = $("hauptbild");
+    if (img) img.src = "/" + bilder[aktiv];
+    document.querySelectorAll(".galerie__daumen button").forEach(function (b, n) { b.classList.toggle("is-active", n === aktiv); });
+  }
+
+  function info(preis, ang, vv) {
+    var hatPreis = typeof preis === "number";
+    var rabatt = ang && ang.alt ? Math.round((1 - ang.preis / ang.alt) * 100) : 0;
+    var kats = p.kat.map(function (id) { var k = KATS[id]; return k ? '<a href="' + katLink(k) + '">' + esc(k.emoji + " " + k.name) + "</a>" : ""; }).join("");
+    var hinweise = (p.aus ? '<p class="hint hint--aus">Gerade nicht lieferbar</p>' : "") +
+      (p.pruefen ? '<p class="hint hint--pruefen">⚠️ Vor dem öffentlichen Start rechtlich prüfen</p>' : "");
+    var kaufen;
+    if (p.aus) kaufen = '<button class="btn btn--light" type="button" disabled>Gerade nicht lieferbar</button>';
+    else if (!hatPreis) kaufen = '<button class="btn btn--light" type="button" disabled>' + (vv ? "Bestellbar ab der Eröffnung " + esc(vv) : "Preis folgt – bald bestellbar") + "</button>";
+    else kaufen =
+      '<div class="stepper"><button type="button" data-menge="-1" aria-label="Weniger">−</button><input id="menge" type="number" min="1" max="999" value="1" aria-label="Menge"><button type="button" data-menge="1" aria-label="Mehr">+</button></div>' +
+      '<button class="btn btn--pink" type="button" id="inKorb">🛒 In den Warenkorb</button>';
+    var warnung = p.ab18 && p.kat.some(function (k) { return k === "x18a" || k === "x18b"; })
+      ? '<div class="warning"><strong>Warnhinweis</strong><p>Produkte machen sehr stark abhängig. Nicht für Nichtraucher empfohlen. Abgabe nur an Personen ab 18 Jahren.</p></div>'
+      : p.ab18 ? '<p class="hint hint--pruefen">🔞 Abgabe nur an Personen ab 18 Jahren.</p>' : "";
+    return '<div class="pdp__info">' +
+      (p.marke ? '<p class="pdp__marke">' + esc(p.marke) + "</p>" : "") +
+      "<h1>" + esc(p.name) + "</h1>" +
+      '<div class="pdp__kats">' + kats + "</div>" + hinweise +
+      (ang ? '<p class="pdp__angebot">' + esc(ang.titel || "🔥 Angebot") + (rabatt >= 5 ? ' · <b>−' + rabatt + " %</b>" : "") + (ang.bis ? " · nur bis " + esc(ang.bis.split("-").reverse().map(Number).slice(0, 2).join(".")) + "." : "") + "</p>" : "") +
+      (hatPreis ? '<p class="pdp__preis">' + window.ZBShop.euro(preis) + (ang && ang.alt ? ' <s class="pdp__alt">' + window.ZBShop.euro(ang.alt) + "</s>" : "") + window.ZBShop.grundpreis(p.name, preis) + '</p><p class="pdp__mwst">inkl. MwSt., zzgl. <a href="/kontakt.html#versand">Versand</a></p>'
+                : vv ? '<p class="pdp__preis" style="font-size:1.6rem;color:var(--gold-deep)">Preis folgt zur Eröffnung</p><p class="pdp__mwst">Wir eröffnen ' + esc(vv) + ". Dann gibt es hier Preise und den Warenkorb.</p>"
+                : '<p class="pdp__preis" style="font-size:1.6rem;color:var(--gold-deep)">Preis folgt</p><p class="pdp__mwst">Wir stellen die Preise gerade ein. Schau bald wieder vorbei!</p>') +
+      '<div class="pdp__kaufen">' + kaufen + "</div>" +
+      warnung +
+      '<ul class="pdp__vorteile"><li>🚚 Versand innerhalb von 3 Werktagen</li><li>📍 Abholung in Heilbronn, kostenlos</li>' + (p.ab18 ? "<li>🪪 Altersprüfung bei Übergabe</li>" : "") + "</ul>" +
+      "</div>";
+  }
+
+  /* Produktinfo: Beschreibung aus produktinfo.js, Zutaten/Allergene/Hinweis vom Server (Admin) haben Vorrang */
+  var ALLERGENE = ["Gluten", "Krebstiere", "Eier", "Fisch", "Erdnüsse", "Soja", "Milch", "Schalenfrüchte", "Sellerie", "Senf", "Sesam", "Sulfite", "Lupinen", "Weichtiere"];
+  var lebensmittel = p.kat.some(function (k) { return ["susses", "snacks", "scharfes", "getraenke", "pipapo", "zahnstocher"].indexOf(k) >= 0; });
+  function produktInfoHtml(stat, srv) {
+    stat = stat || {}; srv = srv || {};
+    var beschreibung = srv.info || stat.info || "";
+    var hinweise = (stat.hinweise || []).slice();
+    if (srv.hinweis) hinweise.unshift(srv.hinweis);
+    var hatAllergene = srv.allergene && srv.allergene.length;
+    var allergeneHtml = hatAllergene
+      ? '<ul class="allergene">' + ALLERGENE.map(function (a) { var drin = srv.allergene.indexOf(a) >= 0; return '<li class="' + (drin ? "is-drin" : "") + '">' + (drin ? "⚠️ " : "") + esc(a) + "</li>"; }).join("") + "</ul>"
+      : '<p class="pdp-info__leer">Die Allergen-Angaben tragen wir gerade ein. Bis dahin gilt die Verpackung. Fragen? <a href="tel:+4971315912230">07131 5912230</a></p>';
+    var zutatenHtml = srv.zutaten ? '<p class="pdp-info__zutaten">' + esc(srv.zutaten) + "</p>" : '<p class="pdp-info__leer">Zutaten laut Verpackung – wir ergänzen sie hier Schritt für Schritt.</p>';
+    return '<div class="pdp-info__karte pdp-info__karte--breit"><h2>Über das Produkt</h2><p>' + esc(beschreibung || p.name) + "</p></div>" +
+      (lebensmittel ? '<div class="pdp-info__karte"><h2>🧾 Zutaten</h2>' + zutatenHtml + "</div>" +
+        '<div class="pdp-info__karte"><h2>⚠️ Allergene</h2>' + allergeneHtml + (hatAllergene ? '<p class="pdp-info__klein">Enthält die markierten Allergene. Spuren anderer Allergene sind möglich.</p>' : "") + "</div>" : "") +
+      (hinweise.length ? '<div class="pdp-info__karte pdp-info__karte--breit"><h2>ℹ️ Hinweise</h2><ul class="pdp-info__hinweise">' + hinweise.map(function (h) { return "<li>" + esc(h) + "</li>"; }).join("") + "</ul></div>" : "");
+  }
+  function produktInfoZeigen() {
+    var box = $("pdpInfo"); if (!box) return;
+    var stat = window.PRODUKTINFO && window.PRODUKTINFO[p.id];
+    box.innerHTML = produktInfoHtml(stat, null); box.hidden = false;
+    fetch("/api/shop/produktinfo?id=" + encodeURIComponent(p.id), { headers: { "x-zb": "1" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (srv) { if (srv) box.innerHTML = produktInfoHtml(stat, srv); })
+      .catch(function () { /* statische Info bleibt */ });
+  }
+
+  window.ZBShop.daten().then(function (d) {
+    var preis = (d.preise || {})[p.id];
+    var ang = (d.angebote || []).filter(function (a) { return a.id === p.id; })[0];
+    $("pdp").innerHTML = galerie() + info(preis, ang, d.vorverkauf && d.vorverkauf.aktiv ? (d.vorverkauf.text || "bald") : "");
+    produktInfoZeigen();
+
+    var haupt = $("galerieHaupt");
+    haupt.addEventListener("click", function (e) {
+      var pf = e.target.closest("[data-schritt]");
+      if (pf) { e.stopPropagation(); zeigeBild(aktiv + parseInt(pf.getAttribute("data-schritt"), 10)); return; }
+      if (bilder.length) haupt.classList.toggle("is-zoom");
+    });
+    document.querySelectorAll(".galerie__daumen [data-bild]").forEach(function (b) {
+      b.addEventListener("click", function () { zeigeBild(parseInt(b.getAttribute("data-bild"), 10)); });
+    });
+    // Wischen auf dem Handy
+    var startX = null;
+    haupt.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, { passive: true });
+    haupt.addEventListener("touchend", function (e) {
+      if (startX === null || bilder.length < 2) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) zeigeBild(aktiv + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+
+    var menge = $("menge");
+    document.querySelectorAll("[data-menge]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        menge.value = Math.max(1, Math.min(999, (parseInt(menge.value, 10) || 1) + parseInt(b.getAttribute("data-menge"), 10)));
+      });
+    });
+    var knopf = $("inKorb");
+    if (knopf) knopf.addEventListener("click", function () {
+      var n = Math.max(1, Math.min(999, parseInt(menge.value, 10) || 1));
+      window.ZBKorb.dazu(p.id, n);
+      window.ZBToast("🛒 " + n + " × " + p.name + " im Warenkorb.");
+    });
+    /* Handy: Kaufleiste unten, sobald der Kaufknopf aus dem Bild gescrollt ist */
+    if (knopf && typeof preis === "number") {
+      var leiste = document.createElement("div");
+      leiste.className = "kaufleiste";
+      leiste.innerHTML = '<span class="kaufleiste__preis">' + window.ZBShop.euro(preis) + '</span><button class="btn btn--pink" type="button">🛒 In den Warenkorb</button>';
+      document.body.appendChild(leiste);
+      leiste.querySelector("button").addEventListener("click", function () { knopf.click(); });
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (e) { leiste.classList.toggle("is-sichtbar", !e[0].isIntersecting); }).observe(knopf);
+      } else leiste.classList.add("is-sichtbar");
+    }
+  });
+
+  // Ähnliche Produkte aus der Hauptkategorie (zeichnet katalog.js)
+  var box = $("aehnlichListe");
+  box.setAttribute("data-katalog", "vorschau");
+  box.setAttribute("data-filter", p.kat[0] || "alle");
+  box.setAttribute("data-limit", "4");
+  box.setAttribute("data-ohne", p.id);
+  $("aehnlich").hidden = false;
+})();
