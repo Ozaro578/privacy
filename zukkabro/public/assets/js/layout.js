@@ -121,7 +121,7 @@
           '<button type="button" class="linklike" id="resetAge">Altersabfrage erneut anzeigen</button>' +
         "</nav>" +
         '<nav class="footer__spalte" aria-label="Rechtliches"><h3>Rechtliches</h3>' +
-          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a><a href="/rechtliches.html#batterien">Batterien &amp; Altgeräte</a>' +
+          '<a href="/rechtliches.html#impressum">Impressum</a><a href="/rechtliches.html#datenschutz">Datenschutz</a><a href="/rechtliches.html#agb">AGB</a><a href="/rechtliches.html#widerruf">Widerruf</a><a href="/rechtliches.html#gewinnspiel">Gewinnspiel-Regeln</a><a href="/rechtliches.html#batterien">Batterien &amp; Altgeräte</a>' +
         "</nav>" +
         '<div class="footer__kontakt"><h3>Laden &amp; Kontakt</h3>' +
           '<p><span aria-hidden="true">📍</span><span>Klingenberger Straße 100<br>74080 Heilbronn</span></p>' +
