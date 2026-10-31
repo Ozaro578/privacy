@@ -9,16 +9,14 @@ type Store = {
   delete(key: string): Promise<void>;
 };
 
-let cache: Store | null = null;
-
+// Kein Zwischenspeichern der Store-Instanz: Netlify gibt jedem Aufruf ein frisches Zugriffs-Token,
+// eine aufbewahrte Instanz läuft bei warmen Funktionen nach ca. einer Stunde ab ("Token expired").
 export function speicher(): Store {
   const g = globalThis as any;
   if (g.__ZB_TEST_STORE) return g.__ZB_TEST_STORE as Store; // nur für lokale Tests
-  if (cache) return cache;
   const kontext = String(g.Netlify?.context?.deploy?.context || "production");
   const name = kontext === "production" ? "zukkabro" : "zukkabro-" + kontext.replace(/[^a-z0-9-]/gi, "").slice(0, 40);
-  cache = getStore({ name, consistency: "strong" }) as unknown as Store;
-  return cache;
+  return getStore({ name, consistency: "strong" }) as unknown as Store;
 }
 
 export async function lese<T>(key: string): Promise<T | null> {
