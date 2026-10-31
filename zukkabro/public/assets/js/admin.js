@@ -414,6 +414,25 @@
       preise(); ZB.meldung("Preise gespeichert.");
     } catch (err) { ZB.meldung(err.message, "fehler"); }
   });
+  /* Preis-Import per CSV (Vorlage aus dem Admin, in Excel ausgefüllt) */
+  var importDatei = $("importDatei"), importStart = $("importStart");
+  if (importDatei && importStart) {
+    importDatei.addEventListener("change", function () { importStart.disabled = !importDatei.files.length; });
+    importStart.addEventListener("click", async function () {
+      var f = importDatei.files[0]; if (!f) return;
+      importStart.disabled = true;
+      try {
+        var inhalt = await f.text();
+        var r = await ZB.api("POST", "/admin/import", { csv: inhalt });
+        daten.preise = r.preise; daten.shop = r.shopPreise; preisAenderungen = {}; shopAenderungen = {}; preise();
+        var box = $("importErgebnis"); box.hidden = false;
+        box.innerHTML = "<strong>Import fertig:</strong> " + r.shop + " Shop-Preise und " + r.haendler + " Händlerpreise gesetzt, " + r.geloescht + " entfernt, " + r.unveraendert + " Zeilen ohne Änderung." +
+          (r.fehlerGesamt ? "<br><strong>" + r.fehlerGesamt + " Zeilen übersprungen:</strong><br>" + r.fehler.map(function (x) { return "Zeile " + x.zeile + (x.id ? " (" + esc(x.id) + ")" : "") + ": " + esc(x.grund); }).join("<br>") + (r.fehlerGesamt > r.fehler.length ? "<br>…" : "") : "");
+        ZB.meldung("Preise importiert.");
+      } catch (err) { ZB.meldung(err.message, "fehler"); }
+      importStart.disabled = false;
+    });
+  }
   window.addEventListener("beforeunload", function (e) { if (Object.keys(preisAenderungen).length + Object.keys(shopAenderungen).length || paketGeaendert || angebotGeaendert || karteGeaendert || newsGeaendert) { e.preventDefault(); e.returnValue = ""; } });
 
   /* ================= Pakete ================= */

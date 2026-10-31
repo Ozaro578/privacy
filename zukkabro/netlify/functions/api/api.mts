@@ -6,6 +6,7 @@ import {
   pruefePasswort, sitzungsCookie, type Sitzung,
 } from "./sicherheit.mts";
 import { lese, leseAlle, schreibe } from "./daten.mts";
+import { SORTIMENT } from "./sortiment.mts";
 import {
   STANDARD_EINSTELLUNGEN, alter, kurierPlzListe, mwstAusBrutto, mwstVorschlag, produkt,
   type ShopEinstellungen, type ShopPreise,
@@ -896,6 +897,102 @@ async function shopPreiseSpeichern(req: Request, s: Sitzung) {
   return json({ ok: true, shop: liste });
 }
 
+/* ---------- Preis-Import per Tabelle (CSV): Vorlage mit allen Artikeln herunterladen, ausgefüllt wieder hochladen ---------- */
+const IMPORT_KOPF = ["ID", "Artikel", "Kategorien", "Shop-Preis brutto (EUR)", "MwSt (%)", "Haendler netto (EUR)", "VE", "Mindestmenge", "Haendler aktiv (ja/nein)"];
+function csvFeld(v: unknown): string { const t = String(v ?? ""); return /[;"\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }
+function importEuro(cent?: number): string { return typeof cent === "number" ? (cent / 100).toFixed(2).replace(".", ",") : ""; }
+async function importVorlage(): Promise<Response> {
+  const [shop, haendler] = await Promise.all([shopPreise(), preisliste()]);
+  const ids = [...new Set([...Object.keys(SORTIMENT), ...Object.keys(shop), ...Object.keys(haendler)])].sort();
+  const zeilen = [IMPORT_KOPF.join(";")];
+  for (const id of ids) {
+    const p = SORTIMENT[id], sp = shop[id], h = haendler[id];
+    zeilen.push([id, p?.n || h?.name || id, (p?.k || []).join(","), importEuro(sp?.preis), sp ? sp.mwst : h ? h.mwst : mwstVorschlag(id), importEuro(h?.preis), h ? h.ve : "", h ? h.mindest : "", h ? (h.aktiv ? "ja" : "nein") : ""].map(csvFeld).join(";"));
+  }
+  return new Response("﻿" + zeilen.join("\r\n") + "\r\n", { status: 200, headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="zukkabro-preise.csv"', "Cache-Control": "no-store" } });
+}
+/** CSV-Text in Zeilen/Felder zerlegen; Trennzeichen (; , Tab) wird an der Kopfzeile erkannt, Anführungszeichen werden beachtet */
+function csvZeilen(roh: string): string[][] {
+  const t = roh.replace(/^﻿/, ""), kopf = t.split(/\r?\n/)[0] || "";
+  const trenner = (kopf.match(/;/g) || []).length >= (kopf.match(/,/g) || []).length ? (kopf.includes("\t") && !kopf.includes(";") ? "\t" : ";") : ",";
+  const zeilen: string[][] = []; let feld = "", zeile: string[] = [], inQ = false;
+  const abschluss = () => { zeile.push(feld); feld = ""; if (zeile.some((x) => x.trim())) zeilen.push(zeile); zeile = []; };
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (inQ) { if (c === '"') { if (t[i + 1] === '"') { feld += '"'; i++; } else inQ = false; } else feld += c; continue; }
+    if (c === '"') inQ = true;
+    else if (c === trenner) { zeile.push(feld); feld = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && t[i + 1] === "\n") i++; abschluss(); }
+    else feld += c;
+  }
+  if (feld || zeile.length) abschluss();
+  return zeilen;
+}
+/** "1,99" / "1.99" / "1.299,50" → Cent. Leer = unverändert (undefined), 0 oder "-" = Preis entfernen (null) */
+function centAusText(v: string): number | null | undefined {
+  const t = v.replace(/€|EUR/gi, "").trim();
+  if (!t) return undefined;
+  if (t === "-" || /^0+([.,]0+)?$/.test(t)) return null;
+  let norm = t;
+  if (t.includes(",")) norm = t.replace(/\./g, "").replace(",", ".");
+  else if (/^\d{1,3}(\.\d{3})+$/.test(t)) norm = t.replace(/\./g, "");
+  const n = Number(norm);
+  if (!Number.isFinite(n) || n < 0 || n > 100_000) throw new Fehler(400, `Preis „${v.trim()}“ nicht lesbar`);
+  return Math.round(n * 100);
+}
+async function importVerarbeiten(req: Request, s: Sitzung) {
+  const b = await body(req);
+  const roh = typeof b.csv === "string" ? b.csv : "";
+  if (!roh.trim()) throw new Fehler(400, "Keine Datei-Inhalte erhalten.");
+  if (roh.length > 2_000_000) throw new Fehler(400, "Datei zu groß (max. 2 MB).");
+  const zeilen = csvZeilen(roh);
+  if (zeilen.length < 2) throw new Fehler(400, "Die Tabelle enthält keine Datenzeilen.");
+  if (zeilen.length > 3001) throw new Fehler(400, "Maximal 3000 Zeilen pro Import.");
+  const kopf = zeilen[0].map((x) => x.trim().toLowerCase().replace(/ä/g, "ae"));
+  const spalte = (...namen: string[]) => kopf.findIndex((k) => namen.some((n) => k.startsWith(n)));
+  const iId = spalte("id"), iShop = spalte("shop-preis", "shop preis", "shoppreis", "endpreis", "preis brutto"), iMw = spalte("mwst"), iH = spalte("haendler netto", "haendlerpreis", "haendler-preis"), iVe = spalte("ve"), iMin = spalte("mindest"), iAktiv = spalte("haendler aktiv", "aktiv");
+  if (iId < 0 || (iShop < 0 && iH < 0)) throw new Fehler(400, "Spalten nicht erkannt. Bitte die Vorlage aus dem Admin verwenden (Spalten „ID“ und „Shop-Preis brutto“).");
+  const [shop, haendler] = await Promise.all([shopPreise(), preisliste()]);
+  const fehler: { zeile: number; id: string; grund: string }[] = [];
+  let nShop = 0, nHaendler = 0, nGeloescht = 0, nUnveraendert = 0;
+  for (let z = 1; z < zeilen.length; z++) {
+    const r = zeilen[z], id = text(r[iId], 200);
+    if (!id) { fehler.push({ zeile: z + 1, id: "", grund: "Keine ID" }); continue; }
+    const p = SORTIMENT[id];
+    if (!p && !shop[id] && !haendler[id]) { fehler.push({ zeile: z + 1, id, grund: "ID nicht im Sortiment" }); continue; }
+    try {
+      let geaendert = false;
+      const mwRoh = iMw >= 0 ? (r[iMw] || "").replace("%", "").trim() : "";
+      const mwst = mwRoh ? ganz(mwRoh, 0, 19) : (shop[id]?.mwst ?? haendler[id]?.mwst ?? mwstVorschlag(id));
+      if (!MWST_SAETZE.includes(mwst)) throw new Fehler(400, "MwSt muss 0, 7 oder 19 sein");
+      if (iShop >= 0) {
+        const c = centAusText(r[iShop] || "");
+        if (c === null) { if (shop[id]) { delete shop[id]; nGeloescht++; geaendert = true; } }
+        else if (typeof c === "number") { if (c < 1) throw new Fehler(400, "Shop-Preis muss über 0 liegen"); shop[id] = { preis: c, mwst }; nShop++; geaendert = true; }
+      }
+      if (iH >= 0) {
+        const c = centAusText(r[iH] || ""), alt = haendler[id];
+        if (c === null) { if (alt) { delete haendler[id]; nHaendler++; geaendert = true; } }
+        else if (typeof c === "number") {
+          const ve = iVe >= 0 && (r[iVe] || "").trim() ? ganz((r[iVe] || "").trim(), 1, 10_000) : (alt?.ve || 1);
+          const mindest = iMin >= 0 && (r[iMin] || "").trim() ? ganz((r[iMin] || "").trim(), 1, 10_000) : (alt?.mindest || 1);
+          const aktivRoh = iAktiv >= 0 ? (r[iAktiv] || "").trim() : "";
+          const aktiv = aktivRoh ? /^(ja|j|1|x|yes|true|wahr)$/i.test(aktivRoh) : (alt ? alt.aktiv : true);
+          const neu: Preis = { name: p?.n || alt?.name || id, marke: alt?.marke || "", preis: c, ve, mindest, mwst, aktiv };
+          const staffel = (alt?.staffel || []).filter((st) => st.preis < c);
+          if (staffel.length) neu.staffel = staffel;
+          haendler[id] = neu; nHaendler++; geaendert = true;
+        }
+      }
+      if (!geaendert) nUnveraendert++;
+    } catch (e: any) { fehler.push({ zeile: z + 1, id, grund: e?.message || "Ungültige Werte" }); }
+  }
+  await schreibe("preise/shop", shop);
+  await schreibe("preise/haendler", haendler);
+  await protokoll("preise-importiert", s.id, { shop: nShop, haendler: nHaendler, geloescht: nGeloescht, fehler: fehler.length });
+  return json({ ok: true, shop: nShop, haendler: nHaendler, geloescht: nGeloescht, unveraendert: nUnveraendert, fehler: fehler.slice(0, 200), fehlerGesamt: fehler.length, preise: haendler, shopPreise: shop });
+}
+
 async function einstellungenSpeichern(req: Request, s: Sitzung) {
   const b = await body(req);
   const e: ShopEinstellungen = {
@@ -1171,6 +1268,8 @@ export default async (req: Request, context: Context) => {
       }
       if (m === "POST" && pfad === "/admin/mail-test") return await mailTest(a);
       if (m === "POST" && pfad === "/admin/shoppreise") return await shopPreiseSpeichern(req, a);
+      if (m === "GET" && pfad === "/admin/import/vorlage") return await importVorlage();
+      if (m === "POST" && pfad === "/admin/import") return await importVerarbeiten(req, a);
       if (m === "GET" && pfad === "/admin/news") return json({ news: await news() });
       if (m === "POST" && pfad === "/admin/news") return await newsSpeichern(req, a);
       if (m === "GET" && pfad === "/admin/laden") return json({ laden: await ladenEinstellungen(), karte: await karte(), allergene: ALLERGENE, arten: KARTE_ARTEN });

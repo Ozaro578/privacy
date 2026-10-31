@@ -32,7 +32,7 @@ r = await rufe("POST", "/login", { rolle: "admin", benutzer: "chef", passwort: "
 assert.equal(r.status, 403); ok("Anfrage ohne Schutz-Header abgelehnt");
 r = await rufe("POST", "/login", { rolle: "admin", benutzer: "Chef", passwort: "admin-passwort-123" });
 assert.equal(r.status, 200); const admin = r.cookie; ok("Admin-Login klappt");
-r = await rufe("GET", "/admin/haendler", undefined, admin.replace(/.$/, "A"));
+r = await rufe("GET", "/admin/haendler", undefined, admin.replace(/.$/, (c) => (c === "A" ? "B" : "A")));
 assert.equal(r.status, 401); ok("Gefälschtes Cookie abgelehnt");
 
 // Händler registrieren und freischalten
@@ -388,4 +388,19 @@ for (let i = 0; i < 12; i++) {
   letzte = res.status;
 }
 assert.equal(letzte, 429); ok("Zu viele Fehlversuche werden gebremst");
+{
+  r = await rufe("POST", "/login", { rolle: "admin", benutzer: "chef", passwort: "admin-passwort-123" }); assert.equal(r.status, 200); const adminImport = r.cookie;
+  const res = await api(new Request("https://test.local/api/admin/import/vorlage", { headers: { "x-zb": "1", cookie: adminImport } }), { ip: "9.9.9.9" } as any);
+  assert.equal(res.status, 200); const csv = await res.text();
+  assert.match(csv, /^\uFEFF?ID;Artikel;Kategorien;Shop-Preis brutto \(EUR\);MwSt \(%\)/); assert.match(csv, /\r\npocky-strawberry;Pocky Strawberry;[a-z,]+;[0-9,]*;7;/);
+  r = await rufe("POST", "/admin/import", { csv: "ID;Artikel;Shop-Preis brutto (EUR);MwSt (%);Haendler netto (EUR);VE\r\npocky-strawberry;x;1,99;7;0.90;10\r\ntakis-fuego;\"Takis, scharf\";2,49;;;\r\ngibt-es-nicht;x;1,00;7;;\r\n" }, adminImport);
+  assert.equal(r.status, 200, JSON.stringify(r.daten)); assert.equal(r.daten.shop, 2); assert.equal(r.daten.haendler, 1); assert.equal(r.daten.fehlerGesamt, 1); assert.equal(r.daten.fehler[0].id, "gibt-es-nicht");
+  r = await rufe("GET", "/admin/preise", undefined, adminImport);
+  assert.equal(r.daten.shop["pocky-strawberry"].preis, 199); assert.equal(r.daten.shop["takis-fuego"].preis, 249); assert.equal(r.daten.shop["takis-fuego"].mwst, 7);
+  assert.equal(r.daten.preise["pocky-strawberry"].preis, 90); assert.equal(r.daten.preise["pocky-strawberry"].ve, 10); assert.equal(r.daten.preise["pocky-strawberry"].aktiv, true);
+  r = await rufe("POST", "/admin/import", { csv: "ID,Shop-Preis brutto (EUR)\r\ntakis-fuego,0\r\n" }, adminImport); assert.equal(r.daten.geloescht, 1);
+  r = await rufe("GET", "/admin/preise", undefined, adminImport); assert.equal(r.daten.shop["takis-fuego"], undefined);
+  r = await rufe("POST", "/admin/import", { csv: "Name;Preis\r\nx;1\r\n" }, adminImport); assert.equal(r.status, 400);
+  ok("Preis-Import per CSV: Vorlage, Shop- und Händlerpreise, Fehlerzeilen, Löschen mit 0");
+}
 console.log("\nAlle Tests bestanden.");

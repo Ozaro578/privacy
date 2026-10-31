@@ -310,6 +310,101 @@ function shop_preise_speichern(array $s): never {
     antwort(['ok' => true, 'shop' => obj($liste)]);
 }
 
+/* ---------- Preis-Import per Tabelle (CSV) ---------- */
+const IMPORT_KOPF = ['ID', 'Artikel', 'Kategorien', 'Shop-Preis brutto (EUR)', 'MwSt (%)', 'Haendler netto (EUR)', 'VE', 'Mindestmenge', 'Haendler aktiv (ja/nein)'];
+function csv_feld(mixed $v): string { $t = (string) ($v ?? ''); return preg_match('/[;"\n\r]/', $t) ? '"' . str_replace('"', '""', $t) . '"' : $t; }
+function import_euro(mixed $cent): string { return is_int($cent) ? number_format($cent / 100, 2, ',', '') : ''; }
+function import_vorlage(): never {
+    $shop = shop_preise(); $haendler = preisliste(); $sort = sortiment();
+    $ids = array_unique(array_merge(array_keys($sort), array_keys($shop), array_keys($haendler))); sort($ids);
+    $zeilen = [implode(';', IMPORT_KOPF)];
+    foreach ($ids as $id) {
+        $p = $sort[$id] ?? null; $sp = $shop[$id] ?? null; $h = $haendler[$id] ?? null;
+        $felder = [$id, $p['n'] ?? ($h['name'] ?? $id), implode(',', $p['k'] ?? []), import_euro($sp['preis'] ?? null), $sp ? $sp['mwst'] : ($h ? $h['mwst'] : mwst_vorschlag($id)), import_euro($h['preis'] ?? null), $h ? $h['ve'] : '', $h ? $h['mindest'] : '', $h ? (!empty($h['aktiv']) ? 'ja' : 'nein') : ''];
+        $zeilen[] = implode(';', array_map('csv_feld', $felder));
+    }
+    http_response_code(200);
+    header('Content-Type: text/csv; charset=utf-8'); header('Content-Disposition: attachment; filename="zukkabro-preise.csv"'); header('Cache-Control: no-store');
+    echo "\xEF\xBB\xBF" . implode("\r\n", $zeilen) . "\r\n";
+    exit;
+}
+function csv_zeilen(string $roh): array {
+    $t = preg_replace('/^\xEF\xBB\xBF/', '', $roh); $kopf = explode("\n", $t)[0] ?? '';
+    $trenner = substr_count($kopf, ';') >= substr_count($kopf, ',') ? ((str_contains($kopf, "\t") && !str_contains($kopf, ';')) ? "\t" : ';') : ',';
+    $zeilen = []; $feld = ''; $zeile = []; $inQ = false; $len = strlen($t);
+    $abschluss = function () use (&$zeile, &$feld, &$zeilen) { $zeile[] = $feld; $feld = ''; if (array_filter($zeile, fn($x) => trim($x) !== '')) $zeilen[] = $zeile; $zeile = []; };
+    for ($i = 0; $i < $len; $i++) {
+        $c = $t[$i];
+        if ($inQ) { if ($c === '"') { if (($t[$i + 1] ?? '') === '"') { $feld .= '"'; $i++; } else $inQ = false; } else $feld .= $c; continue; }
+        if ($c === '"') $inQ = true;
+        elseif ($c === $trenner) { $zeile[] = $feld; $feld = ''; }
+        elseif ($c === "\n" || $c === "\r") { if ($c === "\r" && ($t[$i + 1] ?? '') === "\n") $i++; $abschluss(); }
+        else $feld .= $c;
+    }
+    if ($feld !== '' || $zeile) $abschluss();
+    return $zeilen;
+}
+/** "1,99" / "1.99" / "1.299,50" → Cent; leer = unverändert (false), 0 oder "-" = entfernen (null) */
+function cent_aus_text(string $v): int|null|false {
+    $t = trim(preg_replace('/€|EUR/i', '', $v));
+    if ($t === '') return false;
+    if ($t === '-' || preg_match('/^0+([.,]0+)?$/', $t)) return null;
+    $norm = $t;
+    if (str_contains($t, ',')) $norm = str_replace(',', '.', str_replace('.', '', $t));
+    elseif (preg_match('/^\d{1,3}(\.\d{3})+$/', $t)) $norm = str_replace('.', '', $t);
+    if (!is_numeric($norm) || (float) $norm < 0 || (float) $norm > 100000) throw new Fehler(400, "Preis „{$t}“ nicht lesbar");
+    return (int) round((float) $norm * 100);
+}
+function import_verarbeiten(array $s): never {
+    $b = body(); $roh = is_string($b['csv'] ?? null) ? $b['csv'] : '';
+    if (trim($roh) === '') throw new Fehler(400, 'Keine Datei-Inhalte erhalten.');
+    if (strlen($roh) > 2000000) throw new Fehler(400, 'Datei zu groß (max. 2 MB).');
+    $zeilen = csv_zeilen($roh);
+    if (count($zeilen) < 2) throw new Fehler(400, 'Die Tabelle enthält keine Datenzeilen.');
+    if (count($zeilen) > 3001) throw new Fehler(400, 'Maximal 3000 Zeilen pro Import.');
+    $kopf = array_map(fn($x) => str_replace('ä', 'ae', mb_strtolower(trim($x))), $zeilen[0]);
+    $spalte = function (string ...$namen) use ($kopf): int { foreach ($kopf as $i => $k) foreach ($namen as $n) if (str_starts_with($k, $n)) return $i; return -1; };
+    $iId = $spalte('id'); $iShop = $spalte('shop-preis', 'shop preis', 'shoppreis', 'endpreis', 'preis brutto'); $iMw = $spalte('mwst');
+    $iH = $spalte('haendler netto', 'haendlerpreis', 'haendler-preis'); $iVe = $spalte('ve'); $iMin = $spalte('mindest'); $iAktiv = $spalte('haendler aktiv', 'aktiv');
+    if ($iId < 0 || ($iShop < 0 && $iH < 0)) throw new Fehler(400, 'Spalten nicht erkannt. Bitte die Vorlage aus dem Admin verwenden (Spalten „ID“ und „Shop-Preis brutto“).');
+    $shop = shop_preise(); $haendler = preisliste(); $sort = sortiment();
+    $fehler = []; $nShop = 0; $nHaendler = 0; $nGeloescht = 0; $nUnv = 0;
+    for ($z = 1, $zn = count($zeilen); $z < $zn; $z++) {
+        $r = $zeilen[$z]; $id = text($r[$iId] ?? '', 200);
+        if ($id === '') { $fehler[] = ['zeile' => $z + 1, 'id' => '', 'grund' => 'Keine ID']; continue; }
+        $p = $sort[$id] ?? null;
+        if (!$p && !isset($shop[$id]) && !isset($haendler[$id])) { $fehler[] = ['zeile' => $z + 1, 'id' => $id, 'grund' => 'ID nicht im Sortiment']; continue; }
+        try {
+            $geaendert = false;
+            $mwRoh = $iMw >= 0 ? trim(str_replace('%', '', $r[$iMw] ?? '')) : '';
+            $mwst = $mwRoh !== '' ? mwst_pruefen($mwRoh) : ($shop[$id]['mwst'] ?? ($haendler[$id]['mwst'] ?? mwst_vorschlag($id)));
+            if ($iShop >= 0) {
+                $c = cent_aus_text($r[$iShop] ?? '');
+                if ($c === null) { if (isset($shop[$id])) { unset($shop[$id]); $nGeloescht++; $geaendert = true; } }
+                elseif (is_int($c)) { if ($c < 1) throw new Fehler(400, 'Shop-Preis muss über 0 liegen'); $shop[$id] = ['preis' => $c, 'mwst' => $mwst]; $nShop++; $geaendert = true; }
+            }
+            if ($iH >= 0) {
+                $c = cent_aus_text($r[$iH] ?? ''); $alt = $haendler[$id] ?? null;
+                if ($c === null) { if ($alt) { unset($haendler[$id]); $nHaendler++; $geaendert = true; } }
+                elseif (is_int($c)) {
+                    $ve = ($iVe >= 0 && trim($r[$iVe] ?? '') !== '') ? ganz(trim($r[$iVe]), 1, 10000) : ($alt['ve'] ?? 1);
+                    $mindest = ($iMin >= 0 && trim($r[$iMin] ?? '') !== '') ? ganz(trim($r[$iMin]), 1, 10000) : ($alt['mindest'] ?? 1);
+                    $aktivRoh = $iAktiv >= 0 ? trim($r[$iAktiv] ?? '') : '';
+                    $aktiv = $aktivRoh !== '' ? (bool) preg_match('/^(ja|j|1|x|yes|true|wahr)$/i', $aktivRoh) : ($alt ? !empty($alt['aktiv']) : true);
+                    $neu = ['name' => $p['n'] ?? ($alt['name'] ?? $id), 'marke' => $alt['marke'] ?? '', 'preis' => $c, 've' => $ve, 'mindest' => $mindest, 'mwst' => $mwst, 'aktiv' => $aktiv];
+                    $staffel = array_values(array_filter($alt['staffel'] ?? [], fn($st) => ($st['preis'] ?? 0) < $c));
+                    if ($staffel) $neu['staffel'] = $staffel;
+                    $haendler[$id] = $neu; $nHaendler++; $geaendert = true;
+                }
+            }
+            if (!$geaendert) $nUnv++;
+        } catch (Fehler $e) { $fehler[] = ['zeile' => $z + 1, 'id' => $id, 'grund' => $e->getMessage()]; }
+    }
+    schreibe('preise/shop', obj($shop)); schreibe('preise/haendler', obj($haendler));
+    protokoll('preise-importiert', $s['id'], ['shop' => $nShop, 'haendler' => $nHaendler, 'geloescht' => $nGeloescht, 'fehler' => count($fehler)]);
+    antwort(['ok' => true, 'shop' => $nShop, 'haendler' => $nHaendler, 'geloescht' => $nGeloescht, 'unveraendert' => $nUnv, 'fehler' => array_slice($fehler, 0, 200), 'fehlerGesamt' => count($fehler), 'preise' => obj($haendler), 'shopPreise' => obj($shop)]);
+}
+
 function einstellungen_speichern(array $s): never {
     $b = body();
     $e = [
@@ -1101,6 +1196,8 @@ function zb_api(): never {
             if ($m === 'GET' && $pfad === '/admin/preise') antwort(['preise' => obj(preisliste()), 'shop' => obj(shop_preise()), 'einstellungen' => einstellungen(), 'mailAktiv' => true]);
             if ($m === 'POST' && $pfad === '/admin/mail-test') mail_test($a);
             if ($m === 'POST' && $pfad === '/admin/shoppreise') shop_preise_speichern($a);
+            if ($m === 'GET' && $pfad === '/admin/import/vorlage') import_vorlage();
+            if ($m === 'POST' && $pfad === '/admin/import') import_verarbeiten($a);
             if ($m === 'GET' && $pfad === '/admin/news') antwort(['news' => news()]);
             if ($m === 'POST' && $pfad === '/admin/news') news_speichern($a);
             if ($m === 'GET' && $pfad === '/admin/laden') antwort(['laden' => laden_einstellungen(), 'karte' => karte(), 'allergene' => ALLERGENE, 'arten' => KARTE_ARTEN]);
