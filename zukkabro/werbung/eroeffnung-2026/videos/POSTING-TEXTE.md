@@ -46,3 +46,17 @@ Mystery Box aus Japan & Korea in Heilbronn 📦🔥 Eröffnung 21.11. ab 10 Uhr 
 - 1 Woche vorher (14.11.): Video 2 (Matcha & Açaí).
 - 20.11. abends: Video 1 nochmal als Story + „Morgen 10 Uhr!“.
 - 21.11. ab 10 Uhr: Live-Story aus dem Laden.
+
+## Video 5 – Vorstellung & Coming soon (54 s) · zukkabro-vorstellung-coming-soon-9x16.mp4
+Zeigt die Website und App komplett: Sortiment, Produkt-Infos, Warenkorb, Gewinnspiel-Eintrag, Stempelkarte, Öffnungszeiten. Ohne Vapes, deshalb auch als bezahlte Anzeige nutzbar.
+
+**Instagram / Facebook**
+Die neue zukkabro.de ist online 🌐 und die App kommt 📱
+Über 500 Snacks & Drinks aus aller Welt 🌍 Matcha & Açaí am Wochenende 🍵🫐
+🎟️ Digitale Stempelkarte · 🎉 Gewinnspiel: jetzt eintragen & 200 € Gutschein gewinnen
+Eröffnung: Sa. 21.11.2026 · ab 10 Uhr · Klingenberger Straße 100, Heilbronn
+👉 Link in Bio
+#zukkabro #heilbronn #comingsoon #snacks #drinks #asiasnacks #matcha #acaibowl #gewinnspiel #neueröffnung
+
+**TikTok**
+Heilbronn bekommt einen Snack-Laden mit eigener App 😮‍💨 Gewinnspiel läuft schon auf zukkabro.de 🎁 Eröffnung 21.11. #heilbronn #zukkabro #snacks #comingsoon #fyp
