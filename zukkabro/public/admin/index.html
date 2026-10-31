@@ -128,7 +128,7 @@
           <p class="mehr-wrap"><button class="btn btn--light btn--klein" id="preisMehr" type="button" hidden>Mehr anzeigen</button></p>
           <div class="import-box">
             <h3>📥 Preise per Tabelle (Excel / CSV)</h3>
-            <p class="hinweis">1. <a href="/api/admin/import/vorlage" download>Vorlage herunterladen</a> (alle Artikel mit den aktuellen Preisen). 2. In Excel öffnen und die Spalten <strong>Shop-Preis brutto</strong>, bei Bedarf <strong>Haendler netto</strong>, <strong>VE</strong>, <strong>Mindestmenge</strong> ausfüllen; Komma oder Punkt ist egal. 3. Als CSV speichern (in Excel: „CSV UTF-8“) und hier hochladen.<br>Leeres Feld = bleibt wie es ist, <strong>0</strong> = Preis entfernen („Preis folgt“). MwSt leer = 7 % für Lebensmittel, 19 % für Getränke und Non-Food.</p>
+            <p class="hinweis">1. <a href="/api/admin/import/vorlage" download>Vorlage herunterladen</a> (alle Artikel mit den aktuellen Preisen). 2. In Excel öffnen und die Spalten <strong>Shop-Preis brutto</strong>, bei Bedarf <strong>Haendler netto</strong>, <strong>VE</strong>, <strong>Mindestmenge</strong> ausfüllen; Komma oder Punkt ist egal. 3. Als CSV speichern (in Excel: „CSV UTF-8“) und hier hochladen.<br>Leeres Feld = bleibt, wie es ist, <strong>0</strong> = Preis entfernen („Preis folgt“). MwSt leer = 7 % für Lebensmittel, 19 % für Getränke und Non-Food.</p>
             <div class="leiste"><label class="feld feld--breit">CSV-Datei<input type="file" id="importDatei" accept=".csv,text/csv,.txt"></label><button class="btn btn--pink" id="importStart" type="button" disabled>Hochladen und Preise setzen</button></div>
             <div id="importErgebnis" class="hinweis" hidden></div>
           </div>

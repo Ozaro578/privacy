@@ -86,7 +86,7 @@
     $("summe1").innerHTML = summenHtml(r, false);
     var nichtKaufbar = alle.filter(function (x) { return !x.kaufbar; }).length;
     $("korbHinweis").hidden = !nichtKaufbar;
-    $("korbHinweis").textContent = nichtKaufbar ? nichtKaufbar + (nichtKaufbar === 1 ? " Artikel ist" : " Artikel sind") + " noch nicht bestellbar und wird bei der Bestellung nicht berücksichtigt." : "";
+    $("korbHinweis").textContent = nichtKaufbar ? nichtKaufbar + (nichtKaufbar === 1 ? " Artikel ist noch nicht bestellbar und wird" : " Artikel sind noch nicht bestellbar und werden") + " bei der Bestellung nicht berücksichtigt." : "";
     if (vorverkauf()) vorverkaufHinweis();
     $("zurKasse").disabled = !r.pos.length;
     if (window.ZBNativ && r.pos.length) { $("korbHinweis").hidden = false; $("korbHinweis").textContent = "🧾 Die Bestellung selbst machst du auf zukkabro.de im Browser. Dein Warenkorb wird automatisch übernommen."; $("zurKasse").textContent = "Auf zukkabro.de bestellen →"; }
